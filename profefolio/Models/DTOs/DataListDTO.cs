@@ -7,7 +7,7 @@ public class DataListDTO <T>
     {
         get;
         set;
-    } = new List<T>();
+    }
 
     public int CurrentPage
     {
@@ -22,6 +22,12 @@ public class DataListDTO <T>
     }
 
     public bool Next
+    {
+        get;
+        set;
+    }
+
+    public int Items
     {
         get;
         set;

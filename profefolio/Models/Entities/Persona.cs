@@ -14,7 +14,7 @@ public class Persona : Data
         set;
     }
 
-    public DateOnly Edad
+    public int Edad
     {
         get;
         set;

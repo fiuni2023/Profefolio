@@ -1,6 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using profefolio.Models;
 using AutoMapper;
+using profefolio.Models.Entities;
+using profefolio.Repository;
+using profefolio.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +23,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+//Servicios
+builder.Services.AddScoped<IPersona, PersonasService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -28,6 +34,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
 
 app.UseHttpsRedirection();
 
