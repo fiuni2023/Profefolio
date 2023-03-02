@@ -3,6 +3,8 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Navbar from "../../components/Navbar.jsx";
 import SideBar from "../../components/Sidebar.jsx";
 import { GeneralProvider} from "../../context/GeneralContext";
+import Administrador from "../administrador/index.jsx";
+import ListAdministrador from "../administrador/pages/list/index.jsx";
 import Partidos from "../partidos";
 import CreatePartidos from "../partidos/components/create";
 import PartidosEdit from "../partidos/components/edit";
@@ -18,7 +20,6 @@ const App = () => {
                         <Navbar />
                         <div className="content">
                             <SideBar />
-                            <div className="relativeContainer">
                                     <Routes>
                                         <Route path="/" element={<>Home</>}/>
                                         <Route path="/pagina1" element={<Partidos />}>
@@ -26,8 +27,10 @@ const App = () => {
                                             <Route path='create' element={<CreatePartidos />} />
                                             <Route path="edit" element={<PartidosEdit />} />
                                         </Route>
+                                        <Route path="/administrador" element={<Administrador />}>
+                                            <Route path="list" element={<ListAdministrador />}/>
+                                        </Route>
                                     </Routes>
-                            </div>
                         </div>
                     </div>
             </GeneralProvider>
