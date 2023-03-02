@@ -17,7 +17,7 @@ const Navbar = () => {
                     <button className="buttonNavBar">  <BsJustify /> </button>
                 </div>
                 <div className="navbarmain">
-                    <div className="logo"> <LogoNavBar width="25px" height="20px" /> </div>
+                    <div className="logo"> <LogoNavBar width="100%" height="100%" /> </div>
                     <div className="user"> <span>UserName</span> <FaUserCircle /> </div>
                 </div>
             </div>

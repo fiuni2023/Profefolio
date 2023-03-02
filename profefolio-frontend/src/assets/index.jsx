@@ -8,16 +8,16 @@ export const LogoNavBar = ({
     return(
         <>
             <div className="imageContainer">
-                <img src={navbarLogoImage} alt="Logo" />
+                <img className="image" src={navbarLogoImage} alt="Logo" />
             </div>
             <style jsx="true">{`
                 .imageContainer{
-                    width: 100%;
-                    height: 100%;
-                }
-                .image{
                     width: ${width};
                     height: ${height};
+                }
+                .image{
+                    width: 100%;
+                    height: 100%;
                 }
             `}</style>
         </>
