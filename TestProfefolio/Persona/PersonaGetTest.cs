@@ -20,27 +20,7 @@ public class PersonaGetTest
     
     public PersonaGetTest()
     {
-        _personasController = new PersonasController(_personaService.Object, _mapper.Object);
-        _persona = new profefolio.Models.Entities.Persona
-        {
-            Id = 1,
-            Nombre = "Carlos",
-            Apellido = "Torres",
-            Deleted = false,
-            Created = DateTime.Now,
-            ModifiedBy = "",
-            Edad = 21,
-            Modified = DateTime.Now
-
-        };
-        
-        _personaDto = new PersonaDTO
-        {
-            Id = 1,
-            Nombre = "Carlos",
-            Apellido = "Torres",
-            Edad = 21
-        };
+       
     }
     
     

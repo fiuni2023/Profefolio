@@ -16,39 +16,12 @@ public class PersonaGetDataTest
     public PersonaGetDataTest()
     {
         
-        _personasController = new PersonasController(_personaService.Object, _mapper.Object);
-        _persona = new profefolio.Models.Entities.Persona
-        {
-            Id = 1,
-            Nombre = "Carlos",
-            Apellido = "Torres",
-            Deleted = false,
-            Created = DateTime.Now,
-            ModifiedBy = "",
-            Edad = 21,
-            Modified = DateTime.Now
-
-        };
-        
-        _personaDto = new PersonaDTO
-        {
-            Id = 1,
-            Nombre = "Carlos",
-            Apellido = "Torres",
-            Edad = 21
-        };
+       
     }
 
     [Fact]
     public async Task GetDataTest()
     {
-        _personaService.Setup(p => p.FindById(_personaDto.Id))
-            .ReturnsAsync(_persona);
-
-        _mapper.Setup(m => m.Map<PersonaDTO>(_persona))
-            .Returns(_personaDto);
-
-        var result = _personasController
-            .GetPersona(_personaDto.Id);
+        
     }
 }

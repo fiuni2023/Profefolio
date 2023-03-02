@@ -1,5 +1,5 @@
 ﻿namespace profefolio.Models.DTOs.Persona;
-
+// ReSharper disable once InconsistentNaming
 public class PersonaDTO : DataDTO
 {
     public string? Nombre
