@@ -18,13 +18,11 @@ export const Table = ({headers = [], datas=[], parseToRow =() =>{return <tr><td>
                 border-spacing: 0px;
             }
             .table>thead>tr>th{
-                border-bottom: 2px solid black;
-                height: 5vh;
+                border: 1px solid black;
             }
             .table>tbody>tr>td{
                 text-align: center;
-                height: 5vh;
-                border-bottom: 0.5px solid black;
+                border: 1px solid black;
             }
         `}</style>
     </>)
