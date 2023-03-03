@@ -59,6 +59,7 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddScoped<IPersona, PersonasService>();
 builder.Services.AddTransient<IHttpContextAccessor,HttpContextAccessor>();
 builder.Services.AddScoped<IRol, RolService>();
+builder.Services.AddScoped<IAuth, AuthService>();
 
 var app = builder.Build();
 
