@@ -10,11 +10,13 @@ public class PersonasService : IPersona
 {
     
     private readonly UserManager<Persona> _userManager;
+    private readonly IHttpContextAccessor _httpContext;
+    
 
-
-    public PersonasService(UserManager<Persona> userManager)
+    public PersonasService(UserManager<Persona> userManager, IHttpContextAccessor httpContext)
     {
         _userManager = userManager;
+        _httpContext = httpContext;
     }
     public  Task<Persona> FindById(int id)
     {
@@ -51,6 +53,22 @@ public class PersonasService : IPersona
     public bool Exist()
     {
         return Count() > 0;
+    }
+
+    public async Task<string> UserLogged()
+    {
+        var query = _httpContext.HttpContext;
+        if (query == null)
+        {
+            throw new BadHttpRequestException("Error al obtener el Usuario Logeado");
+        }
+
+        var user = await _userManager.GetUserAsync(query.User);
+
+        if (user.Deleted)
+            throw new FileNotFoundException();
+
+        return user.Email;
     }
 
     public async Task<Persona> FindById(string id)
@@ -139,7 +157,7 @@ public class PersonasService : IPersona
     {
         var query = await _userManager.FindByEmailAsync(email);
 
-        return null == query ? true : query.Deleted;
+        return null == query ? true : !query.Deleted;
     }
 
 

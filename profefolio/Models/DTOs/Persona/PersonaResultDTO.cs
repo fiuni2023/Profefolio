@@ -1,33 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿namespace profefolio.Models.DTOs.Persona;
 
-namespace profefolio.Models.Entities;
-
-public class Persona :  IdentityUser
+public class PersonaResultDTO
 {
-    public bool Deleted
-    {
-        get;
-        set;
-    }
-
-    public DateTime Created
-    {
-        get;
-        set;
-    }
-
-    public string? CreatedBy
-    {
-        get;
-        set;
-    }
-    public DateTime Modified
-    {
-        get;
-        set;
-    }
-
-    public string? ModifiedBy
+    public string? Id
     {
         get;
         set;
@@ -62,13 +37,19 @@ public class Persona :  IdentityUser
         set;
     }
 
-    public bool EsM
+    public string? Genero
     {
         get;
         set;
     }
 
     public string? Direccion
+    {
+        get;
+        set;
+    }
+
+    public string? Telefono
     {
         get;
         set;

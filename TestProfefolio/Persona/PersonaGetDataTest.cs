@@ -9,9 +9,8 @@ public class PersonaGetDataTest
 {
     private readonly  Mock<IPersona> _personaService = new Mock<IPersona>();
     private readonly  Mock<IMapper> _mapper = new Mock<IMapper>();
-    private readonly PersonasController _personasController;
-    private readonly PersonaDTO _personaDto;
-    private readonly profefolio.Models.Entities.Persona _persona;
+    
+ 
     
     public PersonaGetDataTest()
     {
