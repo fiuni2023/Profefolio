@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using profefolio.Models.DTOs.Auth;
 using profefolio.Models.Entities;
@@ -55,22 +56,7 @@ public class PersonasService : IPersona
         return Count() > 0;
     }
 
-    public async Task<string> UserLogged()
-    {
-        var query = _httpContext.HttpContext;
-        if (query == null)
-        {
-            throw new BadHttpRequestException("Error al obtener el Usuario Logeado");
-        }
-
-        var user = await _userManager.GetUserAsync(query.User);
-
-        if (user.Deleted)
-            throw new FileNotFoundException();
-
-        return user.Email;
-    }
-
+  
     public async Task<Persona> FindById(string id)
     {
         var query = await _userManager.Users
@@ -157,7 +143,7 @@ public class PersonasService : IPersona
     {
         var query = await _userManager.FindByEmailAsync(email);
 
-        return null == query ? true : !query.Deleted;
+        return null == query ? false : !query.Deleted;
     }
 
 

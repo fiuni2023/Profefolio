@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using profefolio.Models.DTOs.Persona;
@@ -8,7 +9,7 @@ using profefolio.Repository;
 
 namespace profefolio.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/administrador")]
 [Authorize]
 public class AccountController : ControllerBase
 {
@@ -24,24 +25,18 @@ public class AccountController : ControllerBase
         _rolService = rolService;
     }
 
+    [Route("create")]
     [HttpPost]
-    public async Task<ActionResult<PersonaDTO>> CrearAdminstrador(PersonaDTO dto)
+    public async Task<ActionResult<PersonaDTO>> CrearAdminstrador([FromBody]PersonaDTO dto)
     {
-        if (dto.Password == null)
-            return BadRequest("Falta el Password");
-        if (!ModelState.IsValid)
-        {
-            return BadRequest("");
-        }
-        string mailLogged = await _personasService.UserLogged();
-
         var entity = _mapper.Map<Persona>(dto);
         entity.Deleted = false;
-        entity.CreatedBy = mailLogged;
+        entity.CreatedBy = User.Identity.GetUserId();
         
         var saved = await _personasService.CreateUser(entity, dto.Password);
         if(await _rolService.AsignToUser("Administrador de Colegio", saved))
             return Ok(_mapper.Map<PersonaResultDTO>(saved));
+        
         return BadRequest($"Error al crear al Usuario ${dto.Email}");
     }
 
