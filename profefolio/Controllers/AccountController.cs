@@ -9,7 +9,7 @@ using profefolio.Repository;
 namespace profefolio.Controllers;
 
 [Route("api/[controller]")]
-[Authorize(Roles = "Master")]
+[Authorize]
 public class AccountController : ControllerBase
 {
     private readonly IMapper _mapper;

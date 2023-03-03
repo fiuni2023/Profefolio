@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using profefolio.Models.DTOs.Auth;
 using profefolio.Repository;
@@ -10,11 +9,10 @@ namespace profefolio.Controllers;
 [Route("api/[controller]")]
 public class AuthController : ControllerBase
 {
-    private readonly IMapper _mapper;
+
     private readonly IAuth _authService;
-    public AuthController(IMapper mapper, IAuth authService)
+    public AuthController(IAuth authService)
     {
-        _mapper = mapper;
         _authService = authService;
     }
 

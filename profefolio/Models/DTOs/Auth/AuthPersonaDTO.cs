@@ -1,18 +1,18 @@
 ﻿namespace profefolio.Models.DTOs.Auth;
 // ReSharper disable once InconsistentNaming
-public class AuthPersonaDTO : DataDTO
+public class AuthPersonaDTO
 {
-    public string? Username
+    public string? Email
     {
         get; 
         set;
     }
 
-    public List<string> Roles
+    public List<string>? Roles
     {
-        get;  
-        private set;
-    } = new List<string>();
+        get;
+        set;
+    }
 
     public DateTime Expires
     {

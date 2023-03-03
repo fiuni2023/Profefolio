@@ -18,9 +18,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("Context"))
 );
 
-builder.Services.AddCors(p => p.AddPolicy("corsapp", builder =>
+builder.Services.AddCors(p => p.AddPolicy("corsapp", b =>
 {
-    builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
+    b.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
 }));
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

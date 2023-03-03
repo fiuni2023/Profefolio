@@ -46,6 +46,36 @@ namespace profefolio.Migrations
                         .HasDatabaseName("RoleNameIndex");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "a03586c0-3f62-432a-8fcc-b96eb634619a",
+                            ConcurrencyStamp = "c2a7c908-86ab-45b6-973c-1105d1b7bac8",
+                            Name = "Master",
+                            NormalizedName = "MASTER"
+                        },
+                        new
+                        {
+                            Id = "ddaa9160-0171-4e4c-9353-001839829d30",
+                            ConcurrencyStamp = "40a7a6ed-292a-4254-a053-65ae9840caf9",
+                            Name = "Alumno",
+                            NormalizedName = "ALUMNO"
+                        },
+                        new
+                        {
+                            Id = "86c5f0f7-a43a-4457-86c1-711596e59abc",
+                            ConcurrencyStamp = "a2666528-56e2-4d3b-b1c8-b48f4d79ccb1",
+                            Name = "Profesor",
+                            NormalizedName = "PROFESOR"
+                        },
+                        new
+                        {
+                            Id = "1fde407e-2e98-43e2-8d62-106987340a87",
+                            ConcurrencyStamp = "566da35c-1cae-440f-883f-f26b272aebef",
+                            Name = "Administrador de Colegio",
+                            NormalizedName = "ADMINISTRADOR DE COLEGIO"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -133,6 +163,13 @@ namespace profefolio.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "45903545-bca7-4267-99ba-56cc154bafaa",
+                            RoleId = "a03586c0-3f62-432a-8fcc-b96eb634619a"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -252,6 +289,29 @@ namespace profefolio.Migrations
                         .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "45903545-bca7-4267-99ba-56cc154bafaa",
+                            AccessFailedCount = 0,
+                            Apellido = "Torres",
+                            ConcurrencyStamp = "0da680db-2ac9-4c36-8c06-a79e65cd90bb",
+                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Deleted = false,
+                            Email = "Carlos.Torres123@mail.com",
+                            EmailConfirmed = false,
+                            EsM = false,
+                            LockoutEnabled = false,
+                            Modified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Nacimiento = new DateTime(1999, 7, 10, 4, 0, 0, 0, DateTimeKind.Utc),
+                            Nombre = "Carlos",
+                            NormalizedEmail = "CARLOS.TORRES@123MAIL.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEOQt3AAWNdVFd+2t53ATmBpYJth/nFWYyGTNhh0OgTlxbLt86NPYPTBvw6nIP4vnMQ==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "ddd490d8-7385-40b7-be01-1c56e03b19a9",
+                            TwoFactorEnabled = false
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
