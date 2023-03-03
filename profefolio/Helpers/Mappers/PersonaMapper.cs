@@ -24,7 +24,7 @@ public class PersonaMapper : Profile
                 ))
             .ForMember(dest => dest.PhoneNumber,
                 opt => opt.MapFrom(
-                    src => src.Telefono));
+                    src => src.Telefono)).ReverseMap();
 
         CreateMap<Persona, PersonaResultDTO>()
             .ForMember(dest => dest.Genero,
