@@ -2,7 +2,7 @@
 
 namespace profefolio.Repository;
 
-public interface ILoginService : IDisposable
+public interface IAuth: IDisposable
 {
    Task<AuthPersonaDTO> Login(Login login);
    Task Logout();
