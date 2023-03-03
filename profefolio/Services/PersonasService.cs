@@ -1,5 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using profefolio.Models;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using profefolio.Models.DTOs.Auth;
 using profefolio.Models.Entities;
 using profefolio.Repository;
 
@@ -7,45 +8,45 @@ namespace profefolio.Services;
 
 public class PersonasService : IPersona
 {
-    private ApplicationDbContext _dbContext;
-    private bool _disposed;
+    
+    private readonly UserManager<Persona> _userManager;
+    private readonly IHttpContextAccessor _httpContext;
+    
 
-    public PersonasService(ApplicationDbContext dbContext)
+    public PersonasService(UserManager<Persona> userManager, IHttpContextAccessor httpContext)
     {
-        _dbContext = dbContext;
+        _userManager = userManager;
+        _httpContext = httpContext;
     }
-    public async Task<Persona> FindById(int id)
+    public  Task<Persona> FindById(int id)
     {
-        return await _dbContext.Personas
-            .Where(p => !p.Deleted && p.Id == id)
-            .FirstOrDefaultAsync();
+        throw new NotImplementedException();
     }
 
     public IEnumerable<Persona> GetAll()
     {
-        return _dbContext.Personas.Where(p => !p.Deleted);
+        return _userManager.Users.Where(p => !p.Deleted);
     }
 
     public Persona Edit(Persona t)
     {
-        _dbContext.Entry(t).State = EntityState.Modified;
-        return t;
+        throw new NotImplementedException();
     }
 
-    public async Task<Persona> Add(Persona t)
+    public  Task<Persona> Add(Persona t)
     {
-        var result = await _dbContext.Personas.AddAsync(t);
-        return result.Entity;
+        
+        throw new NotImplementedException();
     }
 
-    public async Task Save()
+    public  Task Save()
     {
-        await _dbContext.SaveChangesAsync();
+        throw new NotImplementedException();
     }
 
     public int Count()
     {
-        return _dbContext.Personas
+        return _userManager.Users
             .Count(p => !p.Deleted);
     }
 
@@ -54,23 +55,114 @@ public class PersonasService : IPersona
         return Count() > 0;
     }
 
-    
-
-    protected virtual void Dispose(bool disposing)
+    public async Task<string> UserLogged()
     {
-        if (!this._disposed)
+        var query = _httpContext.HttpContext;
+        if (query == null)
         {
-            if (disposing)
-            {
-                _dbContext.Dispose();
-            }
+            throw new BadHttpRequestException("Error al obtener el Usuario Logeado");
         }
-        this._disposed = true;
+
+        var user = await _userManager.GetUserAsync(query.User);
+
+        if (user.Deleted)
+            throw new FileNotFoundException();
+
+        return user.Email;
     }
+
+    public async Task<Persona> FindById(string id)
+    {
+        var query = await _userManager.Users
+            .Where(p => !p.Deleted && p.Id.Equals(id))
+            .FirstOrDefaultAsync();
+
+        if (query == null)
+        {
+            throw new FileNotFoundException();
+        }
+        return query;
+    }
+
+    public async Task<Persona> CreateUser(Persona user, string password)
+    {
+        
+        if (await ExistMail(user.Email))
+        {
+            throw new BadHttpRequestException("El email al cual quiere registrarse ya existe");
+        }
+        
+        var query = await _userManager.CreateAsync(user, password);
+        
+        if (query.Succeeded)
+        {
+            return await _userManager.FindByEmailAsync(user.Email);
+        }
+
+        throw new BadHttpRequestException("Error en la consulta");
+    }
+
+    public async Task<Persona> EditProfile(string id, Persona persona)
+    {
+        var query = await _userManager.Users
+            .Where(p => !p.Deleted && p.Id.Equals(id))
+            .FirstOrDefaultAsync();
+
+        if (null == query)
+        {
+            throw new FileNotFoundException();
+        }
+
+        if (!(id.Equals(persona.Id)))
+        {
+            throw new BadHttpRequestException("Error al actualizar");
+        }
+
+        await _userManager.UpdateAsync(persona);
+
+        return persona;
+    }
+
+    public async Task<bool> DeleteUser(string id)
+    {
+        var query = await _userManager.FindByIdAsync(id);
+
+        if (query.Deleted)
+        {
+            throw new FileNotFoundException();
+        }
+
+        query.Deleted = true;
+
+        await _userManager.UpdateAsync(query);
+        return true;
+    }
+
+    public async Task<bool> ChangePassword(string id, ModelPassword newPassoword)
+    {
+        var query = await _userManager.FindByIdAsync(id);
+
+        if (query.Deleted)
+        {
+            throw new FileNotFoundException();
+        }
+
+        await _userManager.RemovePasswordAsync(query);
+        await _userManager.AddPasswordAsync(query, newPassoword.NewPassword);
+
+        return true;
+    }
+
+    public async Task<bool> ExistMail(string email)
+    {
+        var query = await _userManager.FindByEmailAsync(email);
+
+        return null == query ? true : !query.Deleted;
+    }
+
 
     public void Dispose()
     {
-        Dispose(true);
-        GC.SuppressFinalize(this);
+        _userManager.Dispose();
     }
 }
