@@ -23,10 +23,11 @@ public class RolService: IRol
         throw new NotImplementedException();
     }
 
-    public IEnumerable<IdentityRole> GetAll()
+    public IEnumerable<IdentityRole> GetAll(int page, int cantPorPag)
     {
         throw new NotImplementedException();
     }
+    
 
     public IdentityRole Edit(IdentityRole t)
     {

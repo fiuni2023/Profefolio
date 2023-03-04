@@ -26,7 +26,15 @@ public class PersonasService : IPersona
 
     public IEnumerable<Persona> GetAll()
     {
-        return _userManager.Users.Where(p => !p.Deleted);
+        throw new NotImplementedException();
+    }
+
+    public IEnumerable<Persona> GetAll(int page, int cantPorPag)
+    {
+        return _userManager.Users
+            .Where(p => !p.Deleted)
+            .Skip(page)
+            .Take(cantPorPag*page);
     }
 
     public Persona Edit(Persona t)

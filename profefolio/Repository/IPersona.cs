@@ -11,6 +11,6 @@ public interface IPersona : IRepository<Persona>
     Task<bool> DeleteUser(string id);
     Task<bool> ChangePassword(string id, ModelPassword newPassoword);
     Task<bool> ExistMail(string email);
-
+    
 
 }
