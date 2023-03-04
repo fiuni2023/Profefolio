@@ -22,16 +22,17 @@ public class AuthService : IAuth
     }
     public void Dispose()
     {
-        throw new NotImplementedException();
+        _userManager.Dispose();
     }
 
     public async Task<AuthPersonaDTO> Login(Login login)
     {
-        var user = await _userManager.Users
-            .Where(p => !p.Deleted && p.Email.Equals(login.Email))
-            .FirstOrDefaultAsync();
+        var user = await _userManager
+            .FindByEmailAsync(login.Email);
+        
+        
 
-        if (user == null) throw new FileNotFoundException();
+        if (user == null || user.Deleted) throw new FileNotFoundException();
 
         if (!await _userManager.CheckPasswordAsync(user, login.Password))
             throw new BadHttpRequestException("Credenciales no validas");

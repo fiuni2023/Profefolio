@@ -32,8 +32,8 @@ public class PersonasService : IPersona
     {
         return _userManager.Users
             .Where(p => !p.Deleted)
-            .Skip(page)
-            .Take(cantPorPag*page);
+            .Skip(page*cantPorPag)
+            .Take(cantPorPag);
     }
 
     public Persona Edit(Persona t)
@@ -85,14 +85,11 @@ public class PersonasService : IPersona
             throw new BadHttpRequestException("El email al cual quiere registrarse ya existe");
         }
         
-        var query = await _userManager.CreateAsync(user, password);
-        
-        if (query.Succeeded)
-        {
-            return await _userManager.FindByEmailAsync(user.Email);
-        }
+        await _userManager.CreateAsync(user, password);
 
-        throw new BadHttpRequestException("Error en la consulta");
+        return await _userManager.Users
+            .Where(p => !p.Deleted && p.Email.Equals(user.Email))
+            .FirstAsync();
     }
 
     public async Task<Persona> EditProfile(Persona old, Persona personaNew, string newPassword)
@@ -132,7 +129,7 @@ public class PersonasService : IPersona
     {
         var query = await _userManager.FindByEmailAsync(email);
 
-        return null == query ? false : !query.Deleted;
+        return query is { Deleted: true };
     }
     
     

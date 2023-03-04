@@ -16,11 +16,11 @@ public class AuthController : ControllerBase
         _authService = authService;
     }
 
-    [Route("[action]")]
+    [Route("/login")]
     [HttpPost]
     [AllowAnonymous]
-    public async Task<ActionResult<AuthPersonaDTO>> Login(Login dto)
+    public async Task<ActionResult<AuthPersonaDTO>> Login([FromBody]Login dto)
     {
-        return await _authService.Login(dto);
+        return Ok( await _authService.Login(dto));
     }
 }

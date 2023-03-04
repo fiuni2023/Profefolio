@@ -18,7 +18,6 @@ public class AccountController : ControllerBase
     private readonly IPersona _personasService;
     private readonly IRol _rolService;
     private const int CantPorPage = 20;
-    private readonly string userId;
 
 
     public AccountController(IMapper mapper, IPersona personasService, IRol rolService)
@@ -26,19 +25,20 @@ public class AccountController : ControllerBase
         _mapper = mapper;
         _personasService = personasService;
         _rolService = rolService;
-        userId = User.Identity.GetUserId();
+       
     }
     
     [HttpPost]
     public async Task<ActionResult<PersonaResultDTO>> Post([FromBody]PersonaDTO dto)
     {
-        if (dto.Password == null) return BadRequest("Password requerido");
+        string userId = User.Identity.GetUserId();
         var entity = _mapper.Map<Persona>(dto);
         entity.Deleted = false;
         entity.CreatedBy = userId;
         
         var saved = await _personasService.CreateUser(entity, dto.Password);
-        if(await _rolService.AsignToUser("Administitrador de Colegio", saved))
+        
+        if(await _rolService.AsignToUser("Administrador de Colegio", saved))
             return Ok(_mapper.Map<PersonaResultDTO>(saved));
         
         return BadRequest($"Error al crear al Usuario ${dto.Email}");
@@ -50,14 +50,14 @@ public class AccountController : ControllerBase
     {
         var query =  _personasService.GetAll(page, CantPorPage);
 
-        var cantPages = (int)Math.Ceiling((double)_personasService.Count() / CantPorPage);
+        int cantPages = (int)Math.Ceiling((double)_personasService.Count() / CantPorPage);
 
         var result = new DataListDTO<PersonaResultDTO>();
 
         var enumerable = query as Persona[] ?? query.ToArray();
-        result.Items = enumerable.Length;
+        result.CantItems = enumerable.Length;
         result.CurrentPage = page > cantPages ? cantPages : page;
-        result.Next = result.CurrentPage < cantPages;
+        result.Next = result.CurrentPage + 1 < cantPages;
         result.DataList = _mapper.Map<List<PersonaResultDTO>>(enumerable.ToList());
         result.TotalPage = cantPages;
 
@@ -82,10 +82,12 @@ public class AccountController : ControllerBase
 
     [HttpPut]
     [Route("{id}")]
-    public async Task<ActionResult<PersonaResultDTO>> Put(int id, [FromBody] PersonaDTO dto)
+    public async Task<ActionResult<PersonaResultDTO>> Put(string id, [FromBody] PersonaDTO dto)
     {
+        string userId = User.Identity.GetUserId();
         var personaOld = await _personasService.FindById(id);
         var personaNew = _mapper.Map<Persona>(dto);
+        
         
         personaOld.Deleted = true;
         personaOld.Modified =  DateTime.Now;
@@ -96,7 +98,7 @@ public class AccountController : ControllerBase
         personaNew.Modified = DateTime.Now;
         personaNew.ModifiedBy = userId;
 
-        var query = await _personasService.EditProfile(personaNew, personaOld, dto.Password);
+        var query = await _personasService.EditProfile(personaOld, personaNew, dto.Password);
 
         return Ok(_mapper.Map<PersonaResultDTO>(query));
     }

@@ -46,38 +46,8 @@ public class PersonaMapper : Profile
             .ForMember(dest => dest.Telefono,
                 opt => opt.MapFrom(
                     src => src.PhoneNumber));
-        
-        
-        CreateMap<PersonaChangeModelDTO, Persona>()
-            .ForMember(dest => dest.Id,
-                opt => opt.MapFrom(
-                    dest => dest.Id))
-            .ForMember(dest => dest.Modified,
-                opt => opt.Ignore())
-            .ForMember(dest => dest.Created,
-                opt => opt.Ignore())
-            .ForMember(dest => dest.ModifiedBy,
-                opt => opt.Ignore())
-            .ForMember(dest => dest.EsM,
-                opt => opt.MapFrom(
-                    src => src.Genero != null && src.Genero.Equals("M")
-                ))
-            .ForMember(dest => dest.PhoneNumber,
-                opt => opt.MapFrom(
-                    src => src.Telefono))
-            .ForMember(dest => dest.SecurityStamp,
-                opt => opt.Ignore())
-            .ForMember(dest => dest.UserName, 
-                opt => opt.MapFrom(
-                    dest => dest.Email))
-            .ForMember(dest => dest.NormalizedEmail,
-                opt => opt.MapFrom(
-                    src =>src.Email == null? "" : src.Email.ToUpper()))
-            .ForMember(dest => dest.NormalizedUserName,
-                opt => opt.MapFrom(
-                    src => src.Email == null ? "" : src.Email.ToUpper()));
-            
-        
+
+
 
     }
 }
