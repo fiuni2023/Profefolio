@@ -17,7 +17,8 @@ public class AccountController : ControllerBase
     private readonly IMapper _mapper;
     private readonly IPersona _personasService;
     private readonly IRol _rolService;
-    private static readonly int CantPorPage = 20;
+    private const int CantPorPage = 20;
+    private readonly string userId;
 
 
     public AccountController(IMapper mapper, IPersona personasService, IRol rolService)
@@ -25,6 +26,7 @@ public class AccountController : ControllerBase
         _mapper = mapper;
         _personasService = personasService;
         _rolService = rolService;
+        userId = User.Identity.GetUserId();
     }
     
     [HttpPost]
@@ -33,7 +35,7 @@ public class AccountController : ControllerBase
         if (dto.Password == null) return BadRequest("Password requerido");
         var entity = _mapper.Map<Persona>(dto);
         entity.Deleted = false;
-        entity.CreatedBy = User.Identity.GetUserId();
+        entity.CreatedBy = userId;
         
         var saved = await _personasService.CreateUser(entity, dto.Password);
         if(await _rolService.AsignToUser("Administitrador de Colegio", saved))
@@ -66,7 +68,7 @@ public class AccountController : ControllerBase
     [Route("id/{id}")]
     public async Task<ActionResult<PersonaResultDTO>> Get(string id)
     {
-        var persona =await _personasService.FindById(id);
+        var persona = await _personasService.FindById(id);
         return Ok(_mapper.Map<PersonaResultDTO>(persona));
     }
 
@@ -76,10 +78,28 @@ public class AccountController : ControllerBase
     {
         return await _personasService.DeleteUser(id) ? Ok() : NotFound();
     }
-    
-    
-   
-    
+
+
+    [HttpPut]
+    [Route("{id}")]
+    public async Task<ActionResult<PersonaResultDTO>> Put(int id, [FromBody] PersonaDTO dto)
+    {
+        var personaOld = await _personasService.FindById(id);
+        var personaNew = _mapper.Map<Persona>(dto);
+        
+        personaOld.Deleted = true;
+        personaOld.Modified =  DateTime.Now;
+        personaOld.ModifiedBy = userId;
+
+        personaNew.Created = personaOld.Created;
+        personaNew.CreatedBy = personaOld.CreatedBy;
+        personaNew.Modified = DateTime.Now;
+        personaNew.ModifiedBy = userId;
+
+        var query = await _personasService.EditProfile(personaNew, personaOld, dto.Password);
+
+        return Ok(_mapper.Map<PersonaResultDTO>(query));
+    }
 
 
 }

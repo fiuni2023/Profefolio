@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using profefolio.Models;
 using profefolio.Models.DTOs.Auth;
 using profefolio.Models.Entities;
 using profefolio.Repository;
@@ -11,13 +12,11 @@ public class PersonasService : IPersona
 {
     
     private readonly UserManager<Persona> _userManager;
-    private readonly IHttpContextAccessor _httpContext;
-    
-
-    public PersonasService(UserManager<Persona> userManager, IHttpContextAccessor httpContext)
+    private readonly ApplicationDbContext _db;
+    public PersonasService(UserManager<Persona> userManager, ApplicationDbContext db)
     {
         _userManager = userManager;
-        _httpContext = httpContext;
+        _db = db;
     }
     public  Task<Persona> FindById(int id)
     {
@@ -96,25 +95,13 @@ public class PersonasService : IPersona
         throw new BadHttpRequestException("Error en la consulta");
     }
 
-    public async Task<Persona> EditProfile(string id, Persona persona)
+    public async Task<Persona> EditProfile(Persona old, Persona personaNew, string newPassword)
     {
-        var query = await _userManager.Users
-            .Where(p => !p.Deleted && p.Id.Equals(id))
-            .FirstOrDefaultAsync();
+        await _userManager.UpdateAsync(old);
+        await _userManager.RemovePasswordAsync(old);
+        await _userManager.CreateAsync(personaNew, newPassword);
 
-        if (null == query)
-        {
-            throw new FileNotFoundException();
-        }
-
-        if (!(id.Equals(persona.Id)))
-        {
-            throw new BadHttpRequestException("Error al actualizar");
-        }
-
-        await _userManager.UpdateAsync(persona);
-
-        return persona;
+        return await _userManager.FindByEmailAsync(personaNew.Email);
     }
 
     public async Task<bool> DeleteUser(string id)
@@ -132,18 +119,12 @@ public class PersonasService : IPersona
         return true;
     }
 
-    public async Task<bool> ChangePassword(string id, ModelPassword newPassoword)
-    {
-        var query = await _userManager.FindByIdAsync(id);
-
-        if (query.Deleted)
-        {
-            throw new FileNotFoundException();
-        }
-
-        await _userManager.RemovePasswordAsync(query);
-        await _userManager.AddPasswordAsync(query, newPassoword.NewPassword);
-
+    public async Task<bool> ChangePassword(Persona personaOld, Persona personaNew, string newPassoword)
+    { 
+        
+        await _userManager.RemovePasswordAsync(personaOld);
+        await _userManager.UpdateAsync(personaOld);
+        await _userManager.CreateAsync(personaNew, newPassoword);
         return true;
     }
 
@@ -153,6 +134,8 @@ public class PersonasService : IPersona
 
         return null == query ? false : !query.Deleted;
     }
+    
+    
 
 
     public void Dispose()

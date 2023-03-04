@@ -53,8 +53,7 @@ public class PersonaMapper : Profile
                 opt => opt.MapFrom(
                     dest => dest.Id))
             .ForMember(dest => dest.Modified,
-                opt => opt.MapFrom(
-                    src => DateTime.Now))
+                opt => opt.Ignore())
             .ForMember(dest => dest.Created,
                 opt => opt.Ignore())
             .ForMember(dest => dest.ModifiedBy,
@@ -67,8 +66,7 @@ public class PersonaMapper : Profile
                 opt => opt.MapFrom(
                     src => src.Telefono))
             .ForMember(dest => dest.SecurityStamp,
-                opt => opt.MapFrom(
-                    t => Guid.NewGuid().ToString()))
+                opt => opt.Ignore())
             .ForMember(dest => dest.UserName, 
                 opt => opt.MapFrom(
                     dest => dest.Email))
