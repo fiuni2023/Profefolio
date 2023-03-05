@@ -1,5 +1,5 @@
 import React from "react";
-
+import styles from './index.module.css'
 export const LogoNavBar = ({
     width = "100%",
     height = "100%"
@@ -8,16 +8,33 @@ export const LogoNavBar = ({
     return(
         <>
             <div className="imageContainer">
-                <img className="image" src={navbarLogoImage} alt="Logo" />
+                <img className={styles.image} src={navbarLogoImage} alt="Logo" />
             </div>
             <style jsx="true">{`
                 .imageContainer{
                     width: ${width};
                     height: ${height};
                 }
-                .image{
-                    width: 100%;
-                    height: 100%;
+            `}</style>
+        </>
+    )
+}
+
+export const Logo = ({
+    width = "100%",
+    height = "100%",
+    className=""
+}) => {
+    const navbarLogoImage = require('./images/Logo.png')
+    return(
+        <>
+            <div className={`imageContainer ${className}`}>
+                <img className={styles.image} src={navbarLogoImage} alt="Logo" />
+            </div>
+            <style jsx="true">{`
+                .imageContainer{
+                    width: ${width};
+                    height: ${height};
                 }
             `}</style>
         </>
