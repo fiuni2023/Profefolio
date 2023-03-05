@@ -10,6 +10,7 @@ using profefolio.Models.DTOs.Persona;
 using profefolio.Models.Entities;
 using profefolio.Repository;
 using Microsoft.EntityFrameworkCore;
+
 namespace profefolio.Controllers
 {
     [ApiController]
@@ -28,50 +29,63 @@ namespace profefolio.Controllers
             _rolService = rolService;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<PersonaResultDTO>>> getProfesor()
+        /*public ProfesorController()
         {
+            
+        }*/
 
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<PersonaResultDTO>>> GetProfesor()
+        {
             var profesores = _personasService.GetAll();
             if (profesores == null)
             {
                 return BadRequest("");
             }
+
             var profesDTO = profesores.Select(p => _mapper.Map<PersonaResultDTO>(p));
 
             return Ok(profesDTO);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<PersonaResultDTO>> getProfesor(int id)
+        public async Task<ActionResult<ProfesorDTO>> GetProfesor(string id)
         {
-            if (id > 0)
+            if (id != null && id.Length > 0)
             {
                 var profesor = await _personasService.FindById(id);
                 if (profesor != null)
                 {
-                    return Ok(_mapper.Map<PersonaResultDTO>(profesor));
+                    return Ok(_mapper.Map<ProfesorDTO>(profesor));
                 }
                 else
                 {
-                    return BadRequest("No se encontro al profesor");
+                    return NotFound("No se encontro al profesor");
                 }
             }
             else
             {
-                return BadRequest("ID invalido");
+                return (BadRequestObjectResult)BadRequest("ID invalido");
             }
         }
 
         [HttpPost]
-        public async Task<ActionResult<PersonaResultDTO>> createProfesor(PersonaDTO dto)
+        public async Task<ActionResult<PersonaResultDTO>> CreateProfesor(PersonaDTO dto)
         {
             if (dto.Password == null)
+            {
                 return BadRequest("Falta el Password");
+            }
+            else if (dto.ConfirmPassword == null)
+            {
+                return BadRequest("Falta confirmacion de Password");
+            }
+
             if (!ModelState.IsValid)
             {
                 return BadRequest("");
             }
+
             string mailLogged = await _personasService.UserLogged();
 
             var entity = _mapper.Map<Persona>(dto);
@@ -83,11 +97,12 @@ namespace profefolio.Controllers
             {
                 return Ok(_mapper.Map<PersonaResultDTO>(saved));
             }
+
             return BadRequest($"Error al crear el Profesor ${dto.Email}");
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> editProfesor(string id, PersonaDTO dto)
+        public async Task<ActionResult<object>> PutProfesor(string id, PersonaDTO dto)
         {
             if (dto.Password != null)
             {
@@ -98,9 +113,25 @@ namespace profefolio.Controllers
                     {
                         return BadRequest("Error al tratar de crear");
                     }
-                    await _personasService.EditProfile(id, profesor);
-                    await _personasService.Save();
-                    return NoContent();
+
+                    profesor.Id = id;
+                    try
+                    {
+                        Persona p = await _personasService.EditProfile(id, profesor);
+                        if (p != null)
+                        {
+                            await _personasService.Save();
+                            return NoContent();
+                        }
+
+                        return NotFound("No existe el profesor con el id indicado");
+                    }
+                    catch (FileNotFoundException e)
+                    {
+                        return BadRequest("No se encontro el registro a editar");
+                    }
+
+                    
                 }
                 else
                 {
@@ -113,6 +144,7 @@ namespace profefolio.Controllers
             }
         }
 
+
         [HttpDelete("{id}")]
         public async Task<ActionResult<PersonaResultDTO>> removeById(string id)
         {
@@ -122,8 +154,10 @@ namespace profefolio.Controllers
                 {
                     return Ok("Eliminacion exitosa!!!");
                 }
+
                 return Conflict("Problemas al eliminar");
             }
+
             return BadRequest("No existe el profesor");
         }
     }
