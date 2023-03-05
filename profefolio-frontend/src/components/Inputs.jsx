@@ -17,16 +17,17 @@ export const TextInput = ({placeholder = "pon un placeholder", value , handleCha
     )
 }   
 
-export const ButtonInput = ({text = "Texto", handleClick = () => {}, variant = "primary", disabled= false, width= "120px", height="40px", fontSize ="15px"}) => {
+export const ButtonInput = ({text = "Texto", className ="", handleClick = () => {}, variant = "primary", disabled= false, width= "120px", height="40px", fontSize ="15px"}) => {
     const returnVariantColor = (variant) => {
         if (variant === "primary") return {backgroundColor:"#331832", color: "white", width: width, height: height, fontSize: fontSize}
         if (variant === "secondary") return {backgroundColor:"#D3D3D3", color: "white", width: width, height: height, fontSize: fontSize}
+        if (variant === "secondary-black") return {backgroundColor:"#D3D3D3", color: "black", width: width, height: height, fontSize: fontSize}
     }
 
     const styleBtn=returnVariantColor(variant)
     return(
         <>
-            <button className="button" style={styleBtn} onClick={handleClick} disabled={disabled}>{text}</button>
+            <button className={`button ${className}`} style={styleBtn} onClick={handleClick} disabled={disabled}>{text}</button>
             <style jsx = "true">{`
             .button{
                 border-radius: 10px;
