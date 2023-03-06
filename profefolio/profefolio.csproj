@@ -22,6 +22,7 @@
 
     <ItemGroup>
       <Compile Remove="Models\DTOs\Persona\PersonaList.cs" />
+      <Compile Remove="Models\DTOs\Colegio\ColegioList.cs" />
     </ItemGroup>
 
     <ItemGroup>
