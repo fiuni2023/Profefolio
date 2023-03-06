@@ -1,7 +1,5 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using profefolio.Models;
 using profefolio.Models.DTOs;
 using profefolio.Models.DTOs.Persona;
 using profefolio.Models.DTOs.Colegio;
@@ -26,7 +24,7 @@ namespace profefolio.Controllers
 
         [HttpGet]
         [Route("page/{page}")]
-        public ActionResult<DataListDTO<PersonaDTO>> GetPersonas(int page)
+        public ActionResult<DataListDTO<ColegioDTO>> GetColegios(int page)
         {
             var query = _colegioService.GetAll();
             int totalPage = (int)Math.Ceiling((double)_colegioService.Count() / _cantPorPag);
@@ -45,6 +43,7 @@ namespace profefolio.Controllers
         }
 
         // GET: api/Colegios/1
+        //TODO: si data.delete = false no retornar.
         [HttpGet("{id}")]
         public async Task<ActionResult<ColegioDTO>> GetColegio(int id)
         {
@@ -60,46 +59,53 @@ namespace profefolio.Controllers
             return Ok(response);
         }
 
-        // PUT: api/Personas/5
+        // PUT: api/Colegios/1
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-       /** [HttpPut("{id}")]
-        public async Task<IActionResult> PutPersona(int id, PersonaDTO persona)
+        // CUANDO SE edita SE CAMBIA SU ID ORIGINAL A ID+1
+        // una solicitud PUT requiere que el cliente envíe toda la entidad actualizada, no solo los cambios.
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutColegio(int id, ColegioDTO colegio)
         {
-            if (id != persona.Id)
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            if (id != colegio.Id)
             {
                 return BadRequest("Los ID no se actualizan");
             }
-
-            var p = await _personaService.FindById(id);
-
-            if (p == null) return NotFound();
-
+            var p = await _colegioService.FindById(id);
+            if (p == null)
+            {
+                return NotFound();
+            }
             p.ModifiedBy = "Anonimous";
             p.Deleted = true;
             p.Modified = DateTime.Now;
+            
+            var newColegio = _mapper.Map<Colegio>(colegio);
+            newColegio.ModifiedBy = "Anonimous";
 
-            var newPersona = _mapper.Map<Persona>(persona);
-            newPersona.ModifiedBy = "Anonimous";
+            _colegioService.Edit(p);
 
-            _personaService.Edit(p);
+            var result = await _colegioService.Add(newColegio);
 
-            var result = await _personaService.Add(newPersona);
-
-
-            await _personaService.Save();
+            await _colegioService.Save();
 
             return Ok(result);
 
         }
-**/
+
         // POST: api/Colegios
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<ColegioDTO>> PostColegio([FromBody]ColegioDTO colegio)
+        public async Task<ActionResult<ColegioDTO>> PostColegio([FromBody] ColegioDTO colegio)
         {
 
-            if (!ModelState.IsValid) return BadRequest("Objeto No valido");
-
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Objeto No valido");
+            }
             var p = _mapper.Map<Colegio>(colegio);
 
             p.ModifiedBy = "Anonimous";
@@ -109,27 +115,27 @@ namespace profefolio.Controllers
             await _colegioService.Save();
             return Ok(_mapper.Map<ColegioDTO>(colegio));
         }
-/**
-        // DELETE: api/Personas/5
+
+        // DELETE: api/Colegios/1
+        //TODO: estado = false al eliminar.
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
+            var data = await _colegioService.FindById(id);
 
-
-            var data = await _personaService.FindById(id);
-
-            if (data == null) return NotFound();
-
+            if (data == null) {
+                return NotFound();
+            }
             data.Modified = DateTime.Now;
             data.Deleted = false;
             data.ModifiedBy = "Anonimous";
-            _personaService.Edit(data);
+            _colegioService.Edit(data);
 
-            await _personaService.Save();
+            await _colegioService.Save();
 
             return Ok();
         }
 
-    **/
+
     }
 }
