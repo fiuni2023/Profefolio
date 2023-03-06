@@ -5,11 +5,16 @@ import SideBar from "../../components/Sidebar.jsx";
 import { GeneralProvider} from "../../context/GeneralContext";
 import Administrador from "../administrador/index.jsx";
 import ListAdministrador from "../administrador/pages/list/index.jsx";
+
+import ProfesorList from "../administrador/profesor/list/index.jsx";
 import Partidos from "../partidos";
 import CreatePartidos from "../partidos/components/create";
 import PartidosEdit from "../partidos/components/edit";
 import PartidosList from "../partidos/components/list";
 import 'bootstrap/dist/css/bootstrap.min.css';
+
+
+import Profesor  from "../administrador/profesor/index.jsx";
 
 const App = () => {
 
@@ -30,6 +35,11 @@ const App = () => {
                                         </Route>
                                         <Route path="/administrador" element={<Administrador />}>
                                             <Route path="list" element={<ListAdministrador />}/>
+                                        </Route>
+
+
+                                        <Route path="/profesor" element={<Profesor />}>
+                                            <Route path="list" element={<ProfesorList />}/>
                                         </Route>
                                     </Routes>
                         </div>
