@@ -1,7 +1,6 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using profefolio.Helpers;
 using profefolio.Models.DTOs.Auth;
 using profefolio.Models.Entities;
@@ -30,11 +29,7 @@ public class AuthService : IAuth
         var user = await _userManager
             .FindByEmailAsync(login.Email);
         
-        
-
-        if (user == null || user.Deleted) throw new FileNotFoundException();
-
-        if (!await _userManager.CheckPasswordAsync(user, login.Password))
+        if ((user == null || user.Deleted) || !await _userManager.CheckPasswordAsync(user, login.Password))
             throw new BadHttpRequestException("Credenciales no validas");
         var roles = await _userManager.GetRolesAsync(user);
 

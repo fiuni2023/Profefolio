@@ -21,6 +21,20 @@ public class AuthController : ControllerBase
     [AllowAnonymous]
     public async Task<ActionResult<AuthPersonaDTO>> Login([FromBody]Login dto)
     {
-        return Ok( await _authService.Login(dto));
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        try
+        {
+            return Ok(await _authService.Login(dto));
+        }
+        catch (BadHttpRequestException e)
+        {
+            Console.WriteLine(e.Message);
+            return BadRequest(e.Message);
+        }
+        
     }
 }

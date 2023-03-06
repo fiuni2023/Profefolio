@@ -31,7 +31,10 @@ public class AccountController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<PersonaResultDTO>> Post([FromBody]PersonaDTO dto)
     {
-        
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
         var userId = User.Identity.GetUserId();
         var entity = _mapper.Map<Persona>(dto);
         entity.Deleted = false;
@@ -104,6 +107,10 @@ public class AccountController : ControllerBase
     [Route("{id}")]
     public async Task<ActionResult<PersonaResultDTO>> Put(string id, [FromBody] PersonaDTO dto)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
         string userId = User.Identity.GetUserId();
         var personaOld = await _personasService.FindById(id);
         var personaNew = _mapper.Map<Persona>(dto);
