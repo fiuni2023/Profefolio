@@ -31,22 +31,32 @@ public class AccountController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<PersonaResultDTO>> Post([FromBody]PersonaDTO dto)
     {
-        string userId = User.Identity.GetUserId();
+        
+        var userId = User.Identity.GetUserId();
         var entity = _mapper.Map<Persona>(dto);
         entity.Deleted = false;
         entity.CreatedBy = userId;
-        
-        var saved = await _personasService.CreateUser(entity, dto.Password);
-        
-        if(await _rolService.AsignToUser("Administrador de Colegio", saved))
-            return Ok(_mapper.Map<PersonaResultDTO>(saved));
+
+        try
+        {
+            var saved = await _personasService.CreateUser(entity, dto.Password);
+
+            if (await _rolService.AsignToUser("Administrador de Colegio", saved))
+                return Ok(_mapper.Map<PersonaResultDTO>(saved));
+        }
+        catch (BadHttpRequestException e)
+        {
+            Console.WriteLine(e.Message);
+            return BadRequest($"El email {dto.Email} ya existe");
+        }
         
         return BadRequest($"Error al crear al Usuario ${dto.Email}");
+        
     }
 
     [HttpGet]
-    [Route("page/{page}")]
-    public ActionResult Get(int page)
+    [Route("page/{page:int}")]
+    public ActionResult<DataListDTO<PersonaResultDTO>> Get(int page)
     {
         var query =  _personasService.GetAll(page, CantPorPage);
 
@@ -68,8 +78,18 @@ public class AccountController : ControllerBase
     [Route("id/{id}")]
     public async Task<ActionResult<PersonaResultDTO>> Get(string id)
     {
-        var persona = await _personasService.FindById(id);
-        return Ok(_mapper.Map<PersonaResultDTO>(persona));
+        try
+        {
+            var persona = await _personasService.FindById(id);
+            return Ok(_mapper.Map<PersonaResultDTO>(persona));
+        }
+        catch (FileNotFoundException e)
+        {
+            Console.WriteLine(e.Message);
+
+        }
+
+        return NotFound();
     }
 
     [HttpDelete]
@@ -98,9 +118,18 @@ public class AccountController : ControllerBase
         personaNew.Modified = DateTime.Now;
         personaNew.ModifiedBy = userId;
 
-        var query = await _personasService.EditProfile(personaOld, personaNew, dto.Password);
+        try
+        {
+            var query = await _personasService.EditProfile(personaOld, personaNew, dto.Password);
 
-        return Ok(_mapper.Map<PersonaResultDTO>(query));
+            return Ok(_mapper.Map<PersonaResultDTO>(query));
+        }
+        catch (BadHttpRequestException e)
+        {
+            Console.WriteLine(e.Message);
+            return BadRequest(e.Message);
+        }
+
     }
 
 

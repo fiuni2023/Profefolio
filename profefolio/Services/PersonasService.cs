@@ -1,8 +1,6 @@
-﻿using System.Security.Claims;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using profefolio.Models;
-using profefolio.Models.DTOs.Auth;
 using profefolio.Models.Entities;
 using profefolio.Repository;
 
@@ -12,11 +10,10 @@ public class PersonasService : IPersona
 {
     
     private readonly UserManager<Persona> _userManager;
-    private readonly ApplicationDbContext _db;
-    public PersonasService(UserManager<Persona> userManager, ApplicationDbContext db)
+  
+    public PersonasService(UserManager<Persona> userManager)
     {
         _userManager = userManager;
-        _db = db;
     }
     public  Task<Persona> FindById(int id)
     {
@@ -94,6 +91,11 @@ public class PersonasService : IPersona
 
     public async Task<Persona> EditProfile(Persona old, Persona personaNew, string newPassword)
     {
+
+        if (!old.Email.Equals(personaNew.Email) && await ExistMail(personaNew.Email))
+        {
+            throw new BadHttpRequestException($"El email que desea actualizar ya existe");
+        }
         await _userManager.UpdateAsync(old);
         await _userManager.RemovePasswordAsync(old);
         await _userManager.CreateAsync(personaNew, newPassword);
@@ -107,7 +109,7 @@ public class PersonasService : IPersona
 
         if (query.Deleted)
         {
-            throw new FileNotFoundException();
+            return false;
         }
 
         query.Deleted = true;
