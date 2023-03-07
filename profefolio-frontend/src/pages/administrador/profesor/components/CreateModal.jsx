@@ -9,8 +9,6 @@ import Form from 'react-bootstrap/Form';
 const CreateModal = props => {
 
    
-    
-
   const closeOnEscapeKeyDown = e => {
     if ((e.charCode || e.keyCode) === 27) {
       props.onClose();

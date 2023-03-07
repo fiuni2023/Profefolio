@@ -5,7 +5,9 @@ import { AiOutlinePlus } from 'react-icons/ai'
 import { Table } from "../../../../components/Table";
 import LACreateModal from "../../components/CreateModal";
 
-import NavAmin from "../../../../components/NavAdmin";
+import NavAdmin from "../../../../components/NavAdmin";
+
+
 
 const ListAdministrador = () => {
 
@@ -14,7 +16,7 @@ const ListAdministrador = () => {
     return (
         <>
 
-        <NavAmin/>
+        <NavAdmin/>
             <LACreateModal show={showCreateModal} handleClose={()=>{setShowCreateModal(!showCreateModal)}} />
             <div className={styles.GridContainer}>
                 <div className={styles.LANavbar}> 

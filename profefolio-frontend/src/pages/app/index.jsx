@@ -11,6 +11,8 @@ import Partidos from "../partidos";
 import CreatePartidos from "../partidos/components/create";
 import PartidosEdit from "../partidos/components/edit";
 import PartidosList from "../partidos/components/list";
+
+import CreateProfesor from "../administrador/profesor/components/CreateProfesor.jsx";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 
@@ -39,7 +41,11 @@ const App = () => {
 
 
                                         <Route path="/profesor" element={<Profesor />}>
-                                            <Route path="list" element={<ProfesorList />}/>
+                                           <Route path="list" element={<ProfesorList />}/>
+                                        </Route>
+
+                                        <Route path="/profesor/create" element={<CreateProfesor />}>
+                                           <Route path="list" element={<CreateProfesor />}/>
                                         </Route>
                                     </Routes>
                         </div>

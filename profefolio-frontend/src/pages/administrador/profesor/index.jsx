@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import { PanelContainerBG } from "../../../components/LayoutAdmin.jsx";
 import { Table } from "../../../components/Table";
 import NavAdmin from "../../../components/NavAdmin";
+import {Link } from "react-router-dom";
 
-import CreateModal from "./components/CreateModal.jsx";
+import "./components/Index.css";
+
 
 import {BsTrash , BsPencilFill, BsInfoCircle,BsFillPlusCircleFill} from 'react-icons/bs';
 
@@ -41,13 +43,34 @@ const Profesores = () => {
 
            
                
+
+               
             </PanelContainerBG>
 
-            <div className="navbarmainAdmin "> 
+           {/*  <div className="navbarmainAdmin "> 
             <button  className="buttonFooterAdmin float-right" onClick={() => setShow(true)}><BsFillPlusCircleFill/></button>
             <CreateModal title="My Modal" onClose={() => setShow(false)} show={show}>
             </CreateModal>
-            </div>
+            </div>*/}
+
+          
+          
+            <footer>
+
+            <div className="NButtonForSideA" >
+                    <button className="buttonNavBarAa">  
+                    <Link to="/profesor/create" className="buttonNavBarA"><BsFillPlusCircleFill /></Link>
+                     </button>
+
+
+                     
+                </div>
+            </footer>
+
+
+
+           
+
 
            
 
@@ -64,23 +87,42 @@ const Profesores = () => {
                 width: 100%;
                 height: 100%;
             }
-            .NButtonForSide{
-                width: 2.5%;
+            
+            .NavbarA{
+                width: 100%;
+                height: 100%;
+                background-color:  #F0544F;
+                display: flex;
+                background-color: #F0544F;
             }
-            .buttonFooterAdmin{
+            .NButtonForSideA{
+               
+            }
+            .buttonNavBarA{
+                width: 100%;
+                height: 100%;
+                outline: none;
+                border: none;
+                background-color: #FFFFFF;
+                font-size: 50px;
+                color: #F0544F;
+            }
+
+            .buttonNavBarAa{
                 
                 outline: none;
                 border: none;
-                font-size: 50px;
-                color:  #F0544F;
+                background-color: #FFFFFF;
+                font-size: 20px;
+                color: black;
             }
-            .navbarmainAdmin{
-                padding: 50px;
+            .navbarmainAd{
                 width: 97.5%;
-                float: right;
-                
-               
+                display: flex;
+                justify-content: space-between;
             }
+
+            
             `}</style>
         </>
     )
