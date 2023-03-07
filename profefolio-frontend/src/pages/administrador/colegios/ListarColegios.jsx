@@ -11,10 +11,10 @@ import {BiInfoCircle} from "react-icons/bi"
 const ListarColegios = () => {
   const navigate = useNavigate()
   const colegios = [
-    { id: 0, nombre: "Marcelina Bogado", direccion: "Coronel Bogado" },
-    { id: 1, nombre: "San Jose", direccion: "Coronel Bogado" },
-    { id: 2, nombre: "Santa Clara", direccion: "Coronel Bogado" },
-    { id: 3, nombre: "Colegio verde", direccion: "Coronel Bogado" },
+    { id: 0, nombre: "Marcelina Bogado", direccion: "Coronel Bogado", administrador:"admin1" },
+    { id: 1, nombre: "San Jose", direccion: "Coronel Bogado", administrador:"admin2" },
+    { id: 2, nombre: "Santa Clara", direccion: "Coronel Bogado", administrador:"admin3" },
+    { id: 3, nombre: "Colegio verde", direccion: "Coronel Bogado", administrador:"admin4" },
   ];
   return (
     <>
@@ -30,6 +30,7 @@ const ListarColegios = () => {
 
             <th id="table-border">Nombre</th>
             <th id="table-border">Direccion</th>
+            <th id="table-border">Administrador</th>
             <th className="actions-th" id="table-border">Acciones</th>
           </tr>
         </thead>
@@ -38,6 +39,7 @@ const ListarColegios = () => {
               <tr key={colegio.id}>  
                 <td id="table-border" >{colegio.nombre}</td>  
                 <td id="table-border">{colegio.direccion}</td>
+                <td id="table-border">{colegio.administrador}</td>
                 <td className="actions-td" id="table-border"><button className="information-buttons"><BiTrash /></button> <button className="information-buttons"><BiPencil /> </button> <button className="information-buttons"><BiInfoCircle/></button></td>  
               </tr>  
             ))} 
