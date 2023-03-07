@@ -1,14 +1,15 @@
 import React, { useState } from "react";
 
-export const TextInput = ({placeholder = "pon un placeholder", value , handleChange = () => {}, handleBlur = () => {}, handleFocus = () => {}, height="40px", width="120px"}) => {
+export const TextInput = ({placeholder = "pon un placeholder", value , handleChange = () => {}, handleBlur = () => {}, handleFocus = () => {}, name = "", height="40px", width="120px"}) => {
     return (
         <>
-            <input className="input" type={'text'} placeholder = {placeholder} onChange={handleChange} onBlur={handleBlur} onFocus={handleFocus} value={value}/>
+            <input className="input" name={name} type={'text'} placeholder = {placeholder} onChange={handleChange} onBlur={handleBlur} onFocus={handleFocus} value={value}/>
             <style jsx = "true">{`
             .input{
                 height: ${height};
                 width: ${width};
                 outline: none;
+                border: lightgray;
                 border-radius: 10px;                
             }
             `}</style>
@@ -16,25 +17,22 @@ export const TextInput = ({placeholder = "pon un placeholder", value , handleCha
     )
 }   
 
-export const ButtonInput = ({text = "Texto", handleClick = () => {}, variant = "primary", disabled= false, width= "120px", height="40px", fontSize ="15px"}) => {
+export const ButtonInput = ({text = "Texto", className ="", handleClick = () => {}, variant = "primary", disabled= false, width= "120px", height="40px", fontSize ="15px"}) => {
     const returnVariantColor = (variant) => {
-        return `
-        background-color: #363636; 
-        color: white;
-        `
+        if (variant === "primary") return {backgroundColor:"#331832", color: "white", width: width, height: height, fontSize: fontSize}
+        if (variant === "secondary") return {backgroundColor:"#D3D3D3", color: "white", width: width, height: height, fontSize: fontSize}
+        if (variant === "secondary-black") return {backgroundColor:"#D3D3D3", color: "black", width: width, height: height, fontSize: fontSize}
     }
+
+    const styleBtn=returnVariantColor(variant)
     return(
         <>
-            <button className="button" onClick={handleClick} disabled={disabled}>{text}</button>
+            <button className={`button ${className}`} style={styleBtn} onClick={handleClick} disabled={disabled}>{text}</button>
             <style jsx = "true">{`
             .button{
                 border-radius: 10px;
                 border: none;
                 outline: none;
-                ${returnVariantColor(variant)}
-                width: ${width};
-                height: ${height};
-                font-size: ${fontSize};
                 transition: 0.25s all;
             }
             .button:hover{
@@ -101,6 +99,28 @@ const SIOption = ({
                     {text}
                 </span>
             </div>
+        </>
+    )
+}
+
+export const DateInput = ({
+    value = "",
+    handleChange= () => {},
+    width = "120px",
+    height = "40px",
+    name = ""
+}) => {
+    return(
+        <>
+            <input name = {name} className="DateInput" type="date" value={value} onChange={handleChange} />
+            <style jsx = "true">{`
+            .DateInput{
+                height: ${height};
+                width: ${width};
+                outline: none;
+                border-radius: 10px;                
+            }
+            `}</style>
         </>
     )
 }
