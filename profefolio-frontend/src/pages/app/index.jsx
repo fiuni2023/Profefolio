@@ -9,6 +9,7 @@ import Partidos from "../partidos";
 import CreatePartidos from "../partidos/components/create";
 import PartidosEdit from "../partidos/components/edit";
 import PartidosList from "../partidos/components/list";
+import ListarColegios from "../administradorMaster/colegios/ListarColegios";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Login from "../login/index.jsx";
 
@@ -34,9 +35,11 @@ const App = () => {
                                             </Route>
                                             <Route path="/administrador" element={<Administrador />}>
                                                 <Route path="list" element={<ListAdministrador />}/>
+                                                <Route path="listColegios" element={<ListarColegios />}/>
                                             </Route>
                                         </Routes>
                             </div>
+
                         </div>
                         :
                         <>
