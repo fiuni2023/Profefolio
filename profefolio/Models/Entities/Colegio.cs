@@ -13,4 +13,6 @@ public class Colegio : Data
         get;
         set;
     }
+    
+    //public Persona Persona { get; set; }
 }
