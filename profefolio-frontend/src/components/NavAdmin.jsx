@@ -33,6 +33,10 @@ const NavAdmin = () => {
                     </div>     
                 </div>
 
+
+<div className="a">
+
+
                 <div className="Buscador">
 
                 <input type="search" placeholder="Busca tu Archivo" id="" />
@@ -43,7 +47,7 @@ const NavAdmin = () => {
 
                 <br/>
 
-                
+                </div>          
 
 
 
@@ -107,18 +111,26 @@ const NavAdmin = () => {
                     margin:0 0 4px 4px;  
                 }
 
+                .a{
+                    width: 97.5%;
+                    display: flex;
+                    justify-content: space-between;
+                }
                 .Buscador {
-                    background: url(https://cdn0.iconfinder.com/data/icons/slim-square-icons-basics/100/basics-19-32.png) no-repeat 0px 5px;
+        
                     background-size: 24px;
-                    width: 500px;
-                    border: transparent;
-                    border-bottom: solid 1px #ccc;
+                    width: 100%;
+                    border: none;
+                   
                     padding: 10px 10px 10px 30px;
                     outline: none;
-
-                    
-                    text-align: right;
+                   
+                    text-align:right;
                   }
+
+            
+
+                
                
             
             `}</style>
