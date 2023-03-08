@@ -48,12 +48,13 @@ namespace profefolio.Controllers
         public async Task<ActionResult<ColegioDTO>> GetColegio(int id)
         {
             var colegio = await _colegioService.FindById(id);
-
+            Console.Write("Colegio: ", colegio);
             if (colegio == null)
             {
+                Console.Write("Colegio == null");
                 return NotFound();
             }
-
+            
             var response = _mapper.Map<ColegioDTO>(colegio);
 
             return Ok(response);
@@ -109,9 +110,11 @@ namespace profefolio.Controllers
             var p = _mapper.Map<Colegio>(colegio);
 
             p.ModifiedBy = "Anonimous";
-
+            p.Deleted = true;
             await _colegioService.Add(p);
-
+            Console.Write("\n");
+            Console.Write("Colegio creado: ", p.Estado," - ", p.Nombre, " - " , p.Deleted);
+            Console.Write("\n");
             await _colegioService.Save();
             return Ok(_mapper.Map<ColegioDTO>(colegio));
         }
@@ -126,11 +129,14 @@ namespace profefolio.Controllers
             if (data == null) {
                 return NotFound();
             }
+            data.Estado = false;
             data.Modified = DateTime.Now;
             data.Deleted = false;
             data.ModifiedBy = "Anonimous";
             _colegioService.Edit(data);
-
+               Console.Write("\n");
+            Console.Write("Colegio eliminado = estado: {0}", data.Estado," -nombre: {1}", data.Nombre, " -deleted: {2}" , data.Deleted);
+            Console.Write("\n");
             await _colegioService.Save();
 
             return Ok();

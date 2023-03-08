@@ -13,4 +13,10 @@ public class ColegioDTO : DataDTO
         get;
         set;
     }
+      public int PersonaId
+    {
+        get;
+        set;
+    }
+    
 }

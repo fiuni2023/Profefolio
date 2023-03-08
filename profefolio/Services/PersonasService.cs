@@ -16,6 +16,7 @@ public class PersonasService : IPersona
     }
     public async Task<Persona> FindById(int id)
     {
+        Console.Write("en find persona...");
         return await _dbContext.Personas
             .Where(p => !p.Deleted && p.Id == id)
             .FirstOrDefaultAsync();
