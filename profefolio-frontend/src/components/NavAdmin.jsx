@@ -47,21 +47,7 @@ const NavAdmin = () => {
 
                 <br/>
 
-                </div>          
-
-
-
-
-             
-
-
-
-
-
-
-
-
-                
+                </div>                          
             </div>
             <style jsx="true">{`
             

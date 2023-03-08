@@ -4,6 +4,8 @@ import { Table } from "../../../components/Table";
 import NavAdmin from "../../../components/NavAdmin";
 import {Link } from "react-router-dom";
 
+import CreateModal from "./components/CreateModal.jsx";
+
 import "./components/Index.css";
 
 
@@ -46,15 +48,21 @@ const Profesores = () => {
 
                
             </PanelContainerBG>
-
-           {/*  <div className="navbarmainAdmin "> 
-            <button  className="buttonFooterAdmin float-right" onClick={() => setShow(true)}><BsFillPlusCircleFill/></button>
+            <footer>
+             <div className="NButtonForSideA "> 
+             <button className="buttonNavBarAa">  
+            <button  className="buttonNavBarA" onClick={() => setShow(true)}><BsFillPlusCircleFill/></button>
             <CreateModal title="My Modal" onClose={() => setShow(false)} show={show}>
             </CreateModal>
-            </div>*/}
+
+            </button>
+            </div>
+
+            </footer>
 
           
-          
+        
+             {/* 
             <footer>
 
             <div className="NButtonForSideA" >
@@ -65,7 +73,7 @@ const Profesores = () => {
 
                      
                 </div>
-            </footer>
+            </footer>*/}
 
 
 
@@ -109,7 +117,6 @@ const Profesores = () => {
             }
 
             .buttonNavBarAa{
-                
                 outline: none;
                 border: none;
                 background-color: #FFFFFF;
