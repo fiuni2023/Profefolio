@@ -27,7 +27,7 @@ public class DataListDTO <T>
         set;
     }
 
-    public int Items
+    public int CantItems
     {
         get;
         set;
