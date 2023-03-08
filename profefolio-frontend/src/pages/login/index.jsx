@@ -10,8 +10,8 @@ const Login = ({handleLogin = () => {}}) => {
                 <div className={styles.LoginPanel}>
                     <Logo className={styles.Image} width="367px" height="70px"/>
                     <h3 className={styles.Loginh3}>Iniciar Sesión</h3>
-                    <LoginInput placeholder={"Correo Electrónico"}/>
-                    <LoginInput placeholder={"Contraseña"}/>
+                    <LoginInput placeholder={"Correo Electrónico"} type={"text"} name={"mail"}/>
+                    <LoginInput placeholder={"Contraseña"} type={"password"} name={"password"}/>
                     <ButtonInput className={styles.LButton} text={"Ingresar"} variant={"secondary-black"} handleClick={handleLogin} />
                 </div>
             </div>
@@ -19,9 +19,9 @@ const Login = ({handleLogin = () => {}}) => {
     )
 }
 
-const LoginInput = ({placeholder ="algo"}) => {
+const LoginInput = ({placeholder ="algo", type = "text", name}) => {
     return <>
-        <input type={"text"} placeholder={placeholder} className={styles.LICTextInput} />
+        <input name={name} type={type} placeholder={placeholder} className={styles.LICTextInput} />
     </>
 }
 
