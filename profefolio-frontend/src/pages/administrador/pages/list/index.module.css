@@ -1,0 +1,41 @@
+.GridContainer{
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-rows: 7% 93%;
+}
+.LANavbar{
+    display: flex;
+    width: 100%;
+    height: 100%;
+    background-color: #EDEDED;
+    align-items: center;
+    padding-left: 1%;
+}
+.LANText{
+    font-size: 20px;
+    margin-left: 2%;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+.TableContainer{
+    padding: 1%;
+}
+.LAAddButton{
+    width: 50px;
+    height: 50px;
+    padding: 7px;
+    color: white;
+    background-color: #F0544F;
+    border-radius: 50%;
+    position: fixed;
+    bottom: 2%;
+    right: 1%;
+    cursor: pointer;
+}
+.LAAddButton:hover{
+    filter: brightness(0.95);
+}
+.LAAddButton:active{
+    filter: brightness(0.8);
+}

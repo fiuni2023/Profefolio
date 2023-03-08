@@ -9,27 +9,24 @@ const Navbar = () => {
 
     return(
         <>
-            <div className="navbar">
-                <div>
-
-                </div>
-                <div className="navbarButtonForSide" onClick={()=>{setShowSB(!showSB)}}>
+            <div className="Navbar">
+                <div className="NButtonForSide" onClick={()=>{setShowSB(!showSB)}}>
                     <button className="buttonNavBar">  <BsJustify /> </button>
                 </div>
                 <div className="navbarmain">
-                    <div className="logo"> <LogoNavBar width="25px" height="20px" /> </div>
+                    <div className="logo"> <LogoNavBar width="100%" height="100%" /> </div>
                     <div className="user"> <span>UserName</span> <FaUserCircle /> </div>
                 </div>
             </div>
             <style jsx="true">{`
-                .navbar{
+                .Navbar{
                     width: 100%;
                     height: 100%;
                     background-color: white;
                     display: flex;
                     background-color: #F0544F;
                 }
-                .navbarButtonForSide{
+                .NButtonForSide{
                     width: 2.5%;
                 }
                 .buttonNavBar{
