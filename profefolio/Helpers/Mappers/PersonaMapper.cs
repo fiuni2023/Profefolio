@@ -20,11 +20,24 @@ public class PersonaMapper : Profile
                 opt => opt.Ignore())
             .ForMember(dest => dest.EsM,
                 opt => opt.MapFrom(
-                    src => src.Genero == null ? false : src.Genero.Equals("M")
+                    src => src.Genero != null && src.Genero.Equals("M")
                 ))
             .ForMember(dest => dest.PhoneNumber,
                 opt => opt.MapFrom(
-                    src => src.Telefono));
+                    src => src.Telefono))
+            .ForMember(dest => dest.SecurityStamp,
+                opt => opt.MapFrom(
+                    t => Guid.NewGuid().ToString()))
+            .ForMember(dest => dest.UserName, 
+                opt => opt.MapFrom(
+                    dest => dest.Email))
+            .ForMember(dest => dest.NormalizedEmail,
+                opt => opt.MapFrom(
+                    src =>src.Email == null? "" : src.Email.ToUpper()))
+            .ForMember(dest => dest.NormalizedUserName,
+                opt => opt.MapFrom(
+                    src => src.Email == null ? "" : src.Email.ToUpper()));
+        
 
         CreateMap<Persona, PersonaResultDTO>()
             .ForMember(dest => dest.Genero,
@@ -33,6 +46,8 @@ public class PersonaMapper : Profile
             .ForMember(dest => dest.Telefono,
                 opt => opt.MapFrom(
                     src => src.PhoneNumber));
+
+
 
     }
 }

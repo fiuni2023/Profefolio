@@ -1,26 +1,26 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using profefolio.Models.DTOs;
 using profefolio.Models.DTOs.Persona;
 using profefolio.Models.Entities;
 using profefolio.Repository;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNet.Identity;
 
 namespace profefolio.Controllers
 {
     [ApiController]
-    /* [Authorize(Roles = "Administrador")] */
+    [Authorize(Roles = "Administrador de Colegio")]
     [Route("api/[controller]")]
     public class ProfesorController : ControllerBase
     {
         private readonly IMapper _mapper;
         private readonly IPersona _personasService;
         private readonly IRol _rolService;
+        private const int CantPorPage = 20;
+
+        private const string PROFESOR_ROLE = "Profesor";
+
 
         public ProfesorController(IMapper mapper, IPersona personasService, IRol rolService)
         {
@@ -34,22 +34,33 @@ namespace profefolio.Controllers
             
         }*/
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<PersonaResultDTO>>> GetProfesor()
+        [HttpGet("page/{page:int}")]
+        public async Task<ActionResult<IEnumerable<PersonaResultDTO>>> Get(int page)
         {
-            var profesores = _personasService.GetAll();
+            var profesores = await _personasService.GetAllByRol(PROFESOR_ROLE, page, CantPorPage);
+
             if (profesores == null)
             {
                 return BadRequest("");
             }
+            int cantPages = (int)Math.Ceiling((double)profesores.Count() / CantPorPage);
 
-            var profesDTO = profesores.Select(p => _mapper.Map<PersonaResultDTO>(p));
+            var result = new DataListDTO<PersonaResultDTO>();
 
-            return Ok(profesDTO);
+            var enumerable = profesores as Persona[] ?? profesores.ToArray();
+            result.CantItems = enumerable.Length;
+            result.CurrentPage = page > cantPages ? cantPages : page;
+            result.Next = result.CurrentPage + 1 < cantPages;
+            result.DataList = _mapper.Map<List<PersonaResultDTO>>(enumerable.ToList());
+            result.TotalPage = cantPages;
+
+            return Ok(result);
+
+
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<ProfesorDTO>> GetProfesor(string id)
+        public async Task<ActionResult<ProfesorDTO>> Get(string id)
         {
             if (id != null && id.Length > 0)
             {
@@ -70,9 +81,13 @@ namespace profefolio.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<PersonaResultDTO>> CreateProfesor(PersonaDTO dto)
+        public async Task<ActionResult<PersonaResultDTO>> Post([FromBody] PersonaDTO dto)
         {
-            if (dto.Password == null)
+            if (!ModelState.IsValid)
+            {
+                BadRequest(ModelState);
+            }
+            else if (dto.Password == null)
             {
                 return BadRequest("Falta el Password");
             }
@@ -81,84 +96,73 @@ namespace profefolio.Controllers
                 return BadRequest("Falta confirmacion de Password");
             }
 
-            if (!ModelState.IsValid)
-            {
-                return BadRequest("");
-            }
 
-            string mailLogged = await _personasService.UserLogged();
-
+            var userId = User.Identity.GetUserId();
             var entity = _mapper.Map<Persona>(dto);
             entity.Deleted = false;
-            entity.CreatedBy = mailLogged;
-
-            var saved = await _personasService.CreateUser(entity, dto.Password);
-            if (await _rolService.AsignToUser("Profesor", saved))
+            entity.CreatedBy = userId;
+            try
             {
-                return Ok(_mapper.Map<PersonaResultDTO>(saved));
+                var saved = await _personasService.CreateUser(entity, dto.Password);
+
+                if (await _rolService.AsignToUser(PROFESOR_ROLE, saved))
+                {
+                    return Ok(_mapper.Map<PersonaResultDTO>(saved));
+                }
+            }
+            catch (BadHttpRequestException e)
+            {
+                Console.WriteLine(e.Message);
+                return BadRequest($"El email {dto.Email} ya existe");
             }
 
-            return BadRequest($"Error al crear el Profesor ${dto.Email}");
+            return BadRequest($"Error al crear al Usuario ${dto.Email}");
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<object>> PutProfesor(string id, PersonaDTO dto)
+        public async Task<ActionResult<PersonaResultDTO>> Put(string id, [FromBody] PersonaDTO dto)
         {
-            if (dto.Password != null)
+            if (ModelState.IsValid)
             {
-                if (ModelState.IsValid)
+                string userId = User.Identity.GetUserId();
+                var personaOld = await _personasService.FindById(id);
+                var personaNew = _mapper.Map<Persona>(dto);
+
+
+                personaOld.Deleted = true;
+                personaOld.Modified = DateTime.Now;
+                personaOld.ModifiedBy = userId;
+
+                personaNew.Created = personaOld.Created;
+                personaNew.CreatedBy = personaOld.CreatedBy;
+                personaNew.Modified = DateTime.Now;
+                personaNew.ModifiedBy = userId;
+
+                try
                 {
-                    var profesor = _mapper.Map<Persona>(dto);
-                    if (profesor == null)
-                    {
-                        return BadRequest("Error al tratar de crear");
-                    }
+                    var query = await _personasService.EditProfile(personaOld, personaNew, dto.Password);
 
-                    profesor.Id = id;
-                    try
-                    {
-                        Persona p = await _personasService.EditProfile(id, profesor);
-                        if (p != null)
-                        {
-                            await _personasService.Save();
-                            return NoContent();
-                        }
-
-                        return NotFound("No existe el profesor con el id indicado");
-                    }
-                    catch (FileNotFoundException e)
-                    {
-                        return BadRequest("No se encontro el registro a editar");
-                    }
-
-                    
+                    return Ok(_mapper.Map<PersonaResultDTO>(query));
                 }
-                else
+                catch (BadHttpRequestException e)
                 {
-                    return BadRequest("");
+                    Console.WriteLine(e.Message);
+                    return BadRequest(e.Message);
                 }
             }
             else
             {
-                return BadRequest("Error, no se tiene contraseña");
+                return BadRequest(ModelState);
             }
         }
 
+    
 
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<PersonaResultDTO>> removeById(string id)
-        {
-            if (id != null && id.Length > 0 && await _personasService.DeleteUser(id))
-            {
-                if (_personasService.Save() != null)
-                {
-                    return Ok("Eliminacion exitosa!!!");
-                }
 
-                return Conflict("Problemas al eliminar");
-            }
-
-            return BadRequest("No existe el profesor");
-        }
+    [HttpDelete("{id}")]
+    public async Task<ActionResult<PersonaResultDTO>> Delete(string id)
+    {
+        return await _personasService.DeleteUser(id) ? Ok() : NotFound();
     }
+}
 }

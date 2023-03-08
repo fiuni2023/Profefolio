@@ -7,10 +7,12 @@ public interface IPersona : IRepository<Persona>
 {
     Task<Persona> FindById(string id);
     Task<Persona> CreateUser(Persona user, string password);
-    Task<Persona> EditProfile(string id, Persona persona);
+    Task<Persona> EditProfile(Persona oldPersona, Persona newPersona, string newPassword);
     Task<bool> DeleteUser(string id);
-    Task<bool> ChangePassword(string id, ModelPassword newPassoword);
+
     Task<bool> ExistMail(string email);
-    Task<string> UserLogged();
+
+    Task<IEnumerable<Persona>> GetAllByRol(string roleName, int page, int cantPorPag);
+
 
 }

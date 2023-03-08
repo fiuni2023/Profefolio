@@ -18,9 +18,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("Context"))
 );
 
-builder.Services.AddCors(p => p.AddPolicy("corsapp", builder =>
+builder.Services.AddCors(p => p.AddPolicy("corsapp", b =>
 {
-    builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
+    b.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
 }));
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -58,7 +58,7 @@ builder.Services.AddAuthentication(options =>
 //Servicios
 builder.Services.AddScoped<IPersona, PersonasService>();
 builder.Services.AddScoped<IRol, RolService>();
-builder.Services.AddTransient<IHttpContextAccessor,HttpContextAccessor>();
+builder.Services.AddScoped<IAuth, AuthService>();
 
 var app = builder.Build();
 
@@ -71,6 +71,8 @@ if (app.Environment.IsDevelopment())
 
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

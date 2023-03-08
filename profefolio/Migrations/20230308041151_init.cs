@@ -6,7 +6,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace profefolio.Migrations
 {
-    public partial class Persona : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -166,6 +166,27 @@ namespace profefolio.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.InsertData(
+                table: "AspNetRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
+                values: new object[,]
+                {
+                    { "b45d2dca-f996-4c00-b0db-d1f311efb13b", "5ba7a51f-7c9d-4439-9144-6f3ccaf1e57b", "Master", "MASTER" },
+                    { "e64cbd98-e157-4fbd-bb67-1f85198c994f", "bf79ed7a-5d4f-4d34-9aa1-3b0aa93c00da", "Profesor", "PROFESOR" },
+                    { "eae2840a-51cd-481e-ab1b-df5baa4ea5c8", "307feaaf-7368-4d20-a49b-a5203c33da31", "Administrador de Colegio", "ADMINISTRADOR DE COLEGIO" },
+                    { "fadcb8c9-cb82-4c1d-b930-e0a5b06f110b", "cd105b42-c03e-4ca3-8cfa-35687235c907", "Alumno", "ALUMNO" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUsers",
+                columns: new[] { "Id", "AccessFailedCount", "Apellido", "ConcurrencyStamp", "Created", "CreatedBy", "Deleted", "Direccion", "Documento", "DocumentoTipo", "Email", "EmailConfirmed", "EsM", "LockoutEnabled", "LockoutEnd", "Modified", "ModifiedBy", "Nacimiento", "Nombre", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                values: new object[] { "77a02e3b-5b53-4c83-9d48-8adb879628b7", 0, "Torres", "302e9790-2406-40d3-8a63-6570855caaf8", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, null, null, null, "Carlos.Torres123@mail.com", false, false, false, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, new DateTime(1999, 7, 10, 4, 0, 0, 0, DateTimeKind.Utc), "Carlos", "CARLOS.TORRES@123MAIL.COM", null, "AQAAAAEAACcQAAAAEMLa4FWmH8F0fY6aWzJDTrwMAiSdMdtkyW/hLzW2PCvbUuoWKPO/wLwHe3NNumo/Kg==", null, false, "61aeabc4-919d-41a8-97ff-a1f451ba8967", false, null });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUserRoles",
+                columns: new[] { "RoleId", "UserId" },
+                values: new object[] { "b45d2dca-f996-4c00-b0db-d1f311efb13b", "77a02e3b-5b53-4c83-9d48-8adb879628b7" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",

@@ -2,7 +2,7 @@
 
 namespace profefolio.Models.DTOs.Persona;
 // ReSharper disable once InconsistentNaming
-public class PersonaDTO : DataDTO
+public class PersonaDTO
 {
     [Required(ErrorMessage = "El nombre es requerido")]
     public string? Nombre

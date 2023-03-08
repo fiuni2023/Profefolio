@@ -4,7 +4,7 @@ import { Modal } from "react-bootstrap";
 const ModalContainer = ({children, show = false, handleClose=()=>{}, title=""}) =>{
     return(
         <>
-            <Modal backdropClassName="Backdrop" contentClassName="ModalCustom" show={show} onHide={handleClose}>
+            <Modal backdropClassName="Backdrop" contentClassName="ModalCustom" show={show} onHide={handleClose} centered>
                 {children}
             </Modal>
             <style jsx="true">{`
