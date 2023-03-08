@@ -30,20 +30,19 @@ namespace profefolio.Controllers
         [Route("page/{page}")]
         public ActionResult<DataListDTO<ColegioDTO>> GetColegios(int page)
         {
-            var query = _colegioService.GetAll();
+            var query = _colegioService.GetAll(page, _cantPorPag);
             int totalPage = (int)Math.Ceiling((double)_colegioService.Count() / _cantPorPag);
-            var result = query
-            .Skip(_cantPorPag * page)
-            .Take(_cantPorPag);
 
-            return Ok(new DataListDTO<ColegioDTO>()
-            {
-                TotalPage = totalPage,
-                CurrentPage = page,
-                Items = result.Count(),
-                Next = page < totalPage,
-                DataList = _mapper.Map<List<ColegioDTO>>(result.ToList())
-            });
+            var result = new DataListDTO<ColegioDTO>();
+
+            var enumerable = query as Colegio[] ?? query.ToArray();
+            result.CantItems = enumerable.Length;
+            result.CurrentPage = page > totalPage ? totalPage : page;
+            result.Next = result.CurrentPage + 1 < totalPage;
+            result.DataList = _mapper.Map<List<ColegioDTO>>(enumerable.ToList());
+            result.TotalPage = totalPage;
+
+            return Ok(result);
         }
 
         // GET: api/Colegios/1

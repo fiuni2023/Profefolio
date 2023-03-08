@@ -26,7 +26,7 @@ namespace profefolio.Controllers
         }
 
 
-        
+
         /**
         * Devuelve los datos del colegio con el id persona
         **/
@@ -34,20 +34,19 @@ namespace profefolio.Controllers
         [Route("page/{page}")]
         public ActionResult<DataListDTO<ColegioDTO>> GetColegios(int page)
         {
-            var query = _colegioService.GetAll();
+            var query = _colegioService.GetAll(page, _cantPorPag);
             int totalPage = (int)Math.Ceiling((double)_colegioService.Count() / _cantPorPag);
-            var result = query
-            .Skip(_cantPorPag * page)
-            .Take(_cantPorPag);
 
-            return Ok(new DataListDTO<ColegioDTO>()
-            {
-                TotalPage = totalPage,
-                CurrentPage = page,
-                Items = result.Count(),
-                Next = page < totalPage,
-                DataList = _mapper.Map<List<ColegioDTO>>(result.ToList())
-            });
+            var result = new DataListDTO<ColegioDTO>();
+
+            var enumerable = query as Colegio[] ?? query.ToArray();
+            result.CantItems = enumerable.Length;
+            result.CurrentPage = page > totalPage ? totalPage : page;
+            result.Next = result.CurrentPage + 1 < totalPage;
+            result.DataList = _mapper.Map<List<ColegioDTO>>(enumerable.ToList());
+            result.TotalPage = totalPage;
+
+            return Ok(result);
         }
 
         // GET: api/Colegios/1
@@ -62,7 +61,7 @@ namespace profefolio.Controllers
                 Console.Write("Colegio == null");
                 return NotFound();
             }
-            
+
             var response = _mapper.Map<ColegioDTO>(colegio);
 
             return Ok(response);
@@ -91,18 +90,18 @@ namespace profefolio.Controllers
             p.ModifiedBy = "Anonimous";
             p.Deleted = true;
             p.Modified = DateTime.Now;
-            
+
             var newColegio = _mapper.Map<Colegio>(colegio);
             newColegio.ModifiedBy = "Anonimous";
 
             _colegioService.Edit(p);
-            
+
             Console.Write("\n");
             Console.Write("Colegio editado p = estado: {0}  -nombre: {1}  -deleted: {2}",
              p.Estado, p.Nombre, p.Deleted);
             Console.Write("\n");
-             Console.Write("Colegio editado newColegio = estado: {0}  -nombre: {1}  -deleted: {2}",
-             newColegio.Estado, newColegio.Nombre, newColegio.Deleted);
+            Console.Write("Colegio editado newColegio = estado: {0}  -nombre: {1}  -deleted: {2}",
+            newColegio.Estado, newColegio.Nombre, newColegio.Deleted);
 
             var result = await _colegioService.Add(newColegio);
 
@@ -127,7 +126,7 @@ namespace profefolio.Controllers
             p.ModifiedBy = "Anonimous";
             p.Deleted = false;
             await _colegioService.Add(p);
-            
+
             Console.Write("\n");
             Console.Write("Colegio creado = estado: {0}  -nombre: {1}  -deleted: {2}  - id: {3}",
              p.Estado, p.Nombre, p.Deleted, p.Id);
@@ -144,7 +143,8 @@ namespace profefolio.Controllers
         {
             var data = await _colegioService.FindById(id);
 
-            if (data == null) {
+            if (data == null)
+            {
                 return NotFound();
             }
             data.Estado = false;
