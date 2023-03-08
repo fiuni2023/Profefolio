@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using profefolio.Models;
 using profefolio.Models.Entities;
 using profefolio.Repository;
@@ -7,45 +8,50 @@ namespace profefolio.Services;
 
 public class PersonasService : IPersona
 {
-    private ApplicationDbContext _dbContext;
-    private bool _disposed;
-
-    public PersonasService(ApplicationDbContext dbContext)
+    
+    private readonly UserManager<Persona> _userManager;
+  
+    public PersonasService(UserManager<Persona> userManager)
     {
-        _dbContext = dbContext;
+        _userManager = userManager;
     }
-    public async Task<Persona> FindById(int id)
+    public  Task<Persona> FindById(int id)
     {
-        return await _dbContext.Personas
-            .Where(p => !p.Deleted && p.Id == id)
-            .FirstOrDefaultAsync();
+        throw new NotImplementedException();
     }
 
     public IEnumerable<Persona> GetAll()
     {
-        return _dbContext.Personas.Where(p => !p.Deleted);
+        throw new NotImplementedException();
+    }
+
+    public IEnumerable<Persona> GetAll(int page, int cantPorPag)
+    {
+        return _userManager.Users
+            .Where(p => !p.Deleted)
+            .Skip(page*cantPorPag)
+            .Take(cantPorPag);
     }
 
     public Persona Edit(Persona t)
     {
-        _dbContext.Entry(t).State = EntityState.Modified;
-        return t;
+        throw new NotImplementedException();
     }
 
-    public async Task<Persona> Add(Persona t)
+    public  Task<Persona> Add(Persona t)
     {
-        var result = await _dbContext.Personas.AddAsync(t);
-        return result.Entity;
+        
+        throw new NotImplementedException();
     }
 
-    public async Task Save()
+    public  Task Save()
     {
-        await _dbContext.SaveChangesAsync();
+        throw new NotImplementedException();
     }
 
     public int Count()
     {
-        return _dbContext.Personas
+        return _userManager.Users
             .Count(p => !p.Deleted);
     }
 
@@ -54,23 +60,85 @@ public class PersonasService : IPersona
         return Count() > 0;
     }
 
+  
+    public async Task<Persona> FindById(string id)
+    {
+        var query = await _userManager.Users
+            .Where(p => !p.Deleted && p.Id.Equals(id))
+            .FirstOrDefaultAsync();
+
+        if (query == null)
+        {
+            throw new FileNotFoundException();
+        }
+        return query;
+    }
+
+    public async Task<Persona> CreateUser(Persona user, string password)
+    {
+        
+        if (await ExistMail(user.Email))
+        {
+            throw new BadHttpRequestException("El email al cual quiere registrarse ya existe");
+        }
+        
+        await _userManager.CreateAsync(user, password);
+
+        return await _userManager.Users
+            .Where(p => !p.Deleted && p.Email.Equals(user.Email))
+            .FirstAsync();
+    }
+
+    public async Task<Persona> EditProfile(Persona old, Persona personaNew, string newPassword)
+    {
+
+        if (!old.Email.Equals(personaNew.Email) && await ExistMail(personaNew.Email))
+        {
+            throw new BadHttpRequestException($"El email que desea actualizar ya existe");
+        }
+        await _userManager.UpdateAsync(old);
+        await _userManager.RemovePasswordAsync(old);
+        await _userManager.CreateAsync(personaNew, newPassword);
+
+        return await _userManager.FindByEmailAsync(personaNew.Email);
+    }
+
+    public async Task<bool> DeleteUser(string id)
+    {
+        var query = await _userManager.FindByIdAsync(id);
+
+        if (query.Deleted)
+        {
+            return false;
+        }
+
+        query.Deleted = true;
+
+        await _userManager.UpdateAsync(query);
+        return true;
+    }
+
+    public async Task<bool> ChangePassword(Persona personaOld, Persona personaNew, string newPassoword)
+    { 
+        
+        await _userManager.RemovePasswordAsync(personaOld);
+        await _userManager.UpdateAsync(personaOld);
+        await _userManager.CreateAsync(personaNew, newPassoword);
+        return true;
+    }
+
+    public async Task<bool> ExistMail(string email)
+    {
+        var query = await _userManager.FindByEmailAsync(email);
+
+        return query is { Deleted: true };
+    }
+    
     
 
-    protected virtual void Dispose(bool disposing)
-    {
-        if (!this._disposed)
-        {
-            if (disposing)
-            {
-                _dbContext.Dispose();
-            }
-        }
-        this._disposed = true;
-    }
 
     public void Dispose()
     {
-        Dispose(true);
-        GC.SuppressFinalize(this);
+        _userManager.Dispose();
     }
 }
