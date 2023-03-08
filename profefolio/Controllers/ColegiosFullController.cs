@@ -5,31 +5,27 @@ using profefolio.Models.DTOs.Persona;
 using profefolio.Models.DTOs.Colegio;
 using profefolio.Models.Entities;
 using profefolio.Repository;
-
 /**
-* Controlador que maneja al administrador solo por el id
+* Controlador que devuelve los datos del colegio y los datos del administrador en la misma petición.
 * 
 **/
+
 namespace profefolio.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ColegiosController : ControllerBase
+    public class ColegiosFullController : ControllerBase
     {
-        private readonly IColegio _colegioService;
+        private readonly IFullColegio _colegioService;
         private readonly int _cantPorPag = 10;
         private readonly IMapper _mapper;
-        public ColegiosController(IColegio colegioService, IMapper mapper)
+        public ColegiosFullController(IFullColegio colegioService, IMapper mapper)
         {
             _colegioService = colegioService;
             _mapper = mapper;
         }
 
 
-        
-        /**
-        * Devuelve los datos del colegio con el id persona
-        **/
         [HttpGet]
         [Route("page/{page}")]
         public ActionResult<DataListDTO<ColegioDTO>> GetColegios(int page)
@@ -51,9 +47,11 @@ namespace profefolio.Controllers
         }
 
         // GET: api/Colegios/1
-        //TODO: si data.delete = false no retornar.
+        /**
+        * Devuelve los datos del colegio y los datos de persona{nombre,apellido,edad,id}
+        **/
         [HttpGet("{id}")]
-        public async Task<ActionResult<ColegioDTO>> GetColegio(int id)
+        public async Task<ActionResult<Colegio>> GetColegio(int id)
         {
             var colegio = await _colegioService.FindById(id);
             Console.Write("Colegio: ", colegio);
@@ -63,9 +61,9 @@ namespace profefolio.Controllers
                 return NotFound();
             }
             
-            var response = _mapper.Map<ColegioDTO>(colegio);
+            //var response = _mapper.Map<ColegioFullDTO>(colegio);
 
-            return Ok(response);
+            return Ok(colegio);
         }
 
         // PUT: api/Colegios/1

@@ -26,6 +26,7 @@ builder.Services.AddSwaggerGen();
 //Servicios
 builder.Services.AddScoped<IPersona, PersonasService>();
 builder.Services.AddScoped<IColegio, ColegiosService>();
+builder.Services.AddScoped<IFullColegio, ColegiosFullService>();
 
 var app = builder.Build();
 
