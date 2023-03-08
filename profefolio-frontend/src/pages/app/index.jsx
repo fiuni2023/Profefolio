@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Navbar from "../../components/Navbar.jsx";
 import SideBar from "../../components/Sidebar.jsx";
@@ -10,30 +10,39 @@ import CreatePartidos from "../partidos/components/create";
 import PartidosEdit from "../partidos/components/edit";
 import PartidosList from "../partidos/components/list";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import Login from "../login/index.jsx";
 
 const App = () => {
+    const [isLogged, setIsLogged] = useState(false)
 
     return (
         <>
             <BrowserRouter>
                 <GeneralProvider>
-                    <div className="page">
-                        <Navbar />
-                        <div className="content">
-                            <SideBar />
-                                    <Routes>
-                                        <Route path="/" element={<>Home</>}/>
-                                        <Route path="/pagina1" element={<Partidos />}>
-                                            <Route path="list" element={<PartidosList />} />
-                                            <Route path='create' element={<CreatePartidos />} />
-                                            <Route path="edit" element={<PartidosEdit />} />
-                                        </Route>
-                                        <Route path="/administrador" element={<Administrador />}>
-                                            <Route path="list" element={<ListAdministrador />}/>
-                                        </Route>
-                                    </Routes>
+                    {
+                        isLogged?
+                        <div className="page">
+                            <Navbar />
+                            <div className="content">
+                                <SideBar handleLogOut = {()=>{setIsLogged(!isLogged)}} />
+                                        <Routes>
+                                            <Route path="/" element={<>Home</>}/>
+                                            <Route path="/pagina1" element={<Partidos />}>
+                                                <Route path="list" element={<PartidosList />} />
+                                                <Route path='create' element={<CreatePartidos />} />
+                                                <Route path="edit" element={<PartidosEdit />} />
+                                            </Route>
+                                            <Route path="/administrador" element={<Administrador />}>
+                                                <Route path="list" element={<ListAdministrador />}/>
+                                            </Route>
+                                        </Routes>
+                            </div>
                         </div>
-                    </div>
+                        :
+                        <>
+                            <Login handleLogin={()=>{setIsLogged(true)}}/>
+                        </>
+                    }
                 </GeneralProvider>
             </BrowserRouter>
             <style jsx='true'>{`
