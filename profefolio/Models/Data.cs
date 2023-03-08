@@ -20,11 +20,6 @@ public class Data
         set;
     }
 
-    public string? CreatedBy
-    {
-        get;
-        set;
-    }
     public DateTime Modified
     {
         get;
