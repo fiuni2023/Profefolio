@@ -23,7 +23,7 @@ const SideBar = ({handleLogOut=()=>{}}) => {
                 position: fixed;
                 display: flex;
                 flex-direction: column;
-                width: 15%;
+                width: 20%;
                 height: ${showSB? "100%" : "0%"};
                 background-color: #363636;
                 border: none;

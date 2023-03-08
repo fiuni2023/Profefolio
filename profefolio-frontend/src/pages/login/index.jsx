@@ -8,11 +8,11 @@ const Login = ({handleLogin = () => {}}) => {
         <>
             <div className={styles.LoginContainer}>
                 <div className={styles.LoginPanel}>
-                    <Logo className={styles.Image} width="367px" height="70px"/>
+                    <Logo className={styles.Image} width="75%" height="13%"/>
                     <h3 className={styles.Loginh3}>Iniciar Sesión</h3>
                     <LoginInput placeholder={"Correo Electrónico"} type={"text"} name={"mail"}/>
                     <LoginInput placeholder={"Contraseña"} type={"password"} name={"password"}/>
-                    <ButtonInput className={styles.LButton} text={"Ingresar"} variant={"secondary-black"} handleClick={handleLogin} />
+                    <ButtonInput className={styles.LButton} text={"Ingresar"} variant={"secondary-black"} handleClick={handleLogin} width={"50%"} height={"10%"}/>
                 </div>
             </div>
         </>
