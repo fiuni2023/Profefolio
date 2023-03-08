@@ -17,7 +17,7 @@ public class ColegiosFullService : IFullColegio
     public async Task<Colegio> FindById(int id)
     {
         return await _dbContext.Colegios
-            .Where(p => p.Deleted  && p.Id == id).Include(b => b.personas)
+            .Where(p => !p.Deleted  && p.Id == id).Include(b => b.personas)
             .FirstOrDefaultAsync();
     }
 

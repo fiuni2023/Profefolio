@@ -19,13 +19,13 @@ public class ColegiosService : IColegio
         Console.Write("\nid a buscar: {0}", id);
         Console.Write("\n");
         return await _dbContext.Colegios
-            .Where(p => p.Deleted  && p.Id == id)
+            .Where(p => !p.Deleted  && p.Id == id)
             .FirstOrDefaultAsync();
     }
 
     public IEnumerable<Colegio> GetAll()
     {
-        return _dbContext.Colegios.Where(p => p.Deleted);
+        return _dbContext.Colegios.Where(p => !p.Deleted);
     }
 
     public Colegio Edit(Colegio t)

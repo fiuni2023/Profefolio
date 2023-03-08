@@ -96,6 +96,13 @@ namespace profefolio.Controllers
             newColegio.ModifiedBy = "Anonimous";
 
             _colegioService.Edit(p);
+            
+            Console.Write("\n");
+            Console.Write("Colegio editado p = estado: {0}  -nombre: {1}  -deleted: {2}",
+             p.Estado, p.Nombre, p.Deleted);
+            Console.Write("\n");
+             Console.Write("Colegio editado newColegio = estado: {0}  -nombre: {1}  -deleted: {2}",
+             newColegio.Estado, newColegio.Nombre, newColegio.Deleted);
 
             var result = await _colegioService.Add(newColegio);
 
@@ -118,11 +125,14 @@ namespace profefolio.Controllers
             var p = _mapper.Map<Colegio>(colegio);
 
             p.ModifiedBy = "Anonimous";
-            p.Deleted = true;
+            p.Deleted = false;
             await _colegioService.Add(p);
+            
             Console.Write("\n");
-            Console.Write("Colegio creado: ", p.Estado," - ", p.Nombre, " - " , p.Deleted);
+            Console.Write("Colegio creado = estado: {0}  -nombre: {1}  -deleted: {2}  - id: {3}",
+             p.Estado, p.Nombre, p.Deleted, p.Id);
             Console.Write("\n");
+
             await _colegioService.Save();
             return Ok(_mapper.Map<ColegioDTO>(colegio));
         }
@@ -139,11 +149,12 @@ namespace profefolio.Controllers
             }
             data.Estado = false;
             data.Modified = DateTime.Now;
-            data.Deleted = false;
+            data.Deleted = true;
             data.ModifiedBy = "Anonimous";
             _colegioService.Edit(data);
-               Console.Write("\n");
-            Console.Write("Colegio eliminado = estado: {0}", data.Estado," -nombre: {1}", data.Nombre, " -deleted: {2}" , data.Deleted);
+            Console.Write("\n");
+            Console.Write("ELIMINADO = estado: {0}  -nombre: {1}  -deleted: {2}  - id: {3}",
+             data.Estado, data.Nombre, data.Deleted, data.Id);
             Console.Write("\n");
             await _colegioService.Save();
 
