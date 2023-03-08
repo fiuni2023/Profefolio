@@ -9,7 +9,7 @@ import Partidos from "../partidos";
 import CreatePartidos from "../partidos/components/create";
 import PartidosEdit from "../partidos/components/edit";
 import PartidosList from "../partidos/components/list";
-import ListarColegios from "../administrador/colegios/ListarColegios.jsx";
+import ListarColegios from "../administradorMaster/colegios/ListarColegios";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const App = () => {
