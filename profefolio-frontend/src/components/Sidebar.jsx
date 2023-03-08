@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useGeneralContext } from "../context/GeneralContext";
 
-const SideBar = () => {
+const SideBar = ({handleLogOut=()=>{}}) => {
     
     const navigate = useNavigate()
     const { currentPage, showSB } = useGeneralContext()
@@ -11,8 +11,11 @@ const SideBar = () => {
         <div className="container">
             {showSB && <>
                 <SideBarClose> Cerrar </SideBarClose>
+                <SideBarTab page={"cerrarSecionBtn"} current={currentPage} handleClick={handleLogOut} > Cerrar Sesión </SideBarTab>
+                <SideBarTab page={"administrador"} current={currentPage} handleClick={()=>{navigate("/administrador/list")}} > - Administrador </SideBarTab>
                 <SideBarTab page={"pagina1"} current={currentPage} handleClick={()=>{navigate("/pagina1/list")}} > - Página1 </SideBarTab>
                 <SideBarTab page={"pagina2"} current={currentPage} handleClick={()=>{navigate("/pagina2/list")}} > - Página2 </SideBarTab>
+
             </>}
         </div>
         <style jsx="true">{`
