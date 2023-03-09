@@ -99,7 +99,7 @@ public class PersonasService : IPersona
         await _userManager.UpdateAsync(old);
         await _userManager.RemovePasswordAsync(old);
         await _userManager.CreateAsync(personaNew, newPassword);
-
+        
         return await _userManager.FindByEmailAsync(personaNew.Email);
     }
 

@@ -10,7 +10,7 @@ using Microsoft.AspNet.Identity;
 namespace profefolio.Controllers
 {
     [ApiController]
-    [Authorize(Roles = "Administrador de Colegio")]
+    [Authorize/* (Roles = "Administrador de Colegio") */]
     [Route("api/[controller]")]
     public class ProfesorController : ControllerBase
     {
@@ -35,14 +35,11 @@ namespace profefolio.Controllers
         }*/
 
         [HttpGet("page/{page:int}")]
-        public async Task<ActionResult<IEnumerable<PersonaResultDTO>>> Get(int page)
+        public async Task<ActionResult<DataListDTO<PersonaResultDTO>>> Get(int page)
         {
             var profesores = await _personasService.GetAllByRol(PROFESOR_ROLE, page, CantPorPage);
 
-            if (profesores == null)
-            {
-                return BadRequest("");
-            }
+
             int cantPages = (int)Math.Ceiling((double)profesores.Count() / CantPorPage);
 
             var result = new DataListDTO<PersonaResultDTO>();
@@ -55,34 +52,39 @@ namespace profefolio.Controllers
             result.TotalPage = cantPages;
 
             return Ok(result);
-
-
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<ProfesorDTO>> Get(string id)
+        public async Task<ActionResult<PersonaResultDTO>> Get(string id)
         {
-            if (id != null && id.Length > 0)
+            if (id.Length > 0)
             {
-                var profesor = await _personasService.FindById(id);
-                if (profesor != null)
+                try
                 {
-                    return Ok(_mapper.Map<ProfesorDTO>(profesor));
+                    var profesor = await _personasService.FindById(id);
+                    return Ok(_mapper.Map<PersonaResultDTO>(profesor));
                 }
-                else
+                catch (FileNotFoundException e)
                 {
+                    Console.WriteLine((e.Message));
                     return NotFound("No se encontro al profesor");
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                    return BadRequest("Error inesperado");
                 }
             }
             else
             {
-                return (BadRequestObjectResult)BadRequest("ID invalido");
+                return BadRequest("ID invalido");
             }
         }
 
         [HttpPost]
         public async Task<ActionResult<PersonaResultDTO>> Post([FromBody] PersonaDTO dto)
         {
+
             if (!ModelState.IsValid)
             {
                 BadRequest(ModelState);
@@ -99,6 +101,10 @@ namespace profefolio.Controllers
 
             var userId = User.Identity.GetUserId();
             var entity = _mapper.Map<Persona>(dto);
+            /* if (userId == null || entity == null)
+            {
+                return BadRequest();
+            } */
             entity.Deleted = false;
             entity.CreatedBy = userId;
             try
@@ -115,6 +121,10 @@ namespace profefolio.Controllers
                 Console.WriteLine(e.Message);
                 return BadRequest($"El email {dto.Email} ya existe");
             }
+            catch (Exception e)
+            {
+                return BadRequest("Error Inesperado!!!");
+            }
 
             return BadRequest($"Error al crear al Usuario ${dto.Email}");
         }
@@ -129,7 +139,7 @@ namespace profefolio.Controllers
                 var personaNew = _mapper.Map<Persona>(dto);
 
 
-                personaOld.Deleted = true;
+                personaOld.Deleted = false;
                 personaOld.Modified = DateTime.Now;
                 personaOld.ModifiedBy = userId;
 
@@ -156,13 +166,11 @@ namespace profefolio.Controllers
             }
         }
 
-    
 
-
-    [HttpDelete("{id}")]
-    public async Task<ActionResult<PersonaResultDTO>> Delete(string id)
-    {
-        return await _personasService.DeleteUser(id) ? Ok() : NotFound();
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<PersonaResultDTO>> Delete(string id)
+        {
+            return await _personasService.DeleteUser(id) ? Ok() : NotFound();
+        }
     }
-}
 }
