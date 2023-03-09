@@ -91,14 +91,21 @@ public class PersonasService : IPersona
 
     public async Task<Persona> EditProfile(Persona old, Persona personaNew, string newPassword)
     {
-
-        if (!old.Email.Equals(personaNew.Email) && await ExistMail(personaNew.Email))
+        var userExist = await _userManager.FindByEmailAsync(personaNew.Email);
+        
+        if ((userExist == null || userExist.Deleted) || old.Email.Equals(personaNew.Email))
         {
-            throw new BadHttpRequestException($"El email que desea actualizar ya existe");
+            await _userManager.UpdateAsync(old);
+            await _userManager.RemovePasswordAsync(old);
+            await _userManager.CreateAsync(personaNew, newPassword);
         }
-        await _userManager.UpdateAsync(old);
-        await _userManager.RemovePasswordAsync(old);
-        await _userManager.CreateAsync(personaNew, newPassword);
+        else
+        { 
+          throw new BadHttpRequestException($"El email que desea actualizar ya existe");
+        }
+            
+            
+        
 
         return await _userManager.FindByEmailAsync(personaNew.Email);
     }

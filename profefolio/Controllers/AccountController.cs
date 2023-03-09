@@ -35,6 +35,8 @@ public class AccountController : ControllerBase
         {
             return BadRequest(ModelState);
         }
+
+        if (dto.Password == null) return BadRequest("Password es requerido");
         var userId = User.Identity.GetUserId();
         var entity = _mapper.Map<Persona>(dto);
         entity.Deleted = false;
@@ -111,22 +113,24 @@ public class AccountController : ControllerBase
         {
             return BadRequest(ModelState);
         }
-        string userId = User.Identity.GetUserId();
-        var personaOld = await _personasService.FindById(id);
-        var personaNew = _mapper.Map<Persona>(dto);
-        
-        
-        personaOld.Deleted = true;
-        personaOld.Modified =  DateTime.Now;
-        personaOld.ModifiedBy = userId;
 
-        personaNew.Created = personaOld.Created;
-        personaNew.CreatedBy = personaOld.CreatedBy;
-        personaNew.Modified = DateTime.Now;
-        personaNew.ModifiedBy = userId;
-
+        if (dto.Password == null) return BadRequest("Password es requerido");
         try
         {
+            var userId = User.Identity.GetUserId();
+            var personaOld = await _personasService.FindById(id);
+            var personaNew = _mapper.Map<Persona>(dto);
+
+
+            personaOld.Deleted = true;
+            personaOld.Modified = DateTime.Now;
+            personaOld.ModifiedBy = userId;
+            personaOld.Email = $"deleted.{personaOld.Email}";
+
+            personaNew.Created = personaOld.Created;
+            personaNew.CreatedBy = personaOld.CreatedBy;
+            personaNew.Modified = DateTime.Now;
+            personaNew.ModifiedBy = userId;
             var query = await _personasService.EditProfile(personaOld, personaNew, dto.Password);
 
             return Ok(_mapper.Map<PersonaResultDTO>(query));
@@ -135,6 +139,11 @@ public class AccountController : ControllerBase
         {
             Console.WriteLine(e.Message);
             return BadRequest(e.Message);
+        }
+        catch (FileNotFoundException e)
+        {
+            Console.WriteLine(e.Message);
+            return NotFound();
         }
 
     }
