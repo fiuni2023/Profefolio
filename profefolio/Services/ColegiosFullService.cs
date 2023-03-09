@@ -73,4 +73,12 @@ public class ColegiosFullService : IFullColegio
         Dispose(true);
         GC.SuppressFinalize(this);
     }
+
+     public IEnumerable<Colegio> GetAll(int page, int cantPorPag)
+    {
+           return _dbContext.Colegios
+            .Where(p => !p.Deleted).Include(b => b.personas)
+            .Skip(page*cantPorPag)
+            .Take(cantPorPag);
+    }
 }

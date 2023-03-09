@@ -2,15 +2,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using profefolio.Models.Entities;
-<<<<<<< HEAD
-namespace profefolio.Models;
-public class ApplicationDbContext : DbContext
-=======
 
 namespace profefolio.Models;
 
 public class ApplicationDbContext : IdentityDbContext<Persona>
->>>>>>> dev
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {

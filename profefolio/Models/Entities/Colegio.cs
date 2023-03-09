@@ -1,5 +1,5 @@
 namespace profefolio.Models.Entities;
-
+using Models.DTOs.Persona;
 public class Colegio : Data
 {
     public string? Nombre
@@ -14,10 +14,10 @@ public class Colegio : Data
         set;
     }
 
-     public int PersonaId
+     public string? PersonaId
     {
         get;
         set;
     }
-    public Persona personas { get; set; }
+    public Persona personas{ get; set; }
 }

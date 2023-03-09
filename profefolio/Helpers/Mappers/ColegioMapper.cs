@@ -20,7 +20,20 @@ public class ColegioMapper : Profile
             .ForMember(dest => dest.ModifiedBy, 
                 opt => opt.Ignore());
 
-        CreateMap<Colegio, ColegioFullDTO>();
+        CreateMap<Colegio, ColegioFullDTO>()
+            .ForMember(dest => dest.NombreAdministrador, 
+                       opt => opt.MapFrom(src => src.personas.Nombre))
+            .ForMember(dest => dest.Apellido, 
+                       opt => opt.MapFrom(src => src.personas.Apellido))
+            .ForMember(dest => dest.Nacimiento, 
+                       opt => opt.MapFrom(src => src.personas.Nacimiento))
+            .ForMember(dest => dest.Documento, 
+                       opt => opt.MapFrom(src => src.personas.Documento))
+            .ForMember(dest => dest.DocumentoTipo, 
+                       opt => opt.MapFrom(src => src.personas.DocumentoTipo))
+            .ForMember(dest => dest.Direccion, 
+                       opt => opt.MapFrom(src => src.personas.Direccion)
+            );
 
         CreateMap<ColegioFullDTO, Colegio>()
             .ForMember(dest => dest.Id,

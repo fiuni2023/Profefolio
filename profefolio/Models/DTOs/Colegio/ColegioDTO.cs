@@ -13,7 +13,7 @@ public class ColegioDTO : DataDTO
         get;
         set;
     }
-      public int PersonaId
+      public string? PersonaId
     {
         get;
         set;

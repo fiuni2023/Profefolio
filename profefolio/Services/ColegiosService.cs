@@ -75,4 +75,12 @@ public class ColegiosService : IColegio
         Dispose(true);
         GC.SuppressFinalize(this);
     }
+
+    public IEnumerable<Colegio> GetAll(int page, int cantPorPag)
+    {
+           return _dbContext.Colegios
+            .Where(p => !p.Deleted)
+            .Skip(page*cantPorPag)
+            .Take(cantPorPag);
+    }
 }
