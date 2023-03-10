@@ -155,7 +155,7 @@ public class ProfesorTesting
     }
     */
     
-    [Fact]
+    /*[Fact]
     public async void Post_Failed_PasswordNull()
     {
         profefolio.Models.Entities.Persona _persona = new profefolio.Models.Entities.Persona
@@ -209,8 +209,8 @@ public class ProfesorTesting
         Assert.Equal("Falta el Password", r.Value.ToString());
        
     }
-    
-    [Fact]
+    */
+    /*[Fact]
     public async void Post_Failed_ConfirmPasswordNull()
     {
         profefolio.Models.Entities.Persona _persona = new profefolio.Models.Entities.Persona
@@ -262,8 +262,11 @@ public class ProfesorTesting
         var result = await _controller.Post(_personaDto);
         BadRequestObjectResult r = (BadRequestObjectResult)result.Result;
         Assert.Equal("Falta confirmacion de Password", r.Value.ToString());
-    }
+    }*/
 
+    
+    
+    
 
    /*  [Fact]
     public async void Put_Ok()

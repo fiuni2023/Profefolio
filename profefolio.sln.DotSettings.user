@@ -13,5 +13,12 @@
     &lt;TestId&gt;xUnit::6A4DD664-788D-4D7C-86B0-CEC5172B9BEB::net6.0::TestProfefolio.Profesor.ProfesorTestingGets.GetById_NotFound&lt;/TestId&gt;&#xD;
     &lt;TestId&gt;xUnit::6A4DD664-788D-4D7C-86B0-CEC5172B9BEB::net6.0::TestProfefolio.Profesor.ProfesorTestingGets.GetById_LengthCero&lt;/TestId&gt;&#xD;
     &lt;TestId&gt;xUnit::6A4DD664-788D-4D7C-86B0-CEC5172B9BEB::net6.0::TestProfefolio.Profesor.ProfesorTestingPosts.Post_Ok&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::6A4DD664-788D-4D7C-86B0-CEC5172B9BEB::net6.0::TestProfefolio.Profesor.ProfesorTestingPosts.Post_BadRequest_ModelInvalid&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::6A4DD664-788D-4D7C-86B0-CEC5172B9BEB::net6.0::TestProfefolio.Profesor.ProfesorTestingPosts.Post_BadRequest_ConfirmPasswordNull&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::6A4DD664-788D-4D7C-86B0-CEC5172B9BEB::net6.0::TestProfefolio.Profesor.ProfesorTestinPuts.Post_BadRequest_PasswordNull&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::6A4DD664-788D-4D7C-86B0-CEC5172B9BEB::net6.0::TestProfefolio.Profesor.ProfesorTestinPuts.Put_Ok&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::6A4DD664-788D-4D7C-86B0-CEC5172B9BEB::net6.0::TestProfefolio.Profesor.ProfesorTestinPuts.Put_NotFound_Id&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::6A4DD664-788D-4D7C-86B0-CEC5172B9BEB::net6.0::TestProfefolio.Profesor.ProfesorTestingDeletes.Delete_Ok&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::6A4DD664-788D-4D7C-86B0-CEC5172B9BEB::net6.0::TestProfefolio.Profesor.ProfesorTestingDeletes.Delete_IdNotFound&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>

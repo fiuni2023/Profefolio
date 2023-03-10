@@ -28,11 +28,7 @@ namespace profefolio.Controllers
             _personasService = personasService;
             _rolService = rolService;
         }
-
-        /*public ProfesorController()
-        {
-            
-        }*/
+        
 
         [HttpGet("page/{page:int}")]
         public async Task<ActionResult<DataListDTO<PersonaResultDTO>>> Get(int page)
@@ -87,13 +83,15 @@ namespace profefolio.Controllers
 
             if (!ModelState.IsValid)
             {
-                BadRequest(ModelState);
+                return BadRequest(ModelState);
             }
-            else if (dto.Password == null)
+            
+            if (dto.Password == null)
             {
                 return BadRequest("Falta el Password");
             }
-            else if (dto.ConfirmPassword == null)
+            
+            if (dto.ConfirmPassword == null)
             {
                 return BadRequest("Falta confirmacion de Password");
             }
@@ -123,6 +121,7 @@ namespace profefolio.Controllers
             }
             catch (Exception e)
             {
+                Console.WriteLine(e.Message);
                 return BadRequest("Error Inesperado!!!");
             }
 
@@ -132,32 +131,40 @@ namespace profefolio.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<PersonaResultDTO>> Put(string id, [FromBody] PersonaDTO dto)
         {
+
             if (ModelState.IsValid)
             {
-                string userId = User.Identity.GetUserId();
-                var personaOld = await _personasService.FindById(id);
-                var personaNew = _mapper.Map<Persona>(dto);
+                try{
+                    if(dto.Password == null) return BadRequest("Password es requerido"); 
+
+                    var userId = User.Identity.GetUserId();
+                    var personaOld = await _personasService.FindById(id);
+                    var personaNew = _mapper.Map<Persona>(dto);
 
 
-                personaOld.Deleted = false;
-                personaOld.Modified = DateTime.Now;
-                personaOld.ModifiedBy = userId;
+                    personaOld.Deleted = true;
+                    personaOld.Modified = DateTime.Now;
+                    personaOld.ModifiedBy = userId;
+                    personaOld.Email = $"deleted.{personaOld.Email}";
+                
+                    personaNew.Created = personaOld.Created;
+                    personaNew.CreatedBy = personaOld.CreatedBy;
+                    personaNew.Modified = DateTime.Now;
+                    personaNew.ModifiedBy = userId;
+                
 
-                personaNew.Created = personaOld.Created;
-                personaNew.CreatedBy = personaOld.CreatedBy;
-                personaNew.Modified = DateTime.Now;
-                personaNew.ModifiedBy = userId;
-
-                try
-                {
                     var query = await _personasService.EditProfile(personaOld, personaNew, dto.Password);
 
                     return Ok(_mapper.Map<PersonaResultDTO>(query));
                 }
+                catch(FileNotFoundException e){
+                    Console.WriteLine(e.Message);
+                    return NotFound("No se encontro el registro con el identificador indicado");
+                }
                 catch (BadHttpRequestException e)
                 {
                     Console.WriteLine(e.Message);
-                    return BadRequest(e.Message);
+                    return BadRequest("El email que desea actualizar ya existe");
                 }
             }
             else
