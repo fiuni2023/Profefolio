@@ -29,7 +29,7 @@ public class ProfesorTesting
         _controller = new ProfesorController(_mapper.Object, _service.Object, _rol.Object);
     }
 
-    [Fact]
+    /*[Fact]
     public async void GetPage0_Ok()
     {
         int page = 0;
@@ -66,8 +66,8 @@ public class ProfesorTesting
 
         Assert.IsType<OkObjectResult>(result.Result);
     }
-
-
+*/
+/*
     [Theory]
     [InlineData("TeSt CaSe")]
     [InlineData("Tasdasds")]
@@ -95,8 +95,11 @@ public class ProfesorTesting
         var result = await _controller.Get(_persona.Id);
 
         Assert.IsType<NotFoundObjectResult>(result.Result);
-    }
+    }*/
 
+///////////////////////////////////////////////////
+
+    /*
     [Fact]
     public async void Post_Ok()
     {
@@ -150,6 +153,7 @@ public class ProfesorTesting
         
         Assert.IsType<OkObjectResult>(result.Result);
     }
+    */
     
     [Fact]
     public async void Post_Failed_PasswordNull()

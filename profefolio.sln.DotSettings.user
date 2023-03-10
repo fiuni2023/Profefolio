@@ -3,5 +3,10 @@
   &lt;TestAncestor&gt;&#xD;
     &lt;TestId&gt;xUnit::6A4DD664-788D-4D7C-86B0-CEC5172B9BEB::net6.0::TestProfefolio.Persona.PersonaGetTest&lt;/TestId&gt;&#xD;
     &lt;TestId&gt;xUnit::6A4DD664-788D-4D7C-86B0-CEC5172B9BEB::net6.0::TestProfefolio.Profesor.ProfesorTesting&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::6A4DD664-788D-4D7C-86B0-CEC5172B9BEB::net6.0::TestProfefolio.Profesor.ProfesorTestingGets.Get_Page_Ok&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::6A4DD664-788D-4D7C-86B0-CEC5172B9BEB::net6.0::TestProfefolio.Profesor.ProfesorTestingGets.GetByID_Ok&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::6A4DD664-788D-4D7C-86B0-CEC5172B9BEB::net6.0::TestProfefolio.Profesor.ProfesorTestingGets.GetById_NotFound&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::6A4DD664-788D-4D7C-86B0-CEC5172B9BEB::net6.0::TestProfefolio.Profesor.ProfesorTestingGets.GetById_LengthCero&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::6A4DD664-788D-4D7C-86B0-CEC5172B9BEB::net6.0::TestProfefolio.Profesor.ProfesorTestingPosts.Post_Ok&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>
