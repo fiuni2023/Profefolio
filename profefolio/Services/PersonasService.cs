@@ -91,15 +91,22 @@ public class PersonasService : IPersona
 
     public async Task<Persona> EditProfile(Persona old, Persona personaNew, string newPassword)
     {
+        var userExist = await _userManager.FindByEmailAsync(personaNew.Email);
 
-        if (!old.Email.Equals(personaNew.Email) && await ExistMail(personaNew.Email))
+        if ((userExist == null || userExist.Deleted) || old.Email.Equals(personaNew.Email))
+        {
+            await _userManager.UpdateAsync(old);
+            await _userManager.RemovePasswordAsync(old);
+            await _userManager.CreateAsync(personaNew, newPassword);
+        }
+        else
         {
             throw new BadHttpRequestException($"El email que desea actualizar ya existe");
         }
-        await _userManager.UpdateAsync(old);
-        await _userManager.RemovePasswordAsync(old);
-        await _userManager.CreateAsync(personaNew, newPassword);
-        
+
+
+
+
         return await _userManager.FindByEmailAsync(personaNew.Email);
     }
 
@@ -144,7 +151,7 @@ public class PersonasService : IPersona
 
     public async Task<IEnumerable<Persona>> GetAllByRol(string roleName, int page, int cantPorPag)
     {
-        
+
         return _userManager.GetUsersInRoleAsync(roleName).Result
             .Where(p => !p.Deleted)
             .Skip(page * cantPorPag)
