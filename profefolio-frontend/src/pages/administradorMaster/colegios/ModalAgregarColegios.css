@@ -1,0 +1,23 @@
+.icono-agregar{
+    color: #F0544F;
+    height: 50px;
+    width: 50px;
+}
+
+.button-agregar{
+    background-color: white;
+    border: none;
+}
+.modal-principal{
+    margin-top: 5%;
+    
+}
+#modal-contenido{
+    background-color: #C6D8D3;
+    text-align: center;
+    align-items: center;
+}
+.btn-guardar{
+    color: white;
+    background-color: #331832;
+}

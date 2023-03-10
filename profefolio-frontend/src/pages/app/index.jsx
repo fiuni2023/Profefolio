@@ -12,6 +12,7 @@ import PartidosList from "../partidos/components/list";
 import ListarColegios from "../administradorMaster/colegios/ListarColegios";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Login from "../login/index.jsx";
+import ModalAgregarColegios from "../administradorMaster/colegios/ModalAgregarColegios"
 
 const App = () => {
     const [isLogged, setIsLogged] = useState(false)
@@ -36,6 +37,7 @@ const App = () => {
                                             <Route path="/administrador" element={<Administrador />}>
                                                 <Route path="list" element={<ListAdministrador />}/>
                                                 <Route path="listColegios" element={<ListarColegios />}/>
+                                                <Route path="modalColegios" element={<ModalAgregarColegios />}/>
                                             </Route>
                                         </Routes>
                             </div>
