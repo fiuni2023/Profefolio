@@ -10,10 +10,12 @@ public class PersonasService : IPersona
 {
     
     private readonly UserManager<Persona> _userManager;
-  
-    public PersonasService(UserManager<Persona> userManager)
+    private readonly ApplicationDbContext _db;
+
+    public PersonasService(UserManager<Persona> userManager, ApplicationDbContext db)
     {
         _userManager = userManager;
+        _db = db;
     }
     public  Task<Persona> FindById(int id)
     {
@@ -123,6 +125,21 @@ public class PersonasService : IPersona
 
         await _userManager.UpdateAsync(query);
         return true;
+    }
+
+    public async Task<IEnumerable<Persona>> FilterByRol(int page, int cantPorPag, string rol)
+    {
+        var query = await _userManager.GetUsersInRoleAsync(rol);
+
+        if (query == null) throw new FileNotFoundException();
+
+        var enumerable = query.Where(p => !p.Deleted)
+            .Skip(page * cantPorPag)
+            .Take(cantPorPag);
+
+        return enumerable;
+
+
     }
 
     public async Task<bool> ChangePassword(Persona personaOld, Persona personaNew, string newPassoword)

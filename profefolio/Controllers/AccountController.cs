@@ -11,7 +11,7 @@ using profefolio.Repository;
 namespace profefolio.Controllers;
 
 [Route("api/administrador")]
-[Authorize]
+[Authorize(Roles = "Master")]
 public class AccountController : ControllerBase
 {
     private readonly IMapper _mapper;
@@ -61,9 +61,10 @@ public class AccountController : ControllerBase
 
     [HttpGet]
     [Route("page/{page:int}")]
-    public ActionResult<DataListDTO<PersonaResultDTO>> Get(int page)
+    public async Task<ActionResult<DataListDTO<PersonaResultDTO>>> Get(int page)
     {
-        var query =  _personasService.GetAll(page, CantPorPage);
+        var query = await _personasService
+            .FilterByRol(page, CantPorPage, "Administrador de Colegio");
 
         var cantPages = (int)Math.Ceiling((double)_personasService.Count() / CantPorPage);
 

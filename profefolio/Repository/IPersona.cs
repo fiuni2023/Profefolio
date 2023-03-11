@@ -9,6 +9,7 @@ public interface IPersona : IRepository<Persona>
     Task<Persona> CreateUser(Persona user, string password);
     Task<Persona> EditProfile(Persona oldPersona, Persona newPersona, string newPassword);
     Task<bool> DeleteUser(string id);
+    Task<IEnumerable<Persona>> FilterByRol(int page, int cantPorPag, string rol);
 
     Task<bool> ExistMail(string email);
 
