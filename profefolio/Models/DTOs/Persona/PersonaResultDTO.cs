@@ -54,4 +54,10 @@ public class PersonaResultDTO
         get;
         set;
     }
+
+    public string? Email
+    {
+        get;
+        set;
+    }
 }
