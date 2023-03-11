@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Mvc;
 using profefolio.Models.DTOs;
 using profefolio.Models.DTOs.Persona;
@@ -87,7 +88,8 @@ namespace profefolio.Controllers
             {
                 return NotFound();
             }
-            p.ModifiedBy = "Anonimous";
+            string userId = User.Identity.GetUserId();
+            p.ModifiedBy = userId;
             p.Deleted = true;
             p.Modified = DateTime.Now;
 
@@ -123,7 +125,8 @@ namespace profefolio.Controllers
             }
             var p = _mapper.Map<Colegio>(colegio);
 
-            p.ModifiedBy = "Anonimous";
+            var userId = User.Identity.GetUserId();
+            p.ModifiedBy = userId;
             p.Deleted = false;
             await _colegioService.Add(p);
 
