@@ -28,7 +28,7 @@ namespace profefolio.Controllers
             _personasService = personasService;
             _rolService = rolService;
         }
-        
+
 
         [HttpGet("page/{page:int}")]
         public async Task<ActionResult<DataListDTO<PersonaResultDTO>>> Get(int page)
@@ -85,12 +85,12 @@ namespace profefolio.Controllers
             {
                 return BadRequest(ModelState);
             }
-            
+
             if (dto.Password == null)
             {
                 return BadRequest("Falta el Password");
             }
-            
+
             if (dto.ConfirmPassword == null)
             {
                 return BadRequest("Falta confirmacion de Password");
@@ -99,12 +99,14 @@ namespace profefolio.Controllers
 
             var userId = User.Identity.GetUserId();
             var entity = _mapper.Map<Persona>(dto);
-            /* if (userId == null || entity == null)
-            {
-                return BadRequest();
-            } */
+
             entity.Deleted = false;
             entity.CreatedBy = userId;
+            //Para que el username sea unico
+            /* DateTime now = DateTime.Now;
+            entity.UserName = $"{entity.Email}.{now}";
+            entity.NormalizedUserName = $"{entity.Email.ToUpper()}.{now}"; */
+
             try
             {
                 var saved = await _personasService.CreateUser(entity, dto.Password);
@@ -131,40 +133,51 @@ namespace profefolio.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<PersonaResultDTO>> Put(string id, [FromBody] PersonaDTO dto)
         {
-
             if (ModelState.IsValid)
             {
-                try{
-                    if(dto.Password == null) return BadRequest("Password es requerido"); 
+                try
+                {
+                    if (dto.Password == null) return BadRequest("Password es requerido");
 
                     var userId = User.Identity.GetUserId();
                     var personaOld = await _personasService.FindById(id);
                     var personaNew = _mapper.Map<Persona>(dto);
 
-
                     personaOld.Deleted = true;
                     personaOld.Modified = DateTime.Now;
                     personaOld.ModifiedBy = userId;
-                    personaOld.Email = $"deleted.{personaOld.Email}";
-                
+                    personaOld.Email = $"deleted.{personaOld.Email}.{personaOld.Id}";
+
                     personaNew.Created = personaOld.Created;
                     personaNew.CreatedBy = personaOld.CreatedBy;
                     personaNew.Modified = DateTime.Now;
                     personaNew.ModifiedBy = userId;
-                
+
+                    //Para que el username sea unico
+                    var now = DateTime.Now.ToOADate();
+                    personaNew.UserName = $"{personaNew.Email}.{now}";
+                    personaNew.NormalizedUserName = $"{personaNew.Email.ToUpper()}.{now}";
 
                     var query = await _personasService.EditProfile(personaOld, personaNew, dto.Password);
 
                     return Ok(_mapper.Map<PersonaResultDTO>(query));
                 }
-                catch(FileNotFoundException e){
+                catch (FileNotFoundException e)
+                {
                     Console.WriteLine(e.Message);
                     return NotFound("No se encontro el registro con el identificador indicado");
                 }
                 catch (BadHttpRequestException e)
                 {
+                    _personasService.Dispose();
                     Console.WriteLine(e.Message);
                     return BadRequest("El email que desea actualizar ya existe");
+                }
+                catch (Exception e)
+                {
+                    _personasService.Dispose();
+                    Console.WriteLine(e);
+                    return Conflict("Error al tratar de editar el usuario");
                 }
             }
             else
