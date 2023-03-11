@@ -82,4 +82,10 @@ public class ApplicationDbContext : IdentityDbContext<Persona>
             .HasData(identityUserRole);
 
     }
+
+     public DbSet<Colegio> Colegios
+    {
+        get;
+        set;
+    }
 }
