@@ -5,13 +5,15 @@ import { useGeneralContext } from "../context/GeneralContext";
 const SideBar = () => {
     
     const navigate = useNavigate()
-    const { currentPage, showSB, isLogged, setIsLogged } = useGeneralContext()
+    const { currentPage, showSB, isLogged, setIsLogged, getLoginData } = useGeneralContext()
 
     const handleLogOut = () => {
         localStorage.removeItem('loginData')
         setIsLogged(!isLogged)
         
     }
+
+    console.log(getLoginData())
 
     return <>
         <div className="container">

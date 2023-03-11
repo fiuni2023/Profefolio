@@ -51,5 +51,13 @@
 }
 
 .LButton{
-    margin-top: 5vh;
+    margin-top: 2vh;
+}
+
+.Checkbox{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5%;
+    color: white;
 }

@@ -17,13 +17,20 @@ export const GeneralProvider = ({children}) => {
 
     console.log(localStorage.getItem('loginData'))
 
+    const getLoginData = () => {
+        if(localStorage.getItem('loginData')? true : false) return JSON.parse(localStorage.getItem('loginData'))
+        if(sessionStorage.getItem('loginData')? true : false) return JSON.parse(sessionStorage.getItem('loginData')) 
+        return null
+    }
+
     const values = {
         currentPage, 
         setCurrentPage,
         showSB, 
         setShowSB,
         isLogged,
-        setIsLogged
+        setIsLogged,
+        getLoginData
     }
 
     return (
