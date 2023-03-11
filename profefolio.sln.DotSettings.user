@@ -8,5 +8,6 @@
     &lt;TestId&gt;xUnit::6A4DD664-788D-4D7C-86B0-CEC5172B9BEB::net6.0::TestProfefolio.Auth.AuthTest&lt;/TestId&gt;&#xD;
     &lt;TestId&gt;xUnit::6A4DD664-788D-4D7C-86B0-CEC5172B9BEB::net6.0::TestProfefolio.Auth.AuthResultValueTest.LoginResponseValueTest&lt;/TestId&gt;&#xD;
     &lt;TestId&gt;xUnit::6A4DD664-788D-4D7C-86B0-CEC5172B9BEB::net6.0::TestProfefolio.Auth.AuthResultValueTest&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::6A4DD664-788D-4D7C-86B0-CEC5172B9BEB::net6.0::TestProfefolio.Persona.PersonaGetDataTest&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>
