@@ -12,7 +12,7 @@ public interface IPersona : IRepository<Persona>
 
     Task<bool> ExistMail(string email);
 
-    
+    Task<IEnumerable<Persona>> GetAllByRol(string roleName, int page, int cantPorPag);
 
 
 }
