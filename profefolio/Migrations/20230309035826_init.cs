@@ -167,26 +167,51 @@ namespace profefolio.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Colegios",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Nombre = table.Column<string>(type: "text", nullable: true),
+                    Estado = table.Column<bool>(type: "boolean", nullable: false),
+                    PersonaId = table.Column<string>(type: "text", nullable: true),
+                    Deleted = table.Column<bool>(type: "boolean", nullable: false),
+                    Created = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: true),
+                    Modified = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    ModifiedBy = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Colegios", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Colegios_AspNetUsers_PersonaId",
+                        column: x => x.PersonaId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                });
+
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "b45d2dca-f996-4c00-b0db-d1f311efb13b", "5ba7a51f-7c9d-4439-9144-6f3ccaf1e57b", "Master", "MASTER" },
-                    { "e64cbd98-e157-4fbd-bb67-1f85198c994f", "bf79ed7a-5d4f-4d34-9aa1-3b0aa93c00da", "Profesor", "PROFESOR" },
-                    { "eae2840a-51cd-481e-ab1b-df5baa4ea5c8", "307feaaf-7368-4d20-a49b-a5203c33da31", "Administrador de Colegio", "ADMINISTRADOR DE COLEGIO" },
-                    { "fadcb8c9-cb82-4c1d-b930-e0a5b06f110b", "cd105b42-c03e-4ca3-8cfa-35687235c907", "Alumno", "ALUMNO" }
+                    { "1c376a3f-7c20-45ec-8d11-4a3c7f98ca5e", "19bc377d-2ebf-4aa7-8d34-2272e3079ff2", "Profesor", "PROFESOR" },
+                    { "a1e8a8e5-9abe-420e-a5f0-31cce713f78f", "2e78a421-c7d1-4c4c-8f63-1f4a3262b581", "Administrador de Colegio", "ADMINISTRADOR DE COLEGIO" },
+                    { "cfd93617-f24b-4683-9a65-0275fc2b37ab", "44a7ba27-1228-4b8f-ad6d-e00691662547", "Master", "MASTER" },
+                    { "e072e65b-0221-4179-91eb-849c0bcafc3d", "6adb3a2a-7dff-4f5f-9b9e-817d534abafa", "Alumno", "ALUMNO" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "Apellido", "ConcurrencyStamp", "Created", "CreatedBy", "Deleted", "Direccion", "Documento", "DocumentoTipo", "Email", "EmailConfirmed", "EsM", "LockoutEnabled", "LockoutEnd", "Modified", "ModifiedBy", "Nacimiento", "Nombre", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "77a02e3b-5b53-4c83-9d48-8adb879628b7", 0, "Torres", "302e9790-2406-40d3-8a63-6570855caaf8", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, null, null, null, "Carlos.Torres123@mail.com", false, false, false, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, new DateTime(1999, 7, 10, 4, 0, 0, 0, DateTimeKind.Utc), "Carlos", "CARLOS.TORRES@123MAIL.COM", null, "AQAAAAEAACcQAAAAEMLa4FWmH8F0fY6aWzJDTrwMAiSdMdtkyW/hLzW2PCvbUuoWKPO/wLwHe3NNumo/Kg==", null, false, "61aeabc4-919d-41a8-97ff-a1f451ba8967", false, null });
+                values: new object[] { "15ad44be-db9c-499f-980b-cd741867e94a", 0, "Torres", "d6d97d66-0ae9-42d3-96df-3de7274528b7", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, null, null, null, "Carlos.Torres123@mail.com", false, false, false, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, new DateTime(1999, 7, 10, 4, 0, 0, 0, DateTimeKind.Utc), "Carlos", "CARLOS.TORRES@123MAIL.COM", null, "AQAAAAEAACcQAAAAEGA77NQojE1g3qanDIdSf4bOJ+JWPaxhkre2fO0u8kZsmqFDo8PtaKzhyAW/srO4zA==", null, false, "169726ee-a2ef-4fef-8091-1472d357a390", false, null });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
                 columns: new[] { "RoleId", "UserId" },
-                values: new object[] { "b45d2dca-f996-4c00-b0db-d1f311efb13b", "77a02e3b-5b53-4c83-9d48-8adb879628b7" });
+                values: new object[] { "cfd93617-f24b-4683-9a65-0275fc2b37ab", "15ad44be-db9c-499f-980b-cd741867e94a" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -224,6 +249,11 @@ namespace profefolio.Migrations
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Colegios_PersonaId",
+                table: "Colegios",
+                column: "PersonaId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -242,6 +272,9 @@ namespace profefolio.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "Colegios");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
