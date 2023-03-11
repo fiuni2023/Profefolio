@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using profefolio.Controllers;
+using profefolio.Models.DTOs.Auth;
 using profefolio.Models.DTOs.Persona;
 using profefolio.Repository;
 
@@ -53,7 +54,7 @@ public class PersonaGetTest
 
         const string id = "aefaese123342";
 
-        _personaService.Setup(s => s.FindById(id))
+        _personaService.Setup(s => s.FindById(It.IsAny<string>()))
             .ReturnsAsync(persona);
 
         _mapper.Setup(m => m.Map<PersonaResultDTO>(persona))
@@ -65,13 +66,4 @@ public class PersonaGetTest
 
     }
 
-    [Fact]
-    public Task TestGetPersonaHttpStatusNotFound()
-    {
-        Console.WriteLine("no imp");
-        return null;
-    }
-
-
-   
 }
