@@ -146,7 +146,11 @@ public class PersonasService : IPersona
     {
         var query = await _userManager.FindByEmailAsync(email);
 
-        return query is { Deleted: true };
+        return query switch
+        {
+            null => false,
+            _ => !query.Deleted
+        };
     }
 
 
