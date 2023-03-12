@@ -10,7 +10,7 @@ using Microsoft.AspNet.Identity;
 namespace profefolio.Controllers
 {
     [ApiController]
-    [Authorize/* (Roles = "Administrador de Colegio") */]
+    [Authorize(Roles = "Administrador de Colegio,Profesor")]
     [Route("api/[controller]")]
     public class ProfesorController : ControllerBase
     {
@@ -121,10 +121,14 @@ namespace profefolio.Controllers
                 Console.WriteLine(e.Message);
                 return BadRequest($"El email {dto.Email} ya existe");
             }
+            catch(InvalidOperationException e){
+                Console.WriteLine(e.Message);
+                return BadRequest("Formato invalido de constraseña. Debe contener mayusculas, minusculas, numeros y caracteres.");
+            }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
-                return BadRequest("Error Inesperado!!!");
+                Console.WriteLine(e);
+                return BadRequest(e.Message);
             }
 
             return BadRequest($"Error al crear al Usuario ${dto.Email}");
