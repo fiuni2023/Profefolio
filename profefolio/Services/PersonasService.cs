@@ -100,7 +100,7 @@ public class PersonasService : IPersona
     {
         var query = await _userManager.FindByIdAsync(id);
 
-        if (query.Deleted)
+        if (query == null || query.Deleted)
         {
             return false;
         }
