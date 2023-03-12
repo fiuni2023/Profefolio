@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using profefolio.Models;
 using profefolio.Models.Entities;
 using profefolio.Repository;
 
@@ -88,25 +89,11 @@ public class PersonasService : IPersona
             .FirstAsync();
     }
 
-    public async Task<Persona> EditProfile(Persona old, Persona personaNew, string newPassword)
+    public async Task<Persona> EditProfile(Persona p)
     {
-        var userExist = await _userManager.FindByEmailAsync(personaNew.Email);
-
-        if ((userExist == null || userExist.Deleted) || old.Email.Equals(personaNew.Email))
-        {
-            await _userManager.UpdateAsync(old);
-            await _userManager.RemovePasswordAsync(old);
-            await _userManager.CreateAsync(personaNew, newPassword);
-        }
-        else
-        {
-            throw new BadHttpRequestException($"El email que desea actualizar ya existe");
-        }
-
-
-
-
-        return await _userManager.FindByEmailAsync(personaNew.Email);
+        await _userManager.UpdateAsync(p);
+        var query = await _userManager.FindByEmailAsync(p.Email);
+        return query;
     }
 
     public async Task<bool> DeleteUser(string id)
@@ -132,15 +119,15 @@ public class PersonasService : IPersona
 
     }
 
-
-    public async Task<bool> ChangePassword(Persona personaOld, Persona personaNew, string newPassoword)
+    public async Task<bool> ChangePassword(Persona p, string newPassword)
     {
-
-        await _userManager.RemovePasswordAsync(personaOld);
-        await _userManager.UpdateAsync(personaOld);
-        await _userManager.CreateAsync(personaNew, newPassoword);
+        await _userManager.RemovePasswordAsync(p);
+        Console.WriteLine(newPassword);
+        await _userManager.AddPasswordAsync(p, newPassword);
+        Console.WriteLine(newPassword);
         return true;
     }
+
 
     public async Task<bool> ExistMail(string email)
     {
