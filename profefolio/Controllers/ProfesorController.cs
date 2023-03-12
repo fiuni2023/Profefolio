@@ -10,7 +10,7 @@ using Microsoft.AspNet.Identity;
 namespace profefolio.Controllers
 {
     [ApiController]
-    [Authorize/* (Roles = "Administrador de Colegio") */]
+    [Authorize(Roles = "Administrador de Colegio,Profesor")]
     [Route("api/[controller]")]
     public class ProfesorController : ControllerBase
     {
