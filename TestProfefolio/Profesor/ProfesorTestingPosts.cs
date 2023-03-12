@@ -66,6 +66,9 @@ public class ProfesorTestingPosts
             Telefono = "0985123456"
         };
         
+        Mock<ControllerBase> A = new Mock<ControllerBase>();
+        A.Setup(a => a.User.Identity.GetUserId()).Returns("sdadasdasdadasds");
+        
         mapper.Setup(m => m.Map<profefolio.Models.Entities.Persona>(personaDto)).Returns(persona);
 
         
