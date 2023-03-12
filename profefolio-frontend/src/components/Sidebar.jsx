@@ -2,10 +2,18 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useGeneralContext } from "../context/GeneralContext";
 
-const SideBar = ({handleLogOut=()=>{}}) => {
+const SideBar = () => {
     
     const navigate = useNavigate()
-    const { currentPage, showSB } = useGeneralContext()
+    const { currentPage, showSB, isLogged, setIsLogged, getLoginData } = useGeneralContext()
+
+    const handleLogOut = () => {
+        localStorage.removeItem('loginData')
+        setIsLogged(!isLogged)
+        
+    }
+
+    console.log(getLoginData())
 
     return <>
         <div className="container">
@@ -23,7 +31,7 @@ const SideBar = ({handleLogOut=()=>{}}) => {
                 position: fixed;
                 display: flex;
                 flex-direction: column;
-                width: 15%;
+                width: 20%;
                 height: ${showSB? "100%" : "0%"};
                 background-color: #363636;
                 border: none;

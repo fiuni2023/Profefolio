@@ -35,6 +35,12 @@ public class AuthController : ControllerBase
             Console.WriteLine(e.Message);
             return BadRequest(e.Message);
         }
+        catch (UnauthorizedAccessException e)
+        {
+            Console.WriteLine(e.Message);
+            return Unauthorized();
+        }
         
     }
+    
 }

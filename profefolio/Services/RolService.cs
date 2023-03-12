@@ -4,18 +4,20 @@ using profefolio.Repository;
 
 namespace profefolio.Services;
 
-public class RolService: IRol
+public class RolService : IRol
 {
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly UserManager<Persona> _userManager;
+
     public RolService(RoleManager<IdentityRole> roleManager, UserManager<Persona> userManager)
     {
         _roleManager = roleManager;
         _userManager = userManager;
     }
+
     public void Dispose()
     {
-      _roleManager.Dispose();
+        _roleManager.Dispose();
     }
 
     public Task<IdentityRole> FindById(int id)
@@ -27,7 +29,7 @@ public class RolService: IRol
     {
         throw new NotImplementedException();
     }
-    
+
 
     public IdentityRole Edit(IdentityRole t)
     {
@@ -54,11 +56,11 @@ public class RolService: IRol
         throw new NotImplementedException();
     }
 
-   
+
 
     public async Task<bool> AsignToUser(string rol, Persona p)
     {
-        
+
         await _userManager.AddToRoleAsync(p, rol);
         return true;
     }
@@ -68,4 +70,6 @@ public class RolService: IRol
         var role = await _roleManager.FindByNameAsync(rol);
         return role.Name;
     }
+    
+
 }

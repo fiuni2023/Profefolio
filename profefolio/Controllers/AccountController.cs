@@ -11,7 +11,7 @@ using profefolio.Repository;
 namespace profefolio.Controllers;
 
 [Route("api/administrador")]
-[Authorize]
+[Authorize(Roles = "Master")]
 public class AccountController : ControllerBase
 {
     private readonly IMapper _mapper;
@@ -35,6 +35,8 @@ public class AccountController : ControllerBase
         {
             return BadRequest(ModelState);
         }
+
+        if (dto.Password == null) return BadRequest("Password es requerido");
         var userId = User.Identity.GetUserId();
         var entity = _mapper.Map<Persona>(dto);
         entity.Deleted = false;
@@ -59,11 +61,12 @@ public class AccountController : ControllerBase
 
     [HttpGet]
     [Route("page/{page:int}")]
-    public ActionResult<DataListDTO<PersonaResultDTO>> Get(int page)
+    public async Task<ActionResult<DataListDTO<PersonaResultDTO>>> Get(int page)
     {
-        var query =  _personasService.GetAll(page, CantPorPage);
+        var query = await _personasService
+            .FilterByRol(page, CantPorPage, "Administrador de Colegio");
 
-        int cantPages = (int)Math.Ceiling((double)_personasService.Count() / CantPorPage);
+        var cantPages = (int)Math.Ceiling((double)_personasService.Count() / CantPorPage);
 
         var result = new DataListDTO<PersonaResultDTO>();
 
@@ -111,22 +114,24 @@ public class AccountController : ControllerBase
         {
             return BadRequest(ModelState);
         }
-        string userId = User.Identity.GetUserId();
-        var personaOld = await _personasService.FindById(id);
-        var personaNew = _mapper.Map<Persona>(dto);
-        
-        
-        personaOld.Deleted = true;
-        personaOld.Modified =  DateTime.Now;
-        personaOld.ModifiedBy = userId;
 
-        personaNew.Created = personaOld.Created;
-        personaNew.CreatedBy = personaOld.CreatedBy;
-        personaNew.Modified = DateTime.Now;
-        personaNew.ModifiedBy = userId;
-
+        if (dto.Password == null) return BadRequest("Password es requerido");
         try
         {
+            var userId = User.Identity.GetUserId();
+            var personaOld = await _personasService.FindById(id);
+            var personaNew = _mapper.Map<Persona>(dto);
+
+
+            personaOld.Deleted = true;
+            personaOld.Modified = DateTime.Now;
+            personaOld.ModifiedBy = userId;
+            personaOld.UserName = $"deleted.{personaOld.Id}.{personaOld.Email}";
+
+            personaNew.Created = personaOld.Created;
+            personaNew.CreatedBy = personaOld.CreatedBy;
+            personaNew.Modified = DateTime.Now;
+            personaNew.ModifiedBy = userId;
             var query = await _personasService.EditProfile(personaOld, personaNew, dto.Password);
 
             return Ok(_mapper.Map<PersonaResultDTO>(query));
@@ -135,6 +140,11 @@ public class AccountController : ControllerBase
         {
             Console.WriteLine(e.Message);
             return BadRequest(e.Message);
+        }
+        catch (FileNotFoundException e)
+        {
+            Console.WriteLine(e.Message);
+            return NotFound();
         }
 
     }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Navbar from "../../components/Navbar.jsx";
 import SideBar from "../../components/Sidebar.jsx";
@@ -11,21 +11,19 @@ import PartidosEdit from "../partidos/components/edit";
 import PartidosList from "../partidos/components/list";
 import ListarColegios from "../administradorMaster/colegios/ListarColegios";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Login from "../login/index.jsx";
 
 const App = () => {
-    const [isLogged, setIsLogged] = useState(false)
+
+    
 
     return (
         <>
             <BrowserRouter>
                 <GeneralProvider>
-                    {
-                        isLogged?
                         <div className="page">
                             <Navbar />
                             <div className="content">
-                                <SideBar handleLogOut = {()=>{setIsLogged(!isLogged)}} />
+                                <SideBar />
                                         <Routes>
                                             <Route path="/" element={<>Home</>}/>
                                             <Route path="/pagina1" element={<Partidos />}>
@@ -41,11 +39,6 @@ const App = () => {
                             </div>
 
                         </div>
-                        :
-                        <>
-                            <Login handleLogin={()=>{setIsLogged(true)}}/>
-                        </>
-                    }
                 </GeneralProvider>
             </BrowserRouter>
             <style jsx='true'>{`
