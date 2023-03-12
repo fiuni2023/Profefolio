@@ -89,7 +89,7 @@ public class AccountController : ControllerBase
 
         var enumerable = query as Persona[] ?? query.ToArray();
         result.CantItems = enumerable.Length;
-        result.CurrentPage = page > cantPages ? cantPages : page;
+        result.CurrentPage = page >= cantPages - 1 ? cantPages - 1 : page;
         result.Next = result.CurrentPage + 1 < cantPages;
         result.DataList = _mapper.Map<List<PersonaResultDTO>>(enumerable.ToList());
         result.TotalPage = cantPages;
