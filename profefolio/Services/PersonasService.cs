@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using profefolio.Models;
 using profefolio.Models.Entities;
 using profefolio.Repository;
 
@@ -125,6 +124,15 @@ public class PersonasService : IPersona
         return true;
     }
 
+    public async Task<IEnumerable<Persona>> FilterByRol(int page, int cantPorPag, string rol)
+    {
+        var query = await _userManager.GetUsersInRoleAsync(rol);
+
+        return query.Where(p => !p.Deleted);
+
+    }
+
+
     public async Task<bool> ChangePassword(Persona personaOld, Persona personaNew, string newPassoword)
     {
 
@@ -152,7 +160,7 @@ public class PersonasService : IPersona
     public async Task<IEnumerable<Persona>> GetAllByRol(string roleName, int page, int cantPorPag)
     {
 
-        return _userManager.GetUsersInRoleAsync(roleName).Result
+        return  _userManager.GetUsersInRoleAsync(roleName).Result
             .Where(p => !p.Deleted)
             .Skip(page * cantPorPag)
             .Take(cantPorPag).ToList();
