@@ -22,6 +22,7 @@ public class AuthService : IAuth
     public void Dispose()
     {
         _userManager.Dispose();
+        GC.SuppressFinalize(this);
     }
 
     public async Task<AuthPersonaDTO> Login(Login login)
@@ -33,6 +34,10 @@ public class AuthService : IAuth
             throw new BadHttpRequestException("Credenciales no validas");
         var roles = await _userManager.GetRolesAsync(user);
 
+        if (roles.Contains("Alumno"))
+        {
+            throw new UnauthorizedAccessException();
+        }
        
         var authClaims = new List<Claim>()
         {

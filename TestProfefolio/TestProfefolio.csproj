@@ -29,4 +29,9 @@
       <ProjectReference Include="..\profefolio\profefolio.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Controller" />
+      <Folder Include="Service" />
+    </ItemGroup>
+
 </Project>

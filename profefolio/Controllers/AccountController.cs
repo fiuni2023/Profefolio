@@ -65,7 +65,7 @@ public class AccountController : ControllerBase
     {
         var query =  _personasService.GetAll(page, CantPorPage);
 
-        int cantPages = (int)Math.Ceiling((double)_personasService.Count() / CantPorPage);
+        var cantPages = (int)Math.Ceiling((double)_personasService.Count() / CantPorPage);
 
         var result = new DataListDTO<PersonaResultDTO>();
 
@@ -125,7 +125,7 @@ public class AccountController : ControllerBase
             personaOld.Deleted = true;
             personaOld.Modified = DateTime.Now;
             personaOld.ModifiedBy = userId;
-            personaOld.Email = $"deleted.{personaOld.Email}";
+            personaOld.UserName = $"deleted.{personaOld.Id}.{personaOld.Email}";
 
             personaNew.Created = personaOld.Created;
             personaNew.CreatedBy = personaOld.CreatedBy;
