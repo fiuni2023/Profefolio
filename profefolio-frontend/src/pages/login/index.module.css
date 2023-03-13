@@ -1,0 +1,63 @@
+.LoginContainer{
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.LoginPanel{
+    width: 30%;
+    height: 70%;
+    background-color: #DC4843;
+    border-radius: 10px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+.Image{
+    margin-top: 7vh;
+}
+.Loginh3{
+    color: white;
+    margin-top: 8vh;
+}
+
+.LICTextInput{
+    position: relative;
+    border: none;
+    outline: none;
+    background-color: transparent;
+    padding: 10px;
+    color: white;
+    border-bottom: 1.5px solid white;
+    width: 80%;
+}
+::placeholder{
+    color:white;
+    opacity: 0.8;
+}
+:-ms-input-placeholder{
+    color:white;
+}
+::-ms-input-placeholder{
+    color:white;
+}
+
+.LIIcon{
+    position: absolute;
+    right: 5px;
+}
+
+.LButton{
+    margin-top: 2vh;
+}
+
+.Checkbox{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5%;
+    color: white;
+}

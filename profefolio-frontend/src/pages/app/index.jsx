@@ -9,31 +9,36 @@ import Partidos from "../partidos";
 import CreatePartidos from "../partidos/components/create";
 import PartidosEdit from "../partidos/components/edit";
 import PartidosList from "../partidos/components/list";
+import ListarColegios from "../administradorMaster/colegios/ListarColegios";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const App = () => {
+
+    
 
     return (
         <>
             <BrowserRouter>
                 <GeneralProvider>
-                    <div className="page">
-                        <Navbar />
-                        <div className="content">
-                            <SideBar />
-                                    <Routes>
-                                        <Route path="/" element={<>Home</>}/>
-                                        <Route path="/pagina1" element={<Partidos />}>
-                                            <Route path="list" element={<PartidosList />} />
-                                            <Route path='create' element={<CreatePartidos />} />
-                                            <Route path="edit" element={<PartidosEdit />} />
-                                        </Route>
-                                        <Route path="/administrador" element={<Administrador />}>
-                                            <Route path="list" element={<ListAdministrador />}/>
-                                        </Route>
-                                    </Routes>
+                        <div className="page">
+                            <Navbar />
+                            <div className="content">
+                                <SideBar />
+                                        <Routes>
+                                            <Route path="/" element={<>Home</>}/>
+                                            <Route path="/pagina1" element={<Partidos />}>
+                                                <Route path="list" element={<PartidosList />} />
+                                                <Route path='create' element={<CreatePartidos />} />
+                                                <Route path="edit" element={<PartidosEdit />} />
+                                            </Route>
+                                            <Route path="/administrador" element={<Administrador />}>
+                                                <Route path="list" element={<ListAdministrador />}/>
+                                                <Route path="listColegios" element={<ListarColegios />}/>
+                                            </Route>
+                                        </Routes>
+                            </div>
+
                         </div>
-                    </div>
                 </GeneralProvider>
             </BrowserRouter>
             <style jsx='true'>{`
