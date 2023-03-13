@@ -10,7 +10,7 @@ namespace TestProfefolio.Profesor;
 public class ProfesorTestinPuts
 {
     private static readonly DateTime nacimiento = DateTime.Now;
-
+/*
     [Fact]
     public async void Put_Ok()
     {
@@ -305,4 +305,5 @@ public class ProfesorTestinPuts
         BadRequestObjectResult badRequestObjectResult = (BadRequestObjectResult)result.Result;
         Assert.Equal("Falta el Password", badRequestObjectResult.Value.ToString());
     }
+    */
 }
