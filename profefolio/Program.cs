@@ -10,7 +10,7 @@ using profefolio.Services;
 
 
 var builder = WebApplication.CreateBuilder(args);
-ConfigurationManager configuration = builder.Configuration;
+var configuration = builder.Configuration;
 // Add services to the container.
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 //Connection Strings
@@ -57,6 +57,8 @@ builder.Services.AddAuthentication(options =>
 
 //Servicios
 builder.Services.AddScoped<IPersona, PersonasService>();
+builder.Services.AddScoped<IColegio, ColegiosService>();
+builder.Services.AddScoped<IFullColegio, ColegiosFullService>();
 builder.Services.AddScoped<IRol, RolService>();
 builder.Services.AddScoped<IAuth, AuthService>();
 
@@ -69,6 +71,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors("corsapp");
 
 app.UseHttpsRedirection();
 

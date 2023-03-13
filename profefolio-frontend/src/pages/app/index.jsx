@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Navbar from "../../components/Navbar.jsx";
 import SideBar from "../../components/Sidebar.jsx";
@@ -15,18 +15,17 @@ import Login from "../login/index.jsx";
 import ModalAgregarColegios from "../administradorMaster/colegios/ModalAgregarColegios"
 
 const App = () => {
-    const [isLogged, setIsLogged] = useState(false)
+
+    
 
     return (
         <>
             <BrowserRouter>
                 <GeneralProvider>
-                    {
-                        isLogged?
                         <div className="page">
                             <Navbar />
                             <div className="content">
-                                <SideBar handleLogOut = {()=>{setIsLogged(!isLogged)}} />
+                                <SideBar />
                                         <Routes>
                                             <Route path="/" element={<>Home</>}/>
                                             <Route path="/pagina1" element={<Partidos />}>
@@ -43,11 +42,6 @@ const App = () => {
                             </div>
 
                         </div>
-                        :
-                        <>
-                            <Login handleLogin={()=>{setIsLogged(true)}}/>
-                        </>
-                    }
                 </GeneralProvider>
             </BrowserRouter>
             <style jsx='true'>{`

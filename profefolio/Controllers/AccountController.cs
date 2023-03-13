@@ -3,6 +3,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using profefolio.Models.DTOs;
+using profefolio.Models.DTOs.Auth;
 using profefolio.Models.DTOs.Persona;
 using profefolio.Models.Entities;
 using profefolio.Repository;
@@ -11,7 +12,7 @@ using profefolio.Repository;
 namespace profefolio.Controllers;
 
 [Route("api/administrador")]
-[Authorize]
+[Authorize(Roles = "Master")]
 public class AccountController : ControllerBase
 {
     private readonly IMapper _mapper;
@@ -35,6 +36,23 @@ public class AccountController : ControllerBase
         {
             return BadRequest(ModelState);
         }
+
+        if (dto.Nacimiento > DateTime.Now)
+        {
+            return BadRequest("El nacimiento no puede ser mayor a la fecha de hoy");
+        }
+
+        if (dto.Genero == null)
+        {
+            return BadRequest();
+        }
+
+        if (!(dto.Genero.Equals("M") || dto.Genero.Equals("F")))
+        {
+            return BadRequest("Solo se aceptan valores F para femenino y M para masculino");
+        }
+
+        if (dto.Password == null) return BadRequest("Password es requerido");
         var userId = User.Identity.GetUserId();
         var entity = _mapper.Map<Persona>(dto);
         entity.Deleted = false;
@@ -59,17 +77,18 @@ public class AccountController : ControllerBase
 
     [HttpGet]
     [Route("page/{page:int}")]
-    public ActionResult<DataListDTO<PersonaResultDTO>> Get(int page)
+    public async Task<ActionResult<DataListDTO<PersonaResultDTO>>> Get(int page)
     {
-        var query =  _personasService.GetAll(page, CantPorPage);
+        var query = await _personasService
+            .FilterByRol(page, CantPorPage, "Administrador de Colegio");
 
-        int cantPages = (int)Math.Ceiling((double)_personasService.Count() / CantPorPage);
+        var cantPages = (int)Math.Ceiling((double)_personasService.Count() / CantPorPage);
 
         var result = new DataListDTO<PersonaResultDTO>();
 
         var enumerable = query as Persona[] ?? query.ToArray();
         result.CantItems = enumerable.Length;
-        result.CurrentPage = page > cantPages ? cantPages : page;
+        result.CurrentPage = page >= cantPages - 1 ? cantPages - 1 : page;
         result.Next = result.CurrentPage + 1 < cantPages;
         result.DataList = _mapper.Map<List<PersonaResultDTO>>(enumerable.ToList());
         result.TotalPage = cantPages;
@@ -105,29 +124,45 @@ public class AccountController : ControllerBase
 
     [HttpPut]
     [Route("{id}")]
-    public async Task<ActionResult<PersonaResultDTO>> Put(string id, [FromBody] PersonaDTO dto)
+    public async Task<ActionResult<PersonaResultDTO>> Put(string id, [FromBody] PersonaEditDTO dto)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
-        string userId = User.Identity.GetUserId();
-        var personaOld = await _personasService.FindById(id);
-        var personaNew = _mapper.Map<Persona>(dto);
         
-        
-        personaOld.Deleted = true;
-        personaOld.Modified =  DateTime.Now;
-        personaOld.ModifiedBy = userId;
+        if (dto.Nacimiento > DateTime.Now)
+        {
+            return BadRequest("El nacimiento no puede ser mayor a la fecha de hoy");
+        }
 
-        personaNew.Created = personaOld.Created;
-        personaNew.CreatedBy = personaOld.CreatedBy;
-        personaNew.Modified = DateTime.Now;
-        personaNew.ModifiedBy = userId;
+        if (!(dto.Genero.Equals("M") || dto.Genero.Equals("F")))
+        {
+            return BadRequest("Solo se aceptan valores F para femenino y M para masculino");
+        }
 
         try
         {
-            var query = await _personasService.EditProfile(personaOld, personaNew, dto.Password);
+            var persona = await _personasService.FindById(id);
+            
+            var userId = User.Identity.GetUserId();
+
+            if ((!persona.Email.Equals(dto.Email)) && await _personasService.ExistMail(dto.Email))
+            {
+                return BadRequest($"Ya existe el email '{dto.Email}', intente con otro");
+            }
+            
+            MapOldToNew(persona, dto, userId);
+
+            if ((!persona.Email.Equals(dto.Email)) && await _personasService.ExistMail(dto.Email))
+            {
+                return BadRequest("El email nuevo que queres actualizar ya existe");
+            }
+
+            
+            
+            
+            var query = await _personasService.EditProfile(persona);
 
             return Ok(_mapper.Map<PersonaResultDTO>(query));
         }
@@ -136,8 +171,59 @@ public class AccountController : ControllerBase
             Console.WriteLine(e.Message);
             return BadRequest(e.Message);
         }
+        catch (FileNotFoundException e)
+        {
+            Console.WriteLine(e.Message);
+            return NotFound();
+        }
 
     }
 
+    [HttpPut]
+    [Route("change/password/{id}")]
+    public async Task<ActionResult> ChangePassword(string id, [FromBody] ChangePasswordDTO dto)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        try
+        {
+            var personaOld = await _personasService.FindById(id);
+            
+            Console.WriteLine(personaOld.Id);
+
+            if (await _personasService.ChangePassword(personaOld, dto.Password))
+            {
+                return Ok();
+            }
+
+            return BadRequest("No se pudo actualizar");
+        }
+        catch (FileNotFoundException e)
+        {
+            Console.WriteLine(e.Message);
+            return NotFound();
+        }
+    }
+
+    private void MapOldToNew(Persona persona, PersonaEditDTO dto, string userId)
+    {
+        persona.Nombre = dto.Nombre;
+        persona.Apellido = dto.Apellido;
+        persona.Email = dto.Email;
+        persona.EsM = dto.Genero.Equals("M");
+        persona.Nacimiento = dto.Nacimiento;
+        persona.Documento = dto.Documento;
+        persona.Direccion = dto.Direccion;
+        persona.Modified = DateTime.Now;
+        persona.DocumentoTipo = dto.DocumentoTipo;
+        persona.ModifiedBy = userId;
+        persona.PhoneNumber = dto.Telefono;
+        persona.UserName = dto.Email;
+        persona.NormalizedUserName = dto.Email.ToUpper();
+        persona.NormalizedEmail = dto.Email.ToUpper();
+    }
 
 }

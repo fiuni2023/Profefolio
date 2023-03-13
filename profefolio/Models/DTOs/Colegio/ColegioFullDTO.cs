@@ -1,13 +1,20 @@
-﻿namespace profefolio.Models.DTOs.Persona;
+//con atributos de administrador
+namespace profefolio.Models.DTOs.Colegio;
 
-public class PersonaResultDTO
+public class ColegioFullDTO : DataDTO
 {
-    public string? Id
+    public string? Nombre
     {
         get;
         set;
     }
-    public string? Nombre
+
+    public Boolean Estado
+    {
+        get;
+        set;
+    }
+   public string? NombreAdministrador
     {
         get;
         set;
@@ -55,9 +62,4 @@ public class PersonaResultDTO
         set;
     }
 
-    public string? Email
-    {
-        get;
-        set;
-    }
 }
