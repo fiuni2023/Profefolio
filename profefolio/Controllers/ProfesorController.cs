@@ -33,7 +33,11 @@ namespace profefolio.Controllers
         [HttpGet("page/{page:int}")]
         public async Task<ActionResult<DataListDTO<PersonaResultDTO>>> Get(int page)
         {
-            var profesores = await _personasService.GetAllByRol(PROFESOR_ROLE, page, CantPorPage);
+            if(page < 0){
+                return BadRequest("El numero de pagina debe ser mayor que cero");
+            }
+
+            var profesores = await _personasService.FilterByRol(page, CantPorPage, PROFESOR_ROLE);
 
 
             int cantPages = (int)Math.Ceiling((double)profesores.Count() / CantPorPage);
@@ -42,7 +46,7 @@ namespace profefolio.Controllers
 
             var enumerable = profesores as Persona[] ?? profesores.ToArray();
             result.CantItems = enumerable.Length;
-            result.CurrentPage = page > cantPages ? cantPages : page;
+            result.CurrentPage = page >= cantPages - 1 ? cantPages - 1 : page;;
             result.Next = result.CurrentPage + 1 < cantPages;
             result.DataList = _mapper.Map<List<PersonaResultDTO>>(enumerable.ToList());
             result.TotalPage = cantPages;
@@ -85,6 +89,20 @@ namespace profefolio.Controllers
             {
                 return BadRequest(ModelState);
             }
+            if (dto.Nacimiento > DateTime.Now)
+            {
+                return BadRequest("El nacimiento no puede ser mayor a la fecha de hoy");
+            }
+
+            if (dto.Genero == null)
+            {
+                return BadRequest("El genero no puede ser nulo");
+            }
+
+            if (!(dto.Genero.Equals("M") || dto.Genero.Equals("F")))
+            {
+                return BadRequest("Solo se aceptan valores F para femenino y M para masculino");
+            }
 
             if (dto.Password == null)
             {
@@ -102,10 +120,6 @@ namespace profefolio.Controllers
 
             entity.Deleted = false;
             entity.CreatedBy = userId;
-            //Para que el username sea unico
-            /* DateTime now = DateTime.Now;
-            entity.UserName = $"{entity.Email}.{now}";
-            entity.NormalizedUserName = $"{entity.Email.ToUpper()}.{now}"; */
 
             try
             {
@@ -121,7 +135,8 @@ namespace profefolio.Controllers
                 Console.WriteLine(e.Message);
                 return BadRequest($"El email {dto.Email} ya existe");
             }
-            catch(InvalidOperationException e){
+            catch (InvalidOperationException e)
+            {
                 Console.WriteLine(e.Message);
                 return BadRequest("Formato invalido de constraseña. Debe contener mayusculas, minusculas, numeros y caracteres.");
             }
@@ -134,39 +149,46 @@ namespace profefolio.Controllers
             return BadRequest($"Error al crear al Usuario ${dto.Email}");
         }
 
-        /*
+
         [HttpPut("{id}")]
-        public async Task<ActionResult<PersonaResultDTO>> Put(string id, [FromBody] PersonaDTO dto)
+        public async Task<ActionResult<PersonaResultDTO>> Put(string id, [FromBody] PersonaEditDTO dto)
         {
             if (ModelState.IsValid)
             {
+                if (dto.Nacimiento > DateTime.Now)
+                {
+                    return BadRequest("El nacimiento no puede ser mayor a la fecha de hoy");
+                }
+                if (dto.Genero == null)
+                {
+                    return BadRequest("Se tiene que incluir el genero");
+                }
+                if (!(dto.Genero.Equals("M") || dto.Genero.Equals("F")))
+                {
+                    return BadRequest("Solo se aceptan valores F para femenino y M para masculino");
+                }
+                if(dto.Email == null){
+                    return BadRequest("No se mando el email");
+                }
                 try
                 {
-                    if (dto.Password == null) return BadRequest("Password es requerido");
+                    //if (dto.Password == null) return BadRequest("Password es requerido");
+
+                    var persona = await _personasService.FindById(id);
 
                     var userId = User.Identity.GetUserId();
-                    var personaOld = await _personasService.FindById(id);
-                    var personaNew = _mapper.Map<Persona>(dto);
 
-                    personaOld.Deleted = true;
-                    personaOld.Modified = DateTime.Now;
-                    personaOld.ModifiedBy = userId;
-                    personaOld.Email = $"deleted.{personaOld.Email}.{personaOld.Id}";
-                    personaOld.NormalizedEmail = $"DELETED.{personaOld.NormalizedEmail}.{personaOld.Id.ToUpper()}";
+                    MapOldToNew(persona, dto, userId);
+                    //var personaNew = _mapper.Map<Persona>(dto);
 
-                    personaNew.Created = personaOld.Created;
-                    personaNew.CreatedBy = personaOld.CreatedBy;
-                    personaNew.Modified = DateTime.Now;
-                    personaNew.ModifiedBy = userId;
 
-                    //Para que el username sea unico
-                    var now = DateTime.Now.ToOADate();
-                    personaNew.UserName = $"{personaNew.Email}.{now}";
-                    personaNew.NormalizedUserName = $"{personaNew.Email.ToUpper()}.{now}";
+                    if ((!persona.Email.Equals(dto.Email)) && await _personasService.ExistMail(dto.Email))
+                    {
+                        return BadRequest("El email nuevo que queres actualizar ya existe");
+                    }
+                    var query = await _personasService.EditProfile(persona);
 
-                    var query = await _personasService.EditProfile(personaOld, personaNew, dto.Password);
-
-                    return Ok(_mapper.Map<PersonaResultDTO>(query));
+                    return query != null ? Ok(_mapper.Map<PersonaResultDTO>(query)) : BadRequest("Error al actualizar!!!");
                 }
                 catch (FileNotFoundException e)
                 {
@@ -182,8 +204,8 @@ namespace profefolio.Controllers
                 catch (Exception e)
                 {
                     _personasService.Dispose();
-                    Console.WriteLine(e);
-                    return Conflict("Error al tratar de editar el usuario");
+                    Console.WriteLine(e.Message);
+                    return Conflict(e.Message);
                 }
             }
             else
@@ -191,12 +213,83 @@ namespace profefolio.Controllers
                 return BadRequest(ModelState);
             }
         }
-*/
 
+
+        [HttpPut]
+        [Route("change/password/{id}")]
+        public async Task<ActionResult> ChangePassword(string id, [FromBody] Models.DTOs.Auth.ChangePasswordDTO dto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            if (dto.Password == null)
+            {
+                return BadRequest("La contraseña no puede ser nula");
+            }
+            if (dto.ConfirmPassword == null)
+            {
+                return BadRequest("La contraseña de confirmacion no puede ser nula");
+            }
+            if (dto.Password.Length < 8 && dto.ConfirmPassword.Length < 8)
+            {
+                return BadRequest("La contraseña y la  confirmacion de la contraseña tienen que tener por lo menos 8 caracteres.");
+            }
+            try
+            {
+                var personaOld = await _personasService.FindById(id);
+
+                //Console.WriteLine(personaOld.Id);
+
+                if (await _personasService.ChangePassword(personaOld, dto.Password))
+                {
+                    return Ok();
+                }
+
+                return BadRequest("No se pudo actualizar");
+            }
+            catch (InvalidOperationException e)
+            {
+                Console.WriteLine(e.Message);
+                return BadRequest("Formato invalido de constraseña. Debe contener mayusculas, minusculas, numeros y caracteres.");
+            }
+            catch (FileNotFoundException e)
+            {
+                Console.WriteLine(e.Message);
+                return NotFound();
+            }
+        }
         [HttpDelete("{id}")]
         public async Task<ActionResult<PersonaResultDTO>> Delete(string id)
         {
-            return await _personasService.DeleteUser(id) ? Ok() : NotFound();
+            try
+            {
+                bool result = await _personasService.DeleteUser(id);
+                return result ? Ok() : NotFound();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return NotFound();
+            }
+        }
+
+        private void MapOldToNew(Persona persona, PersonaEditDTO dto, string userId)
+        {
+            persona.Nombre = dto.Nombre;
+            persona.Apellido = dto.Apellido;
+            persona.Email = dto.Email;
+            persona.EsM = dto.Genero.Equals("M");
+            persona.Nacimiento = dto.Nacimiento;
+            persona.Documento = dto.Documento;
+            persona.Direccion = dto.Direccion;
+            persona.Modified = DateTime.Now;
+            persona.DocumentoTipo = dto.DocumentoTipo;
+            persona.ModifiedBy = userId;
+            persona.PhoneNumber = dto.Telefono;
+            persona.UserName = dto.Email;
+            persona.NormalizedUserName = dto.Email.ToUpper();
+            persona.NormalizedEmail = dto.Email.ToUpper();
         }
     }
 }
