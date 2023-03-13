@@ -134,6 +134,7 @@ namespace profefolio.Controllers
             return BadRequest($"Error al crear al Usuario ${dto.Email}");
         }
 
+        /*
         [HttpPut("{id}")]
         public async Task<ActionResult<PersonaResultDTO>> Put(string id, [FromBody] PersonaDTO dto)
         {
@@ -190,7 +191,7 @@ namespace profefolio.Controllers
                 return BadRequest(ModelState);
             }
         }
-
+*/
 
         [HttpDelete("{id}")]
         public async Task<ActionResult<PersonaResultDTO>> Delete(string id)
