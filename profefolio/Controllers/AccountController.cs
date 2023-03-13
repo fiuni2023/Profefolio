@@ -1,5 +1,4 @@
-﻿using System.Xml;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -147,6 +146,11 @@ public class AccountController : ControllerBase
             var persona = await _personasService.FindById(id);
             
             var userId = User.Identity.GetUserId();
+
+            if ((!persona.Email.Equals(dto.Email)) && await _personasService.ExistMail(dto.Email))
+            {
+                return BadRequest($"Ya existe el email '{dto.Email}', intente con otro");
+            }
             
             MapOldToNew(persona, dto, userId);
 

@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using profefolio.Models;
 using profefolio.Models.Entities;
 using profefolio.Repository;
 
