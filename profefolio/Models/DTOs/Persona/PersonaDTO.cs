@@ -60,6 +60,9 @@ public class PersonaDTO
         get;
         set;
     }
+    
+    [RegularExpression(@"^.*(?=.{8,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$", 
+        ErrorMessage = "Se requiere como minimo: longitud de 8, letras mayusculas y minusculas, numero y caracter no Alfanumerico ")]
 
     [Required(ErrorMessage = "la contraseña es requerida")]
     public string? Password
