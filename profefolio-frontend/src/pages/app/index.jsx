@@ -6,17 +6,17 @@ import { GeneralProvider} from "../../context/GeneralContext";
 import Administrador from "../administrador/index.jsx";
 import ListAdministrador from "../administrador/pages/list/index.jsx";
 
-import ProfesorList from "../administrador/profesor/list/index.jsx";
+import ProfesorList from "../profesor/list/index.jsx";
 import Partidos from "../partidos";
 import CreatePartidos from "../partidos/components/create";
 import PartidosEdit from "../partidos/components/edit";
 import PartidosList from "../partidos/components/list";
 
-import CreateProfesor from "../administrador/profesor/components/CreateProfesor.jsx";
+import CreateProfesor from "../profesor/components/create/CreateProfesor.jsx";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 
-import Profesor  from "../administrador/profesor/index.jsx";
+import Profesor  from "../profesor/index.jsx";
 
 const App = () => {
 

@@ -1,7 +1,9 @@
 import React, { useState } from "react";
-import { ButtonInput, SelectInput, TextInput } from "../../../../components/Inputs.jsx";
-import { PanelContainerBG } from "../../../../components/Layout.jsx";
-import { Table } from "../../../../components/Table.jsx"
+import { ButtonInput, SelectInput, TextInput } from "../../../components/Inputs.jsx";
+
+import   {PanelContainerBG} from "../../../components/Layout.jsx" ;
+
+import { Table } from "../../../components/Table.jsx"
 
 const ProfesorList = () => {
     const [text, setText] = useState("")

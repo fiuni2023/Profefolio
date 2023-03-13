@@ -2,7 +2,7 @@
 
 import { Form, InputGroup, Row, Button } from 'react-bootstrap';
 
-import NavCreate  from '../../../../components/NavCreate';
+import NavCreate  from '../NavCreate.jsx';
 
 function CreateProfesor() {
   return (

@@ -5,9 +5,7 @@ import { AiOutlinePlus } from 'react-icons/ai'
 import { Table } from "../../../../components/Table";
 import LACreateModal from "../../components/CreateModal";
 
-import NavAdmin from "../../../../components/NavAdmin";
-
-
+import NavAdmin from "../../../profesor/components/NavAdmin";
 
 const ListAdministrador = () => {
 

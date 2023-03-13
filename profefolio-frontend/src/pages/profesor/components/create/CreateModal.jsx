@@ -37,8 +37,29 @@ const CreateModal = props => {
 
           <Form>
       <Form.Group className="mb-3" controlId="formBasicEmail">
-        <Form.Label>Email address</Form.Label>
-        <Form.Control type="email" placeholder="Enter email" />
+        <Form.Label>Nombre y Apellido</Form.Label>
+        <Form.Control type="name" placeholder="Nombre y apellido" />
+
+        <Form.Label>Ci</Form.Label>
+        <Form.Control type="name" placeholder="Ci" />
+
+        <Form.Label>Correo</Form.Label>
+        <Form.Control type="Correo" placeholder="ingresar correo" />
+
+        <Form.Label>Telefono</Form.Label>
+        <Form.Control type="Correo" placeholder="Telefono" />
+
+
+        <Form.Label>Correo electronico</Form.Label>
+        <Form.Control type="Correo" placeholder="Telefono" />
+
+        <Form.Label>Fecha de nacimiento</Form.Label>
+        <Form.Control type="Correo" placeholder="Telefono" />
+
+        <Form.Label>Genero</Form.Label>
+        <Form.Control type="Correo" placeholder="Telefono" />
+
+
         <Form.Text className="text-muted">
           We'll never share your email with anyone else.
         </Form.Text>

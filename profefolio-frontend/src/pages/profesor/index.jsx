@@ -1,12 +1,10 @@
 import React, { useState } from "react";
-import { PanelContainerBG } from "../../../components/LayoutAdmin.jsx";
-import { Table } from "../../../components/Table";
-import NavAdmin from "../../../components/NavAdmin";
-import {Link } from "react-router-dom";
+import { PanelContainerBG } from "./components/LayoutAdmin.jsx";
+import { Table } from "../../components/Table.jsx";
+import NavAdmin from "./components/NavAdmin.jsx";
+import CreateModal from "./components/create/CreateModal.jsx";
 
-import CreateModal from "./components/CreateModal.jsx";
-
-import "./components/Index.css";
+import "./components/create/Index.css";
 
 
 import {BsTrash , BsPencilFill, BsInfoCircle,BsFillPlusCircleFill} from 'react-icons/bs';
