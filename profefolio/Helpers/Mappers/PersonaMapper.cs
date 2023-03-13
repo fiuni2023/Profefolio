@@ -47,7 +47,23 @@ public class PersonaMapper : Profile
                 opt => opt.MapFrom(
                     src => src.PhoneNumber));
 
-
+        CreateMap<PersonaEditDTO, Persona>()
+            .ForMember(dest => dest.Id,
+                opt => opt.Ignore())
+            .ForMember(dest => dest.Modified,
+                opt => opt.MapFrom(
+                    src => DateTime.Now))
+            .ForMember(dest => dest.Modified,
+                opt => opt.Ignore())
+            .ForMember(dest => dest.ModifiedBy,
+                opt => opt.Ignore())
+            .ForMember(dest => dest.EsM,
+                opt => opt.MapFrom(
+                    src => src.Genero != null && src.Genero.Equals("M")
+                ))
+            .ForMember(dest => dest.PhoneNumber,
+                opt => opt.MapFrom(
+                    src => src.Telefono));
 
     }
 }
