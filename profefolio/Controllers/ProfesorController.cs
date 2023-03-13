@@ -151,6 +151,7 @@ namespace profefolio.Controllers
                     personaOld.Modified = DateTime.Now;
                     personaOld.ModifiedBy = userId;
                     personaOld.Email = $"deleted.{personaOld.Email}.{personaOld.Id}";
+                    personaOld.NormalizedEmail = $"DELETED.{personaOld.NormalizedEmail}.{personaOld.Id.ToUpper()}";
 
                     personaNew.Created = personaOld.Created;
                     personaNew.CreatedBy = personaOld.CreatedBy;
