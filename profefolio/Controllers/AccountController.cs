@@ -147,7 +147,11 @@ public class AccountController : ControllerBase
             
             var userId = User.Identity.GetUserId();
 
-            if ((!persona.Email.Equals(dto.Email)) && await _personasService.ExistMail(dto.Email))
+            var existMail =await  _personasService.ExistMail(dto.Email);
+
+            var isEqual = dto.Email.Equals(persona.Email);
+
+            if (!isEqual && existMail)
             {
                 return BadRequest($"Ya existe el email '{dto.Email}', intente con otro");
             }
@@ -158,7 +162,6 @@ public class AccountController : ControllerBase
             {
                 return BadRequest("El email nuevo que queres actualizar ya existe");
             }
-
             
             
             
