@@ -33,7 +33,6 @@ const App = () => {
                                             </Route>
                                             <Route path="/administrador" element={<Administrador />}>
                                                 <Route path="list" element={<ListAdministrador />}/>
-                                                <Route path="listColegios" element={<ListarColegios />}/>
                                             </Route>
                                         </Routes>
                             </div>

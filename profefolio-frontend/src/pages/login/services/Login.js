@@ -9,4 +9,5 @@ const PostLogin = async (mail, password)=>{
     return result.status === 200? result : null
 }
 
-export default { PostLogin }
+const LoginService = { PostLogin }
+export default LoginService

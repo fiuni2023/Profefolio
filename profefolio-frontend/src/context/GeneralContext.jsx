@@ -16,12 +16,21 @@ export const GeneralProvider = ({children}) => {
     const [isLogged, setIsLogged] = useState(localStorage.getItem('loginData')? true : false)
     
 
-    console.log(localStorage.getItem('loginData'))
-
     const getLoginData = () => {
         if(localStorage.getItem('loginData')? true : false) return JSON.parse(localStorage.getItem('loginData'))
         if(sessionStorage.getItem('loginData')? true : false) return JSON.parse(sessionStorage.getItem('loginData')) 
         return null
+    }
+
+    const depricateLoginData = () => {
+        if(localStorage.getItem('loginData')? true : false) localStorage.removeItem('loginData')
+        if(sessionStorage.getItem('loginData')? true : false) sessionStorage.removeItem('loginData')
+    }
+
+    const verifyToken = () => {
+        const expire = new Date(getLoginData()?.expires)
+        const now = new Date()
+        if(now>expire) depricateLoginData()
     }
 
     const getToken = () => {
@@ -38,6 +47,8 @@ export const GeneralProvider = ({children}) => {
         getLoginData,
         getToken
     }
+
+    verifyToken()
 
     return (
         <GeneralContext.Provider value={values}>
