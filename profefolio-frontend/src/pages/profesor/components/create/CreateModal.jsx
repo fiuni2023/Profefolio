@@ -1,97 +1,139 @@
-import React, { useEffect } from "react";
-import ReactDOM from "react-dom";
-import { CSSTransition } from "react-transition-group";
-import "./Modal.css";
-import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
+import React, { useState } from 'react';
+import { Button, Modal, Form } from 'react-bootstrap';
 
+function CreateModal() {
+  const [showModal, setShowModal] = useState(false);
+  const [formValues, setFormValues] = useState({
+    nombre: '',
+    apellido: '',
+    documento: '',
+    documentoTipo: '',
+    password: '',
+    confirmPassword: '',
+    email: '',
+  });
 
-const CreateModal = props => {
-
-   
-  const closeOnEscapeKeyDown = e => {
-    if ((e.charCode || e.keyCode) === 27) {
-      props.onClose();
-    }
+  const handleCloseModal = () => setShowModal(false);
+  const handleShowModal = () => setShowModal(true);
+  const handleFormChange = (event) => {
+    const { name, value } = event.target;
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      [name]: value,
+    }));
+  };
+  const handleFormSubmit = (event) => {
+    event.preventDefault();
+    console.log('Formulario enviado:', formValues);
+    handleCloseModal();
   };
 
-  useEffect(() => {
-    document.body.addEventListener("keydown", closeOnEscapeKeyDown);
-    return function cleanup() {
-      document.body.removeEventListener("keydown", closeOnEscapeKeyDown);
-    };
-  }, []);
-
-  return ReactDOM.createPortal(
-    <CSSTransition
-      in={props.show}
-      unmountOnExit
-      timeout={{ enter: 0, exit: 300 }}
-    >
-      <div className="modal" onClick={props.onClose}>
-        <div className="modal-content" onClick={e => e.stopPropagation()}>
-          <div className="modal-header">
-            <h4 className="modal-title">{props.title}</h4>
-          </div>
-          <div className="modal-body">
-
-          <Form>
-      <Form.Group className="mb-3" controlId="formBasicEmail">
-        <Form.Label>Nombre y Apellido</Form.Label>
-        <Form.Control type="name" placeholder="Nombre y apellido" />
-
-        <Form.Label>Ci</Form.Label>
-        <Form.Control type="name" placeholder="Ci" />
-
-        <Form.Label>Correo</Form.Label>
-        <Form.Control type="Correo" placeholder="ingresar correo" />
-
-        <Form.Label>Telefono</Form.Label>
-        <Form.Control type="Correo" placeholder="Telefono" />
-
-
-        <Form.Label>Correo electronico</Form.Label>
-        <Form.Control type="Correo" placeholder="Telefono" />
-
-        <Form.Label>Fecha de nacimiento</Form.Label>
-        <Form.Control type="Correo" placeholder="Telefono" />
-
-        <Form.Label>Genero</Form.Label>
-        <Form.Control type="Correo" placeholder="Telefono" />
-
-
-        <Form.Text className="text-muted">
-          We'll never share your email with anyone else.
-        </Form.Text>
-      </Form.Group>
-
-      <Form.Group className="mb-3" controlId="formBasicPassword">
-        <Form.Label>Password</Form.Label>
-        <Form.Control type="password" placeholder="Password" />
-      </Form.Group>
-      <Form.Group className="mb-3" controlId="formBasicCheckbox">
-        <Form.Check type="checkbox" label="Check me out" />
-      </Form.Group>
-      <Button variant="primary" type="submit">
-        Submit
+  return (
+    <>
+      <Button variant="primary" onClick={handleShowModal}>
+        Abrir modal
       </Button>
-    </Form>
+
+      <Modal show={showModal} onHide={handleCloseModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Formulario</Modal.Title>
+        </Modal.Header>
+
+        <Modal.Body>
+          <Form onSubmit={handleFormSubmit}>
+            <Form.Group className="row">
+              <Form.Label className="col-sm-3">Nombre:</Form.Label>
+              <div className="col-sm-9">
+                <Form.Control
+                  type="text"
+                  name="nombre"
+                  value={formValues.nombre}
+                  onChange={handleFormChange}
+                  placeholder="Ingrese su nombre"
+                />
+              </div>
+            </Form.Group>
+            
+
+            <Form.Group className="row">
+              <Form.Label className="col-sm-3">Apellido:</Form.Label>
+              <div className="col-sm-9">
+                <Form.Control
+                  type="text"
+                  name="apellido"
+                  value={formValues.apellido}
+                  onChange={handleFormChange}
+                  placeholder="Ingrese su apellido"
+                />
+              </div>
+            </Form.Group>
+
+            <Form.Group className="row">
+              <Form.Label className="col-sm-3">Documento:</Form.Label>
+              <div className="col-sm-9">
+                <Form.Control
+                  type="text"
+                  name="documento"
+                  value={formValues.documento}
+                  onChange={handleFormChange}
+                  placeholder="Ingrese su documento"
+                />
+              </div>
+            </Form.Group>
+
+            <Form.Group className="row">
+              <Form.Label className="col-sm-3">Tipo de documento:</Form.Label>
+              <div className="col-sm-9">
+                <Form.Control
+                  as="select"
+                  name="documentoTipo"
+                  value={formValues.documentoTipo}
+                  onChange={handleFormChange}
+                >
+                  <option value="">Seleccione un tipo</option>
+                  <option value="dni">DNI</option>
+                  <option value="cedula">Cédula</option>
+                  <option value="pasaporte">Pasaporte</option>
+                </Form.Control>
+              </div>
+            </Form.Group>
+
+            <Form.Group className="row">
+              <Form.Label className="col-sm-3">Contraseña:</Form.Label>
+              <div className="col-sm-9">
+                <Form.Control
+                  type="password"
+                  name="password"
+                  value={formValues.password}
+                  onChange={handleFormChange}
+                  placeholder="Ingrese su contraseña"
+                />
+              </div>
+            </Form.Group>
+
+            <Form.Group className="row">
+              <Form.Label className="col-sm-3">Confirmar contraseña:</Form.Label>
+              <div className="col-sm-9">
+                <Form.Control
+                  type="password"
+                  name="confirmPassword"
+                  value={formValues.confirmPassword}
+                  onChange={handleFormChange}
+                  placeholder="Confirme su contraseña"
+                />
+
+                </div>
 
 
-          </div>
-         
-         
-          <div className="modal-footer">
-            <button onClick={props.onClose} className="button">
-              Close
-            </button>
-          </div>
-        </div>
-      </div>
-    </CSSTransition>,
-    document.getElementById("root")
-  );
-};
+
+              </Form.Group>
+
+              </Form>
+              </Modal.Body>
+              </Modal>
+            </>
+
+  )}
 
 
-export default CreateModal;
+  export default CreateModal;

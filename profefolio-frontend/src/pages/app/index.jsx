@@ -52,6 +52,8 @@ const App = () => {
                                         </Route>
                                     </Routes>
                         </div>
+
+                        </div>
                 </GeneralProvider>
             </BrowserRouter>
             <style jsx='true'>{`
