@@ -2,7 +2,7 @@ import React from 'react'
 import { Modal, Button } from 'react-bootstrap'
 import "./ModalAgregarColegios.css"
 import { BsFillPlusCircleFill } from "react-icons/bs"
-function ModalDialog() {
+function ModalDialog() { 
     const [isShow, invokeModal] = React.useState(false)
     const initModal = () => {
         return invokeModal(!false)
