@@ -91,7 +91,9 @@ public class PersonasService : IPersona
     public async Task<Persona> EditProfile(Persona p)
     {
         await _userManager.UpdateAsync(p);
-        var query = await _userManager.FindByEmailAsync(p.Email);
+        var query = await _userManager.Users
+            .Where(x => !x.Deleted && x.Email.Equals(p.Email))
+            .FirstAsync();
         return query;
     }
 
@@ -133,7 +135,9 @@ public class PersonasService : IPersona
 
     public async Task<bool> ExistMail(string email)
     {
-        var query = await _userManager.FindByEmailAsync(email);
+        var query = await _userManager.Users
+            .Where(p => !p.Deleted && p.Email.Equals(email))
+            .FirstOrDefaultAsync();
 
         return query is { Deleted: false };
     }
