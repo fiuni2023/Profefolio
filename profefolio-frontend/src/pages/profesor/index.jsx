@@ -109,7 +109,6 @@ function Profesores() {
             <footer>
              <div className="NButtonForSideA "> 
              <button className="buttonNavBarAa">  
-            <button  className="buttonNavBarA" onClick={() => setShow(true)}><BsFillPlusCircleFill/></button>
             <CreateModal title="My Modal" onClose={() => setShow(false)} show={show}>
             </CreateModal>
 

@@ -1,7 +1,17 @@
 import React, { useState } from 'react';
 import { Button, Modal, Form } from 'react-bootstrap';
 
+import {BsFillPlusCircleFill} from 'react-icons/bs';
+
 function CreateModal() {
+
+  
+
+  // Función para abrir el modal
+ 
+
+  // Función para cerrar el modal
+ 
   const [showModal, setShowModal] = useState(false);
   const [formValues, setFormValues] = useState({
     nombre: '',
@@ -11,7 +21,17 @@ function CreateModal() {
     password: '',
     confirmPassword: '',
     email: '',
+
+    nacimiento: '',
+    genero: '',
+    direccion: '',
+    telefono: '',
+  
   });
+
+  function closeModal() {
+    setShowModal(false);
+  }
 
   const handleCloseModal = () => setShowModal(false);
   const handleShowModal = () => setShowModal(true);
@@ -30,9 +50,16 @@ function CreateModal() {
 
   return (
     <>
-      <Button variant="primary" onClick={handleShowModal}>
-        Abrir modal
+
+    <div className='NButtonForSideA'>
+    <div className="buttonNavBarAa">
+      <Button className="buttonNavBarA" onClick={handleShowModal}>
+      <BsFillPlusCircleFill/>
       </Button>
+      </div>
+      </div>
+
+      {showModal && (
 
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
@@ -69,6 +96,30 @@ function CreateModal() {
             </Form.Group>
 
             <Form.Group className="row">
+              <Form.Label className="col-sm-3">Fecha de nacimiento:</Form.Label>
+              <div className="col-sm-9">
+                <Form.Control
+                  type="datetime"
+                  name="nacimiento"
+                  value={formValues.nacimiento}
+                  onChange={handleFormChange}
+                />
+              </div>
+            </Form.Group>
+
+            <Form.Group className="row">
+              <Form.Label className="col-sm-3">Genero:</Form.Label>
+              <div className="col-sm-9">
+                <Form.Control
+                  type="text"
+                  name="genero"
+                  value={formValues.genero}
+                  onChange={handleFormChange}
+                />
+              </div>
+            </Form.Group>
+
+            <Form.Group className="row">
               <Form.Label className="col-sm-3">Documento:</Form.Label>
               <div className="col-sm-9">
                 <Form.Control
@@ -95,6 +146,30 @@ function CreateModal() {
                   <option value="cedula">Cédula</option>
                   <option value="pasaporte">Pasaporte</option>
                 </Form.Control>
+              </div>
+            </Form.Group>
+
+            <Form.Group className="row">
+              <Form.Label className="col-sm-3">Telefono:</Form.Label>
+              <div className="col-sm-9">
+                <Form.Control
+                  type="number"
+                  name="telefono"
+                  value={formValues.telefono}
+                  onChange={handleFormChange}
+                />
+              </div>
+            </Form.Group>
+
+            <Form.Group className="row">
+              <Form.Label className="col-sm-3">Direccion:</Form.Label>
+              <div className="col-sm-9">
+                <Form.Control
+                  type="text"
+                  name="direccion"
+                  value={formValues.direccion}
+                  onChange={handleFormChange}
+                />
               </div>
             </Form.Group>
 
@@ -128,9 +203,80 @@ function CreateModal() {
 
               </Form.Group>
 
+              
+              <div class="modal-footer">
+
+       <button type="button" class="btn btn-primary">Guardar cambios</button>
+        <Button type="button" class="btn btn-secondary"  className="button" onClick={closeModal}> Cerrar</Button>
+       
+      </div>
+
               </Form>
               </Modal.Body>
               </Modal>
+
+      )}
+
+<style jsx='true'>{`
+            .page{
+                display: grid;
+                grid-template-rows: 5% 95%;
+                width: 100%;
+                height: 100vh;
+            }
+            .content{
+                width: 100%;
+                height: 100%;
+            }
+            
+            .NavbarA{
+                width: 100%;
+                height: 100%;
+                background-color:  #F0544F;
+                display: flex;
+                background-color: #F0544F;
+            }
+            .NButtonForSideA{
+               
+            }
+            .buttonNavBarA{
+                width: 100%;
+                height: 100%;
+                outline: none;
+                border: none;
+                background-color: #FFFFFF;
+                font-size: 50px;
+                color: #F0544F;
+            }
+
+            .buttonNavBarAa{
+                outline: none;
+                border: none;
+                background-color: #FFFFFF;
+                font-size: 20px;
+                color: black;
+            }
+            .navbarmainAd{
+                width: 97.5%;
+                display: flex;
+                justify-content: space-between;
+            }
+
+            .CustomTable{
+                width: 100%;
+                border-spacing: 0px;
+            }
+            .CustomTable>thead>tr>th{
+                border: 1px solid black;
+                padding-left: 5px;
+            }
+            .CustomTable>tbody>tr>td{
+                text-align: center;
+                border: 1px solid black;
+            }
+
+            
+            `}</style>
             </>
 
   )}
