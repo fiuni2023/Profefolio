@@ -70,19 +70,26 @@ namespace profefolio.Controllers
 
         // PUT: api/Colegios/1
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        // CUANDO SE edita SE CAMBIA SU ID ORIGINAL A ID+1
+        // 
         // una solicitud PUT requiere que el cliente envíe toda la entidad actualizada, no solo los cambios.
         [HttpPut("{id}")]
         public async Task<IActionResult> PutColegio(int id, ColegioDTO colegio)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest("Objeto No valido");
             }
-            /*if (id != colegio.Id)
+            if (colegio.PersonaId == null)
             {
-                return BadRequest("No se encuentra el colegio a editar.");
-            }*/
+                return BadRequest("Administrador No valido");
+            }
+            
+            //VERIFICAR ID
+            var persona = await _colegioService.FindByPerson(colegio.PersonaId);
+             if (persona == null)
+            {
+                return BadRequest($"No existe el administrador con id ${colegio.PersonaId}.");
+            }
             var p = await _colegioService.FindById(id);
             if (p == null)
             {
