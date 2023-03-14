@@ -158,7 +158,6 @@ public class AccountController : ControllerBase
             {
                 return BadRequest("El email nuevo que queres actualizar ya existe");
             }
-
             
             
             

@@ -104,6 +104,8 @@ public class PersonasService : IPersona
             return false;
         }
 
+        query.UserName = $"deleted.{query.Id}.{query.UserName}";
+        query.NormalizedUserName = query.UserName.ToUpper();
         query.Deleted = true;
 
         await _userManager.UpdateAsync(query);
@@ -133,11 +135,7 @@ public class PersonasService : IPersona
     {
         var query = await _userManager.FindByEmailAsync(email);
 
-        return query switch
-        {
-            null => false,
-            _ => !query.Deleted
-        };
+        return query is { Deleted: false };
     }
 
 
