@@ -16,19 +16,33 @@ public class ApplicationDbContext : IdentityDbContext<Persona>
     {
         base.OnModelCreating(modelBuilder);
         
-        Persona user = new Persona()
+        var user = new Persona()
         {
             Email = "Carlos.Torres123@mail.com",
-            NormalizedEmail = "CARLOS.TORRES@123MAIL.COM",
+            NormalizedEmail = "CARLOS.TORRES123@MAIL.COM",
             Apellido = "Torres",
             Nombre = "Carlos",
             Deleted = false,
-            Nacimiento = new DateTime(1999, 07, 10).ToUniversalTime()
+            Nacimiento = new DateTime(1999, 07, 10).ToUniversalTime(),
+            EsM = true
 
         };
 
         var hasher = new PasswordHasher<Persona>();
         user.PasswordHash = hasher.HashPassword(user, "Carlos.Torres123");
+
+        var administrador = new Persona()
+        {
+            Email = "Juan.Martinez123@mail.com",
+            NormalizedEmail = "JUAN.MARTINEZ123@MAIL.COM",
+            Apellido = "Martinez",
+            Nombre = "Juan",
+            Deleted = false,
+            Nacimiento = new DateTime(1999, 07, 10).ToUniversalTime(),
+            EsM = true
+        };
+
+        administrador.PasswordHash = hasher.HashPassword(administrador, "Juan.Martinez123");
 
         var rolMaster = new IdentityRole()
         {
@@ -59,6 +73,12 @@ public class ApplicationDbContext : IdentityDbContext<Persona>
             UserId = user.Id,
             RoleId = rolMaster.Id
         };
+
+        var administradorRol = new IdentityUserRole<string>()
+        {
+            UserId = administrador.Id,
+            RoleId = rolAdministrador.Id
+        };
         
 
         modelBuilder.Entity<IdentityRole>()
@@ -75,11 +95,11 @@ public class ApplicationDbContext : IdentityDbContext<Persona>
 
         modelBuilder.Entity<Persona>()
             .HasData(
-                user
+                user, administrador
             );
 
         modelBuilder.Entity<IdentityUserRole<string>>()
-            .HasData(identityUserRole);
+            .HasData(identityUserRole, administradorRol);
 
     }
 

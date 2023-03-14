@@ -10,5 +10,4 @@ public interface IRepository<T> : IDisposable
     int Count();
     bool Exist();
 
-   
 }
