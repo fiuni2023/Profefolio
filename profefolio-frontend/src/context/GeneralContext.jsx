@@ -14,6 +14,7 @@ export const GeneralProvider = ({children}) => {
     const [currentPage, setCurrentPage] = useState(location.pathname)
     const [showSB, setShowSB] = useState(false)
     const [isLogged, setIsLogged] = useState(localStorage.getItem('loginData')? true : false)
+    
 
     console.log(localStorage.getItem('loginData'))
 
@@ -23,6 +24,10 @@ export const GeneralProvider = ({children}) => {
         return null
     }
 
+    const getToken = () => {
+        return getLoginData().token
+    }
+
     const values = {
         currentPage, 
         setCurrentPage,
@@ -30,7 +35,8 @@ export const GeneralProvider = ({children}) => {
         setShowSB,
         isLogged,
         setIsLogged,
-        getLoginData
+        getLoginData,
+        getToken
     }
 
     return (
