@@ -2,7 +2,35 @@ import React from 'react'
 import { Modal, Button } from 'react-bootstrap'
 import "./ModalAgregarColegios.css"
 import { BsFillPlusCircleFill } from "react-icons/bs"
-function ModalDialog() { 
+import axios from "axios";
+function ModalDialog() {
+    /*
+    var axios = require('axios');
+    var data = JSON.stringify({
+        "id": 0,
+        "nombre": "Marcelina Bogado",
+        "estado": true,
+        "personaId": "7971f2c0-bf27-44a3-b3cb-239ed21eab4a"
+    });
+
+    var config = {
+        method: 'post',
+        url: 'https://localhost:7063/api/Colegios',
+        headers: {
+            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiQ2FybG9zLlRvcnJlczEyM0BtYWlsLmNvbSIsImp0aSI6IjFiOWRjZTExLWNlZjQtNGI0Ny05MTRhLThjOWM0OWM0Nzc3NiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6Ik1hc3RlciIsImV4cCI6MTY3ODc3MzgwOCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MDAwIiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo0MjAwIn0.TBGSrTUNbwoZEWXR4yd4uWR3W6Y_bgr9F3XCOIycHUI',
+            'Content-Type': 'application/json'
+        },
+        data: data
+    };
+
+    axios(config)
+        .then(function (response) {
+            console.log(JSON.stringify(response.data));
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+        */
     const [isShow, invokeModal] = React.useState(false)
     const initModal = () => {
         return invokeModal(!false)
