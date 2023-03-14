@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import { Button, Modal, Form } from 'react-bootstrap';
 
 import {BsFillPlusCircleFill} from 'react-icons/bs';
@@ -6,28 +7,53 @@ import {BsFillPlusCircleFill} from 'react-icons/bs';
 function CreateModal() {
 
   
+  const [nombre, setNombre] = useState('');
+  const [apellido, setApellido] = useState('');
+  const [documento, setDocumento] = useState('');
+  const [documentoTipo, setDocumentoTipo] = useState('');
+  const [password, setPasswordo] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [email, setEmail] = useState('');
+  const [nacimiento, setNacimiento] = useState('');
+  const [genero, setGenero] = useState('');
+  const [direccion, setDireccion] = useState('');
+  const [telefono, setTelefono] = useState('');
 
-  // Función para abrir el modal
- 
+  const [success, setSuccess] = useState(false);
 
-  // Función para cerrar el modal
+  const handleSubmit = event => {
+
+    
+
+    event.preventDefault();
+
+    axios.post('https://localhost:7063/api/profesor', {
+      nombre,
+      apellido,
+      documento,
+      documentoTipo,
+      password,
+      confirmPassword,
+      email,
+      nacimiento,
+      genero,
+      direccion,
+      telefono,
+    }, {
+      headers: {
+        Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoibHVsbGFwZXJlekBnbWFpbC5jb20iLCJqdGkiOiJhOTZjOWE1NS1kMTk4LTRlNzMtOTQxNC1jMzVjMmU4M2Q2YTgiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJQcm9mZXNvciIsImV4cCI6MTY3ODgzNjE3MiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MDAwIiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo0MjAwIn0.yfpAQ7b0xwKmZCSLYvJGOaWYG1SXplu0Erd99jh-Gts',
+      
+      }
+    })
+    .then(response => {
+      console.log(response.data);
+    })
+    .catch(error => {
+      console.error(error);
+    });
+  };
  
   const [showModal, setShowModal] = useState(false);
-  const [formValues, setFormValues] = useState({
-    nombre: '',
-    apellido: '',
-    documento: '',
-    documentoTipo: '',
-    password: '',
-    confirmPassword: '',
-    email: '',
-
-    nacimiento: '',
-    genero: '',
-    direccion: '',
-    telefono: '',
-  
-  });
 
   function closeModal() {
     setShowModal(false);
@@ -35,18 +61,8 @@ function CreateModal() {
 
   const handleCloseModal = () => setShowModal(false);
   const handleShowModal = () => setShowModal(true);
-  const handleFormChange = (event) => {
-    const { name, value } = event.target;
-    setFormValues((prevValues) => ({
-      ...prevValues,
-      [name]: value,
-    }));
-  };
-  const handleFormSubmit = (event) => {
-    event.preventDefault();
-    console.log('Formulario enviado:', formValues);
-    handleCloseModal();
-  };
+  
+ 
 
   return (
     <>
@@ -66,16 +82,19 @@ function CreateModal() {
           <Modal.Title>Formulario</Modal.Title>
         </Modal.Header>
 
+
         <Modal.Body>
-          <Form onSubmit={handleFormSubmit}>
+        {success && <p>Producto guardado exitosamente.</p>}
+          <Form onSubmit={handleSubmit}>
             <Form.Group className="row">
-              <Form.Label className="col-sm-3">Nombre:</Form.Label>
+              <Form.Label className="col-sm-3">Nombre:
+                     
+              </Form.Label>
               <div className="col-sm-9">
                 <Form.Control
                   type="text"
-                  name="nombre"
-                  value={formValues.nombre}
-                  onChange={handleFormChange}
+                  value={nombre}
+                  onChange={event => setNombre(event.target.value)}
                   placeholder="Ingrese su nombre"
                 />
               </div>
@@ -87,9 +106,8 @@ function CreateModal() {
               <div className="col-sm-9">
                 <Form.Control
                   type="text"
-                  name="apellido"
-                  value={formValues.apellido}
-                  onChange={handleFormChange}
+                  value={apellido}
+                  onChange={event => setApellido(event.target.value)}
                   placeholder="Ingrese su apellido"
                 />
               </div>
@@ -101,8 +119,8 @@ function CreateModal() {
                 <Form.Control
                   type="datetime"
                   name="nacimiento"
-                  value={formValues.nacimiento}
-                  onChange={handleFormChange}
+                  value={nacimiento}
+                  onChange={event => setNacimiento(event.target.value)}
                 />
               </div>
             </Form.Group>
@@ -113,8 +131,8 @@ function CreateModal() {
                 <Form.Control
                   type="text"
                   name="genero"
-                  value={formValues.genero}
-                  onChange={handleFormChange}
+                  value={genero}
+                  onChange={event => setGenero(event.target.value)}
                 />
               </div>
             </Form.Group>
@@ -125,8 +143,8 @@ function CreateModal() {
                 <Form.Control
                   type="text"
                   name="documento"
-                  value={formValues.documento}
-                  onChange={handleFormChange}
+                  value={documento}
+                  onChange={event => setDocumento(event.target.value)}
                   placeholder="Ingrese su documento"
                 />
               </div>
@@ -138,8 +156,8 @@ function CreateModal() {
                 <Form.Control
                   as="select"
                   name="documentoTipo"
-                  value={formValues.documentoTipo}
-                  onChange={handleFormChange}
+                  value={documentoTipo}
+                  onChange={event => setDocumentoTipo(event.target.value)}
                 >
                   <option value="">Seleccione un tipo</option>
                   <option value="dni">DNI</option>
@@ -155,8 +173,8 @@ function CreateModal() {
                 <Form.Control
                   type="number"
                   name="telefono"
-                  value={formValues.telefono}
-                  onChange={handleFormChange}
+                  value={telefono}
+                  onChange={event => setTelefono(event.target.value)}
                 />
               </div>
             </Form.Group>
@@ -167,8 +185,20 @@ function CreateModal() {
                 <Form.Control
                   type="text"
                   name="direccion"
-                  value={formValues.direccion}
-                  onChange={handleFormChange}
+                  value={direccion}
+                  onChange={event => setDireccion(event.target.value)}
+                />
+              </div>
+            </Form.Group>
+
+            <Form.Group className="row">
+              <Form.Label className="col-sm-3">Correo Electronico:</Form.Label>
+              <div className="col-sm-9">
+                <Form.Control
+                  type="text"
+                  name="email"
+                  value={email}
+                  onChange={event => setEmail(event.target.value)}
                 />
               </div>
             </Form.Group>
@@ -179,8 +209,8 @@ function CreateModal() {
                 <Form.Control
                   type="password"
                   name="password"
-                  value={formValues.password}
-                  onChange={handleFormChange}
+                  value={password}
+                  onChange={event => setPasswordo(event.target.value)}
                   placeholder="Ingrese su contraseña"
                 />
               </div>
@@ -192,8 +222,8 @@ function CreateModal() {
                 <Form.Control
                   type="password"
                   name="confirmPassword"
-                  value={formValues.confirmPassword}
-                  onChange={handleFormChange}
+                  value={confirmPassword}
+                  onChange={event => setConfirmPassword(event.target.value)}
                   placeholder="Confirme su contraseña"
                 />
 
@@ -206,14 +236,17 @@ function CreateModal() {
               
               <div class="modal-footer">
 
-       <button type="button" class="btn btn-primary">Guardar cambios</button>
+             
+       <button type="submit" class="btn btn-primary">Guardar</button>
         <Button type="button" class="btn btn-secondary"  className="button" onClick={closeModal}> Cerrar</Button>
        
       </div>
 
               </Form>
               </Modal.Body>
+              
               </Modal>
+              
 
       )}
 

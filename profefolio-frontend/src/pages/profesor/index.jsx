@@ -20,6 +20,8 @@ function Profesores() {
   
     useEffect(() => {
 
+        //https://miapi.com/products?page=1&size=10'
+
         //axios.get(`https://miapi.com/products?page=${page}&size=${size}`, {
        // https://localhost:7063/api/administrador/page
       axios.get(`https://localhost:7063/api/profesor/page/${page}`, {
@@ -27,7 +29,7 @@ function Profesores() {
          // Authorization: `Bearer ${token}`
 
         
-          Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoibHVsbGFwZXJlekBnbWFpbC5jb20iLCJqdGkiOiI2OWYxNjA3My03NjUzLTQ4YTgtOTM4Yy1kMjcyY2Y1NTFkM2QiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJQcm9mZXNvciIsImV4cCI6MTY3ODc3NjU5MSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MDAwIiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo0MjAwIn0.QPBZJZ5J-y9NaFT2R6b5QRefgTqlusjeZU7Ir41vcZw',
+          Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoibHVsbGFwZXJlekBnbWFpbC5jb20iLCJqdGkiOiJhOTZjOWE1NS1kMTk4LTRlNzMtOTQxNC1jMzVjMmU4M2Q2YTgiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJQcm9mZXNvciIsImV4cCI6MTY3ODgzNjE3MiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MDAwIiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo0MjAwIn0.yfpAQ7b0xwKmZCSLYvJGOaWYG1SXplu0Erd99jh-Gts',
         }
         })
 
@@ -96,7 +98,7 @@ function Profesores() {
                                 ))}
                                 </tbody>
                             </table>
-                            <button onClick={handlePrevClick} disabled={page === 1}>Anterior</button>
+                            <button onClick={handlePrevClick} disabled={page === 0}>Anterior</button>
                             <button onClick={handleNextClick}>Siguiente</button>
                             </div>
     
