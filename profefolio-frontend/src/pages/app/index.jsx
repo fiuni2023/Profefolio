@@ -11,7 +11,7 @@ import Partidos from "../partidos";
 import CreatePartidos from "../partidos/components/create";
 import PartidosEdit from "../partidos/components/edit";
 import PartidosList from "../partidos/components/list";
-
+import ListarColegios from "../administradorMaster/colegios/ListarColegios";
 import CreateProfesor from "../profesor/components/create/CreateProfesor.jsx";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -20,10 +20,13 @@ import Profesor  from "../profesor/index.jsx";
 
 const App = () => {
 
+    
+
     return (
         <>
             <BrowserRouter>
                 <GeneralProvider>
+
                     <div className="page">
                         <Navbar />
                         <div className="content">
@@ -49,7 +52,6 @@ const App = () => {
                                         </Route>
                                     </Routes>
                         </div>
-                    </div>
                 </GeneralProvider>
             </BrowserRouter>
             <style jsx='true'>{`

@@ -5,14 +5,25 @@ import { useGeneralContext } from "../context/GeneralContext";
 const SideBar = () => {
     
     const navigate = useNavigate()
-    const { currentPage, showSB } = useGeneralContext()
+    const { currentPage, showSB, isLogged, setIsLogged, getLoginData } = useGeneralContext()
+
+    const handleLogOut = () => {
+        localStorage.removeItem('loginData')
+        setIsLogged(!isLogged)
+        
+    }
+
+    console.log(getLoginData())
 
     return <>
         <div className="container">
             {showSB && <>
                 <SideBarClose> Cerrar </SideBarClose>
+                <SideBarTab page={"cerrarSecionBtn"} current={currentPage} handleClick={handleLogOut} > Cerrar Sesión </SideBarTab>
+                <SideBarTab page={"administrador"} current={currentPage} handleClick={()=>{navigate("/administrador/list")}} > - Administrador </SideBarTab>
                 <SideBarTab page={"pagina1"} current={currentPage} handleClick={()=>{navigate("/pagina1/list")}} > - Página1 </SideBarTab>
                 <SideBarTab page={"pagina2"} current={currentPage} handleClick={()=>{navigate("/pagina2/list")}} > - Página2 </SideBarTab>
+
             </>}
         </div>
         <style jsx="true">{`
@@ -20,7 +31,7 @@ const SideBar = () => {
                 position: fixed;
                 display: flex;
                 flex-direction: column;
-                width: 15%;
+                width: 20%;
                 height: ${showSB? "100%" : "0%"};
                 background-color: #363636;
                 border: none;
