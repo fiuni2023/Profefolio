@@ -1,6 +1,5 @@
 namespace profefolio.Models.DTOs.Colegio;
-
-public class ColegioDTO
+public class ColegioResultDTO: DataDTO
 {
       public string? Nombre
     {

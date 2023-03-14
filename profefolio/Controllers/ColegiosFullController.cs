@@ -1,5 +1,6 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using profefolio.Models.DTOs;
 using profefolio.Models.DTOs.Persona;
 using profefolio.Models.DTOs.Colegio;
@@ -13,6 +14,7 @@ using profefolio.Repository;
 namespace profefolio.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize(Roles = "Master")]
     [ApiController]
     public class ColegiosFullController : ControllerBase
     {

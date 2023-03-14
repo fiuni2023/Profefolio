@@ -174,7 +174,6 @@ namespace profefolio.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Nombre = table.Column<string>(type: "text", nullable: true),
-                    Estado = table.Column<bool>(type: "boolean", nullable: false),
                     PersonaId = table.Column<string>(type: "text", nullable: true),
                     Deleted = table.Column<bool>(type: "boolean", nullable: false),
                     Created = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
@@ -197,21 +196,21 @@ namespace profefolio.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "1c376a3f-7c20-45ec-8d11-4a3c7f98ca5e", "19bc377d-2ebf-4aa7-8d34-2272e3079ff2", "Profesor", "PROFESOR" },
-                    { "a1e8a8e5-9abe-420e-a5f0-31cce713f78f", "2e78a421-c7d1-4c4c-8f63-1f4a3262b581", "Administrador de Colegio", "ADMINISTRADOR DE COLEGIO" },
-                    { "cfd93617-f24b-4683-9a65-0275fc2b37ab", "44a7ba27-1228-4b8f-ad6d-e00691662547", "Master", "MASTER" },
-                    { "e072e65b-0221-4179-91eb-849c0bcafc3d", "6adb3a2a-7dff-4f5f-9b9e-817d534abafa", "Alumno", "ALUMNO" }
+                    { "0b8cbfcc-7630-47d9-bdb4-9fb1b3ec3a7e", "c399ad82-f8f6-4e38-b52d-2957b947e9a0", "Alumno", "ALUMNO" },
+                    { "73a16159-c0c1-4a69-8bfa-5071c38a6aad", "edc22655-f591-43d5-88e3-a897a4bd88c5", "Administrador de Colegio", "ADMINISTRADOR DE COLEGIO" },
+                    { "a7db3ea8-f61b-4837-9be9-38158ec0d202", "77b6496f-537f-4de9-9ecb-206243a62003", "Master", "MASTER" },
+                    { "d72d176c-e117-408c-8626-9af924e3ea8e", "6edae2fb-fb46-40d3-9b41-2907f64fd4e1", "Profesor", "PROFESOR" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "Apellido", "ConcurrencyStamp", "Created", "CreatedBy", "Deleted", "Direccion", "Documento", "DocumentoTipo", "Email", "EmailConfirmed", "EsM", "LockoutEnabled", "LockoutEnd", "Modified", "ModifiedBy", "Nacimiento", "Nombre", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "15ad44be-db9c-499f-980b-cd741867e94a", 0, "Torres", "d6d97d66-0ae9-42d3-96df-3de7274528b7", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, null, null, null, "Carlos.Torres123@mail.com", false, false, false, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, new DateTime(1999, 7, 10, 4, 0, 0, 0, DateTimeKind.Utc), "Carlos", "CARLOS.TORRES@123MAIL.COM", null, "AQAAAAEAACcQAAAAEGA77NQojE1g3qanDIdSf4bOJ+JWPaxhkre2fO0u8kZsmqFDo8PtaKzhyAW/srO4zA==", null, false, "169726ee-a2ef-4fef-8091-1472d357a390", false, null });
+                values: new object[] { "d2211651-fee2-4f61-84ac-681fcedd1e6a", 0, "Torres", "ac0af67a-5e91-44c5-b8a4-188b523bf5ab", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, null, null, null, "Carlos.Torres123@mail.com", false, false, false, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, new DateTime(1999, 7, 10, 4, 0, 0, 0, DateTimeKind.Utc), "Carlos", "CARLOS.TORRES@123MAIL.COM", null, "AQAAAAEAACcQAAAAEBIai+L+l/zXXC2QWt+VK+hW8D74pQEvpkynUM6KF0FeOVW9sg265kn2/7UqJxKpLw==", null, false, "a88e6580-a689-455b-8cf3-8c017dd9ba64", false, null });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
                 columns: new[] { "RoleId", "UserId" },
-                values: new object[] { "cfd93617-f24b-4683-9a65-0275fc2b37ab", "15ad44be-db9c-499f-980b-cd741867e94a" });
+                values: new object[] { "a7db3ea8-f61b-4837-9be9-38158ec0d202", "d2211651-fee2-4f61-84ac-681fcedd1e6a" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
