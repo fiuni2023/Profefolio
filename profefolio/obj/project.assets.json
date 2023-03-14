@@ -10135,11 +10135,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Documentos\\ProyectoPF2023\\Profefolio\\profefolio\\profefolio.csproj",
+      "projectUniqueName": "C:\\Users\\Lorena\\Desktop\\PF-2023\\Profefolio\\profefolio\\profefolio.csproj",
       "projectName": "profefolio",
-      "projectPath": "D:\\Documentos\\ProyectoPF2023\\Profefolio\\profefolio\\profefolio.csproj",
+      "projectPath": "C:\\Users\\Lorena\\Desktop\\PF-2023\\Profefolio\\profefolio\\profefolio.csproj",
       "packagesPath": "C:\\Users\\Lorena\\.nuget\\packages\\",
-      "outputPath": "D:\\Documentos\\ProyectoPF2023\\Profefolio\\profefolio\\obj\\",
+      "outputPath": "C:\\Users\\Lorena\\Desktop\\PF-2023\\Profefolio\\profefolio\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "KePIvRHVimfJcftZYP2p2/qLOtp4pJeRKUScnhD06J/OiKHncLNr4CYFKy8lhabLYyiBuqLg4qLYMhj3p/lphA==",
+  "dgSpecHash": "6kiaPeb7l4NlTD35XE996E0pr+/2Rx++aMfCJOS+X35w92vj4fYkgvFSzR9gBar/sZLGXUfdCrKLUOuwI/UKFQ==",
   "success": true,
-  "projectFilePath": "D:\\Documentos\\ProyectoPF2023\\Profefolio\\profefolio\\profefolio.csproj",
+  "projectFilePath": "C:\\Users\\Lorena\\Desktop\\PF-2023\\Profefolio\\profefolio\\profefolio.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Lorena\\.nuget\\packages\\automapper\\11.0.1\\automapper.11.0.1.nupkg.sha512",
     "C:\\Users\\Lorena\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\11.0.0\\automapper.extensions.microsoft.dependencyinjection.11.0.0.nupkg.sha512",
