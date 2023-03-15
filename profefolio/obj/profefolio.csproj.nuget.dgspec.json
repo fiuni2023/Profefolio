@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\cctc2\\Documents\\facultad\\IISS2\\Profefolio\\profefolio\\profefolio.csproj": {}
+    "C:\\Users\\abelt\\OneDrive\\Escritorio\\Profefolio\\Profefolio\\profefolio\\profefolio.csproj": {}
   },
   "projects": {
-    "C:\\Users\\cctc2\\Documents\\facultad\\IISS2\\Profefolio\\profefolio\\profefolio.csproj": {
+    "C:\\Users\\abelt\\OneDrive\\Escritorio\\Profefolio\\Profefolio\\profefolio\\profefolio.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\cctc2\\Documents\\facultad\\IISS2\\Profefolio\\profefolio\\profefolio.csproj",
+        "projectUniqueName": "C:\\Users\\abelt\\OneDrive\\Escritorio\\Profefolio\\Profefolio\\profefolio\\profefolio.csproj",
         "projectName": "profefolio",
-        "projectPath": "C:\\Users\\cctc2\\Documents\\facultad\\IISS2\\Profefolio\\profefolio\\profefolio.csproj",
-        "packagesPath": "C:\\Users\\cctc2\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\cctc2\\Documents\\facultad\\IISS2\\Profefolio\\profefolio\\obj\\",
+        "projectPath": "C:\\Users\\abelt\\OneDrive\\Escritorio\\Profefolio\\Profefolio\\profefolio\\profefolio.csproj",
+        "packagesPath": "C:\\Users\\abelt\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\abelt\\OneDrive\\Escritorio\\Profefolio\\Profefolio\\profefolio\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\cctc2\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\abelt\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net6.0"
