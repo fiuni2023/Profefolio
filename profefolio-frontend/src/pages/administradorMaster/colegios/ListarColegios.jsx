@@ -16,6 +16,7 @@ const ListarColegios = () => {
     { id: 2, nombre: "Santa Clara", direccion: "Coronel Bogado", administrador:"admin3" },
     { id: 3, nombre: "Colegio verde", direccion: "Coronel Bogado", administrador:"admin4" },
   ];
+  //Hola quiero hacer merge
   return (
     <>
     <div className="container-principal">
