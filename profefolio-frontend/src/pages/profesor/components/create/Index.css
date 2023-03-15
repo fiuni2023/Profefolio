@@ -1,6 +1,7 @@
 footer {
     position: fixed;
     background-color: hwb(0 99% 0%);
+    color: rgb(245, 249, 249);
     bottom: 0;
     left: 0;
     right: 0;
