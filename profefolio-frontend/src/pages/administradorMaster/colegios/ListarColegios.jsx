@@ -17,7 +17,7 @@ const ListarColegios = () => {
   const [colegios, setColegios] = useState([]);
   var config = {
     method: 'get',
-    url: 'https://localhost:7063/api/ColegiosFull/page/0',
+    url: `https://localhost:7063/api/Colegios/page/${currentPage}`,
     headers: {
       'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoicHJ1ZWJhQGdtYWlsLmNvbSIsImp0aSI6IjE5OGRjNGRhLTgxMzQtNDkwMC04NTNjLTNlZjY5MDE0ZGVhZCIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFkbWluaXN0cmFkb3IgZGUgQ29sZWdpbyIsImV4cCI6MTY3ODc3Mzk2NywiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MDAwIiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo0MjAwIn0.NyBXTa2FMx9JinQe9GQdOL2LXAJ90JxS4DiKQaR5OQ8'
     }
@@ -79,7 +79,7 @@ const ListarColegios = () => {
         </div>
         <div className="div-button-agregar">
           <div>
-            <Pagination onClick={() => setCurrentPage(items.number)} className="paginacion" size="sm">{items} </Pagination>
+            <Pagination onClick={()=>setCurrentPage(1)} className="paginacion" size="sm">{items} </Pagination>
           </div>
         </div>
         <ModalAgregarColegios></ModalAgregarColegios>

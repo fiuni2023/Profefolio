@@ -5,8 +5,9 @@ import { BsFillPlusCircleFill } from "react-icons/bs"
 import axios from "axios";
 function ModalDialog() {
     const [nombreColegio, setNombreColegio] = useState(null);
-    const [idAdmin, setIdAdmin] = useState(null);
+    const [idAdmin, setIdAdmin] = useState(0);
     const [administradores, setAdministradores] = useState([]);
+    const [cantidadId, setCantidadId] = useState(0);
     //Get administadores
     var config = {
         method: 'get',
@@ -15,7 +16,7 @@ function ModalDialog() {
             'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiQ2FybG9zLlRvcnJlczEyM0BtYWlsLmNvbSIsImp0aSI6IjY3NjdkMTZhLTQxNWItNGRhZC1iMTRjLTBjZjZkNDI2ZDRmYiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6Ik1hc3RlciIsImV4cCI6MTY3ODg1MDUwOSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MDAwIiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo0MjAwIn0.R_dHv3w5gutvZzBcO2x2px8RyqIdVbgrlL2eck-fXAM',
             'Content-Type': 'application/json'
         },
-       
+
 
     };
     useEffect(() => {
@@ -27,40 +28,39 @@ function ModalDialog() {
             .catch(function (error) {
                 console.log(error);
             });
-    },[])
-   /* var config = {
-        method: 'post',
-        url: 'https://localhost:7063/api/Colegios',
-        headers: {
-            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiQ2FybG9zLlRvcnJlczEyM0BtYWlsLmNvbSIsImp0aSI6IjFiOWRjZTExLWNlZjQtNGI0Ny05MTRhLThjOWM0OWM0Nzc3NiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6Ik1hc3RlciIsImV4cCI6MTY3ODc3MzgwOCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MDAwIiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo0MjAwIn0.TBGSrTUNbwoZEWXR4yd4uWR3W6Y_bgr9F3XCOIycHUI',
-            'Content-Type': 'application/json'
-        },
-        //data: data
-    };*/
-    function guardarDatos(){
-        console.log(nombreColegio);
-        console.log(idAdmin);
+    }, [])
+    const handleSubmit = (event) => {
 
-    }
-    /*
-    var axios = require('axios');
-    var data = JSON.stringify({
-        "id": 0,
-        "nombre": "Marcelina Bogado",
-        "estado": true,
-        "personaId": "7971f2c0-bf27-44a3-b3cb-239ed21eab4a"
-    });
-
+        event.preventDefault();
     
-
-    axios(config)
+        var axios = require('axios');
+        var data = JSON.stringify({
+          "nombre": JSON.stringify(nombreColegio),
+          "estado":"true",
+          "personaId": JSON.stringify(idAdmin)
+        });
+        
+        var config = {
+          method: 'post',
+        maxBodyLength: Infinity,
+          url: 'https://localhost:7063/api/Colegios',
+          headers: { 
+            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiQ2FybG9zLlRvcnJlczEyM0BtYWlsLmNvbSIsImp0aSI6IjFiOWRjZTExLWNlZjQtNGI0Ny05MTRhLThjOWM0OWM0Nzc3NiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6Ik1hc3RlciIsImV4cCI6MTY3ODc3MzgwOCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MDAwIiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo0MjAwIn0.TBGSrTUNbwoZEWXR4yd4uWR3W6Y_bgr9F3XCOIycHUI', 
+            'Content-Type': 'application/json'
+          },
+          data : data
+        };
+        
+        axios(config)
         .then(function (response) {
-            console.log(JSON.stringify(response.data));
+          console.log(JSON.stringify(response.data));
         })
         .catch(function (error) {
-            console.log(error);
+          console.log(error);
         });
-        */
+        
+}
+
     const [isShow, invokeModal] = React.useState(false)
     const initModal = () => {
         return invokeModal(!false)
@@ -95,7 +95,7 @@ function ModalDialog() {
                     <Button className="btn btn-light btn-sm" onClick={closeModal}>
                         Cancelar
                     </Button>
-                    <Button className='btn-guardar btn-sm' onClick={guardarDatos()}>
+                    <Button className='btn-guardar btn-sm' type='submit'>
                         Guardar
                     </Button>
                 </Modal.Footer>
