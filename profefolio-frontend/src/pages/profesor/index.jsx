@@ -7,7 +7,7 @@ import CreateModal from "./components/create/CreateModal.jsx";
 import { useGeneralContext } from "../../context/GeneralContext";
 import axios from 'axios';
 
-import "./components/create/Index.css";
+import "./components/create/Index.module.css";
 
 
 import {BsTrash , BsPencilFill, BsInfoCircle,BsFillPlusCircleFill} from 'react-icons/bs';
