@@ -13,8 +13,6 @@ const SideBar = () => {
         
     }
 
-    console.log(getLoginData())
-
     return <>
         <div className="container">
             {showSB && <>

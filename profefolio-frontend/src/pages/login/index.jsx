@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { toast } from "react-hot-toast";
 import { Logo } from "../../assets";
 import { ButtonInput } from "../../components/Inputs";
 import styles from './index.module.css'
@@ -16,9 +17,10 @@ const Login = ({changeState = () => {}}) => {
             console.log(JSON.stringify(r.data))
             if (remember) localStorage.setItem('loginData', JSON.stringify(r.data))
             else sessionStorage.setItem('loginData', JSON.stringify(r.data))
+            toast.success("Se ha logueado con exito!")
             changeState()
         })
-        .catch(error=>console.log)
+        .catch(error=>{toast.error(error.response.data)})
         
     }
 
