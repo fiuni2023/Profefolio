@@ -14,6 +14,8 @@ import PartidosList from "../partidos/components/list";
 import ListarColegios from "../administradorMaster/colegios/ListarColegios";
 import CreateProfesor from "../profesor/components/create/CreateProfesor.jsx";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import Login from "../login/index.jsx";
+import ModalAgregarColegios from "../administradorMaster/colegios/ModalAgregarColegios"
 
 
 import Profesor  from "../profesor/index.jsx";
@@ -26,7 +28,6 @@ const App = () => {
         <>
             <BrowserRouter>
                 <GeneralProvider>
-
                     <div className="page">
                         <Navbar />
                         <div className="content">
@@ -40,6 +41,8 @@ const App = () => {
                                         </Route>
                                         <Route path="/administrador" element={<Administrador />}>
                                             <Route path="list" element={<ListAdministrador />}/>
+                                            <Route path="listColegios" element={<ListarColegios />}/>
+                                            <Route path="modalColegios" element={<ModalAgregarColegios />}/>
                                         </Route>
 
 
