@@ -47,30 +47,39 @@ const LACreateModal = ({
         return returnDate
     }
 
-    const handleSubmit=()=>{
-        const body = {
-            "nombre": formik.values.name,
-            "apellido": formik.values.surname,
-            "nacimiento": toDate(),
-            "documento": formik.values.cin,
-            "documentoTipo": "CIN",
-            "genero": formik.values.genero,
-            "direccion": formik.values.direccion,
-            "telefono": formik.values.telefono,
-            "password": formik.values.pass,
-            "confirmPassword": formik.values.passConf,
-            "email": formik.values.correo
-          }
-        AdminService.createAdmin(body, getToken())
-        .then(r => {
-            console.log(r)
-            triggerState(r.data)
-            toast.success("creado con exito!!")
-            resetFormik()
-            handleClose()
+    const validarPass = (data = "", data2 = "") => {
+        if(data.length < 8) return true
+        if(data !== data2) return true
+    }
 
-        })
-        .catch(error=>{toast.error(error.response.data)})
+    const handleSubmit=()=>{
+        if(formik.values.cin === ""||formik.values.name === ""||formik.values.surname === "" || formik.values.documento === "" || formik.values.correo === "" || formik.values.telefono === "") toast.error("Ingrese todos los datos importantes")
+        else if(validarPass(formik.values.pass, formik.values.passConf))  toast.error("la contraseña es invalida")
+        else {
+            const body = {
+                "nombre": formik.values.name,
+                "apellido": formik.values.surname,
+                "nacimiento": toDate(),
+                "documento": formik.values.cin,
+                "documentoTipo": "CIN",
+                "genero": formik.values.genero,
+                "direccion": formik.values.direccion,
+                "telefono": formik.values.telefono,
+                "password": formik.values.pass,
+                "confirmPassword": formik.values.passConf,
+                "email": formik.values.correo
+              }
+            AdminService.createAdmin(body, getToken())
+            .then(r => {
+                triggerState(r.data)
+                toast.success("creado con exito!!")
+                resetFormik()
+                handleClose()
+            })
+            .catch(error=>{
+                toast.error(error.response.data.Password[0])
+            })
+        }
     }
 
     return(
@@ -97,7 +106,7 @@ const LACreateModal = ({
                         <DateInput name="nacimiento" value={formik.values.nacimiento} handleChange={formik.handleChange} width={"100%"} />
                         <label>Teléfono: <RedText>*</RedText></label>
                         <TextInput name="telefono" placeholder="" value={formik.values.telefono} handleChange={formik.handleChange} width={"100%"}/>
-                        <label>Dirección: <RedText>*</RedText></label>
+                        <label>Dirección:</label>
                         <TextInput name="direccion" placeholder="" value={formik.values.direccion} handleChange={formik.handleChange} width={"100%"}/>
                         <label>Correo Electrónico: <RedText>*</RedText></label>
                         <TextInput name="correo" placeholder="" value={formik.values.correo} handleChange={formik.handleChange} width={"100%"}/>
@@ -105,11 +114,10 @@ const LACreateModal = ({
                         <TextInput name="pass" placeholder="" value={formik.values.pass} handleChange={formik.handleChange} width={"100%"}/>
                         <label>Confirmar Contraseña: <RedText>*</RedText></label>
                         <TextInput name="passConf" placeholder="" value={formik.values.passConf} handleChange={formik.handleChange} width={"100%"}/>
-                        <label>Género:</label>
+                        <label>Género: <RedText>*</RedText></label>
                         <select name="genero" className={styles.Select} placeholder="" value={formik.values.genero} onChange={formik.handleChange} width={"100%"}>
                             <option value={"F"}>Mujer</option>
                             <option value={"M"}>Hombre</option>
-                            <option value={"X"}>No Especificar</option>
                         </select>
                     </div>
                     <div className={`${styles.Divisor} ${styles.MarginedDivisor}`}></div>

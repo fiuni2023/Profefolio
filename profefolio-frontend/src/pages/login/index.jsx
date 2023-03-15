@@ -12,9 +12,9 @@ const Login = ({changeState = () => {}}) => {
     const [remember, setRemember] = useState(false)
 
     const handleLogin = () => {
+        if(mail === "" || pass === "") return toast.error("Ingresa todas las credenciales para intentar ingresar a la plataforma")
         LoginService.PostLogin(mail,pass)
         .then(r=>{
-            console.log(JSON.stringify(r.data))
             if (remember) localStorage.setItem('loginData', JSON.stringify(r.data))
             else sessionStorage.setItem('loginData', JSON.stringify(r.data))
             toast.success("Se ha logueado con exito!")
