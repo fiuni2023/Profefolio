@@ -1,0 +1,8 @@
+#IDE
+/.idea
+
+#Compile
+/bin
+
+#Debug
+/obj
