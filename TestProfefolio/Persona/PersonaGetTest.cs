@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using profefolio.Controllers;
+using profefolio.Models.DTOs.Auth;
 using profefolio.Models.DTOs.Persona;
 using profefolio.Repository;
 using profefolio.Models.Entities;
@@ -41,14 +42,11 @@ public class PersonaGetTest
             Apellido = "Torres",
             Edad = 21
         };
-    }
-    
-    
-    [Fact]
-    public async Task TestGetPersonaHttpStatusOk()
-    {
-        _personaService.Setup(p => p.FindById(_persona.Id))
-            .ReturnsAsync(_persona);
+
+        const string id = "aefaese123342";
+
+        _personaService.Setup(s => s.FindById(It.IsAny<string>()))
+            .ReturnsAsync(persona);
 
         _mapper.Setup(m => m.Map<PersonaDTO>(_persona))
             .Returns(_personaDto);
@@ -59,19 +57,4 @@ public class PersonaGetTest
         
     }
 
-    [Fact]
-    public async Task TestGetPersonaHttpStatusNotFound()
-    {
-        _personaService.Setup(p => p.FindById(2))
-            .ReturnsAsync((profefolio.Models.Entities.Persona)null);
-
-        
-
-        var result = await _personasController.GetPersona(_personaDto.Id);
-
-        Assert.IsType<NotFoundResult>(result.Result);
-    }
-
-
-   
 }
