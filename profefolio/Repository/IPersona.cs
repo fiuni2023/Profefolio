@@ -13,8 +13,9 @@ public interface IPersona : IRepository<Persona>
 
     Task<bool> ChangePassword(Persona p, string newPassword);
     Task<bool> ExistMail(string email);
-
     Task<IEnumerable<Persona>> GetAllByRol(string roleName, int page, int cantPorPag);
+
+    Task<int> CountByRol(string rol);
 
 
 }

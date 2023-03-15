@@ -79,10 +79,11 @@ public class AccountController : ControllerBase
     [Route("page/{page:int}")]
     public async Task<ActionResult<DataListDTO<PersonaResultDTO>>> Get(int page)
     {
+        const string rol = "Administrador de Colegio";
         var query = await _personasService
-            .FilterByRol(page, CantPorPage, "Administrador de Colegio");
+            .FilterByRol(page, CantPorPage, rol);
 
-        var cantPages = (int) (_personasService.Count() / CantPorPage)  + 1;
+        var cantPages = (int) (await _personasService.CountByRol(rol) / CantPorPage)  + 1;
 
         var result = new DataListDTO<PersonaResultDTO>();
 
