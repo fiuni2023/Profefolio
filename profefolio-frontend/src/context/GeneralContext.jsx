@@ -36,6 +36,7 @@ export const GeneralProvider = ({children}) => {
 
     const getToken = () => {
         return getLoginData().token
+
     }
 
     const values = {
