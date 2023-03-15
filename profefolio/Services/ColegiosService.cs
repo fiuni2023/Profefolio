@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using profefolio.Models;
 using profefolio.Models.Entities;
@@ -8,11 +9,14 @@ namespace profefolio.Services;
 public class ColegiosService : IColegio
 {
     private ApplicationDbContext _dbContext;
+
+    private readonly UserManager<Persona> _userManager;
     private bool _disposed;
 
-    public ColegiosService(ApplicationDbContext dbContext)
+    public ColegiosService(ApplicationDbContext dbContext, UserManager<Persona> userManager)
     {
         _dbContext = dbContext;
+        _userManager = userManager;
     }
     public async Task<Colegio> FindById(int id)
     {
@@ -23,6 +27,30 @@ public class ColegiosService : IColegio
             .FirstOrDefaultAsync();
     }
 
+    /*
+    * verifica si existe un colegio con el nombre y idpersona pasados como parametro.
+    */
+  public async Task<Colegio> FindByNamePerson(string name, string idPerson)
+    {
+        Console.Write("\nColegio a buscar: {0}", name);
+        Console.Write("\n");
+        return await _dbContext.Colegios
+            .Where(p => !p.Deleted  && p.Nombre == name && p.PersonaId == idPerson)
+            .FirstOrDefaultAsync();
+    }
+
+      public async Task<Persona> FindByPerson(string id)
+    {
+        var query = await _userManager.Users
+            .Where(p => !p.Deleted && p.Id.Equals(id))
+            .FirstOrDefaultAsync();
+
+        if (query == null)
+        {
+            return null;
+        }
+        return query;
+    }
     public IEnumerable<Colegio> GetAll()
     {
         return _dbContext.Colegios.Where(p => !p.Deleted);
@@ -55,8 +83,6 @@ public class ColegiosService : IColegio
     {
         return Count() > 0;
     }
-
-    
 
     protected virtual void Dispose(bool disposing)
     {
