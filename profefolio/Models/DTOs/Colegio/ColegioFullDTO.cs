@@ -8,12 +8,6 @@ public class ColegioFullDTO : DataDTO
         get;
         set;
     }
-
-    public Boolean Estado
-    {
-        get;
-        set;
-    }
    public string? NombreAdministrador
     {
         get;
