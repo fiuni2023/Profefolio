@@ -18,7 +18,7 @@ public class AccountController : ControllerBase
     private readonly IMapper _mapper;
     private readonly IPersona _personasService;
     private readonly IRol _rolService;
-    private const int CantPorPage = 20;
+    private const int CantPorPage = 5;
 
 
     public AccountController(IMapper mapper, IPersona personasService, IRol rolService)
@@ -82,13 +82,18 @@ public class AccountController : ControllerBase
         var query = await _personasService
             .FilterByRol(page, CantPorPage, "Administrador de Colegio");
 
-        var cantPages = (int)Math.Ceiling((double)_personasService.Count() / CantPorPage);
+        var cantPages = (int) (_personasService.Count() / CantPorPage)  + 1;
 
         var result = new DataListDTO<PersonaResultDTO>();
 
+        if(page >= cantPages) 
+        {
+            return BadRequest($"No existe la pagina: {page} ");
+        }
+
         var enumerable = query as Persona[] ?? query.ToArray();
         result.CantItems = enumerable.Length;
-        result.CurrentPage = page >= cantPages - 1 ? cantPages - 1 : page;
+        result.CurrentPage = page;
         result.Next = result.CurrentPage + 1 < cantPages;
         result.DataList = _mapper.Map<List<PersonaResultDTO>>(enumerable.ToList());
         result.TotalPage = cantPages;
@@ -147,7 +152,11 @@ public class AccountController : ControllerBase
             
             var userId = User.Identity.GetUserId();
 
-            if ((!persona.Email.Equals(dto.Email)) && await _personasService.ExistMail(dto.Email))
+            var existMail =await  _personasService.ExistMail(dto.Email);
+
+            var isEqual = dto.Email.Equals(persona.Email);
+
+            if (!isEqual && existMail)
             {
                 return BadRequest($"Ya existe el email '{dto.Email}', intente con otro");
             }
@@ -158,7 +167,6 @@ public class AccountController : ControllerBase
             {
                 return BadRequest("El email nuevo que queres actualizar ya existe");
             }
-
             
             
             

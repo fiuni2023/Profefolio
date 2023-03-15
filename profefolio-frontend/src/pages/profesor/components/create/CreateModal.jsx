@@ -8,7 +8,7 @@ import { useGeneralContext } from "../../../../context/GeneralContext";
 
 function CreateModal() {
 
-  
+  const [mostrarMensaje, setMostrarMensaje] = useState(false);
   const [nombre, setNombre] = useState('');
   const [apellido, setApellido] = useState('');
   const [documento, setDocumento] = useState('');
@@ -27,9 +27,9 @@ function CreateModal() {
 
   const { getToken } = useGeneralContext();
 
-
-  
-
+  const mostrar = () => {
+    setMostrarMensaje(true);
+  }
 
   const handleSubmit = (event) => {
 
@@ -54,11 +54,11 @@ function CreateModal() {
     })
     .then(response => {
       console.log(response.data);
-
+      setMostrarMensaje(true);
     
       
       setShowConfirmation(true);
-
+      alert("Guardado exitoso");
       
 
       setNombre(""); 
@@ -253,7 +253,7 @@ function CreateModal() {
                   value={password}
                   //onChange={handleConfirmPasswordChange}
                   onChange={event => setPasswordo(event.target.value)}
-                  placeholder="Ingrese su contraseña"
+                  placeholder="Utilizar minuscula, mayuscula y caracter especial"
                 />
               </div>
             </Form.Group>
@@ -280,6 +280,8 @@ function CreateModal() {
 
              
         <Button type="submit" className="button" >Guardar</Button>
+
+  
         <Button type="button" class="btn button"  className="button" onClick={closeModal}> Cerrar</Button>
        
       </div>

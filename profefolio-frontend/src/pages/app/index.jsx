@@ -26,7 +26,6 @@ const App = () => {
         <>
             <BrowserRouter>
                 <GeneralProvider>
-
                     <div className="page">
                         <Navbar />
                         <div className="content">
@@ -38,6 +37,7 @@ const App = () => {
                                             <Route path='create' element={<CreatePartidos />} />
                                             <Route path="edit" element={<PartidosEdit />} />
                                         </Route>
+                                        
                                         <Route path="/administrador" element={<Administrador />}>
                                             <Route path="list" element={<ListAdministrador />}/>
                                         </Route>

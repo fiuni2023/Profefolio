@@ -20,6 +20,18 @@ public class ColegioMapper : Profile
             .ForMember(dest => dest.ModifiedBy, 
                 opt => opt.Ignore());
 
+        CreateMap<Colegio, ColegioResultDTO>();
+
+        CreateMap<ColegioResultDTO, Colegio>()
+            .ForMember(dest => dest.Id,
+                opt => opt.Ignore())
+            .ForMember(dest => dest.Created, 
+                opt => opt.MapFrom(src => DateTime.Now))
+            .ForMember(dest => dest.Modified, 
+                opt => opt.Ignore())
+            .ForMember(dest => dest.ModifiedBy, 
+                opt => opt.Ignore());
+
         CreateMap<Colegio, ColegioFullDTO>()
             .ForMember(dest => dest.NombreAdministrador, 
                        opt => opt.MapFrom(src => src.personas.Nombre))
@@ -44,5 +56,7 @@ public class ColegioMapper : Profile
                 opt => opt.Ignore())
             .ForMember(dest => dest.ModifiedBy, 
                 opt => opt.Ignore());
+
+        
     }
 }
