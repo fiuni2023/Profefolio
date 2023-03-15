@@ -7,6 +7,9 @@
 .button-agregar{
     background-color: white;
     border: none;
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
 }
 .modal-principal{
     margin-top: 5%;
@@ -35,4 +38,8 @@
     margin-left: 5%;
     border: none;
     width: 221px;
+}
+.select_admin{
+    border: none;
+    width: 100%;
 }
