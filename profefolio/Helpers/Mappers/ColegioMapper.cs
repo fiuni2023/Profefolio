@@ -19,6 +19,7 @@ public class ColegioMapper : Profile
                 opt => opt.Ignore())
             .ForMember(dest => dest.ModifiedBy, 
                 opt => opt.Ignore());
+
         CreateMap<Colegio, ColegioResultDTO>();
 
         CreateMap<ColegioResultDTO, Colegio>()
@@ -55,5 +56,7 @@ public class ColegioMapper : Profile
                 opt => opt.Ignore())
             .ForMember(dest => dest.ModifiedBy, 
                 opt => opt.Ignore());
+
+        
     }
 }
