@@ -11,8 +11,10 @@ import axios from "axios";
 import Pagination from 'react-bootstrap/Pagination';
 const ListarColegios = () => {
   const navigate = useNavigate()
+  const [totalPage, setTotalPage] = useState(0);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [nextPage, setNetPage] = useState(false);
   const [colegios, setColegios] = useState([]);
-  const [admins, setAdmins] = useState([]);
   var config = {
     method: 'get',
     url: 'https://localhost:7063/api/ColegiosFull/page/0',
@@ -24,7 +26,9 @@ const ListarColegios = () => {
     axios(config)
       .then(function (response) {
         console.log(JSON.stringify(response.data));
-        setColegios(response.data.dataList);
+        setColegios(response.data.dataList); //Guarda los datos
+        setTotalPage(response.data.totalPage);//Total de Paginas
+        setCurrentPage(response.data.currentPage)//Actualiza la pagina en donde estan los datos
 
       })
       .catch(function (error) {
@@ -33,13 +37,18 @@ const ListarColegios = () => {
 
   }, [])
   let items = [];
-  for (let number = 1; number <= 5; number++) {
+ 
+  for (let number = 0; number <= totalPage; number++) {
     items.push(
       <Pagination.Item key={number} >
         {number}
       </Pagination.Item>,
     );
   }
+
+  
+    
+  
   return (
     <>
       <div className="container-principal">
@@ -70,7 +79,7 @@ const ListarColegios = () => {
         </div>
         <div className="div-button-agregar">
           <div>
-            <Pagination className="paginacion" size="sm">{items}</Pagination>
+            <Pagination onClick={() => setCurrentPage(items.number)} className="paginacion" size="sm">{items} </Pagination>
           </div>
         </div>
         <ModalAgregarColegios></ModalAgregarColegios>

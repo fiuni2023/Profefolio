@@ -14,8 +14,7 @@
 }
 #modal-contenido{
     background-color: #C6D8D3;
-    text-align: center;
-    align-items: center;
+    
 }
 .btn-guardar{
     color: white;
@@ -27,4 +26,13 @@
 }
 .paginacion{
     color: #F0544F;
+}
+#input-admin{
+    border: none;
+    width: 221px;
+}
+#input-apellido{
+    margin-left: 5%;
+    border: none;
+    width: 221px;
 }
