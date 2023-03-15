@@ -7,13 +7,6 @@ public class Colegio : Data
         get;
         set;
     }
-
-    public bool Estado
-    {
-        get;
-        set;
-    }
-
      public string? PersonaId
     {
         get;
