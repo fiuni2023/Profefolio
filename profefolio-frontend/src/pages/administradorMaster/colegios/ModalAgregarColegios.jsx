@@ -4,7 +4,9 @@ import "./ModalAgregarColegios.css"
 import { BsFillPlusCircleFill } from "react-icons/bs"
 import axios from "axios";
 import Pagination from 'react-bootstrap/Pagination';
+import { useGeneralContext } from "../../../context/GeneralContext";
 function ModalDialog() {
+    const { getToken } = useGeneralContext()
     const [nombreColegio, setNombreColegio] = useState(null);
     const [idAdmin, setIdAdmin] = useState(0);
     const [administradores, setAdministradores] = useState([]);
@@ -14,7 +16,7 @@ function ModalDialog() {
         method: 'get',
         url: 'https://localhost:7063/api/administrador/page/0',
         headers: {
-            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiQ2FybG9zLlRvcnJlczEyM0BtYWlsLmNvbSIsImp0aSI6ImFhZDVlZjAzLTU5YTMtNDFkNy04YTk3LWQ4NDM5YjE2NmI4OSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6Ik1hc3RlciIsImV4cCI6MTY3ODkwNjQzMCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MDAwIiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo0MjAwIn0.s_2BhsMsPThYPoK7H8KdsjoH8mZcOCLGozlr7CC9hFU',
+            'Authorization': `Bearer ${getToken()}`,
             'Content-Type': 'application/json'
         },
 
@@ -47,7 +49,7 @@ function ModalDialog() {
         maxBodyLength: Infinity,
           url: 'https://localhost:7063/api/Colegios',
           headers: { 
-            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiQ2FybG9zLlRvcnJlczEyM0BtYWlsLmNvbSIsImp0aSI6ImFhZDVlZjAzLTU5YTMtNDFkNy04YTk3LWQ4NDM5YjE2NmI4OSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6Ik1hc3RlciIsImV4cCI6MTY3ODkwNjQzMCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MDAwIiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo0MjAwIn0.s_2BhsMsPThYPoK7H8KdsjoH8mZcOCLGozlr7CC9hFU', 
+            'Authorization': `Bearer ${getToken()}`,
             'Content-Type': 'application/json'
           },
           data : data

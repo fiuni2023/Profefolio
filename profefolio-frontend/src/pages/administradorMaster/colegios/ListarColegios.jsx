@@ -9,7 +9,9 @@ import { BiInfoCircle } from "react-icons/bi"
 import ModalAgregarColegios from './ModalAgregarColegios'
 import axios from "axios";
 import Pagination from 'react-bootstrap/Pagination';
+import { useGeneralContext } from "../../../context/GeneralContext";
 const ListarColegios = () => {
+  const { getToken } = useGeneralContext()
   const navigate = useNavigate()
   const [totalPage, setTotalPage] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
@@ -41,7 +43,7 @@ const recargaDatos=(id)=>{
     method: 'get',
     url: `https://localhost:7063/api/ColegiosFull/page/${id}`,
     headers: {
-      'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoicHJ1ZWJhQGdtYWlsLmNvbSIsImp0aSI6IjE5OGRjNGRhLTgxMzQtNDkwMC04NTNjLTNlZjY5MDE0ZGVhZCIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFkbWluaXN0cmFkb3IgZGUgQ29sZWdpbyIsImV4cCI6MTY3ODc3Mzk2NywiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MDAwIiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo0MjAwIn0.NyBXTa2FMx9JinQe9GQdOL2LXAJ90JxS4DiKQaR5OQ8'
+      'Authorization': `Bearer ${getToken()}`
     }
   };
     axios(config)
