@@ -43,12 +43,15 @@ namespace profefolio.Controllers
             int cantPages = (int)(_personasService.Count() / CantPorPage) + 1;
 
 
-            Console.WriteLine("CantPage: {0} = count: {1} / cantPorPage: {2}", cantPages, _personasService.Count(), CantPorPage);
             var result = new DataListDTO<PersonaResultDTO>();
 
+if(page >= cantPages) 
+        {
+            return BadRequest($"No existe la pagina: {page} ");
+        }
             var enumerable = profesores as Persona[] ?? profesores.ToArray();
             result.CantItems = enumerable.Length;
-            result.CurrentPage = page >= cantPages - 1 ? cantPages - 1 : page;
+            result.CurrentPage = page;
             result.Next = result.CurrentPage + 1 < cantPages;
             result.DataList = _mapper.Map<List<PersonaResultDTO>>(enumerable.ToList());
             result.TotalPage = cantPages;
