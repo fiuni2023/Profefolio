@@ -14,27 +14,58 @@ import {BsTrash , BsPencilFill, BsInfoCircle,BsFillPlusCircleFill} from 'react-i
 
 const token =  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoicHJ1ZWJhQGdtYWlsLmNvbSIsImp0aSI6IjIwNGI4MGMyLTUxMjAtNDliZS04OTdjLTVlZWNkNjY1Yjc4MCIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFkbWluaXN0cmFkb3IgZGUgQ29sZWdpbyIsImV4cCI6MTY3ODc3MTgxOCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MDAwIiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo0MjAwIn0.X7YzCqxnRi78GM_HRUrcLyYZo_n3QxkTsgsVPmQowjE";
 function Profesores() {
-    const [products, setProducts] = useState([]);
+    const [profesores, setProfesores] = useState([]);
     const [page, setPage] = useState(0);
     const [size, setSize] = useState(10);
-  
-    useEffect(() => {
 
-        //https://miapi.com/products?page=1&size=10'
 
-        //axios.get(`https://miapi.com/products?page=${page}&size=${size}`, {
-       // https://localhost:7063/api/administrador/page
-      axios.get(`https://localhost:7063/api/profesor/page/${page}`, {
+    const [loading, setLoading] = useState(true);
+
+
+    function actualizarDatos(nuevosDatos) {
+        setProfesores(nuevosDatos);
+      }
+ 
+
+
+    function updateList(){
+        setLoading(true);
+        
+        axios.get(`https://localhost:7063/api/profesor/page/${page}`, {
         headers: {
          // Authorization: `Bearer ${token}`
 
-        
-          Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoibHVsbGFwZXJlekBnbWFpbC5jb20iLCJqdGkiOiJhOTZjOWE1NS1kMTk4LTRlNzMtOTQxNC1jMzVjMmU4M2Q2YTgiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJQcm9mZXNvciIsImV4cCI6MTY3ODgzNjE3MiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MDAwIiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo0MjAwIn0.yfpAQ7b0xwKmZCSLYvJGOaWYG1SXplu0Erd99jh-Gts',
+         Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoibHVsbGFwZXJlekBnbWFpbC5jb20iLCJqdGkiOiJiNzhlOTZjYS0wYjNkLTRiZmYtYjA1ZC03OTBiNmQ1NTEzNDYiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJQcm9mZXNvciIsImV4cCI6MTY3ODg0NzcxNiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MDAwIiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo0MjAwIn0.wgMSUQHhVpwx8zzCAF1yKOt_gE6MNhOtObbiY-YbKtg', 
         }
         })
 
       .then(response => {
-        setProducts(response.data.dataList);
+        setProfesores(response.data.dataList);
+      })
+      .catch(error => {
+        console.error(error);
+        setLoading(false);
+      });
+    }
+  
+    useEffect(() => {
+        updateList();
+
+
+
+        //axios.get(`https://miapi.com/products?page=${page}&size=${size}`, {
+      axios.get(`https://localhost:7063/api/profesor/page/${page}`, {
+        headers: {
+         // Authorization: `Bearer ${token}`
+
+         Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoibHVsbGFwZXJlekBnbWFpbC5jb20iLCJqdGkiOiJiNzhlOTZjYS0wYjNkLTRiZmYtYjA1ZC03OTBiNmQ1NTEzNDYiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJQcm9mZXNvciIsImV4cCI6MTY3ODg0NzcxNiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MDAwIiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo0MjAwIn0.wgMSUQHhVpwx8zzCAF1yKOt_gE6MNhOtObbiY-YbKtg',
+      
+        
+        }
+        })
+
+      .then(response => {
+        setProfesores(response.data.dataList);
 
     
 
@@ -84,23 +115,32 @@ function Profesores() {
                                 </tr>
                                 </thead>
                                 <tbody>
-                                 {products.map(product => (
-                                    <tr key={product.id}>
-                                    <td>{product.documento}</td>
-                                    <td>{product.nombre}</td>
-                                    <td>{product.apellido}</td>
-                                    <td>{product.nacimiento}</td>
-                                    <td>{product.direccion}</td>
-                                    <td>{product.telefono}</td>
-                                    <td>Acciones</td>
+                                    
+                                 {profesores.map(profe => (
+                                    <tr key={profe.id}>
+                                    <td>{profe.documento}</td>
+                                    <td>{profe.nombre}</td>
+                                    <td>{profe.apellido}</td>
+                                    <td>{profe.nacimiento}</td>
+                                    <td>{profe.direccion}</td>
+                                    <td>{profe.telefono}</td>
+                                    <td> <BsTrash/>  <BsPencilFill/> <BsInfoCircle/></td>
 
                                     </tr>
                                 ))}
                                 </tbody>
                             </table>
+                           
+
+
+
+{/* 
+                            <footer>
                             <button onClick={handlePrevClick} disabled={page === 0}>Anterior</button>
                             <button onClick={handleNextClick}>Siguiente</button>
+                            </footer>*/}
                             </div>
+
     
 
            
@@ -111,7 +151,7 @@ function Profesores() {
             <footer>
              <div className="NButtonForSideA "> 
              <button className="buttonNavBarAa">  
-            <CreateModal title="My Modal" onClose={() => setShow(false)} show={show}>
+            <CreateModal title="My Modal" actualizarDatos={actualizarDatos} onClose={() => setShow(false)} show={show}>
             </CreateModal>
 
             </button>

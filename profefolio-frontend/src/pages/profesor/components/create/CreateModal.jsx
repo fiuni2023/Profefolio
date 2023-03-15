@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Button, Modal, Form } from 'react-bootstrap';
+import { Button, Modal, Form,Toast } from 'react-bootstrap';
 
 import {BsFillPlusCircleFill} from 'react-icons/bs';
+
+
 
 function CreateModal() {
 
@@ -20,8 +22,17 @@ function CreateModal() {
   const [telefono, setTelefono] = useState('');
 
   const [success, setSuccess] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSubmit = event => {
+
+
+    
+
+
+
+
+  const handleSubmit = (event) => {
 
     
 
@@ -41,16 +52,27 @@ function CreateModal() {
       telefono,
     }, {
       headers: {
-        Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoibHVsbGFwZXJlekBnbWFpbC5jb20iLCJqdGkiOiJhOTZjOWE1NS1kMTk4LTRlNzMtOTQxNC1jMzVjMmU4M2Q2YTgiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJQcm9mZXNvciIsImV4cCI6MTY3ODgzNjE3MiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MDAwIiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo0MjAwIn0.yfpAQ7b0xwKmZCSLYvJGOaWYG1SXplu0Erd99jh-Gts',
+        Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoibHVsbGFwZXJlekBnbWFpbC5jb20iLCJqdGkiOiJiNzhlOTZjYS0wYjNkLTRiZmYtYjA1ZC03OTBiNmQ1NTEzNDYiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJQcm9mZXNvciIsImV4cCI6MTY3ODg0NzcxNiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MDAwIiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo0MjAwIn0.wgMSUQHhVpwx8zzCAF1yKOt_gE6MNhOtObbiY-YbKtg',
       
       }
     })
     .then(response => {
       console.log(response.data);
+
+      
+      setShowConfirmation(true);
+
+      setNombre(""); 
+
     })
     .catch(error => {
       console.error(error);
+      alert("Error al guardar");
     });
+
+    
+   setShowModal(false);
+
   };
  
   const [showModal, setShowModal] = useState(false);
@@ -77,13 +99,20 @@ function CreateModal() {
 
       {showModal && (
 
-      <Modal show={showModal} onHide={handleCloseModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>Formulario</Modal.Title>
+      <Modal show={showModal} onHide={handleCloseModal} >
+
+      {showConfirmation && (
+        <Toast show={showConfirmation}>
+          Se ha enviado correctamente.
+        </Toast>
+      )}
+
+        <Modal.Header closeButton className="contentModal text-center">
+          <Modal.Title className="">Agregar Profesor</Modal.Title>
         </Modal.Header>
 
 
-        <Modal.Body>
+        <Modal.Body className="contentModal">
         {success && <p>Producto guardado exitosamente.</p>}
           <Form onSubmit={handleSubmit}>
             <Form.Group className="row">
@@ -121,6 +150,7 @@ function CreateModal() {
                   name="nacimiento"
                   value={nacimiento}
                   onChange={event => setNacimiento(event.target.value)}
+                  placeholder="aaaa/mm/ddd"
                 />
               </div>
             </Form.Group>
@@ -129,11 +159,17 @@ function CreateModal() {
               <Form.Label className="col-sm-3">Genero:</Form.Label>
               <div className="col-sm-9">
                 <Form.Control
-                  type="text"
+                  as="select"
                   name="genero"
                   value={genero}
                   onChange={event => setGenero(event.target.value)}
-                />
+                >
+                  <option value="">Seleccione </option>
+                  <option value="F">Femenino</option>
+                  <option value="M">Masculino</option>
+                  
+                
+                </Form.Control>
               </div>
             </Form.Group>
 
@@ -160,8 +196,8 @@ function CreateModal() {
                   onChange={event => setDocumentoTipo(event.target.value)}
                 >
                   <option value="">Seleccione un tipo</option>
-                  <option value="dni">DNI</option>
                   <option value="cedula">Cédula</option>
+                  <option value="dni">DNI</option>
                   <option value="pasaporte">Pasaporte</option>
                 </Form.Control>
               </div>
@@ -175,6 +211,7 @@ function CreateModal() {
                   name="telefono"
                   value={telefono}
                   onChange={event => setTelefono(event.target.value)}
+                  placeholder="09xxxxxxxxx"
                 />
               </div>
             </Form.Group>
@@ -187,6 +224,7 @@ function CreateModal() {
                   name="direccion"
                   value={direccion}
                   onChange={event => setDireccion(event.target.value)}
+                  placeholder="Ingrese su direccion"
                 />
               </div>
             </Form.Group>
@@ -199,6 +237,7 @@ function CreateModal() {
                   name="email"
                   value={email}
                   onChange={event => setEmail(event.target.value)}
+                  placeholder="Ingrese su correo electronico"
                 />
               </div>
             </Form.Group>
@@ -210,6 +249,7 @@ function CreateModal() {
                   type="password"
                   name="password"
                   value={password}
+                  //onChange={handleConfirmPasswordChange}
                   onChange={event => setPasswordo(event.target.value)}
                   placeholder="Ingrese su contraseña"
                 />
@@ -237,11 +277,12 @@ function CreateModal() {
               <div class="modal-footer">
 
              
-       <button type="submit" class="btn btn-primary">Guardar</button>
-        <Button type="button" class="btn btn-secondary"  className="button" onClick={closeModal}> Cerrar</Button>
+        <Button type="submit" className="button" >Guardar</Button>
+        <Button type="button" class="btn button"  className="button" onClick={closeModal}> Cerrar</Button>
        
       </div>
 
+     
               </Form>
               </Modal.Body>
               
@@ -251,17 +292,21 @@ function CreateModal() {
       )}
 
 <style jsx='true'>{`
-            .page{
-                display: grid;
-                grid-template-rows: 5% 95%;
-                width: 100%;
-                height: 100vh;
+            .contentModal{
+              text-align: center;
+                background-color:  #C6D8D3;
             }
             .content{
                 width: 100%;
                 height: 100%;
             }
             
+            .button{
+              background-color:  #F0544F;
+              outline: none;
+              border: none;
+              
+            }
             .NavbarA{
                 width: 100%;
                 height: 100%;
@@ -314,5 +359,5 @@ function CreateModal() {
 
   )}
 
-
+          
   export default CreateModal;
