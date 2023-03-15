@@ -1,5 +1,6 @@
 import React, { useContext, useState } from "react";
 import { createContext } from "react";
+import { Toaster } from "react-hot-toast";
 import { useLocation } from "react-router-dom";
 import Login from "../pages/login";
 
@@ -52,14 +53,17 @@ export const GeneralProvider = ({children}) => {
 
     return (
         <GeneralContext.Provider value={values}>
-            {
-            isLogged?
-            children
-            :
             <>
-                <Login changeState={()=>{setIsLogged(!isLogged)}} />
+                <Toaster />
+                {
+                    isLogged?
+                    children
+                    :
+                    <>
+                    <Login changeState={()=>{setIsLogged(!isLogged)}} />
+                </>
+                }
             </>
-            }
         </GeneralContext.Provider>
     )
 }

@@ -1,7 +1,8 @@
 import axios from "axios";
+import APILINK from "../../../components/link";
 
 const PostLogin = async (mail, password)=>{
-    const result = await axios.post("https://localhost:7063/login",
+    const result = await axios.post(`${APILINK}/login`,
     {
         "email": mail,
         "password": password

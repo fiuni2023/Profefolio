@@ -35,6 +35,10 @@ const ListAdministrador = () => {
         })
     }, [currentPage, getToken])
 
+    const doFetch =(admin) =>{
+        setAdmins([...admins, admin])
+    }
+
     const getPages = () => {
         return (
             <>
@@ -52,7 +56,7 @@ const ListAdministrador = () => {
 
     return (
         <>
-            <LACreateModal show={showCreateModal} handleClose={()=>{setShowCreateModal(!showCreateModal)}} triggerState={()=>{setCurrentPage(currentPage)}} />
+            <LACreateModal show={showCreateModal} handleClose={()=>{setShowCreateModal(!showCreateModal)}} triggerState={(admin)=>{doFetch(admin)}} />
             <div className={styles.GridContainer}>
                 <div className={styles.LANavbar}> 
                     <HiArrowLeft size={"20px"}/>
@@ -66,7 +70,7 @@ const ListAdministrador = () => {
                             return(
                                 <tr key={index}>
                                     <td>{d?.documento}</td>
-                                    <td>{d?.nombre}</td>
+                                    <td>{d?.nombre + " " + d?.apellido}</td>
                                     <td>{parseToDate(new Date(d?.nacimiento))}</td>
                                     <td>{d?.direccion}</td>
                                     <td>{d?.telefono}</td>

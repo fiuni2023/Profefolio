@@ -9,6 +9,7 @@ import {useGeneralContext} from '../../../context/GeneralContext'
 
 import styles from './CreateModal.module.css'
 import AdminService from "../servicios/Administradores";
+import { toast } from "react-hot-toast";
 
 const LACreateModal = ({ 
     show = false, 
@@ -31,6 +32,8 @@ const LACreateModal = ({
             telefono: "",
             direccion: "",
             genero: "F",
+            pass: "",
+            passConf: "",
             correo: ""
         }
     })
@@ -54,16 +57,20 @@ const LACreateModal = ({
             "genero": formik.values.genero,
             "direccion": formik.values.direccion,
             "telefono": formik.values.telefono,
-            "password": "P@ssw0rd",
-            "confirmPassword": "P@ssw0rd",
+            "password": formik.values.pass,
+            "confirmPassword": formik.values.passConf,
             "email": formik.values.correo
           }
         AdminService.createAdmin(body, getToken())
         .then(r => {
+            console.log(r)
+            triggerState(r.data)
+            toast.success("creado con exito!!")
+            resetFormik()
+            handleClose()
+
         })
-        resetFormik()
-        triggerState()
-        handleClose()
+        .catch(error=>{toast.error(error.response.data)})
     }
 
     return(
@@ -80,20 +87,24 @@ const LACreateModal = ({
                     </div>
                     <div className={styles.Divisor}></div>
                     <div className={styles.ModalBody}>
-                        <label>CI:</label>
+                        <label>CI: <RedText>*</RedText></label>
                         <TextInput name="cin" placeholder="" value={formik.values.cin} handleChange={formik.handleChange} width={"100%"}/>
-                        <label>Nombres:</label>
+                        <label>Nombres: <RedText>*</RedText></label>
                         <TextInput name="name" placeholder="" value={formik.values.name} handleChange={formik.handleChange} width={"100%"}/>
-                        <label>Apellidos:</label>
+                        <label>Apellidos: <RedText>*</RedText></label>
                         <TextInput name="surname" placeholder="" value={formik.values.surname} handleChange={formik.handleChange} width={"100%"}/>
-                        <label>Fecha de Nacimiento:</label>
+                        <label>Fecha de Nacimiento: <RedText>*</RedText></label>
                         <DateInput name="nacimiento" value={formik.values.nacimiento} handleChange={formik.handleChange} width={"100%"} />
-                        <label>Teléfono:</label>
+                        <label>Teléfono: <RedText>*</RedText></label>
                         <TextInput name="telefono" placeholder="" value={formik.values.telefono} handleChange={formik.handleChange} width={"100%"}/>
-                        <label>Dirección:</label>
+                        <label>Dirección: <RedText>*</RedText></label>
                         <TextInput name="direccion" placeholder="" value={formik.values.direccion} handleChange={formik.handleChange} width={"100%"}/>
-                        <label>Correo Electrónico:</label>
+                        <label>Correo Electrónico: <RedText>*</RedText></label>
                         <TextInput name="correo" placeholder="" value={formik.values.correo} handleChange={formik.handleChange} width={"100%"}/>
+                        <label>Contraseña: <RedText>* (debe tener 1 Mayuscula, 1 Signo y 1 Numero)</RedText></label>
+                        <TextInput name="pass" placeholder="" value={formik.values.pass} handleChange={formik.handleChange} width={"100%"}/>
+                        <label>Confirmar Contraseña: <RedText>*</RedText></label>
+                        <TextInput name="passConf" placeholder="" value={formik.values.passConf} handleChange={formik.handleChange} width={"100%"}/>
                         <label>Género:</label>
                         <select name="genero" className={styles.Select} placeholder="" value={formik.values.genero} onChange={formik.handleChange} width={"100%"}>
                             <option value={"F"}>Mujer</option>
@@ -108,6 +119,14 @@ const LACreateModal = ({
                 </Modal.Body>
             </ModalContainer>
         </>
+    )
+}
+
+const RedText = ({children}) =>{
+    return(
+        <label style={{color: "red"}}>
+            {children}
+        </label>
     )
 }
 
