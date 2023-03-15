@@ -3,7 +3,7 @@
 public interface IRepository<T> : IDisposable
 {
     Task<T> FindById(int id);
-    IEnumerable<T> GetAll(int page, int cantPorPag);
+    IEnumerable<T> GetAll();
     T Edit(T t);
     Task<T>Add(T t);
     Task Save();

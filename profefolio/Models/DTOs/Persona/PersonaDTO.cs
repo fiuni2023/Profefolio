@@ -1,17 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿namespace profefolio.Models.DTOs.Persona;
 
-namespace profefolio.Models.DTOs.Persona;
-// ReSharper disable once InconsistentNaming
-public class PersonaDTO
+public class PersonaDTO : DataDTO
 {
-    [Required(ErrorMessage = "El nombre es requerido")]
     public string? Nombre
     {
         get;
         set;
     }
 
-    [Required(ErrorMessage = "El apellido es requerido")]
     public string? Apellido
     {
         get;
