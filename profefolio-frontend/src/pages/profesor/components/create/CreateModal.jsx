@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Button, Modal, Form,Toast } from 'react-bootstrap';
 
 import {BsFillPlusCircleFill} from 'react-icons/bs';
-
+import { useGeneralContext } from "../../../../context/GeneralContext";
 
 
 function CreateModal() {
@@ -25,16 +25,13 @@ function CreateModal() {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [error, setError] = useState('');
 
+  const { getToken } = useGeneralContext();
 
 
-    
-
-
+  
 
 
   const handleSubmit = (event) => {
-
-    
 
     event.preventDefault();
 
@@ -52,15 +49,17 @@ function CreateModal() {
       telefono,
     }, {
       headers: {
-        Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoibHVsbGFwZXJlekBnbWFpbC5jb20iLCJqdGkiOiJiNzhlOTZjYS0wYjNkLTRiZmYtYjA1ZC03OTBiNmQ1NTEzNDYiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJQcm9mZXNvciIsImV4cCI6MTY3ODg0NzcxNiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MDAwIiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo0MjAwIn0.wgMSUQHhVpwx8zzCAF1yKOt_gE6MNhOtObbiY-YbKtg',
-      
+        Authorization:  `Bearer ${getToken()}`,
       }
     })
     .then(response => {
       console.log(response.data);
 
+    
       
       setShowConfirmation(true);
+
+      
 
       setNombre(""); 
 
@@ -87,7 +86,10 @@ function CreateModal() {
  
 
   return (
+
+    
     <>
+  
 
     <div className='NButtonForSideA'>
     <div className="buttonNavBarAa">

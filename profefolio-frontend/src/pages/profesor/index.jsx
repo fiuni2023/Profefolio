@@ -4,6 +4,7 @@ import { Table } from "../../components/Table.jsx";
 import NavAdmin from "./components/NavAdmin.jsx";
 import CreateModal from "./components/create/CreateModal.jsx";
 
+import { useGeneralContext } from "../../context/GeneralContext";
 import axios from 'axios';
 
 import "./components/create/Index.css";
@@ -18,63 +19,34 @@ function Profesores() {
     const [page, setPage] = useState(0);
     const [size, setSize] = useState(10);
 
-
-    const [loading, setLoading] = useState(true);
-
-
-    function actualizarDatos(nuevosDatos) {
-        setProfesores(nuevosDatos);
-      }
- 
+    const { getToken } = useGeneralContext();
 
 
-    function updateList(){
-        setLoading(true);
-        
-        axios.get(`https://localhost:7063/api/profesor/page/${page}`, {
-        headers: {
-         // Authorization: `Bearer ${token}`
 
-         Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoibHVsbGFwZXJlekBnbWFpbC5jb20iLCJqdGkiOiJiNzhlOTZjYS0wYjNkLTRiZmYtYjA1ZC03OTBiNmQ1NTEzNDYiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJQcm9mZXNvciIsImV4cCI6MTY3ODg0NzcxNiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MDAwIiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo0MjAwIn0.wgMSUQHhVpwx8zzCAF1yKOt_gE6MNhOtObbiY-YbKtg', 
-        }
-        })
 
-      .then(response => {
-        setProfesores(response.data.dataList);
-      })
-      .catch(error => {
-        console.error(error);
-        setLoading(false);
-      });
-    }
-  
     useEffect(() => {
-        updateList();
-
-
 
         //axios.get(`https://miapi.com/products?page=${page}&size=${size}`, {
+
       axios.get(`https://localhost:7063/api/profesor/page/${page}`, {
         headers: {
-         // Authorization: `Bearer ${token}`
-
-         Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoibHVsbGFwZXJlekBnbWFpbC5jb20iLCJqdGkiOiJiNzhlOTZjYS0wYjNkLTRiZmYtYjA1ZC03OTBiNmQ1NTEzNDYiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJQcm9mZXNvciIsImV4cCI6MTY3ODg0NzcxNiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MDAwIiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo0MjAwIn0.wgMSUQHhVpwx8zzCAF1yKOt_gE6MNhOtObbiY-YbKtg',
-      
-        
+         Authorization:  `Bearer ${getToken()}`,
         }
         })
 
       .then(response => {
         setProfesores(response.data.dataList);
-
-    
-
         console.log(JSON.stringify(response.data.dataList))
+
       })
       .catch(error => {
         console.error(error);
       });
-    }, [page, size, token]);
+    },[page, size, token]);
+
+
+
+
   
     const handlePrevClick = () => {
       setPage(page - 1);
@@ -88,13 +60,10 @@ function Profesores() {
 
     const [show, setShow] = useState(false);
 
-  
-    return(
-
-
-        
+    
+    return(      
         <>
-
+    
             <div className="page">
             <NavAdmin/>
            
@@ -134,11 +103,11 @@ function Profesores() {
 
 
 
-{/* 
-                            <footer>
+
+                            <div>
                             <button onClick={handlePrevClick} disabled={page === 0}>Anterior</button>
                             <button onClick={handleNextClick}>Siguiente</button>
-                            </footer>*/}
+                            </div>
                             </div>
 
     
@@ -151,7 +120,7 @@ function Profesores() {
             <footer>
              <div className="NButtonForSideA "> 
              <button className="buttonNavBarAa">  
-            <CreateModal title="My Modal" actualizarDatos={actualizarDatos} onClose={() => setShow(false)} show={show}>
+            <CreateModal title="My Modal" onClose={() => setShow(false)} show={show}>
             </CreateModal>
 
             </button>
