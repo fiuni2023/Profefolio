@@ -8,6 +8,8 @@ import { useGeneralContext } from "../../../../context/GeneralContext";
 import AdminService from "../../servicios/Administradores";
 import { Pagination } from "react-bootstrap";
 
+import NavAdmin from "../../../profesor/components/NavAdmin";
+
 const ListAdministrador = () => {
 
     const {getToken} = useGeneralContext()
