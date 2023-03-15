@@ -38,6 +38,9 @@ const App = () => {
                                                 <Route path="listColegios" element={<ListarColegios />}/>
                                                 <Route path="modalColegios" element={<ModalAgregarColegios />}/>
                                             </Route>
+                                            <Route path="/administradorMaster" element={<ListarColegios />}>
+                                                <Route path="modalColegios" element={<ModalAgregarColegios />}/>
+                                            </Route>
                                         </Routes>
                             </div>
 
