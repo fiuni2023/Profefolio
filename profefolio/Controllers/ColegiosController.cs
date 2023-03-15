@@ -1,6 +1,7 @@
 using AutoMapper;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using profefolio.Models.DTOs;
 using profefolio.Models.DTOs.Persona;
 using profefolio.Models.DTOs.Colegio;
@@ -14,6 +15,7 @@ using profefolio.Repository;
 namespace profefolio.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize(Roles = "Master")]
     [ApiController]
     public class ColegiosController : ControllerBase
     {
@@ -26,14 +28,12 @@ namespace profefolio.Controllers
             _mapper = mapper;
         }
 
-
-
         /**
         * Devuelve los datos del colegio con el id persona
         **/
         [HttpGet]
         [Route("page/{page}")]
-        public ActionResult<DataListDTO<ColegioDTO>> GetColegios(int page)
+        public ActionResult<DataListDTO<ColegioResultDTO>> GetColegios(int page)
         {
             var query = _colegioService.GetAll(page, _cantPorPag);
             int totalPage = (int)Math.Ceiling((double)_colegioService.Count() / _cantPorPag);
@@ -53,7 +53,7 @@ namespace profefolio.Controllers
         // GET: api/Colegios/1
         //TODO: si data.delete = false no retornar.
         [HttpGet("{id}")]
-        public async Task<ActionResult<ColegioDTO>> GetColegio(int id)
+        public async Task<ActionResult<ColegioResultDTO>> GetColegio(int id)
         {
             var colegio = await _colegioService.FindById(id);
             Console.Write("Colegio: ", colegio);
@@ -70,18 +70,25 @@ namespace profefolio.Controllers
 
         // PUT: api/Colegios/1
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        // CUANDO SE edita SE CAMBIA SU ID ORIGINAL A ID+1
+        // 
         // una solicitud PUT requiere que el cliente envíe toda la entidad actualizada, no solo los cambios.
         [HttpPut("{id}")]
         public async Task<IActionResult> PutColegio(int id, ColegioDTO colegio)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest("Objeto No valido");
             }
-            if (id != colegio.Id)
+            if (colegio.PersonaId == null)
             {
-                return BadRequest("Los ID no se actualizan");
+                return BadRequest("Administrador No valido");
+            }
+            
+            //VERIFICAR ID
+            var persona = await _colegioService.FindByPerson(colegio.PersonaId);
+             if (persona == null)
+            {
+                return BadRequest($"No existe el administrador con id ${colegio.PersonaId}.");
             }
             var p = await _colegioService.FindById(id);
             if (p == null)
@@ -90,53 +97,67 @@ namespace profefolio.Controllers
             }
             string userId = User.Identity.GetUserId();
             p.ModifiedBy = userId;
-            p.Deleted = true;
+            p.Deleted = false;
             p.Modified = DateTime.Now;
 
-            var newColegio = _mapper.Map<Colegio>(colegio);
-            newColegio.ModifiedBy = "Anonimous";
-
+            //var newColegio = _mapper.Map<Colegio>(colegio);
+            //newColegio.ModifiedBy = "Anonimous";
+            p.Nombre = colegio.Nombre;
+            p.PersonaId = colegio.PersonaId;
             _colegioService.Edit(p);
 
-            Console.Write("\n");
-            Console.Write("Colegio editado p = estado: {0}  -nombre: {1}  -deleted: {2}",
-             p.Estado, p.Nombre, p.Deleted);
-            Console.Write("\n");
-            Console.Write("Colegio editado newColegio = estado: {0}  -nombre: {1}  -deleted: {2}",
-            newColegio.Estado, newColegio.Nombre, newColegio.Deleted);
-
-            var result = await _colegioService.Add(newColegio);
+           // var result = await _colegioService.Add(newColegio);
 
             await _colegioService.Save();
 
-            return Ok(result);
+            return Ok(p);
 
         }
 
         // POST: api/Colegios
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<ColegioDTO>> PostColegio([FromBody] ColegioDTO colegio)
+        public async Task<ActionResult<ColegioResultDTO>> PostColegio([FromBody] ColegioDTO colegio)
         {
 
             if (!ModelState.IsValid)
             {
                 return BadRequest("Objeto No valido");
             }
-            var p = _mapper.Map<Colegio>(colegio);
+            if (colegio.PersonaId == null)
+            {
+                return BadRequest("Colegio No valido");
+            }
+            //VERIFICAR REPETIDOS
+            var verificar = await _colegioService.FindByNamePerson(colegio.Nombre, colegio.PersonaId);
+            if (verificar != null)
+            {
+                return BadRequest($"Ya existe el colegio ${colegio.Nombre}.");
+            }
+            //VERIFICAR ID
+            var persona = await _colegioService.FindByPerson(colegio.PersonaId);
+             if (persona == null)
+            {
+                return BadRequest($"No existe el administrador con id ${colegio.PersonaId}.");
+            }
+            try
+            {
+                var p = _mapper.Map<Colegio>(colegio);
 
-            var userId = User.Identity.GetUserId();
-            p.ModifiedBy = userId;
-            p.Deleted = false;
-            await _colegioService.Add(p);
+                var userId = User.Identity.GetUserId();
+                p.ModifiedBy = userId;
+                p.Deleted = false;
+                await _colegioService.Add(p);
+                await _colegioService.Save();
+                return Ok(_mapper.Map<ColegioDTO>(colegio));
+            }
+            catch (BadHttpRequestException e)
+            {
+                Console.WriteLine(e.Message);
+                return BadRequest($"Error al crear el colegio ${colegio.Nombre}");
+            }
 
-            Console.Write("\n");
-            Console.Write("Colegio creado = estado: {0}  -nombre: {1}  -deleted: {2}  - id: {3}",
-             p.Estado, p.Nombre, p.Deleted, p.Id);
-            Console.Write("\n");
-
-            await _colegioService.Save();
-            return Ok(_mapper.Map<ColegioDTO>(colegio));
+            //return BadRequest($"Error al crear el colegio ${colegio.Id}");
         }
 
         // DELETE: api/Colegios/1
@@ -150,15 +171,11 @@ namespace profefolio.Controllers
             {
                 return NotFound();
             }
-            data.Estado = false;
+            
             data.Modified = DateTime.Now;
             data.Deleted = true;
             data.ModifiedBy = "Anonimous";
             _colegioService.Edit(data);
-            Console.Write("\n");
-            Console.Write("ELIMINADO = estado: {0}  -nombre: {1}  -deleted: {2}  - id: {3}",
-             data.Estado, data.Nombre, data.Deleted, data.Id);
-            Console.Write("\n");
             await _colegioService.Save();
 
             return Ok();
