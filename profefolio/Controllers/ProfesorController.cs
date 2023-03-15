@@ -34,19 +34,21 @@ namespace profefolio.Controllers
         public async Task<ActionResult<DataListDTO<PersonaResultDTO>>> Get(int page)
         {
             if(page < 0){
-                return BadRequest("El numero de pagina debe ser mayor que cero");
+                return BadRequest("El numero de pagina debe ser mayor o igual que cero");
             }
 
             var profesores = await _personasService.FilterByRol(page, CantPorPage, PROFESOR_ROLE);
 
 
-            int cantPages = (int)Math.Ceiling((double)profesores.Count() / CantPorPage);
+            int cantPages = (int)(_personasService.Count() / CantPorPage) + 1;
 
+
+            Console.WriteLine("CantPage: {0} = count: {1} / cantPorPage: {2}", cantPages, _personasService.Count(), CantPorPage);
             var result = new DataListDTO<PersonaResultDTO>();
 
             var enumerable = profesores as Persona[] ?? profesores.ToArray();
             result.CantItems = enumerable.Length;
-            result.CurrentPage = page >= cantPages - 1 ? cantPages - 1 : page;;
+            result.CurrentPage = page >= cantPages - 1 ? cantPages - 1 : page;
             result.Next = result.CurrentPage + 1 < cantPages;
             result.DataList = _mapper.Map<List<PersonaResultDTO>>(enumerable.ToList());
             result.TotalPage = cantPages;
