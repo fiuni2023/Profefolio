@@ -9,9 +9,14 @@ import { BiInfoCircle } from "react-icons/bi"
 import ModalAgregarColegios from './AgregarColegios'
 import axios from "axios";
 import Pagination from 'react-bootstrap/Pagination';
-import { useGeneralContext } from "../../../context/GeneralContext";
+import { useGeneralContext } from "../../context/GeneralContext";
+import APILINK from "../../components/link";
 const ListarColegios = () => {
-  const { getToken } = useGeneralContext()
+
+  const { getToken, verifyToken, cancan} = useGeneralContext()
+
+  const nav = useNavigate()
+
   const navigate = useNavigate()
   const [totalPage, setTotalPage] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
@@ -19,13 +24,17 @@ const ListarColegios = () => {
   const [colegios, setColegios] = useState([]);
   var config = {
     method: 'get',
-    url: `https://localhost:7063/api/ColegiosFull/page/0`,
+    url: `${APILINK}/api/ColegiosFull/page/${currentPage}`,
     headers: {
       'Authorization': `Bearer ${getToken()}`
     }
   };
   useEffect(() => {
-    axios(config)
+      verifyToken()
+      if(!cancan("Master")){
+        nav("/")
+      }else{
+      axios(config)
       .then(function (response) {
         setColegios(response.data.dataList); //Guarda los datos
         setTotalPage(response.data.totalPage);//Total de Paginas
@@ -35,13 +44,13 @@ const ListarColegios = () => {
       .catch(function (error) {
         console.log(error);
       });
-
-  }, [])
+    }
+  }, [cancan, verifyToken, nav, config])
 
 const recargaDatos=(id)=>{
  var config = {
     method: 'get',
-    url: `https://localhost:7063/api/ColegiosFull/page/${id}`,
+    url: `${APILINK}/api/ColegiosFull/page/${id}`,
     headers: {
       'Authorization': `Bearer ${getToken()}`
     }
@@ -114,7 +123,7 @@ const recargaDatos=(id)=>{
             <Pagination onClick={e => handleCurrentPage(e.target.text)}  size="sm">{items} </Pagination>
           
         </div>
-        <ModalAgregarColegios></ModalAgregarColegios>
+        <ModalAgregarColegios setColegios={()=>{recargaDatos(currentPage)}}></ModalAgregarColegios>
       </div>
     </>)
 }

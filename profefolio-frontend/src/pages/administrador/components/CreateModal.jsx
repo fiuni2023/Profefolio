@@ -77,7 +77,11 @@ const LACreateModal = ({
                 handleClose()
             })
             .catch(error=>{
-                toast.error(error.response.data.Password[0])
+                if(typeof(error.response.data) === "string"? true:false){
+                    toast.error(error.response.data)
+                }else{
+                    toast.error(error.response.data?.Password? error.response.data?.Password[0] : error.response.data?.Email[0])
+                }
             })
         }
     }
