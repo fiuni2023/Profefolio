@@ -69,3 +69,11 @@
     border: lightgray;
     border-radius: 10px;
 }
+
+.PassInput {
+    height: 40px;
+    width: 100%px;
+    outline: none;
+    border: lightgray;
+    border-radius: 10px;
+}

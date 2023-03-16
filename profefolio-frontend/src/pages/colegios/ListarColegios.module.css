@@ -1,0 +1,44 @@
+.nombrePagina{
+    width: 100%;
+    background-color: #FDF0D5;
+    
+    
+}
+.tablePrincipal{
+    padding: 1% 5% 0% 5%;
+    
+}
+.buttonBack{
+    border: none;
+    background-color: #FDF0D5;
+}
+.informationButtons{
+    border: none;
+    background-color: white;
+}
+.actionsTd{
+    align-items: center;
+    text-align: center;
+    width: 10%;
+}
+.actionsTh{
+    align-items: center;
+    text-align: center;
+   
+    
+} 
+#tableBorder{
+    border: 1px solid black;
+}
+.paginacion{
+    margin-top: -1%;
+    margin-left: 89%;
+}
+
+.numero-td{
+    align-items: center;
+    text-align: center;
+    width: 5%;
+
+}
+

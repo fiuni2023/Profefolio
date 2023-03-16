@@ -1,19 +1,20 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Button, Modal, Form,Toast } from 'react-bootstrap';
+import { Button, Modal, Form } from 'react-bootstrap';
 
-import {BsFillPlusCircleFill} from 'react-icons/bs';
+import { BsFillPlusCircleFill } from 'react-icons/bs';
 import { useGeneralContext } from "../../../../context/GeneralContext";
+import { toast } from 'react-hot-toast';
+import APILINK from '../../../../components/link';
 
 
-function CreateModal() {
+function CreateModal({onSubmit = ()=>{}}) {
 
-  const [mostrarMensaje, setMostrarMensaje] = useState(false);
   const [nombre, setNombre] = useState('');
   const [apellido, setApellido] = useState('');
   const [documento, setDocumento] = useState('');
   const [documentoTipo, setDocumentoTipo] = useState('');
-  const [password, setPasswordo] = useState('');
+  const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [email, setEmail] = useState('');
   const [nacimiento, setNacimiento] = useState('');
@@ -21,59 +22,65 @@ function CreateModal() {
   const [direccion, setDireccion] = useState('');
   const [telefono, setTelefono] = useState('');
 
-  const [success, setSuccess] = useState(false);
-  const [showConfirmation, setShowConfirmation] = useState(false);
-  const [error, setError] = useState('');
-
   const { getToken } = useGeneralContext();
 
-  const mostrar = () => {
-    setMostrarMensaje(true);
-  }
 
   const handleSubmit = (event) => {
 
     event.preventDefault();
+    if (nombre === "" || apellido === "" || documento === "" || documentoTipo === "" || password === "" || confirmPassword === "" || email === "" || nacimiento === "" || genero === "" || direccion === "" || telefono === "") toast.error("revisa los datos, los campos deben ser completados")
+    else if (password.length < 8) toast.error("Contraseña no suficientemente larga")
+    else if (password !== confirmPassword) toast.error("las contraseñas no son iguales")
+    else if( new Date()< new Date(nacimiento)) toast.error("Ingrese una fecha valida")
+    else {
+      axios.post(`${APILINK}/api/profesor`, {
+        nombre,
+        apellido,
+        documento,
+        documentoTipo,
+        password,
+        confirmPassword,
+        email,
+        nacimiento,
+        genero,
+        direccion,
+        telefono,
+      }, {
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+        }
+      })
+        .then(response => {
+          onSubmit(response.data)
+          toast.success("Guardado exitoso");
 
-    axios.post('https://localhost:7063/api/profesor', {
-      nombre,
-      apellido,
-      documento,
-      documentoTipo,
-      password,
-      confirmPassword,
-      email,
-      nacimiento,
-      genero,
-      direccion,
-      telefono,
-    }, {
-      headers: {
-        Authorization:  `Bearer ${getToken()}`,
-      }
-    })
-    .then(response => {
-      console.log(response.data);
-      setMostrarMensaje(true);
+          setShowModal(false);
+          setNombre("")
+          setApellido("")
+          setDireccion("")
+          setDocumentoTipo("")
+          setDocumento("")
+          setPassword("")
+          setConfirmPassword("")
+          setEmail("")
+          setNacimiento("")
+          setGenero("")
+          setTelefono("")
+
+        })
+        .catch(error => {
+          if(typeof(error.response.data) === "string"? true:false){
+            toast.error(error.response.data)
+          }else{
+            toast.error(error.response.data?.errors.Password? error.response.data?.errors.Password[0] : error.response.data?.errors.Email[0])
+          }
+        });
+
+    }
     
-      
-      setShowConfirmation(true);
-      alert("Guardado exitoso");
-      
-
-      setNombre(""); 
-
-    })
-    .catch(error => {
-      console.error(error);
-      alert("Error al guardar");
-    });
-
-    
-   setShowModal(false);
 
   };
- 
+
   const [showModal, setShowModal] = useState(false);
 
   function closeModal() {
@@ -82,32 +89,26 @@ function CreateModal() {
 
   const handleCloseModal = () => setShowModal(false);
   const handleShowModal = () => setShowModal(true);
-  
- 
+
+
 
   return (
 
-    
     <>
-  
-
-    <div className='NButtonForSideA'>
-    <div className="buttonNavBarAa">
-      <Button className="buttonNavBarA" onClick={handleShowModal}>
-      <BsFillPlusCircleFill/>
-      </Button>
-      </div>
+      <div className='NButtonForSideA'>
+        <div className="buttonNavBarAa">
+          <Button className="buttonNavBarA" onClick={handleShowModal}>
+            <BsFillPlusCircleFill />
+          </Button>
+        </div>
       </div>
 
-      {showModal && (
+
 
       <Modal show={showModal} onHide={handleCloseModal} >
 
-      {showConfirmation && (
-        <Toast show={showConfirmation}>
-          Se ha enviado correctamente.
-        </Toast>
-      )}
+
+
 
         <Modal.Header closeButton className="contentModal text-center">
           <Modal.Title className="">Agregar Profesor</Modal.Title>
@@ -115,11 +116,10 @@ function CreateModal() {
 
 
         <Modal.Body className="contentModal">
-        {success && <p>Producto guardado exitosamente.</p>}
           <Form onSubmit={handleSubmit}>
             <Form.Group className="row">
               <Form.Label className="col-sm-3">Nombre:
-                     
+
               </Form.Label>
               <div className="col-sm-9">
                 <Form.Control
@@ -130,7 +130,7 @@ function CreateModal() {
                 />
               </div>
             </Form.Group>
-            
+
 
             <Form.Group className="row">
               <Form.Label className="col-sm-3">Apellido:</Form.Label>
@@ -148,7 +148,7 @@ function CreateModal() {
               <Form.Label className="col-sm-3">Fecha de nacimiento:</Form.Label>
               <div className="col-sm-9">
                 <Form.Control
-                  type="datetime"
+                  type="date"
                   name="nacimiento"
                   value={nacimiento}
                   onChange={event => setNacimiento(event.target.value)}
@@ -169,8 +169,8 @@ function CreateModal() {
                   <option value="">Seleccione </option>
                   <option value="F">Femenino</option>
                   <option value="M">Masculino</option>
-                  
-                
+
+
                 </Form.Control>
               </div>
             </Form.Group>
@@ -249,10 +249,11 @@ function CreateModal() {
               <div className="col-sm-9">
                 <Form.Control
                   type="password"
+                  pattern="^.*(?=.{8,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$"
                   name="password"
                   value={password}
                   //onChange={handleConfirmPasswordChange}
-                  onChange={event => setPasswordo(event.target.value)}
+                  onChange={event => setPassword(event.target.value)}
                   placeholder="Utilizar minuscula, mayuscula y caracter especial"
                 />
               </div>
@@ -269,33 +270,29 @@ function CreateModal() {
                   placeholder="Confirme su contraseña"
                 />
 
-                </div>
+              </div>
 
 
 
-              </Form.Group>
+            </Form.Group>
 
-              
-              <div class="modal-footer">
 
-             
-        <Button type="submit" className="button" >Guardar</Button>
+            <div className="modal-footer">
+              <Button type="submit" className="button"  >Guardar</Button>
+              <Button className="btn button" onClick={closeModal}> Cerrar</Button>
 
-  
-        <Button type="button" class="btn button"  className="button" onClick={closeModal}> Cerrar</Button>
-       
-      </div>
+            </div>
 
-     
-              </Form>
-              </Modal.Body>
-              
-              </Modal>
-              
 
-      )}
+          </Form>
+        </Modal.Body>
 
-<style jsx='true'>{`
+      </Modal>
+
+
+
+
+      <style jsx='true'>{`
             .contentModal{
               text-align: center;
                 background-color:  #C6D8D3;
@@ -359,9 +356,10 @@ function CreateModal() {
 
             
             `}</style>
-            </>
+    </>
 
-  )}
+  )
+}
 
-          
-  export default CreateModal;
+
+export default CreateModal;

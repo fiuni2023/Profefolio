@@ -36,7 +36,19 @@ export const GeneralProvider = ({children}) => {
 
     const getToken = () => {
         return getLoginData().token
+    }
 
+    const getRole = () =>{
+        return getLoginData().roles[0]
+    }
+
+    const cancan = (role) => {
+        const hasRole = getRole()
+        return hasRole === role
+    }
+
+    const getUserName = () => {
+        return getLoginData().email.split("@")[0]
     }
 
     const values = {
@@ -47,7 +59,10 @@ export const GeneralProvider = ({children}) => {
         isLogged,
         setIsLogged,
         getLoginData,
-        getToken
+        getToken,
+        verifyToken,
+        cancan,
+        getUserName
     }
 
     verifyToken()

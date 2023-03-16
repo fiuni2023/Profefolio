@@ -47,30 +47,50 @@ const LACreateModal = ({
         return returnDate
     }
 
-    const handleSubmit=()=>{
-        const body = {
-            "nombre": formik.values.name,
-            "apellido": formik.values.surname,
-            "nacimiento": toDate(),
-            "documento": formik.values.cin,
-            "documentoTipo": "CIN",
-            "genero": formik.values.genero,
-            "direccion": formik.values.direccion,
-            "telefono": formik.values.telefono,
-            "password": formik.values.pass,
-            "confirmPassword": formik.values.passConf,
-            "email": formik.values.correo
-          }
-        AdminService.createAdmin(body, getToken())
-        .then(r => {
-            console.log(r)
-            triggerState(r.data)
-            toast.success("creado con exito!!")
-            resetFormik()
-            handleClose()
+    const validarPass = (data = "", data2 = "") => {
+        if(data.length < 8) return true
+        if(data !== data2) return true
+    }
 
-        })
-        .catch(error=>{toast.error(error.response.data)})
+    const validarDate = (date)=>{
+        if(new Date(date) > new Date()) return true
+        return false
+    } 
+
+    const handleSubmit=()=>{
+        if(formik.values.cin === ""||formik.values.name === ""||formik.values.surname === "" || formik.values.documento === "" || formik.values.correo === "" || formik.values.telefono === "") toast.error("Ingrese todos los datos importantes")
+        else if(validarPass(formik.values.pass, formik.values.passConf))  toast.error("la contraseña es invalida")
+        else if(validarDate(formik.values.date)) toast.error("ingresa una fecha valida")
+        else {
+            const body = {
+                "nombre": formik.values.name,
+                "apellido": formik.values.surname,
+                "nacimiento": toDate(),
+                "documento": formik.values.cin,
+                "documentoTipo": "CIN",
+                "genero": formik.values.genero,
+                "direccion": formik.values.direccion,
+                "telefono": formik.values.telefono,
+                "password": formik.values.pass,
+                "confirmPassword": formik.values.passConf,
+                "email": formik.values.correo
+              }
+            AdminService.createAdmin(body, getToken())
+            .then(r => {
+                triggerState(r.data)
+                toast.success("creado con exito!!")
+                resetFormik()
+                handleClose()
+            })
+            .catch(error=>{
+                console.log(typeof(error.response.data))
+                if(typeof(error.response.data) === "string"? true:false){
+                    toast.error(error.response.data)
+                }else{
+                    toast.error(error.response.data?.Password? error.response.data?.Password[0] : error.response.data?.Email[0])
+                }
+            })
+        }
     }
 
     return(
@@ -97,19 +117,18 @@ const LACreateModal = ({
                         <DateInput name="nacimiento" value={formik.values.nacimiento} handleChange={formik.handleChange} width={"100%"} />
                         <label>Teléfono: <RedText>*</RedText></label>
                         <TextInput name="telefono" placeholder="" value={formik.values.telefono} handleChange={formik.handleChange} width={"100%"}/>
-                        <label>Dirección: <RedText>*</RedText></label>
+                        <label>Dirección:</label>
                         <TextInput name="direccion" placeholder="" value={formik.values.direccion} handleChange={formik.handleChange} width={"100%"}/>
                         <label>Correo Electrónico: <RedText>*</RedText></label>
                         <TextInput name="correo" placeholder="" value={formik.values.correo} handleChange={formik.handleChange} width={"100%"}/>
                         <label>Contraseña: <RedText>* (debe tener 1 Mayuscula, 1 Signo y 1 Numero)</RedText></label>
-                        <TextInput name="pass" placeholder="" value={formik.values.pass} handleChange={formik.handleChange} width={"100%"}/>
+                        <input type={"password"} name="pass" className={styles.PassInput} placeholder="" value={formik.values.pass} onChange={formik.handleChange} width={"100%"}/>
                         <label>Confirmar Contraseña: <RedText>*</RedText></label>
-                        <TextInput name="passConf" placeholder="" value={formik.values.passConf} handleChange={formik.handleChange} width={"100%"}/>
-                        <label>Género:</label>
+                        <input type={"password"} name="passConf" className={styles.PassInput}  value={formik.values.passConf} onChange={formik.handleChange} width={"100%"}/>
+                        <label>Género: <RedText>*</RedText></label>
                         <select name="genero" className={styles.Select} placeholder="" value={formik.values.genero} onChange={formik.handleChange} width={"100%"}>
                             <option value={"F"}>Mujer</option>
                             <option value={"M"}>Hombre</option>
-                            <option value={"X"}>No Especificar</option>
                         </select>
                     </div>
                     <div className={`${styles.Divisor} ${styles.MarginedDivisor}`}></div>

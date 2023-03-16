@@ -5,7 +5,7 @@ import { FaUserCircle } from 'react-icons/fa'
 import { LogoNavBar } from "../assets";
 
 const Navbar = () => {
-    const { showSB ,setShowSB} = useGeneralContext()
+    const { showSB ,setShowSB, getUserName} = useGeneralContext()
 
     return(
         <>
@@ -15,7 +15,7 @@ const Navbar = () => {
                 </div>
                 <div className="navbarmain">
                     <div className="logo"> <LogoNavBar width="100%" height="100%" /> </div>
-                    <div className="user"> <span>UserName</span> <FaUserCircle /> </div>
+                    <div className="user"> <span>{getUserName()}</span> <FaUserCircle size={25}/> </div>
                 </div>
             </div>
             <style jsx="true">{`
@@ -49,7 +49,7 @@ const Navbar = () => {
                     height: 100%;
                 }
                 .user{
-                    width: 10%;
+                    width: 20%;
                     height: 100%;
                     display: flex;
                     justify-content: space-evenly;
