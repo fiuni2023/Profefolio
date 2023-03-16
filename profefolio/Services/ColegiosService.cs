@@ -38,6 +38,14 @@ public class ColegiosService : IColegio
             .Where(p => !p.Deleted  && p.Nombre == name && p.PersonaId == idPerson)
             .FirstOrDefaultAsync();
     }
+    public async Task<Colegio> FindByNameColegio(string name)
+    {
+        Console.Write("\nColegio a buscar: {0}", name);
+        Console.Write("\n");
+        return await _dbContext.Colegios
+            .Where(p => !p.Deleted  && p.Nombre == name)
+            .FirstOrDefaultAsync();
+    }
 
       public async Task<Persona> FindByPerson(string id)
     {

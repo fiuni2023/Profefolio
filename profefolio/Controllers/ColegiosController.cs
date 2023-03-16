@@ -75,16 +75,29 @@ namespace profefolio.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<ColegioResultDTO>> PutColegio(int id, ColegioDTO colegio)
         {
+            //verificar el modelo
             if (!ModelState.IsValid)
             {
                 return BadRequest("Objeto No valido");
             }
+            //verificar que PersonaId no sea nulo
             if (colegio.PersonaId == null)
             {
                 return BadRequest("Administrador No valido");
             }
-            
-            //VERIFICAR ID
+            //VERIFICAR REPETIDOS con nombre de colegio e id iguales
+            var verificar = await _colegioService.FindByNamePerson(colegio.Nombre, colegio.PersonaId);
+            if (verificar != null)
+            {
+                return BadRequest($"Ya existe el colegio ${colegio.Nombre} y el id persona ingresado.");
+            }
+             //VERIFICAR REPETIDOS con nombre de colegio igual
+            var verificarNombreColegio = await _colegioService.FindByNameColegio(colegio.Nombre);
+            if (verificarNombreColegio != null)
+            {
+                return BadRequest($"Ya existe un colegio con el mismo nombre: ${colegio.Nombre}.");
+            }
+            //verificar que no se repita PersonaId
             var persona = await _colegioService.FindByPerson(colegio.PersonaId);
              if (persona == null)
             {
@@ -100,18 +113,13 @@ namespace profefolio.Controllers
             p.Deleted = false;
             p.Modified = DateTime.Now;
 
-            //var newColegio = _mapper.Map<Colegio>(colegio);
-            //newColegio.ModifiedBy = "Anonimous";
             p.Nombre = colegio.Nombre;
             p.PersonaId = colegio.PersonaId;
-            _colegioService.Edit(p);
-
-           // var result = await _colegioService.Add(newColegio);
-
+            var query =  _colegioService.Edit(p);
             await _colegioService.Save();
 
-            return Ok("Colegio: " + p.Nombre + ",PersonaId: " + p.PersonaId );
-
+            //return Ok("Colegio: " + p.Nombre + ",PersonaId: " + p.PersonaId );
+            return Ok(_mapper.Map<ColegioResultDTO>(query));
         }
 
         // POST: api/Colegios
@@ -128,11 +136,18 @@ namespace profefolio.Controllers
             {
                 return BadRequest("Colegio No valido");
             }
-            //VERIFICAR REPETIDOS
+            //VERIFICAR REPETIDOS con nombre de colegio e id iguales
             var verificar = await _colegioService.FindByNamePerson(colegio.Nombre, colegio.PersonaId);
             if (verificar != null)
             {
-                return BadRequest($"Ya existe el colegio ${colegio.Nombre}.");
+                return BadRequest($"Ya existe el colegio ${colegio.Nombre} y el id persona ingresado.");
+            }
+
+             //VERIFICAR REPETIDOS con nombre de colegio igual
+            var verificarNombreColegio = await _colegioService.FindByNameColegio(colegio.Nombre);
+            if (verificarNombreColegio != null)
+            {
+                return BadRequest($"Ya existe un colegio con el mismo nombre: ${colegio.Nombre}.");
             }
             //VERIFICAR ID
             var persona = await _colegioService.FindByPerson(colegio.PersonaId);
@@ -147,9 +162,10 @@ namespace profefolio.Controllers
                 var userId = User.Identity.GetUserId();
                 p.ModifiedBy = userId;
                 p.Deleted = false;
-                await _colegioService.Add(p);
+                var saved = await _colegioService.Add(p);
                 await _colegioService.Save();
-                return Ok("Colegio: " + p.Nombre + ", Id: " + p.Id + ", PersonaId: " + p.PersonaId);
+                //return Ok("Colegio: " + p.Nombre + ", Id: " + p.Id + ", PersonaId: " + p.PersonaId);
+                return Ok(_mapper.Map<ColegioResultDTO>(saved));
             }
             catch (BadHttpRequestException e)
             {
