@@ -20,7 +20,13 @@ const Login = ({changeState = () => {}}) => {
             toast.success("Se ha logueado con exito!")
             changeState()
         })
-        .catch(error=>{toast.error(error.response.data)})
+        .catch(error=>{
+            if(typeof(error.response.data) === "string"? true:false){
+                toast.error(error.response.data)
+            }else{
+                toast.error(error.response.data.Email[0])
+            }
+        })
         
     }
 
