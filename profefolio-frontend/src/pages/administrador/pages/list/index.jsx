@@ -9,10 +9,13 @@ import AdminService from "../../servicios/Administradores";
 import { Pagination } from "react-bootstrap";
 
 import NavAdmin from "../../../profesor/components/NavAdmin";
+import { toast } from "react-hot-toast";
+import { useNavigate } from "react-router";
 
 const ListAdministrador = () => {
 
-    const {getToken} = useGeneralContext()
+    const nav = useNavigate()
+    const {getToken, verifyToken, cancan} = useGeneralContext()
 
     const [showCreateModal, setShowCreateModal] = useState(false)
     const [admins, setAdmins] = useState([])
@@ -25,17 +28,23 @@ const ListAdministrador = () => {
     }
 
     useEffect(()=>{
-        setLoading(true)
-        AdminService.getList(currentPage, getToken())
-        .then(r=>{
-            setAdmins(r.data.dataList)
-            setNext(r.next)
-            setLoading(false)
-        })
-        .catch(e=>{
-            setLoading(false)
-        })
-    }, [currentPage, getToken])
+        verifyToken()
+        if(!cancan("Master")){
+            nav("/")
+        }else{
+            setLoading(true)
+            AdminService.getList(currentPage, getToken())
+            .then(r=>{
+                setAdmins(r.data.dataList)
+                setNext(r.data.next)
+                setLoading(false)
+            })
+            .catch(e=>{
+                toast.error("No se pudieron cargar los administradores, intente de nuevo")
+                setLoading(false)
+            })
+        }
+    }, [currentPage, getToken, cancan, verifyToken])
 
     const doFetch =(admin) =>{
         setAdmins([...admins, admin])
@@ -61,7 +70,7 @@ const ListAdministrador = () => {
             <LACreateModal show={showCreateModal} handleClose={()=>{setShowCreateModal(!showCreateModal)}} triggerState={(admin)=>{doFetch(admin)}} />
             <div className={styles.GridContainer}>
                 <div className={styles.LANavbar}> 
-                    <HiArrowLeft size={"20px"}/>
+                    <HiArrowLeft size={"20px"} onClick={()=>nav("/")}/>
                     <h5 className={styles.LANText}>Administradores</h5>
                 </div>
                 <div className={styles.TableContainer}>

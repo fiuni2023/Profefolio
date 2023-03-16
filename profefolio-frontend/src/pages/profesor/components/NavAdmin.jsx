@@ -21,15 +21,15 @@ const NavAdmin = () => {
            
                 <div className="NButtonForSideAdmin">
                     <button className="buttonNavBarAdmin">  
-                    <Link to="/administrador" className="buttonNavBarAdmin "><BsArrowLeft />  </Link>
+                    <Link to="/" className="buttonNavBarAdmin "><BsArrowLeft />  </Link>
                      </button> 
                      
                     
                     
-                     <div class="">
+                     <div className="">
                         <div>
-                            <span class="glyphicon glyphicon-info-sign customIcon"></span></div>
-                        <div class="customSpan">Profesores</div>
+                            <span className="glyphicon glyphicon-info-sign customIcon"></span></div>
+                        <div className="customSpan">Profesores</div>
                     </div>     
                 </div>
 

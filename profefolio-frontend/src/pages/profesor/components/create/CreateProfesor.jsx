@@ -22,33 +22,28 @@ function CreateProfesor() {
       </div>
 
 
-    <div class="col">
+    <div class="row">
       <input type="text" class="form-control" placeholder="Nombre"/>
-    
-    
     </div>
-    <div class="col">
+    <div class="row">
       <input type="text" class="form-control" placeholder="Ci"/>
     </div>
-    <div class="col">
+    <div class="row">
       <input type="text" class="form-control" placeholder="Telefono"/>
     </div>
-    <div class="col">
+    <div class="row">
       <input type="text" class="form-control" placeholder="Correo electronico"/>
     </div>
-
-    <div class="col">
+    <div class="row">
       <input type="text" class="form-control" placeholder="Direccion"/>
     </div>
-
-    <div class="col">
-      <input type="text" class="form-control" placeholder="Fecha de Nacimiento"/>
+    <div class="row">
+      <input type="date" class="form-control" placeholder="Fecha de Nacimiento"/>
     </div>
-
-    <div class="col">
+    <div class="row">
       <input type="text" class="form-control" placeholder="Genero"/>
     </div>
-    <div class="col">
+    <div class="row">
       <input type="text" class="form-control" placeholder="Ci"/>
     </div>
 
@@ -57,7 +52,7 @@ function CreateProfesor() {
 
     
 </div>
-+
+
 </>
 
   );

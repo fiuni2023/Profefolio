@@ -52,9 +52,15 @@ const LACreateModal = ({
         if(data !== data2) return true
     }
 
+    const validarDate = (date)=>{
+        if(new Date(date) > new Date()) return true
+        return false
+    } 
+
     const handleSubmit=()=>{
         if(formik.values.cin === ""||formik.values.name === ""||formik.values.surname === "" || formik.values.documento === "" || formik.values.correo === "" || formik.values.telefono === "") toast.error("Ingrese todos los datos importantes")
         else if(validarPass(formik.values.pass, formik.values.passConf))  toast.error("la contraseña es invalida")
+        else if(validarDate(formik.values.date)) toast.error("ingresa una fecha valida")
         else {
             const body = {
                 "nombre": formik.values.name,
@@ -77,7 +83,12 @@ const LACreateModal = ({
                 handleClose()
             })
             .catch(error=>{
-                toast.error(error.response.data.Password[0])
+                console.log(typeof(error.response.data))
+                if(typeof(error.response.data) === "string"? true:false){
+                    toast.error(error.response.data)
+                }else{
+                    toast.error(error.response.data?.Password? error.response.data?.Password[0] : error.response.data?.Email[0])
+                }
             })
         }
     }

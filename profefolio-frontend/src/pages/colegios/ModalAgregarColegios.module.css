@@ -1,0 +1,59 @@
+.iconoAgregar{
+    color: #F0544F;
+    height: 50px;
+    width: 50px;
+}
+
+.buttonAgregar{
+    background-color: white;
+    border: none;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+}
+#modalContenido{
+    background-color: #C6D8D3;
+    
+}
+.btnGuardar{
+    color: white !important;
+    font-size: x-small !important;
+    background-color: #331832 !important;
+    width: 100px !important;
+    border: none !important;
+}
+.btnCancelar{
+    background-color: gainsboro !important;
+    color: black !important;
+    font-size: x-small !important;
+    width: 100px !important;
+    border: none !important;
+}
+#inputColegio{
+    border: none;
+    width: 100%;
+}
+.paginacion{
+    color: #F0544F;
+}
+#inputAdmin{
+    border: none;
+    width: 221px;
+}
+#inputApellido{
+    margin-left: 5%;
+    border: none;
+    width: 221px;
+}
+.selectAdmin{
+    border: none;
+    width: 100%;
+}
+.mensajeError{
+    color: red;
+}
+.footForm{
+    align-items: center;
+    text-align: center;
+    
+}
