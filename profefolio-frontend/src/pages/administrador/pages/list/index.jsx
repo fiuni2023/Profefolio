@@ -8,7 +8,6 @@ import { useGeneralContext } from "../../../../context/GeneralContext";
 import AdminService from "../../servicios/Administradores";
 import { Pagination } from "react-bootstrap";
 
-import NavAdmin from "../../../profesor/components/NavAdmin";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router";
 
@@ -44,7 +43,7 @@ const ListAdministrador = () => {
                 setLoading(false)
             })
         }
-    }, [currentPage, getToken, cancan, verifyToken])
+    }, [currentPage, getToken, cancan, verifyToken, nav])
 
     const doFetch =(admin) =>{
         setAdmins([...admins, admin])

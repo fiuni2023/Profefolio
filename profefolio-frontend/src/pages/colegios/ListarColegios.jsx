@@ -20,20 +20,21 @@ const ListarColegios = () => {
   const navigate = useNavigate()
   const [totalPage, setTotalPage] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
-  const [nextPage, setNetPage] = useState(false);
   const [colegios, setColegios] = useState([]);
-  var config = {
-    method: 'get',
-    url: `${APILINK}/api/ColegiosFull/page/${currentPage}`,
-    headers: {
-      'Authorization': `Bearer ${getToken()}`
-    }
-  };
+  
   useEffect(() => {
+
       verifyToken()
       if(!cancan("Master")){
         nav("/")
       }else{
+        var config = {
+          method: 'get',
+          url: `${APILINK}/api/ColegiosFull/page/${currentPage}`,
+          headers: {
+            'Authorization': `Bearer ${getToken()}`
+          }
+        };
       axios(config)
       .then(function (response) {
         setColegios(response.data.dataList); //Guarda los datos
@@ -45,7 +46,7 @@ const ListarColegios = () => {
         console.log(error);
       });
     }
-  }, [cancan, verifyToken, nav, config])
+  }, [cancan, verifyToken, nav, currentPage, getToken])
 
 const recargaDatos=(id)=>{
  var config = {
