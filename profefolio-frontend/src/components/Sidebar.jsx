@@ -19,6 +19,8 @@ const SideBar = () => {
                 <SideBarClose> Cerrar </SideBarClose>
                 <SideBarTab page={"cerrarSecionBtn"} current={currentPage} handleClick={handleLogOut} > Cerrar Sesión </SideBarTab>
                 <SideBarTab page={"administrador"} current={currentPage} handleClick={()=>{navigate("/administrador/list")}} > - Administrador </SideBarTab>
+                <SideBarTab page={"administradorMaster"} current={currentPage} handleClick={()=>{navigate("/administradorMaster")}} > - AdministradorMaster </SideBarTab>
+                <SideBarTab></SideBarTab>
                 <SideBarTab page={"pagina1"} current={currentPage} handleClick={()=>{navigate("/pagina1/list")}} > - Página1 </SideBarTab>
                 <SideBarTab page={"pagina2"} current={currentPage} handleClick={()=>{navigate("/pagina2/list")}} > - Página2 </SideBarTab>
 
