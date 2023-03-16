@@ -52,9 +52,15 @@ const LACreateModal = ({
         if(data !== data2) return true
     }
 
+    const validarDate = (date)=>{
+        if(new Date(date) > new Date()) return true
+        return false
+    } 
+
     const handleSubmit=()=>{
         if(formik.values.cin === ""||formik.values.name === ""||formik.values.surname === "" || formik.values.documento === "" || formik.values.correo === "" || formik.values.telefono === "") toast.error("Ingrese todos los datos importantes")
         else if(validarPass(formik.values.pass, formik.values.passConf))  toast.error("la contraseña es invalida")
+        else if(validarDate(formik.values.date)) toast.error("ingresa una fecha valida")
         else {
             const body = {
                 "nombre": formik.values.name,
@@ -77,7 +83,12 @@ const LACreateModal = ({
                 handleClose()
             })
             .catch(error=>{
-                toast.error(error.response.data.Password[0])
+                console.log(typeof(error.response.data))
+                if(typeof(error.response.data) === "string"? true:false){
+                    toast.error(error.response.data)
+                }else{
+                    toast.error(error.response.data?.Password? error.response.data?.Password[0] : error.response.data?.Email[0])
+                }
             })
         }
     }
@@ -111,9 +122,9 @@ const LACreateModal = ({
                         <label>Correo Electrónico: <RedText>*</RedText></label>
                         <TextInput name="correo" placeholder="" value={formik.values.correo} handleChange={formik.handleChange} width={"100%"}/>
                         <label>Contraseña: <RedText>* (debe tener 1 Mayuscula, 1 Signo y 1 Numero)</RedText></label>
-                        <TextInput name="pass" placeholder="" value={formik.values.pass} handleChange={formik.handleChange} width={"100%"}/>
+                        <input type={"password"} name="pass" className={styles.PassInput} placeholder="" value={formik.values.pass} onChange={formik.handleChange} width={"100%"}/>
                         <label>Confirmar Contraseña: <RedText>*</RedText></label>
-                        <TextInput name="passConf" placeholder="" value={formik.values.passConf} handleChange={formik.handleChange} width={"100%"}/>
+                        <input type={"password"} name="passConf" className={styles.PassInput}  value={formik.values.passConf} onChange={formik.handleChange} width={"100%"}/>
                         <label>Género: <RedText>*</RedText></label>
                         <select name="genero" className={styles.Select} placeholder="" value={formik.values.genero} onChange={formik.handleChange} width={"100%"}>
                             <option value={"F"}>Mujer</option>

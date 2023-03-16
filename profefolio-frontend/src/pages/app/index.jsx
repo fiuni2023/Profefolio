@@ -6,16 +6,15 @@ import { GeneralProvider } from "../../context/GeneralContext";
 import Administrador from "../administrador/index.jsx";
 import ListAdministrador from "../administrador/pages/list/index.jsx";
 
+import Home from "../home/index.jsx";
 import ProfesorList from "../profesor/list/index.jsx";
 import Partidos from "../partidos";
 import CreatePartidos from "../partidos/components/create";
 import PartidosEdit from "../partidos/components/edit";
 import PartidosList from "../partidos/components/list";
-import ListarColegios from "../administradorMaster/colegios/ListarColegios";
+import ListarColegios from "../colegios/ListarColegios";
 import CreateProfesor from "../profesor/components/create/CreateProfesor.jsx";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Login from "../login/index.jsx";
-import ModalAgregarColegios from "../administradorMaster/colegios/AgregarColegios"
 
 
 import Profesor from "../profesor/index.jsx";
@@ -33,7 +32,7 @@ const App = () => {
                         <div className="content">
                             <SideBar />
                             <Routes>
-                                <Route path="/" element={<>Home</>} />
+                                <Route path="/" element={<Home />} />
                                 <Route path="/pagina1" element={<Partidos />}>
                                     <Route path="list" element={<PartidosList />} />
                                     <Route path='create' element={<CreatePartidos />} />
@@ -44,8 +43,8 @@ const App = () => {
                                    
        
                                 </Route>
-                                <Route path="/administradorMaster" element={<ListarColegios />}>
-                                    <Route path="modalColegios" element={<ModalAgregarColegios />} />
+
+                                <Route path="/colegio" element={<ListarColegios />}>
                                 </Route>
 
 
