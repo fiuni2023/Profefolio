@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import Table from 'react-bootstrap/Table';
-import './ListarColegios.css'
+import styles from './ListarColegios.module.css'
 import { useNavigate } from "react-router-dom";
 import { BiArrowBack } from "react-icons/bi"
 import { BiPencil } from "react-icons/bi"
 import { BiTrash } from "react-icons/bi"
 import { BiInfoCircle } from "react-icons/bi"
-import ModalAgregarColegios from './ModalAgregarColegios'
+import ModalAgregarColegios from './AgregarColegios'
 import axios from "axios";
 import Pagination from 'react-bootstrap/Pagination';
 import { useGeneralContext } from "../../../context/GeneralContext";
@@ -60,8 +60,8 @@ const recargaDatos=(id)=>{
      
 }
   let items = [];
- 
-  for (let number = 0; number < totalPage; number++) {
+
+   for (let number = 0; number < totalPage; number++) {
     items.push(
       <Pagination.Item key={number} >
         {number}
@@ -78,29 +78,29 @@ const recargaDatos=(id)=>{
   
   return (
     <>
-      <div className="container-principal">
-        <div className="nombre-pagina">
-          <button className="button-back" onClick={() => { navigate('/administrador') }}><BiArrowBack /></button>
+      <div>
+        <div className={styles.nombrePagina}>
+          <button className={styles.buttonBack} onClick={() => { navigate('/administrador') }}><BiArrowBack /></button>
           <span>Colegios</span>
         </div>
-        <div className="table-principal" >
+        <div className={styles.tablePrincipal} >
           <Table bordered >
             <thead>
               <tr>
-              <th id="table-border">Numero</th>
-                <th id="table-border">Nombre</th>
-                <th id="table-border">Administrador</th>
+              <th id={styles.tableBorder}>Numero</th>
+                <th id={styles.tableBorder}>Nombre</th>
+                <th id={styles.tableBorder}>Administrador</th>
                 
-                <th className="actions-th" id="table-border">Acciones</th>
+                <th className={styles.actionsTh} id={styles.tableBorder}>Acciones</th>
               </tr>
             </thead>
             <tbody >
               {colegios.map((colegio, index) => (
                 <tr key={colegio.id}>
-                  <td id="table-border" className="numero-td" >{index+1}</td>
-                  <td id="table-border" >{colegio.nombre}</td>
-                  <td id="table-border">{colegio.nombreAdministrador} {colegio.apellido}</td>
-                  <td className="actions-td" id="table-border"><button className="information-buttons"><BiTrash /></button> <button className="information-buttons"><BiPencil /> </button> <button className="information-buttons"><BiInfoCircle /></button></td>
+                  <td id={styles.tableBorder} className="numero-td" >{index+1}</td>
+                  <td id={styles.tableBorder} >{colegio.nombre}</td>
+                  <td id={styles.tableBorder}>{colegio.nombreAdministrador} {colegio.apellido}</td>
+                  <td className={styles.actionsTd} id={styles.tableBorder}><button className={styles.informationButtons}><BiTrash /></button> <button className={styles.informationButtons}><BiPencil /> </button> <button className={styles.informationButtons}><BiInfoCircle /></button></td>
                 </tr>
                 
               ))}
@@ -109,7 +109,7 @@ const recargaDatos=(id)=>{
             </tbody>
           </Table>
         </div>
-        <div className="paginacion">
+        <div className={styles.paginacion}>
           
             <Pagination onClick={e => handleCurrentPage(e.target.text)}  size="sm">{items} </Pagination>
           
