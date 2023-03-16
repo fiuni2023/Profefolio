@@ -54,8 +54,7 @@ function CreateModal() {
     })
     .then(response => {
       console.log(response.data);
-      setMostrarMensaje(true);
-    
+      
       
       setShowConfirmation(true);
       alert("Guardado exitoso");
@@ -87,10 +86,7 @@ function CreateModal() {
 
   return (
 
-    
-    <>
-  
-
+    <>  
     <div className='NButtonForSideA'>
     <div className="buttonNavBarAa">
       <Button className="buttonNavBarA" onClick={handleShowModal}>
@@ -99,15 +95,13 @@ function CreateModal() {
       </div>
       </div>
 
+    
       {showModal && (
 
       <Modal show={showModal} onHide={handleCloseModal} >
 
-      {showConfirmation && (
-        <Toast show={showConfirmation}>
-          Se ha enviado correctamente.
-        </Toast>
-      )}
+      
+
 
         <Modal.Header closeButton className="contentModal text-center">
           <Modal.Title className="">Agregar Profesor</Modal.Title>
@@ -249,6 +243,7 @@ function CreateModal() {
               <div className="col-sm-9">
                 <Form.Control
                   type="password"
+                  pattern= "^.*(?=.{8,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$"
                   name="password"
                   value={password}
                   //onChange={handleConfirmPasswordChange}
@@ -279,7 +274,7 @@ function CreateModal() {
               <div class="modal-footer">
 
              
-        <Button type="submit" className="button" >Guardar</Button>
+        <Button type="submit" className="button"  >Guardar</Button>
 
   
         <Button type="button" class="btn button"  className="button" onClick={closeModal}> Cerrar</Button>

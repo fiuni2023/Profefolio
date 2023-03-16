@@ -1,32 +1,44 @@
-.nombre-pagina{
+.nombrePagina{
     width: 100%;
     background-color: #FDF0D5;
     
     
 }
-.table-principal{
+.tablePrincipal{
     padding: 1% 5% 0% 5%;
     
 }
-.button-back{
+.buttonBack{
     border: none;
     background-color: #FDF0D5;
 }
-.information-buttons{
+.informationButtons{
     border: none;
     background-color: white;
 }
-.actions-td{
+.actionsTd{
     align-items: center;
     text-align: center;
     width: 10%;
 }
-.actions-th{
+.actionsTh{
     align-items: center;
     text-align: center;
    
     
 } 
-#table-border{
+#tableBorder{
     border: 1px solid black;
 }
+.paginacion{
+    margin-top: -1%;
+    margin-left: 89%;
+}
+
+.numero-td{
+    align-items: center;
+    text-align: center;
+    width: 5%;
+
+}
+
