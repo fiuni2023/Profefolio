@@ -1,6 +1,7 @@
+// eslint-disable-next-line
+//// eslint-disable-next-line no-use-before-define
 import React, { useState, useEffect } from 'react';
 import { PanelContainerBG } from "./components/LayoutAdmin.jsx";
-import { Table } from "../../components/Table.jsx";
 import NavAdmin from "./components/NavAdmin.jsx";
 import CreateModal from "./components/create/CreateModal.jsx";
 
@@ -10,13 +11,13 @@ import axios from 'axios';
 import "./components/create/Index.module.css";
 
 
-import {BsTrash , BsPencilFill, BsInfoCircle,BsFillPlusCircleFill} from 'react-icons/bs';
+import {BsTrash , BsPencilFill, BsInfoCircle} from 'react-icons/bs';
 
 
 function Profesores() {
     const [profesores, setProfesores] = useState([]);
     const [page, setPage] = useState(0);
-    const [size, setSize] = useState(10);
+    //const [size, setSize] = useState(10);
 
     
     const { getToken } = useGeneralContext();
@@ -41,7 +42,7 @@ function Profesores() {
       .catch(error => {
         console.error(error);
       });
-    },[page, size]);
+    },[page,getToken]);
 
 
 
