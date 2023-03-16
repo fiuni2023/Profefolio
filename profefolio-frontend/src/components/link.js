@@ -1,4 +1,4 @@
-const APILINK = 'https://localhost:7063'
+const APILINK = 'https://profefolio.azurewebsites.net/'
 
 
 export default APILINK
