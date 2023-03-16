@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { PanelContainerBG } from "./components/LayoutAdmin.jsx";
-import { Table } from "../../components/Table.jsx";
 import NavAdmin from "./components/NavAdmin.jsx";
 import CreateModal from "./components/create/CreateModal.jsx";
 
@@ -10,9 +9,8 @@ import axios from 'axios';
 import "./components/create/Index.module.css";
 
 
-import { BsTrash, BsPencilFill, BsInfoCircle, BsFillPlusCircleFill } from 'react-icons/bs';
+import { BsTrash, BsPencilFill, BsInfoCircle } from 'react-icons/bs';
 import APILINK from '../../components/link.js';
-import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router';
 
 
@@ -46,7 +44,7 @@ function Profesores() {
           console.error(error);
         });
     }
-  }, [page, cancan, verifyToken, nav]);
+  }, [page, cancan, verifyToken, nav, getToken]);
 
 
 
