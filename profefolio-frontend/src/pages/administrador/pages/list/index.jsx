@@ -35,7 +35,6 @@ const ListAdministrador = () => {
             setLoading(true)
             AdminService.getList(currentPage, getToken())
             .then(r=>{
-                console.log(r)
                 setAdmins(r.data.dataList)
                 setNext(r.data.next)
                 setLoading(false)
