@@ -1,4 +1,4 @@
-const APILINK = 'profefolio.cibfdp5sam9j.us-east-1.rds.amazonaws.com'
+const APILINK = 'https://profefolio.azurewebsites.net/'
 
 
 export default APILINK
