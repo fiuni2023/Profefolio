@@ -13,8 +13,6 @@ import "./components/create/Index.module.css";
 import {BsTrash , BsPencilFill, BsInfoCircle,BsFillPlusCircleFill} from 'react-icons/bs';
 
 
-
-const token =  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoicHJ1ZWJhQGdtYWlsLmNvbSIsImp0aSI6IjIwNGI4MGMyLTUxMjAtNDliZS04OTdjLTVlZWNkNjY1Yjc4MCIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFkbWluaXN0cmFkb3IgZGUgQ29sZWdpbyIsImV4cCI6MTY3ODc3MTgxOCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MDAwIiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo0MjAwIn0.X7YzCqxnRi78GM_HRUrcLyYZo_n3QxkTsgsVPmQowjE";
 function Profesores() {
     const [profesores, setProfesores] = useState([]);
     const [page, setPage] = useState(0);
@@ -43,7 +41,7 @@ function Profesores() {
       .catch(error => {
         console.error(error);
       });
-    },[page, size, token]);
+    },[page, size]);
 
 
 
@@ -105,19 +103,16 @@ function Profesores() {
                             <nav aria-label="Page navigation example">
                                 <ul class="pagination justify-content-end">
                                   <li class="page-item disabled">
-                                    <a class="page-link" onClick={handlePrevClick} disabled={page === 0}>Anterior</a>
+                                    <button class="pag" onClick={handlePrevClick} disabled={page === 0}>Anterior</button>
                                   </li>
                                   <li class="page-item">
-                                    <a class="page-link" href="#" onClick={handleNextClick}>Siguiente</a>
+                                    <button class="pag" href="#" onClick={handleNextClick}>Siguiente</button>
                                   </li>
                                 </ul>
                               </nav>        
 
 
-                         {/*    <div>
-                            <button onClick={handlePrevClick} disabled={page === 0}>Anterior</button>
-                            <button onClick={handleNextClick}>Siguiente</button>
-                            </div>*/}
+
                             </div>
 
     
@@ -182,6 +177,13 @@ function Profesores() {
                 font-size: 50px;
                 color: #F0544F;
             }
+            .pag{
+              outline: none;
+              border: none;
+              background-color: #FFFFFF;
+              font-size: 10px;
+              color: #F0544F;
+          }
 
             .buttonNavBarAa{
                 outline: none;
