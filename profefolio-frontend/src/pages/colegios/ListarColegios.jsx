@@ -90,7 +90,7 @@ const recargaDatos=(id)=>{
     <>
       <div>
         <div className={styles.nombrePagina}>
-          <button className={styles.buttonBack} onClick={() => { navigate('/administrador') }}><BiArrowBack /></button>
+          <button className={styles.buttonBack} onClick={() => { navigate('/') }}><BiArrowBack /></button>
           <span>Colegios</span>
         </div>
         <div className={styles.tablePrincipal} >

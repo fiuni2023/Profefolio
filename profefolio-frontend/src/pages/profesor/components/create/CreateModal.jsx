@@ -51,7 +51,6 @@ function CreateModal({onSubmit = ()=>{}}) {
         }
       })
         .then(response => {
-          console.log(response);
           onSubmit(response.data)
           toast.success("Guardado exitoso");
 
@@ -70,11 +69,10 @@ function CreateModal({onSubmit = ()=>{}}) {
 
         })
         .catch(error => {
-          console.log(error)
           if(typeof(error.response.data) === "string"? true:false){
             toast.error(error.response.data)
           }else{
-            toast.error(error.response.data?.errors?.Password? error.response.data?.errors?.Password[0] : error.response.data?.errors?.Email[0])
+            toast.error(error.response.data?.errors.Password? error.response.data?.errors.Password[0] : error.response.data?.errors.Email[0])
           }
         });
 
