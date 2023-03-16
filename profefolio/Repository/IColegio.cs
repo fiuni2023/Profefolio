@@ -1,5 +1,5 @@
 using profefolio.Models.Entities;
-
+using profefolio.Models.DTOs.Persona;
 namespace profefolio.Repository;
 
 public interface IColegio : IRepository<Colegio>

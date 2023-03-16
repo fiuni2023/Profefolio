@@ -18,7 +18,7 @@ public class AccountController : ControllerBase
     private readonly IMapper _mapper;
     private readonly IPersona _personasService;
     private readonly IRol _rolService;
-    private const int CantPorPage = 20;
+    private const int CantPorPage = 5;
 
 
     public AccountController(IMapper mapper, IPersona personasService, IRol rolService)
@@ -79,16 +79,22 @@ public class AccountController : ControllerBase
     [Route("page/{page:int}")]
     public async Task<ActionResult<DataListDTO<PersonaResultDTO>>> Get(int page)
     {
+        const string rol = "Administrador de Colegio";
         var query = await _personasService
-            .FilterByRol(page, CantPorPage, "Administrador de Colegio");
+            .FilterByRol(page, CantPorPage, rol);
 
-        var cantPages = (int)Math.Ceiling((double)_personasService.Count() / CantPorPage);
+        var cantPages = (int) (await _personasService.CountByRol(rol) / CantPorPage)  + 1;
 
         var result = new DataListDTO<PersonaResultDTO>();
 
+        if(page >= cantPages) 
+        {
+            return BadRequest($"No existe la pagina: {page} ");
+        }
+
         var enumerable = query as Persona[] ?? query.ToArray();
         result.CantItems = enumerable.Length;
-        result.CurrentPage = page >= cantPages - 1 ? cantPages - 1 : page;
+        result.CurrentPage = page;
         result.Next = result.CurrentPage + 1 < cantPages;
         result.DataList = _mapper.Map<List<PersonaResultDTO>>(enumerable.ToList());
         result.TotalPage = cantPages;

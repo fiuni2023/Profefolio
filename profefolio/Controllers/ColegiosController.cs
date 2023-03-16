@@ -38,13 +38,13 @@ namespace profefolio.Controllers
             var query = _colegioService.GetAll(page, _cantPorPag);
             int totalPage = (int)Math.Ceiling((double)_colegioService.Count() / _cantPorPag);
 
-            var result = new DataListDTO<ColegioDTO>();
+            var result = new DataListDTO<ColegioResultDTO>();
 
             var enumerable = query as Colegio[] ?? query.ToArray();
             result.CantItems = enumerable.Length;
             result.CurrentPage = page > totalPage ? totalPage : page;
             result.Next = result.CurrentPage + 1 < totalPage;
-            result.DataList = _mapper.Map<List<ColegioDTO>>(enumerable.ToList());
+            result.DataList = _mapper.Map<List<ColegioResultDTO>>(enumerable.ToList());
             result.TotalPage = totalPage;
 
             return Ok(result);
@@ -63,7 +63,7 @@ namespace profefolio.Controllers
                 return NotFound();
             }
 
-            var response = _mapper.Map<ColegioDTO>(colegio);
+            var response = _mapper.Map<ColegioResultDTO>(colegio);
 
             return Ok(response);
         }
@@ -73,7 +73,7 @@ namespace profefolio.Controllers
         // 
         // una solicitud PUT requiere que el cliente envíe toda la entidad actualizada, no solo los cambios.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutColegio(int id, ColegioDTO colegio)
+        public async Task<ActionResult<ColegioResultDTO>> PutColegio(int id, ColegioDTO colegio)
         {
             if (!ModelState.IsValid)
             {
@@ -110,7 +110,7 @@ namespace profefolio.Controllers
 
             await _colegioService.Save();
 
-            return Ok(p);
+            return Ok("Colegio: " + p.Nombre + ",PersonaId: " + p.PersonaId );
 
         }
 
@@ -149,7 +149,7 @@ namespace profefolio.Controllers
                 p.Deleted = false;
                 await _colegioService.Add(p);
                 await _colegioService.Save();
-                return Ok(_mapper.Map<ColegioDTO>(colegio));
+                return Ok("Colegio: " + p.Nombre + ", Id: " + p.Id + ", PersonaId: " + p.PersonaId);
             }
             catch (BadHttpRequestException e)
             {

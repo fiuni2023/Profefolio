@@ -1,0 +1,8 @@
+#compile
+/bin
+
+#Debug
+/obj
+
+#Migrations
+/Migrations

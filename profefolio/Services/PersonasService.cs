@@ -158,4 +158,12 @@ public class PersonasService : IPersona
             .Skip(page * cantPorPag)
             .Take(cantPorPag).ToList();
     }
+
+    public async Task<int> CountByRol(string rol)
+    {
+        var query = await _userManager.GetUsersInRoleAsync(rol);
+
+        return query
+            .Count(p => !p.Deleted);
+    }
 }
