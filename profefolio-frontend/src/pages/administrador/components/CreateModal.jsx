@@ -122,9 +122,9 @@ const LACreateModal = ({
                         <label>Correo Electrónico: <RedText>*</RedText></label>
                         <TextInput name="correo" placeholder="" value={formik.values.correo} handleChange={formik.handleChange} width={"100%"}/>
                         <label>Contraseña: <RedText>* (debe tener 1 Mayuscula, 1 Signo y 1 Numero)</RedText></label>
-                        <TextInput name="pass" placeholder="" value={formik.values.pass} handleChange={formik.handleChange} width={"100%"}/>
+                        <input type={"password"} name="pass" className={styles.PassInput} placeholder="" value={formik.values.pass} onChange={formik.handleChange} width={"100%"}/>
                         <label>Confirmar Contraseña: <RedText>*</RedText></label>
-                        <TextInput name="passConf" placeholder="" value={formik.values.passConf} handleChange={formik.handleChange} width={"100%"}/>
+                        <input type={"password"} name="passConf" className={styles.PassInput}  value={formik.values.passConf} onChange={formik.handleChange} width={"100%"}/>
                         <label>Género: <RedText>*</RedText></label>
                         <select name="genero" className={styles.Select} placeholder="" value={formik.values.genero} onChange={formik.handleChange} width={"100%"}>
                             <option value={"F"}>Mujer</option>

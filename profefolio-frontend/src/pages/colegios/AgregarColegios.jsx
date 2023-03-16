@@ -13,17 +13,16 @@ function ModalAgregarColegios({setColegios = ()=>{}}) {
     const [administradores, setAdministradores] = useState([]);
     const [mensajeError, setMensajeError] = useState(null);
     //Get administadores
-    var config = {
-        method: 'get',
-        url: `${APILINK}/api/administrador/page/0`,
-        headers: {
-            'Authorization': `Bearer ${getToken()}`,
-            'Content-Type': 'application/json'
-        },
-
-
-    };
+    
     useEffect(() => {
+        var config = {
+            method: 'get',
+            url: `${APILINK}/api/administrador/page/0`,
+            headers: {
+                'Authorization': `Bearer ${getToken()}`,
+                'Content-Type': 'application/json'
+            },
+        };
         axios(config)
             .then(function (response) {
                 setAdministradores(response.data.dataList);
@@ -31,7 +30,7 @@ function ModalAgregarColegios({setColegios = ()=>{}}) {
             .catch(function (error) {
                 console.log(error);
             });
-    }, [])
+    }, [getToken])
     const handleAdmin = (idAdmin) => {
         setIdAdmin(idAdmin);
     }

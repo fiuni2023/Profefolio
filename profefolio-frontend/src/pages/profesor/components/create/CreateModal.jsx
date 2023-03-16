@@ -10,7 +10,6 @@ import APILINK from '../../../../components/link';
 
 function CreateModal({onSubmit = ()=>{}}) {
 
-  const [mostrarMensaje, setMostrarMensaje] = useState(false);
   const [nombre, setNombre] = useState('');
   const [apellido, setApellido] = useState('');
   const [documento, setDocumento] = useState('');
@@ -23,15 +22,8 @@ function CreateModal({onSubmit = ()=>{}}) {
   const [direccion, setDireccion] = useState('');
   const [telefono, setTelefono] = useState('');
 
-  const [success, setSuccess] = useState(false);
-  const [showConfirmation, setShowConfirmation] = useState(false);
-  const [error, setError] = useState('');
-
   const { getToken } = useGeneralContext();
 
-  const mostrar = () => {
-    setMostrarMensaje(true);
-  }
 
   const handleSubmit = (event) => {
 
@@ -59,9 +51,7 @@ function CreateModal({onSubmit = ()=>{}}) {
         }
       })
         .then(response => {
-          console.log(response);
           onSubmit(response.data)
-          setShowConfirmation(true);
           toast.success("Guardado exitoso");
 
           setShowModal(false);
@@ -79,11 +69,10 @@ function CreateModal({onSubmit = ()=>{}}) {
 
         })
         .catch(error => {
-          console.log(error)
           if(typeof(error.response.data) === "string"? true:false){
             toast.error(error.response.data)
           }else{
-            toast.error(error.response.data?.errors?.Password? error.response.data?.errors?.Password[0] : error.response.data?.errors?.Email[0])
+            toast.error(error.response.data?.errors.Password? error.response.data?.errors.Password[0] : error.response.data?.errors.Email[0])
           }
         });
 
@@ -127,7 +116,6 @@ function CreateModal({onSubmit = ()=>{}}) {
 
 
         <Modal.Body className="contentModal">
-          {success && <p>Producto guardado exitosamente.</p>}
           <Form onSubmit={handleSubmit}>
             <Form.Group className="row">
               <Form.Label className="col-sm-3">Nombre:
