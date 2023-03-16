@@ -5,10 +5,12 @@ import { useGeneralContext } from "../context/GeneralContext";
 const SideBar = () => {
     
     const navigate = useNavigate()
-    const { currentPage, showSB, isLogged, setIsLogged, getLoginData } = useGeneralContext()
+    const { currentPage, showSB, isLogged, setIsLogged, cancan } = useGeneralContext()
 
     const handleLogOut = () => {
         localStorage.removeItem('loginData')
+        sessionStorage.removeItem('loginData')
+        navigate("/")
         setIsLogged(!isLogged)
         
     }
@@ -17,12 +19,21 @@ const SideBar = () => {
         <div className="container">
             {showSB && <>
                 <SideBarClose> Cerrar </SideBarClose>
-                <SideBarTab page={"cerrarSecionBtn"} current={currentPage} handleClick={handleLogOut} > Cerrar Sesión </SideBarTab>
-                <SideBarTab page={"administrador"} current={currentPage} handleClick={()=>{navigate("/administrador/list")}} > - Administrador </SideBarTab>
-                <SideBarTab page={"administradorMaster"} current={currentPage} handleClick={()=>{navigate("/administradorMaster")}} > - AdministradorMaster </SideBarTab>
-                <SideBarTab></SideBarTab>
-                <SideBarTab page={"pagina1"} current={currentPage} handleClick={()=>{navigate("/pagina1/list")}} > - Página1 </SideBarTab>
-                <SideBarTab page={"pagina2"} current={currentPage} handleClick={()=>{navigate("/pagina2/list")}} > - Página2 </SideBarTab>
+                <SideBarTab page={"home"} handleClick={handleLogOut} > Cerrar Sesión </SideBarTab>
+                <SideBarTab page={"home"} handleClick={()=>{navigate("/")}} > - Home </SideBarTab>
+                {   
+                    cancan("Master") &&
+                    <>
+                        <SideBarTab page={"administrador"}  handleClick={()=>{navigate("/administrador/list")}} > - Administrador </SideBarTab>
+                        <SideBarTab page={"colegio"}  handleClick={()=>{navigate("/colegio")}} > - Colegios </SideBarTab>                    
+                    </>
+                }
+                {
+                    cancan("Administrador de Colegio") &&
+                    <>
+                        <SideBarTab page={"profesor"}  handleClick={()=>{navigate("/profesor")}}></SideBarTab>
+                    </>
+                }
 
             </>}
         </div>
@@ -47,10 +58,10 @@ const SideBar = () => {
 
 const SideBarTab = ({ children, page="", current="", handleClick = () => {} }) => {
     const selected = current.includes(page)
-    const {setCurrentPage, showSB, setShowSB} = useGeneralContext()
+    const {showSB, setShowSB} = useGeneralContext()
 
     return <>
-        <div className="tab-container" onClick={()=>{setCurrentPage(page); handleClick(); setShowSB(!showSB)}}>
+        <div className="tab-container" onClick={()=>{ handleClick(); setShowSB(!showSB)}}>
             <span className={`sbt ${selected ? "selected" : ""}`} >
                 {children}
             </span>
