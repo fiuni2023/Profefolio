@@ -21,7 +21,7 @@ namespace profefolio.Services
         }
         public async Task<Ciclo> Add(Ciclo t)
         {
-            var result = await _context.Ciclos.AddAsync(t); 
+            var result = await _context.Ciclos.AddAsync(t);
             return result.Entity;
         }
 
@@ -41,9 +41,24 @@ namespace profefolio.Services
             return t;
         }
 
+        public Task<bool> ExisitNombre(string nombre = "")
+        {
+            return _context.Ciclos
+                        .Where(c => nombre.ToLower().Equals(c.Nombre != null ? c.Nombre.ToLower() : "")
+                                    && !c.Deleted).AnyAsync();
+        }
+
+        public async Task<bool> ExisitOther(int id, string nombre = "")
+        {
+            return await _context.Ciclos
+                        .Where(c => nombre.ToLower().Equals(c.Nombre != null ? c.Nombre.ToLower() : "")
+                                    && !c.Deleted
+                                    && c.Id != id).AnyAsync();
+        }
+
         public bool Exist()
         {
-            return _context.Ciclos.Any();
+            return _context.Ciclos.Where(c => !c.Deleted).Any();
         }
 
         public async Task<Ciclo> FindById(int id)

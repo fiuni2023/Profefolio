@@ -11,6 +11,6 @@ namespace profefolio.Models.Entities
     {
         [Required(ErrorMessage = "Se tiene que agregar una descripcion")]
         [MaxLength(32)]
-        public string Descripcion { get; set; }
+        public string? Nombre { get; set; }
     }
 }

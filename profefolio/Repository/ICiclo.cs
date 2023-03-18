@@ -9,5 +9,7 @@ namespace profefolio.Repository
     public interface ICiclo : IRepository<Ciclo>
     {
         Task<IEnumerable<Ciclo>> GetAll();
+        Task<bool> ExisitNombre(string nombre);
+        Task<bool> ExisitOther(int id, string nombre = "");
     }
 }
