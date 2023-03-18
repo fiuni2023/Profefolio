@@ -8,7 +8,7 @@ import axios from "axios";
 import Pagination from 'react-bootstrap/Pagination';
 import { useGeneralContext } from "../../context/GeneralContext";
 import APILINK from "../../components/link";
-const ListarColegios = () => {
+const ListarColegios = (triggerState = () => {}) => {
 
   const { getToken, verifyToken, cancan } = useGeneralContext()
 
