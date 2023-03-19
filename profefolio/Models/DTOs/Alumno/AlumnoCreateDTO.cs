@@ -24,4 +24,7 @@ public class AlumnoCreateDTO
     
     public string Direccion { get; set; }
     
+    [Required(ErrorMessage = "El email es requerido")]
+    public string Email { get; set; }
+    
 }

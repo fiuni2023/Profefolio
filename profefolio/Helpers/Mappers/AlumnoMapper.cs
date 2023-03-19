@@ -25,7 +25,10 @@ public class AlumnoMapper : Profile
                 ))
             .ForMember(dest => dest.SecurityStamp,
                 opt => opt.MapFrom(
-                    t => Guid.NewGuid().ToString()));
+                    t => Guid.NewGuid().ToString()))
+            .ForMember(dest => dest.UserName, 
+                opt => opt.MapFrom(
+                    src => src.Email));
 
 
         CreateMap<Persona, AlumnoCreateDTO>()
