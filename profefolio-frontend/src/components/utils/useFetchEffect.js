@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 
-export const doUseEffect = ( asyncFunc = async() => {}, dependences = [], settings = {condition:() => {return true}, handleSuccess:()=>{}, handleError: ()=>{}} ) => {
+export const useFetchEffect = ( asyncFunc = async() => {}, dependences = [], settings = {condition:() => {return true}, handleSuccess:()=>{}, handleError: ()=>{}} ) => {
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(false)
-    const [ _, toggleFetch] = useState(false)
+    const [toggle, toggleFetch] = useState([])
 
     const doFetch = () => {
-        toggleFetch((prev) => !prev)
+        let newFetch = toggle
+        newFetch = [...newFetch, {}]
+        toggleFetch(newFetch)
     }
 
     useEffect(()=>{
@@ -15,14 +17,14 @@ export const doUseEffect = ( asyncFunc = async() => {}, dependences = [], settin
             asyncFunc()
             .then((result)=>{
                 setLoading(false)
-                handleSuccess(result)
+                settings.handleSuccess(result)
             })
             .catch((error)=>{
                 setError(true)
-                handleError(error)
+                settings.handleError(error)
             })
         }
-    }, dependences)
+    }, [ dependences, settings, asyncFunc])
 
     return [loading, error, doFetch]
 }
