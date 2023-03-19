@@ -103,9 +103,6 @@ public class ApplicationDbContext : IdentityDbContext<Persona>
 
     }
 
-     public DbSet<Colegio> Colegios
-    {
-        get;
-        set;
-    }
+     public DbSet<Colegio> Colegios{get;set;}
+     public DbSet<Materia> Materias{get;set;}
 }

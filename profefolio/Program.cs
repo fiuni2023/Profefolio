@@ -58,6 +58,7 @@ builder.Services.AddAuthentication(options =>
 //Servicios
 builder.Services.AddScoped<IPersona, PersonasService>();
 builder.Services.AddScoped<IColegio, ColegiosService>();
+builder.Services.AddScoped<IMateria, MateriaService>();
 builder.Services.AddScoped<IFullColegio, ColegiosFullService>();
 builder.Services.AddScoped<IRol, RolService>();
 builder.Services.AddScoped<IAuth, AuthService>();
