@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using profefolio.Models.DTOs.Persona;
 using profefolio.Repository;
 
 namespace profefolio.Controllers;
@@ -16,5 +17,11 @@ public class AlumnosController : ControllerBase
     {
         _personaService = personaService;
         _mapper = mapper;
+    }
+
+    [HttpPost]
+    public async Task<ActionResult<PersonaResultDTO>> Post([FromBody] PersonaDTO dto)
+    {
+        return Ok();
     }
 }
