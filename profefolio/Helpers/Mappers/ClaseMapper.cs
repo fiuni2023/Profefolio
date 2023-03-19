@@ -17,10 +17,19 @@ namespace profefolio.Helpers.Mappers
                 .ForMember(dest => dest.Deleted, opt => opt.MapFrom(v => false))
                 .ForMember(dest => dest.Created, opt => opt.Ignore())
                 .ForMember(dest => dest.Modified, opt => opt.Ignore())
-                .ForMember(dest => dest.ModifiedBy, opt => opt.Ignore()).ReverseMap();
+                .ForMember(dest => dest.ModifiedBy, opt => opt.Ignore())
+                .ReverseMap();
 
 
-            CreateMap<Clase, ClaseResultDTO>();
+            CreateMap<Clase, ClaseResultDTO>()
+            .ForMember(dest => dest.Ciclo, 
+                        opt => opt.MapFrom(v => v.Ciclo.Nombre))
+            .ForMember(dest => dest.Colegio, 
+                        opt => opt.MapFrom(v => v.Colegio.Nombre))
+            .ForMember(dest => dest.IdCiclo,
+                        opt => opt.MapFrom(v => v.CicloId))
+            .ForMember(dest => dest.IdColegio,
+                        opt => opt.MapFrom(v => v.ColegioId));
         }
         
     }

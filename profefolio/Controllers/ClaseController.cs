@@ -43,13 +43,13 @@ namespace profefolio.Controllers
             try
             {
                 var clase = _mapper.Map<Clase>(dto);
-
-                var ciclo = _cicloService.FindById(dto.IdCiclo);
+                
+                var ciclo = await _cicloService.FindById(dto.CicloId);
                 if(ciclo == null){
                     return BadRequest("El ciclo no existe");
                 }
 
-                var colegio = _colegioService.FindById(dto.IdColegio);
+                var colegio = await _colegioService.FindById(dto.ColegioId);
                 if(colegio == null){
                     return BadRequest("El colegio no existe");
                 }
@@ -58,15 +58,17 @@ namespace profefolio.Controllers
                     return BadRequest("Anho invalido");
                 }
 
+
                 var userId = User.Identity.GetUserId();
                 clase.CreatedBy = userId;
                 clase.Created = DateTime.Now;
                 clase.Deleted = false;
 
-                await _claseService.Add(clase);
+                var result = await _claseService.Add(clase);
+                
                 await _claseService.Save();
 
-                return Ok(_mapper.Map<ClaseResultDTO>(clase));
+                return Ok(_mapper.Map<ClaseResultDTO>(result));
             }
             catch (Exception e)
             {

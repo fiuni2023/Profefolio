@@ -11,10 +11,10 @@ namespace profefolio.Models.Entities
     {
 
         [Required(ErrorMessage ="Se tiene que indicar el Colegio")]
-        public int IdColegio { get; set; }
+        public int ColegioId { get; set; }
 
         [Required(ErrorMessage ="Se tiene que indicar el Ciclo")]
-        public int IdCiclo { get; set; }
+        public int CicloId { get; set; }
 
         [Required(ErrorMessage = "Se tiene que agregar un nombre a la clase")]
         [MaxLength(128)]
