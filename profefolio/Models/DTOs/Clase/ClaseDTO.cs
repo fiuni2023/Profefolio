@@ -1,15 +1,13 @@
-using System.Runtime.CompilerServices;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace profefolio.Models.Entities
+namespace profefolio.Models.DTOs.Clase
 {
-    public class Clase : Data
+    public class ClaseDTO
     {
-
         [Required(ErrorMessage ="Se tiene que indicar el Colegio")]
         public int IdColegio { get; set; }
 
@@ -26,10 +24,5 @@ namespace profefolio.Models.Entities
 
         [Required(ErrorMessage = "Se tiene que agregar el anho")]
         public int Anho { get; set; }
-
-        
-        public Ciclo? Ciclo { get; set; }
-        public Colegio? Colegio { get; set; }
-
     }
 }
