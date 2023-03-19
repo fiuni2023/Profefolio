@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Authorization;
@@ -77,5 +73,41 @@ namespace profefolio.Controllers
                 return BadRequest("Error durante el guardado.");
             }
         }
+
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            if (id < 0)
+            {
+                return BadRequest("Id invalido");
+            }
+
+            try
+            {
+                var clase = await _claseService.FindById(id);
+                if (clase == null)
+                {
+                    return NotFound();
+                }
+
+                string userId = User.Identity.GetUserId();
+                clase.ModifiedBy = userId;
+                clase.Modified = DateTime.Now;
+                clase.Deleted = true;
+
+                _claseService.Edit(clase);
+                await _claseService.Save();
+
+                return Ok();
+
+            }
+            catch (Exception e)
+            {
+                _claseService.Dispose();
+                Console.WriteLine(e);
+                return BadRequest("Error durante la eliminacion");
+            }
+        }
+    
     }
 }
