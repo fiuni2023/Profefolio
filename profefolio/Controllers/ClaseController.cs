@@ -10,7 +10,7 @@ using profefolio.Repository;
 namespace profefolio.Controllers
 {
     [ApiController]
-    //[Authorize(Roles = "Administrador de Colegio,Profesor")]
+    [Authorize(Roles = "Administrador de Colegio,Profesor")]
     [Route("api/[controller]")]
     public class ClaseController : ControllerBase
     {
