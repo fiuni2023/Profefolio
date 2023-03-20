@@ -109,4 +109,5 @@ public class ApplicationDbContext : DbContext
     }
 
     public DbSet<Ciclo> Ciclos { get; set; }
+    public DbSet<Clase> Clases { get; set; }
 }
