@@ -2,14 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { PanelContainerBG } from "./components/LayoutAdmin.jsx";
 import NavAdmin from "./components/NavAdmin.jsx";
 import CreateModal from "./components/create/CreateModal.jsx";
-
 import { useGeneralContext } from "../../context/GeneralContext";
 import axios from 'axios';
 
 import "./components/create/Index.module.css";
 
-
-import { BsTrash, BsPencilFill, BsInfoCircle } from 'react-icons/bs';
 import APILINK from '../../components/link.js';
 import { useNavigate } from 'react-router';
 
@@ -17,7 +14,6 @@ import { useNavigate } from 'react-router';
 function Profesores() {
   const [profesores, setProfesores] = useState([]);
   const [page, setPage] = useState(0);
-
 
   const { getToken, cancan, verifyToken } = useGeneralContext();
 
@@ -38,6 +34,7 @@ function Profesores() {
   
         .then(response => {
           setProfesores(response.data.dataList);
+      
   
         })
         .catch(error => {
@@ -46,6 +43,9 @@ function Profesores() {
     }
   }, [page, cancan, verifyToken, nav, getToken]);
 
+  const doFetch =(profesor) =>{
+    setProfesores([...profesores, profesor])
+}
 
 
 
@@ -82,7 +82,7 @@ function Profesores() {
                   <th>Fecha de nacimiento</th>
                   <th>Direccion</th>
                   <th>Telefono</th>
-                  <th>Acciones</th>
+                 
                 </tr>
               </thead>
               <tbody>
@@ -95,39 +95,42 @@ function Profesores() {
                     <td>{profe.nacimiento}</td>
                     <td>{profe.direccion}</td>
                     <td>{profe.telefono}</td>
-                    <td> <BsTrash />  <BsPencilFill /> <BsInfoCircle /></td>
+                  
 
                   </tr>
                 ))}
               </tbody>
             </table>
+            <div >
 
+           
+        
+      </div>
 
+             
+     
+             
+                        
             <nav aria-label="Page navigation example">
               <ul className="pagination justify-content-end">
                 <li className="page-item disabled">
-                  <button className="pag" onClick={handlePrevClick} disabled={page === 0}>Anterior</button>
+
+              
+                  <button className="btn page-item btn-sm" onClick={handlePrevClick} disabled={page === 0}>Anterior</button>
                 </li>
                 <li className="page-item">
-                  <button className="pag" href="#" onClick={handleNextClick}>Siguiente</button>
+                  <button className="btn page-item btn-sm" href="#" onClick={handleNextClick}>Siguiente</button>
                 </li>
               </ul>
             </nav>
-
-
-
+ 
           </div>
-
-
-
-
-
-
 
         </PanelContainerBG>
         <footer>
           <div className="NButtonForSideA ">
-            <CreateModal title="My Modal" onClose={() => setShow(false)} onSubmit={(value)=>{setProfesores([...profesores, value])}} show={show}>
+            <CreateModal title="My Modal" onClose={() => setShow(false)}  show={show}
+             triggerState={(profesor)=>{doFetch(profesor)}}>
             </CreateModal>
             
           </div>
