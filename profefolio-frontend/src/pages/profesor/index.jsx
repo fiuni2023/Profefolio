@@ -6,9 +6,7 @@ import { useGeneralContext } from "../../context/GeneralContext";
 import axios from 'axios';
 
 import "./components/create/Index.module.css";
-import Pagination from 'react-bootstrap/Pagination';
 
-import { BsTrash, BsPencilFill, BsInfoCircle } from 'react-icons/bs';
 import APILINK from '../../components/link.js';
 import { useNavigate } from 'react-router';
 
@@ -16,10 +14,6 @@ import { useNavigate } from 'react-router';
 function Profesores() {
   const [profesores, setProfesores] = useState([]);
   const [page, setPage] = useState(0);
-
-
-  const [currentPage, setCurrentPage] = useState(0);
-
 
   const { getToken, cancan, verifyToken } = useGeneralContext();
 
