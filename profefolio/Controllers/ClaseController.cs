@@ -2,6 +2,7 @@ using AutoMapper;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using profefolio.Models.DTOs;
 using profefolio.Models.DTOs.Clase;
 using profefolio.Models.Entities;
 using profefolio.Repository;
@@ -27,6 +28,81 @@ namespace profefolio.Controllers
             _colegioService = colegioService;
         }
 
+        [HttpGet("byColegio/{idColegio:int}")]
+        public async Task<ActionResult<IEnumerable<ClaseResultSimpleDTO>>> GetAllByColegioId(int idColegio)
+        {
+            if (idColegio < 0)
+            {
+                return NotFound();
+            }
+            try
+            {
+
+                var result = await _claseService.GetByIdColegio(idColegio);
+
+                return Ok(_mapper.Map<List<ClaseResultSimpleDTO>>(result));
+
+            }
+            catch (Exception e)
+            {
+
+                Console.WriteLine(e);
+                return BadRequest("Error durante la busqueda");
+
+            }
+        }
+
+        [HttpGet("page/{idColegio:int}/{page:int}")]
+        public async Task<ActionResult<DataListDTO<ClaseResultSimpleDTO>>> GetAll(int idColegio, int page)
+        {
+            if (page < 0)
+            {
+                return BadRequest("El numero de pagina debe ser mayor o igual que cero");
+            }
+            if(idColegio < 0){
+                return BadRequest("El colegio es invalido");
+            }
+
+            var clases = await _claseService.GetAllByIdColegio(page, CantPorPage, idColegio);
+
+
+            int cantPages = (int)(_claseService.Count()  / CantPorPage) + 1;
+
+
+            var result = new DataListDTO<ClaseResultSimpleDTO>();
+
+            if (page >= cantPages)
+            {
+                return BadRequest($"No existe la pagina: {page} ");
+            }
+
+            result.CantItems = clases.Count();
+            result.CurrentPage = page;
+            result.Next = result.CurrentPage + 1 < cantPages;
+            result.DataList = _mapper.Map<List<ClaseResultSimpleDTO>>(clases.ToList());
+            result.TotalPage = cantPages;
+
+            return Ok(result);
+        }
+
+
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<ClaseResultDTO>> GetById(int id)
+        {
+            try
+            {
+                var result = await _claseService.FindById(id);
+
+                return result != null 
+                    ? Ok(_mapper.Map<ClaseResultDTO>(result)) 
+                    : NotFound($"No se encontro la Clase con id: {id}");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return BadRequest("Error durante la busqueda");
+            }
+        }
 
         [HttpPost]
         public async Task<ActionResult<ClaseResultDTO>> Post([FromBody] ClaseDTO dto)
@@ -39,18 +115,21 @@ namespace profefolio.Controllers
             try
             {
                 var clase = _mapper.Map<Clase>(dto);
-                
+
                 var ciclo = await _cicloService.FindById(dto.CicloId);
-                if(ciclo == null){
+                if (ciclo == null)
+                {
                     return BadRequest("El ciclo no existe");
                 }
 
                 var colegio = await _colegioService.FindById(dto.ColegioId);
-                if(colegio == null){
+                if (colegio == null)
+                {
                     return BadRequest("El colegio no existe");
                 }
 
-                if(dto.Anho <= 0){
+                if (dto.Anho <= 0)
+                {
                     return BadRequest("Anho invalido");
                 }
 
@@ -61,7 +140,7 @@ namespace profefolio.Controllers
                 clase.Deleted = false;
 
                 var result = await _claseService.Add(clase);
-                
+
                 await _claseService.Save();
 
                 return Ok(_mapper.Map<ClaseResultDTO>(result));
@@ -108,6 +187,6 @@ namespace profefolio.Controllers
                 return BadRequest("Error durante la eliminacion");
             }
         }
-    
+
     }
 }
