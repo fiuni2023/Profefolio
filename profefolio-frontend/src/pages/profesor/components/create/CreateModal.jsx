@@ -141,7 +141,7 @@ function CreateModal({onSubmit = ()=>{}, triggerState = () => {}}) {
             
             <Row>
               <Col>
-              <Form.Label column sm="2">Nombre:  </Form.Label>
+              <Form.Label >Nombre:  </Form.Label>
               <div >
                 <Form.Control
                   className={styles.option}
@@ -155,8 +155,26 @@ function CreateModal({onSubmit = ()=>{}, triggerState = () => {}}) {
               </Col>
 
               <Col>
-              
-              <Form.Label >Telefono:</Form.Label>
+              <Form.Label className="">Apellido:  </Form.Label>
+              <div >
+                <Form.Control
+                 className={styles.option}
+                  type="text"
+                  value={apellido}
+                  onChange={event => setApellido(event.target.value)}
+                  placeholder="Ingrese su apellido"
+                />
+              </div>
+        
+              </Col>
+
+             
+            </Row>
+            <br/>
+
+            <Row>
+            <Col>
+            <Form.Label >Telefono:</Form.Label>
               <div >
                 <Form.Control
                  className={styles.option}
@@ -168,26 +186,6 @@ function CreateModal({onSubmit = ()=>{}, triggerState = () => {}}) {
                 />
                   
               </div>
-           
-              </Col>
-
-             
-            </Row>
-            <br/>
-
-            <Row>
-            <Col>
-              <Form.Label className="">Apellido:
-              <div >
-                <Form.Control
-                 className={styles.option}
-                  type="text"
-                  value={apellido}
-                  onChange={event => setApellido(event.target.value)}
-                  placeholder="Ingrese su apellido"
-                />
-              </div>
-              </Form.Label>
               
               </Col>
 
@@ -269,28 +267,6 @@ function CreateModal({onSubmit = ()=>{}, triggerState = () => {}}) {
               </Col>
 
               <Col>
-             
-              <Form.Label className="">Contraseña:</Form.Label>
-              <div className="">
-                <Form.Control
-                 className={styles.option}
-                  type="password"
-                  pattern="^.*(?=.{8,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$"
-                  name="password"
-                  value={password}
-                  //onChange={handleConfirmPasswordChange}
-                  onChange={event => setPassword(event.target.value)}
-                  placeholder="Utilizar minuscula, mayuscula y caracter especial"
-                />
-              </div>
-           
-              </Col>
-            </Row>
-            <br/>
-
-            <Row>
-              <Col>
-             
               <Form.Label className="">Documento:</Form.Label>
               <div className="">
                 <Form.Control
@@ -302,33 +278,16 @@ function CreateModal({onSubmit = ()=>{}, triggerState = () => {}}) {
                   placeholder="Ingrese su documento"
                 />
               </div>
-         
-              
-              </Col>
-              <Col>
              
-              <Form.Label className="">Confirmar contraseña:</Form.Label>
-              <div className="">
-                <Form.Control
-                 className={styles.option}
-                  type="password"
-                  name="confirmPassword"
-                  value={confirmPassword}
-                  onChange={event => setConfirmPassword(event.target.value)}
-                  placeholder="Confirme su contraseña"
-                />
-
-              </div>
              
+           
               </Col>
             </Row>
-           
             <br/>
-            
-            
-           <Row>
-            <Col>
-            <Form.Group className="">
+
+            <Row>
+              <Col>
+
               <Form.Label className="">Tipo de documento:</Form.Label>
               <div className="">
                 <Form.Control
@@ -344,7 +303,53 @@ function CreateModal({onSubmit = ()=>{}, triggerState = () => {}}) {
                   <option value="pasaporte" className={styles.option}>Pasaporte</option>
                 </Form.Control>
               </div>
-            </Form.Group>
+
+            
+              
+         
+              
+              </Col>
+              <Col>
+              <Form.Label className="">Contraseña:</Form.Label>
+              <div className="">
+                <Form.Control
+                 className={styles.option}
+                  type="password"
+                  pattern="^.*(?=.{8,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$"
+                  name="password"
+                  value={password}
+                  //onChange={handleConfirmPasswordChange}
+                  onChange={event => setPassword(event.target.value)}
+                  placeholder="Utilizar minuscula, mayuscula y caracter especial"
+                />
+              </div>
+             
+              
+              
+             
+              </Col>
+            </Row>
+           
+           
+            <br/>
+            
+            
+           <Row>
+            <Col>
+            <Form.Label className="">Confirmar contraseña:</Form.Label>
+              <div className="">
+                <Form.Control
+                 className={styles.option}
+                  type="password"
+                  name="confirmPassword"
+                  value={confirmPassword}
+                  onChange={event => setConfirmPassword(event.target.value)}
+                  placeholder="Confirme su contraseña"
+                />
+
+              </div>
+             
+           
             </Col>
 
             <Col>

@@ -17,7 +17,7 @@ function Profesores() {
   const [profesores, setProfesores] = useState([]);
   const [page, setPage] = useState(0);
 
-  const [totalPage, setTotalPage] = useState(0);
+
   const [currentPage, setCurrentPage] = useState(0);
 
 
@@ -40,6 +40,7 @@ function Profesores() {
   
         .then(response => {
           setProfesores(response.data.dataList);
+      
   
         })
         .catch(error => {
@@ -50,22 +51,6 @@ function Profesores() {
 
   const doFetch =(profesor) =>{
     setProfesores([...profesores, profesor])
-}
-
-  let items = [];
-
-   for (let number = 0; number < totalPage; number++) {
-    items.push(
-      <Pagination.Item key={number} >
-        {number}
-      </Pagination.Item>,
-    );
-  }
-
-  const handleCurrentPage=(idPage)=>{
-    setCurrentPage(idPage);
-   
-    
 }
 
 
@@ -123,23 +108,28 @@ function Profesores() {
               </tbody>
             </table>
             <div >
+
+           
         
       </div>
 
              
+     
              
                         
             <nav aria-label="Page navigation example">
               <ul className="pagination justify-content-end">
                 <li className="page-item disabled">
-                  <button className="btn page-item" onClick={handlePrevClick} disabled={page === 0}>Anterior</button>
+
+              
+                  <button className="btn page-item btn-sm" onClick={handlePrevClick} disabled={page === 0}>Anterior</button>
                 </li>
                 <li className="page-item">
-                  <button className="btn page-item" href="#" onClick={handleNextClick}>Siguiente</button>
+                  <button className="btn page-item btn-sm" href="#" onClick={handleNextClick}>Siguiente</button>
                 </li>
               </ul>
             </nav>
-
+ 
           </div>
 
         </PanelContainerBG>
