@@ -158,20 +158,23 @@ namespace profefolio.Controllers
             if(!ModelState.IsValid){
                 return BadRequest("Peticion Invalida");
             }
+
             if(dto.Anho <= 0){
                 return BadRequest("Anho invalido");
             }
+
             try{
                 var clase = await _claseService.FindById(id);
                 if(clase == null){
                     return NotFound("No existe la clase");
                 }
 
-                var ciclo = _cicloService.FindById(dto.CicloId);
+                var ciclo = await _cicloService.FindById(dto.CicloId);
                 if(ciclo == null){
                     return NotFound("No existe el ciclo");
                 }
-                var colegio = _colegioService.FindById(dto.ColegioId);
+
+                var colegio = await _colegioService.FindById(dto.ColegioId);                
                 if(colegio == null){
                     return NotFound("No existe el colegio");
                 }
@@ -193,7 +196,7 @@ namespace profefolio.Controllers
                 return NoContent();
             }catch(Exception e){
                 _claseService.Dispose();
-                
+
                 Console.WriteLine(e);
                 return BadRequest("Error durante la edicion");
             }
