@@ -103,6 +103,8 @@ public class ApplicationDbContext : IdentityDbContext<Persona>
 
     }
 
+   
+     public DbSet<Materia> Materias{get;set;}
     public DbSet<Colegio> Colegios
     {
         get;
@@ -110,4 +112,5 @@ public class ApplicationDbContext : IdentityDbContext<Persona>
     }
 
     public DbSet<Ciclo> Ciclos { get; set; }
+    public DbSet<Clase> Clases { get; set; }
 }
