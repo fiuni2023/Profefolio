@@ -13,7 +13,6 @@ using profefolio.Repository;
 namespace profefolio.Controllers
 {
     [ApiController]
-    [Authorize(Roles = "Administrador de Colegio,Profesor")]
     [Route("api/[controller]")]
     public class CicloController : ControllerBase
     {
@@ -28,6 +27,7 @@ namespace profefolio.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Administrador de Colegio,Profesor")]
         public async Task<ActionResult<IEnumerable<CicloResultDTO>>> GetAll()
         {
             try
@@ -47,6 +47,7 @@ namespace profefolio.Controllers
         }
 
         [HttpGet("{id:int}")]
+        [Authorize(Roles = "Administrador de Colegio,Profesor")]
         public async Task<ActionResult<CicloResultDTO>> Get(int id)
         {
             if (id < 0)
@@ -70,7 +71,9 @@ namespace profefolio.Controllers
             }
         }
 
+
         [HttpPost]
+        [Authorize(Roles = "Administrador de Colegio")]
         public async Task<ActionResult<CicloResultDTO>> Post([FromBody] CicloDTO dto)
         {
             if (!ModelState.IsValid)
@@ -105,7 +108,9 @@ namespace profefolio.Controllers
             }
         }
 
+        
         [HttpPut("{id:int}")]
+        [Authorize(Roles = "Administrador de Colegio")]
         public async Task<ActionResult> Put(int id, [FromBody] CicloDTO dto)
         {
             if (!ModelState.IsValid)
@@ -122,9 +127,13 @@ namespace profefolio.Controllers
 
                 if (await _cicloService.ExisitOther(id, dto.Nombre))
                 {
-                    return BadRequest("Ya existe un ciclo con ese nombre");
+                    return BadRequest("Ya existe un Ciclo con ese nombre");
                 }
                 var ciclo = await _cicloService.FindById(id);
+
+                if(ciclo == null){
+                    return BadRequest("El Ciclo no existe");
+                }
 
                 var userId = User.Identity.GetUserId();
                 ciclo.ModifiedBy = userId;
@@ -147,6 +156,7 @@ namespace profefolio.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [Authorize(Roles = "Administrador de Colegio")]
         public async Task<ActionResult> Delete(int id)
         {
             if (id < 0)
