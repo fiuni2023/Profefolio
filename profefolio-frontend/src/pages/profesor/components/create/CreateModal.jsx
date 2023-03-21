@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Button, Modal, Form } from 'react-bootstrap';
-
+import { Modal, Form,Col,Row } from 'react-bootstrap';
 import { BsFillPlusCircleFill } from 'react-icons/bs';
 import { useGeneralContext } from "../../../../context/GeneralContext";
 import { toast } from 'react-hot-toast';
+
+import styles from  './Modal.module.css';
 import APILINK from '../../../../components/link';
 
 
-function CreateModal({onSubmit = ()=>{}}) {
+function CreateModal({onSubmit = ()=>{}, triggerState = () => {}}) {
+
+  
 
   const [nombre, setNombre] = useState('');
   const [apellido, setApellido] = useState('');
@@ -28,6 +31,7 @@ function CreateModal({onSubmit = ()=>{}}) {
   const handleSubmit = (event) => {
 
     event.preventDefault();
+
     if (nombre === "" || apellido === "" || documento === "" || documentoTipo === "" || password === "" || confirmPassword === "" || email === "" || nacimiento === "" || genero === "" || direccion === "" || telefono === "") toast.error("revisa los datos, los campos deben ser completados")
     else if (password.length < 8) toast.error("Contraseña no suficientemente larga")
     else if (password !== confirmPassword) toast.error("las contraseñas no son iguales")
@@ -51,6 +55,7 @@ function CreateModal({onSubmit = ()=>{}}) {
         }
       })
         .then(response => {
+          triggerState(response.data)
           onSubmit(response.data)
           toast.success("Guardado exitoso");
 
@@ -85,6 +90,18 @@ function CreateModal({onSubmit = ()=>{}}) {
 
   function closeModal() {
     setShowModal(false);
+          setNombre("")
+          setApellido("")
+          setDireccion("")
+          setDocumentoTipo("")
+          setDocumento("")
+          setPassword("")
+          setConfirmPassword("")
+          setEmail("")
+          setNacimiento("")
+          setGenero("")
+          setTelefono("")
+    setShowModal(false);
   }
 
   const handleCloseModal = () => setShowModal(false);
@@ -97,9 +114,9 @@ function CreateModal({onSubmit = ()=>{}}) {
     <>
       <div className='NButtonForSideA'>
         <div className="buttonNavBarAa">
-          <Button className="buttonNavBarA" onClick={handleShowModal}>
+          <button className="buttonNavBarA" onClick={handleShowModal}>
             <BsFillPlusCircleFill />
-          </Button>
+          </button>
         </div>
       </div>
 
@@ -110,118 +127,71 @@ function CreateModal({onSubmit = ()=>{}}) {
 
 
 
-        <Modal.Header closeButton className="contentModal text-center">
+        <Modal.Header closeButton className={styles.contentModal}>
           <Modal.Title className="">Agregar Profesor</Modal.Title>
         </Modal.Header>
 
 
-        <Modal.Body className="contentModal">
-          <Form onSubmit={handleSubmit}>
-            <Form.Group className="row">
-              <Form.Label className="col-sm-3">Nombre:
-
-              </Form.Label>
-              <div className="col-sm-9">
+        <Modal.Body className={styles.contentModal}>
+          <form onSubmit={handleSubmit}>
+            
+            
+            <Row>
+              <Col>
+              <Form.Label >Nombre:  </Form.Label>
+              <div >
                 <Form.Control
+                  className={styles.option}
                   type="text"
                   value={nombre}
                   onChange={event => setNombre(event.target.value)}
                   placeholder="Ingrese su nombre"
                 />
               </div>
-            </Form.Group>
+            
+              </Col>
 
-
-            <Form.Group className="row">
-              <Form.Label className="col-sm-3">Apellido:</Form.Label>
-              <div className="col-sm-9">
+              <Col>
+              <Form.Label className="">Apellido:  </Form.Label>
+              <div >
                 <Form.Control
+                 className={styles.option}
                   type="text"
                   value={apellido}
                   onChange={event => setApellido(event.target.value)}
                   placeholder="Ingrese su apellido"
                 />
               </div>
-            </Form.Group>
+        
+              </Col>
 
-            <Form.Group className="row">
-              <Form.Label className="col-sm-3">Fecha de nacimiento:</Form.Label>
-              <div className="col-sm-9">
+             
+            </Row>
+            <br/>
+
+            <Row>
+            <Col>
+            <Form.Label >Telefono:</Form.Label>
+              <div >
                 <Form.Control
-                  type="date"
-                  name="nacimiento"
-                  value={nacimiento}
-                  onChange={event => setNacimiento(event.target.value)}
-                  placeholder="aaaa/mm/ddd"
-                />
-              </div>
-            </Form.Group>
-
-            <Form.Group className="row">
-              <Form.Label className="col-sm-3">Genero:</Form.Label>
-              <div className="col-sm-9">
-                <Form.Control
-                  as="select"
-                  name="genero"
-                  value={genero}
-                  onChange={event => setGenero(event.target.value)}
-                >
-                  <option value="">Seleccione </option>
-                  <option value="F">Femenino</option>
-                  <option value="M">Masculino</option>
-
-
-                </Form.Control>
-              </div>
-            </Form.Group>
-
-            <Form.Group className="row">
-              <Form.Label className="col-sm-3">Documento:</Form.Label>
-              <div className="col-sm-9">
-                <Form.Control
-                  type="text"
-                  name="documento"
-                  value={documento}
-                  onChange={event => setDocumento(event.target.value)}
-                  placeholder="Ingrese su documento"
-                />
-              </div>
-            </Form.Group>
-
-            <Form.Group className="row">
-              <Form.Label className="col-sm-3">Tipo de documento:</Form.Label>
-              <div className="col-sm-9">
-                <Form.Control
-                  as="select"
-                  name="documentoTipo"
-                  value={documentoTipo}
-                  onChange={event => setDocumentoTipo(event.target.value)}
-                >
-                  <option value="">Seleccione un tipo</option>
-                  <option value="cedula">Cédula</option>
-                  <option value="dni">DNI</option>
-                  <option value="pasaporte">Pasaporte</option>
-                </Form.Control>
-              </div>
-            </Form.Group>
-
-            <Form.Group className="row">
-              <Form.Label className="col-sm-3">Telefono:</Form.Label>
-              <div className="col-sm-9">
-                <Form.Control
+                 className={styles.option}
                   type="number"
                   name="telefono"
                   value={telefono}
                   onChange={event => setTelefono(event.target.value)}
                   placeholder="09xxxxxxxxx"
                 />
+                  
               </div>
-            </Form.Group>
+              
+              </Col>
 
-            <Form.Group className="row">
-              <Form.Label className="col-sm-3">Direccion:</Form.Label>
-              <div className="col-sm-9">
+              <Col>
+             
+              <Form.Label className="">Direccion:</Form.Label>
+              <div className="">
                 <Form.Control
+                 className={styles.option}
                   type="text"
                   name="direccion"
                   value={direccion}
@@ -229,25 +199,118 @@ function CreateModal({onSubmit = ()=>{}}) {
                   placeholder="Ingrese su direccion"
                 />
               </div>
-            </Form.Group>
+          
+              </Col>
 
-            <Form.Group className="row">
-              <Form.Label className="col-sm-3">Correo Electronico:</Form.Label>
-              <div className="col-sm-9">
+               
+
+            </Row>
+            <br/>
+            <Row>
+            <Col>
+              <Form.Label className="">Fecha de nacimiento:</Form.Label>
+              <div className={styles.option}>
                 <Form.Control
-                  type="text"
+                className={styles.option}
+                  type="date"
+                  name="nacimiento"
+                  value={nacimiento}
+                  onChange={event => setNacimiento(event.target.value)}
+                  placeholder="aaaa/mm/ddd"
+
+                />
+              </div>
+               
+                </Col>
+
+                <Col>
+                
+              <Form.Label className="">Correo Electronico:</Form.Label>
+              <div className="">
+                <Form.Control
+                 className={styles.option}
+                 type="email"
                   name="email"
                   value={email}
                   onChange={event => setEmail(event.target.value)}
                   placeholder="Ingrese su correo electronico"
                 />
               </div>
-            </Form.Group>
+          
+                </Col>
 
-            <Form.Group className="row">
-              <Form.Label className="col-sm-3">Contraseña:</Form.Label>
-              <div className="col-sm-9">
+            </Row>
+            <br/>
+            <Row>
+              <Col>
+              <Form.Group className="">
+              <Form.Label className="">Genero:</Form.Label>
+              <div className="">
                 <Form.Control
+                 className={styles.option}
+                  as="select"
+                  name="genero"
+                  value={genero}
+                  onChange={event => setGenero(event.target.value)}
+                >
+                  <option value="" className={styles.option}>Seleccione </option>
+                  <option value="F" className={styles.option}>Femenino</option>
+                  <option value="M"className={styles.option}>Masculino</option>
+
+
+                </Form.Control>
+              </div>
+            </Form.Group>
+              </Col>
+
+              <Col>
+              <Form.Label className="">Documento:</Form.Label>
+              <div className="">
+                <Form.Control
+                 className={styles.option}
+                  type="text"
+                  name="documento"
+                  value={documento}
+                  onChange={event => setDocumento(event.target.value)}
+                  placeholder="Ingrese su documento"
+                />
+              </div>
+             
+             
+           
+              </Col>
+            </Row>
+            <br/>
+
+            <Row>
+              <Col>
+
+              <Form.Label className="">Tipo de documento:</Form.Label>
+              <div className="">
+                <Form.Control
+                 className={styles.option}
+                  as="select"
+                  name="documentoTipo"
+                  value={documentoTipo}
+                  onChange={event => setDocumentoTipo(event.target.value)}
+                >
+                  <option value="" className={styles.option}>Seleccione un tipo</option>
+                  <option value="cedula" className={styles.option}> Cédula</option>
+                  <option value="dni" className={styles.option}>DNI</option>
+                  <option value="pasaporte" className={styles.option}>Pasaporte</option>
+                </Form.Control>
+              </div>
+
+            
+              
+         
+              
+              </Col>
+              <Col>
+              <Form.Label className="">Contraseña:</Form.Label>
+              <div className="">
+                <Form.Control
+                 className={styles.option}
                   type="password"
                   pattern="^.*(?=.{8,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$"
                   name="password"
@@ -257,12 +320,23 @@ function CreateModal({onSubmit = ()=>{}}) {
                   placeholder="Utilizar minuscula, mayuscula y caracter especial"
                 />
               </div>
-            </Form.Group>
-
-            <Form.Group className="row">
-              <Form.Label className="col-sm-3">Confirmar contraseña:</Form.Label>
-              <div className="col-sm-9">
+             
+              
+              
+             
+              </Col>
+            </Row>
+           
+           
+            <br/>
+            
+            
+           <Row>
+            <Col>
+            <Form.Label className="">Confirmar contraseña:</Form.Label>
+              <div className="">
                 <Form.Control
+                 className={styles.option}
                   type="password"
                   name="confirmPassword"
                   value={confirmPassword}
@@ -271,20 +345,25 @@ function CreateModal({onSubmit = ()=>{}}) {
                 />
 
               </div>
+             
+           
+            </Col>
+
+            <Col>
+            </Col>
+           </Row>
 
 
-
-            </Form.Group>
 
 
             <div className="modal-footer">
-              <Button type="submit" className="button"  >Guardar</Button>
-              <Button className="btn button" onClick={closeModal}> Cerrar</Button>
+              <button type="submit" className={styles.button}   >Guardar</button>
+              <button className={styles.buttonClose} onClick={closeModal}> Cerrar</button>
 
             </div>
 
 
-          </Form>
+          </form>
         </Modal.Body>
 
       </Modal>
@@ -293,67 +372,7 @@ function CreateModal({onSubmit = ()=>{}}) {
 
 
       <style jsx='true'>{`
-            .contentModal{
-              text-align: center;
-                background-color:  #C6D8D3;
-            }
-            .content{
-                width: 100%;
-                height: 100%;
-            }
-            
-            .button{
-              background-color:  #F0544F;
-              outline: none;
-              border: none;
-              
-            }
-            .NavbarA{
-                width: 100%;
-                height: 100%;
-                background-color:  #F0544F;
-                display: flex;
-                background-color: #F0544F;
-            }
-            .NButtonForSideA{
-               
-            }
-            .buttonNavBarA{
-                width: 100%;
-                height: 100%;
-                outline: none;
-                border: none;
-                background-color: #FFFFFF;
-                font-size: 50px;
-                color: #F0544F;
-            }
-
-            .buttonNavBarAa{
-                outline: none;
-                border: none;
-                background-color: #FFFFFF;
-                font-size: 20px;
-                color: black;
-            }
-            .navbarmainAd{
-                width: 97.5%;
-                display: flex;
-                justify-content: space-between;
-            }
-
-            .CustomTable{
-                width: 100%;
-                border-spacing: 0px;
-            }
-            .CustomTable>thead>tr>th{
-                border: 1px solid black;
-                padding-left: 5px;
-            }
-            .CustomTable>tbody>tr>td{
-                text-align: center;
-                border: 1px solid black;
-            }
-
+          
             
             `}</style>
     </>
