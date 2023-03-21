@@ -6,7 +6,7 @@ import axios from "axios";
 import { useGeneralContext } from "../../context/GeneralContext";
 import { toast } from 'react-hot-toast';
 import APILINK from '../../components/link';
-function ModalAgregarColegios({setColegios = ()=>{}}) {
+function ModalAgregarColegios() {
     const { getToken } = useGeneralContext()
     const [nombreColegio, setNombreColegio] = useState("");
     const [idAdmin, setIdAdmin] = useState(0);
