@@ -31,9 +31,11 @@ public class AlumnoMapper : Profile
                     src => src.Email));
 
 
-        CreateMap<Persona, AlumnoCreateDTO>()
+        CreateMap<Persona, AlumnoGetDTO>()
             .ForMember(dest => dest.Genero,
                 opt => opt.MapFrom(
                     src => src.EsM ? "Masculino" : "Femenino"));
+
+
     }
 }

@@ -2,6 +2,7 @@
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using profefolio.Models.DTOs.Alumno;
 using profefolio.Models.DTOs.Persona;
 using profefolio.Models.Entities;
 using profefolio.Repository;
@@ -23,28 +24,45 @@ public class AlumnosController : ControllerBase
         _rolService = rolService;
     }
 
-    [HttpPost]
-    public async Task<ActionResult<PersonaResultDTO>> Post([FromBody] PersonaDTO dto)
-    {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+        [HttpPost]
+        public async Task<ActionResult<PersonaResultDTO>> Post([FromBody]AlumnoCreateDTO dto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-        var userId = User.Identity.GetUserId();
-        var alumno = _mapper.Map<Persona>(dto);
-        alumno.CreatedBy = userId;
+            if (dto.Nacimiento > DateTime.Now)
+            {
+                return BadRequest("El nacimiento no puede ser mayor a la fecha de hoy");
+            }
+
+            if (!(dto.Genero.Equals("M") || dto.Genero.Equals("F")))
+            {
+                return BadRequest("Solo se aceptan valores F para femenino y M para masculino");
+            }
+            
+            var userId = User.Identity.GetUserId();
+            var entity = _mapper.Map<Persona>(dto);
+            entity.Deleted = false;
+            entity.CreatedBy = userId;
+
+            try
+            {
+                var saved = await _personasService.CreateUser(entity, $"{dto.Email}.Mm123");
+
+                if (await _rolService.AsignToUser("Alumno", saved))
+                    return Ok(_mapper.Map<AlumnoGetDTO>(saved));
+            }
+            catch (BadHttpRequestException e)
+            {
+                Console.WriteLine(e.Message);
+                return BadRequest($"El email {dto.Email} ya existe");
+            }
         
-        try
-        {
-            var saved = await _personasService.CreateUser(alumno, dto.Email);
+            return BadRequest($"Error al crear al Usuario ${dto.Email}");
+        
+        }
 
-            if (await _rolService.AsignToUser("Alummno", saved))
-                return Ok(_mapper.Map<PersonaResultDTO>(saved));
-        }
-        catch (BadHttpRequestException e)
-        {
-            Console.WriteLine(e.Message);
-            return BadRequest($"El email {dto.Email} ya existe");
-        }
-        return BadRequest();
-    }
+
 }
