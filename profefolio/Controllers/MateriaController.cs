@@ -10,7 +10,7 @@ using profefolio.Repository;
 namespace profefolio.Controllers
 {
     [Route("api/[controller]")]
-    [Authorize(Roles = "Master")]
+    [Authorize(Roles = "Master, Administrador de Colegio")]
     [ApiController]
     public class MateriaController : ControllerBase
     {
@@ -71,15 +71,9 @@ namespace profefolio.Controllers
                 return BadRequest("Objeto No valido");
             }
             //verificar que no sea nulo
-            if (materia.Nombre_Materia == null)
+           if (materia.Nombre_Materia == null || materia.Nombre_Materia == " " || materia.Nombre_Materia == "")
             {
-                return BadRequest("Nombre No valido");
-            }
-             //VERIFICAR REPETIDOS con nombre igual
-            var verificarNombreMateria = await _materiaService.FindByNameMateria(materia.Nombre_Materia);
-            if (verificarNombreMateria != null)
-            {
-                return BadRequest($"Ya existe una materia con el mismo nombre: ${materia.Nombre_Materia}.");
+                return BadRequest("Nombre de materia No valido");
             }
             
             var p = await _materiaService.FindById(id);
@@ -93,7 +87,6 @@ namespace profefolio.Controllers
             p.Modified = DateTime.Now;
 
             p.Nombre_Materia = materia.Nombre_Materia;
-            p.Estado = materia.Estado;
             var query =  _materiaService.Edit(p);
             await _materiaService.Save();
 
@@ -110,7 +103,11 @@ namespace profefolio.Controllers
             {
                 return BadRequest("Objeto No valido");
             }
-
+            if (materia.Nombre_Materia == null || materia.Nombre_Materia == " " || materia.Nombre_Materia == "")
+            {
+                return BadRequest("Nombre de materia No valido");
+            }
+           
               //VERIFICAR REPETIDOS con nombre igual
             var verificarNombreMateria = await _materiaService.FindByNameMateria(materia.Nombre_Materia);
             if (verificarNombreMateria != null)
