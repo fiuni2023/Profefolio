@@ -44,8 +44,10 @@ const ListarColegios = (triggerState = () => {}) => {
           console.log(error);
         });
     }
-  }, [cancan, verifyToken, nav, currentPage, getToken])
-
+  }, [cancan, verifyToken, nav, currentPage, getToken, trigger])
+  function handleAction(event) {
+    setTrigger(colegios);
+}
   let items = [];
 
   for (let number = 0; number < totalPage; number++) {
@@ -90,7 +92,7 @@ const ListarColegios = (triggerState = () => {}) => {
 
 
 
-        <ModalAgregarColegios ></ModalAgregarColegios>
+        <ModalAgregarColegios onAction={handleAction} ></ModalAgregarColegios>
       </div>
     </>)
 }
