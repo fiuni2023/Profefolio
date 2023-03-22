@@ -8,7 +8,7 @@ import axios from "axios";
 import Pagination from 'react-bootstrap/Pagination';
 import { useGeneralContext } from "../../context/GeneralContext";
 import APILINK from "../../components/link";
-const ListarColegios = (triggerState = () => {}) => {
+const ListarColegios = (triggerState = () => { }) => {
 
   const { getToken, verifyToken, cancan } = useGeneralContext()
 
@@ -18,7 +18,6 @@ const ListarColegios = (triggerState = () => {}) => {
   const [totalPage, setTotalPage] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
   const [colegios, setColegios] = useState([]);
-  const [trigger, setTrigger]=useState([]);
 
   useEffect(() => {
 
@@ -44,9 +43,10 @@ const ListarColegios = (triggerState = () => {}) => {
           console.log(error);
         });
     }
-  }, [cancan, verifyToken, nav, currentPage, getToken, trigger])
-  function handleAction(event) {
-    setTrigger(colegios);
+  }, [cancan, verifyToken, nav, currentPage, getToken])
+  
+  const doFetch =(colegio) =>{
+    setColegios([...colegios, colegio])
 }
   let items = [];
 
@@ -68,12 +68,14 @@ const ListarColegios = (triggerState = () => {}) => {
     <>
       <div>
         <div className={styles.nombrePagina}>
-          <button className={styles.buttonBack} onClick={() => { navigate('/') }}><BiArrowBack /></button>
-          <span>Colegios</span>
+          <div className={styles.divNombrePagina}>
+            <button className={styles.buttonBack} onClick={() => { navigate('/') }}><BiArrowBack className={styles.arrowButton} /></button>
+            <span className={styles.tituloPagina}>Colegios</span>
+          </div>
         </div>
         <div className={styles.tablePrincipal} >
           <Table
-            headers={["Numero", "Nombre", "Administrador","Acciones"]}
+            headers={["Numero", "Nombre", "Administrador", "Acciones"]}
             datas={colegios}
             parseToRow={(col, index) => {
               return (
@@ -92,7 +94,7 @@ const ListarColegios = (triggerState = () => {}) => {
 
 
 
-        <ModalAgregarColegios onAction={handleAction} ></ModalAgregarColegios>
+        <ModalAgregarColegios triggerState={(colegio)=>{doFetch(colegio)}}></ModalAgregarColegios>
       </div>
     </>)
 }
