@@ -10,7 +10,6 @@ using profefolio.Repository;
 namespace profefolio.Controllers
 {
     [ApiController]
-    [Authorize(Roles = "Administrador de Colegio,Profesor")]
     [Route("api/[controller]")]
     public class ClaseController : ControllerBase
     {
@@ -29,6 +28,7 @@ namespace profefolio.Controllers
         }
 
         [HttpGet("byColegio/{idColegio:int}")]
+        [Authorize(Roles = "Administrador de Colegio,Profesor")]
         public async Task<ActionResult<IEnumerable<ClaseResultSimpleDTO>>> GetAllByColegioId(int idColegio)
         {
             if (idColegio < 0)
@@ -53,20 +53,22 @@ namespace profefolio.Controllers
         }
 
         [HttpGet("page/{idColegio:int}/{page:int}")]
+        [Authorize(Roles = "Administrador de Colegio,Profesor")]
         public async Task<ActionResult<DataListDTO<ClaseResultSimpleDTO>>> GetAll(int idColegio, int page)
         {
             if (page < 0)
             {
                 return BadRequest("El numero de pagina debe ser mayor o igual que cero");
             }
-            if(idColegio < 0){
-                return BadRequest("El colegio es invalido");
+            if (idColegio < 0)
+            {
+                return BadRequest("El campo de colegio es invalido");
             }
 
             var clases = await _claseService.GetAllByIdColegio(page, CantPorPage, idColegio);
 
 
-            int cantPages = (int)(_claseService.Count()  / CantPorPage) + 1;
+            int cantPages = (int)Math.Ceiling((double)(await _claseService.Count(idColegio)) / (double)CantPorPage);
 
 
             var result = new DataListDTO<ClaseResultSimpleDTO>();
@@ -87,15 +89,16 @@ namespace profefolio.Controllers
 
 
         [HttpGet("{id:int}")]
+        [Authorize(Roles = "Administrador de Colegio,Profesor")]
         public async Task<ActionResult<ClaseResultDTO>> GetById(int id)
         {
             try
             {
                 var result = await _claseService.FindById(id);
 
-                return result != null 
-                    ? Ok(_mapper.Map<ClaseResultDTO>(result)) 
-                    : NotFound($"No se encontro la Clase con id: {id}");
+                return result != null
+                    ? Ok(_mapper.Map<ClaseResultDTO>(result))
+                    : NotFound($"No se encontro la Clase");
             }
             catch (Exception e)
             {
@@ -105,11 +108,12 @@ namespace profefolio.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Administrador de Colegio")]
         public async Task<ActionResult<ClaseResultDTO>> Post([FromBody] ClaseDTO dto)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest("Objeto invalido");
+                return BadRequest("Datos invalido");
             }
 
             try
@@ -119,16 +123,16 @@ namespace profefolio.Controllers
                 var ciclo = await _cicloService.FindById(dto.CicloId);
                 if (ciclo == null)
                 {
-                    return BadRequest("El ciclo no existe");
+                    return BadRequest("El campo de Ciclo es invalido");
                 }
 
                 var colegio = await _colegioService.FindById(dto.ColegioId);
                 if (colegio == null)
                 {
-                    return BadRequest("El colegio no existe");
+                    return BadRequest("El campo de Colegio es invalido");
                 }
 
-                if (dto.Anho <= 0)
+                if (dto.Anho <= 1950)
                 {
                     return BadRequest("Anho invalido");
                 }
@@ -154,31 +158,39 @@ namespace profefolio.Controllers
         }
 
         [HttpPut("{id:int}")]
-        public async Task<ActionResult> Put(int id, [FromBody] ClaseDTO dto){
-            if(!ModelState.IsValid){
+        [Authorize(Roles = "Administrador de Colegio")]
+        public async Task<ActionResult> Put(int id, [FromBody] ClaseDTO dto)
+        {
+            if (!ModelState.IsValid)
+            {
                 return BadRequest("Peticion Invalida");
             }
 
-            if(dto.Anho <= 0){
+            if (dto.Anho <= 1950)
+            {
                 return BadRequest("Anho invalido");
             }
 
-            try{
+            try
+            {
                 var clase = await _claseService.FindById(id);
-                if(clase == null){
-                    return NotFound("No existe la clase");
+                if (clase == null)
+                {
+                    return NotFound("El no se ha encontrado la Clase a editar");
                 }
 
                 var ciclo = await _cicloService.FindById(dto.CicloId);
-                if(ciclo == null){
-                    return NotFound("No existe el ciclo");
+                if (ciclo == null)
+                {
+                    return NotFound("El campo de Ciclo es invalido");
                 }
 
-                var colegio = await _colegioService.FindById(dto.ColegioId);                
-                if(colegio == null){
-                    return NotFound("No existe el colegio");
+                var colegio = await _colegioService.FindById(dto.ColegioId);
+                if (colegio == null)
+                {
+                    return NotFound("El campo de Colegio es invalido");
                 }
-                
+
                 var userId = User.Identity.GetUserId();
                 clase.ModifiedBy = userId;
                 clase.Modified = DateTime.Now;
@@ -194,7 +206,9 @@ namespace profefolio.Controllers
                 await _claseService.Save();
 
                 return NoContent();
-            }catch(Exception e){
+            }
+            catch (Exception e)
+            {
                 _claseService.Dispose();
 
                 Console.WriteLine(e);
@@ -204,11 +218,12 @@ namespace profefolio.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [Authorize(Roles = "Administrador de Colegio")]
         public async Task<ActionResult> Delete(int id)
         {
             if (id < 0)
             {
-                return BadRequest("Id invalido");
+                return BadRequest("Identificador invalido");
             }
 
             try
