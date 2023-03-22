@@ -110,6 +110,12 @@ public class AlumnosController : ControllerBase
             return NotFound();
         }
         
+        [HttpDelete]
+        [Route("{id}")]
+        public async Task<ActionResult> Delete(string id)
+        {
+            return await _personasService.DeleteUser(id) ? Ok() : NotFound();
+        }
 
 
 }
