@@ -1,7 +1,7 @@
 .nombrePagina{
     width: 100%;
     background-color: #FDF0D5;
-    
+    height: 35px;
     
 }
 .tablePrincipal{
@@ -11,6 +11,8 @@
 .buttonBack{
     border: none;
     background-color: #FDF0D5;
+    margin-left: 2%;
+    width: 20px;
 }
 .informationButtons{
     border: none;

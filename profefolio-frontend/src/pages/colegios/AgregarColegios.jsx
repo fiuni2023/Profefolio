@@ -38,11 +38,11 @@ function ModalAgregarColegios() {
     const handleSubmit = () => {
 
         if (nombreColegio === "") {
-            toast.error("Rellenar todos los campos");
+            toast.error("Ingrese todos los datos");
             return
         }
         if (idAdmin === 0) {
-            toast.error("Rellenar todos los campos");
+            toast.error("Ingrese todos los datos");
             return
         }
         else {
@@ -68,6 +68,7 @@ function ModalAgregarColegios() {
                         toast.error("Hubo un error")
                     }
                     else if (response.status >= 200) {
+                        
                         toast.success("Guardado correctamente");
                     }
                 })
@@ -101,12 +102,12 @@ function ModalAgregarColegios() {
             <button className={styles.buttonAgregar} onClick={handleShow}><BsFillPlusCircleFill className={styles.iconoAgregar} /></button>
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header id={styles.modalContenido} closeButton onClick={handleClose}>
-                    <h5 >Agregar Colegio</h5>
+                    <h5 className={styles.tituloForm} >Agregar Colegio</h5>
                 </Modal.Header>
                 <Modal.Body id={styles.modalContenido}>
                     <div>
                         <form>
-                            <label htmlFor="colegio-nombre"><strong>Nombre</strong></label><br />
+                            <label htmlFor="colegio-nombre" className={styles.labelForm}>Nombre</label><br />
                             <input required type="text" id={styles.inputColegio} name="colegio-nombre" onChange={event => handleNombreColegio(event)}></input><br />
                             <p className={styles.mensajeError}>{mensajeError}</p>
                             <label htmlFor="administrador"><strong> Administrador</strong></label><br />
