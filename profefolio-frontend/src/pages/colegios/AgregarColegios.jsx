@@ -6,14 +6,14 @@ import axios from "axios";
 import { useGeneralContext } from "../../context/GeneralContext";
 import { toast } from 'react-hot-toast';
 import APILINK from '../../components/link';
-function ModalAgregarColegios() {
+function ModalAgregarColegios({ onSubmit = () => { }, triggerState = () => { } }) {
     const { getToken } = useGeneralContext()
     const [nombreColegio, setNombreColegio] = useState("");
     const [idAdmin, setIdAdmin] = useState(0);
     const [administradores, setAdministradores] = useState([]);
     const [mensajeError, setMensajeError] = useState(null);
     //Get administadores
-    
+
     useEffect(() => {
         var config = {
             method: 'get',
@@ -68,14 +68,15 @@ function ModalAgregarColegios() {
                         toast.error("Hubo un error")
                     }
                     else if (response.status >= 200) {
-                        
+                        triggerState(response.data)
+                        onSubmit(response.data)
                         toast.success("Guardado correctamente");
                     }
                 })
                 .catch(function (error) {
-                    if(typeof(error.response.data) === "string"? true:false){
+                    if (typeof (error.response.data) === "string" ? true : false) {
                         toast.error(error.response.data)
-                    }else{
+                    } else {
                     }
                 });
             handleClose();

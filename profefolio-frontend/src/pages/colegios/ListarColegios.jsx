@@ -18,7 +18,6 @@ const ListarColegios = (triggerState = () => { }) => {
   const [totalPage, setTotalPage] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
   const [colegios, setColegios] = useState([]);
-  const [trigger, setTrigger] = useState([]);
 
   useEffect(() => {
 
@@ -44,10 +43,11 @@ const ListarColegios = (triggerState = () => { }) => {
           console.log(error);
         });
     }
-  }, [cancan, verifyToken, nav, currentPage, getToken, trigger])
-  function handleAction(event) {
-    setTrigger(colegios);
-  }
+  }, [cancan, verifyToken, nav, currentPage, getToken])
+  
+  const doFetch =(colegio) =>{
+    setColegios([...colegios, colegio])
+}
   let items = [];
 
   for (let number = 0; number < totalPage; number++) {
@@ -94,7 +94,7 @@ const ListarColegios = (triggerState = () => { }) => {
 
 
 
-        <ModalAgregarColegios onAction={handleAction} ></ModalAgregarColegios>
+        <ModalAgregarColegios triggerState={(colegio)=>{doFetch(colegio)}}></ModalAgregarColegios>
       </div>
     </>)
 }
