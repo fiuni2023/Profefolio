@@ -1,7 +1,14 @@
 .nombrePagina{
     width: 100%;
-    background-color: #FDF0D5;
+   
     height: 35px;
+    background-color: #EDEDED;
+}
+.divNombrePagina{
+    padding-top: 5px;
+}
+.tituloPagina{
+    margin-left: 2%;
     
 }
 .tablePrincipal{
@@ -10,9 +17,11 @@
 }
 .buttonBack{
     border: none;
-    background-color: #FDF0D5;
-    margin-left: 2%;
-    width: 20px;
+    background-color: #EDEDED;
+}
+.arrowButton{
+    width: 25px;
+    height: 25px;
 }
 .informationButtons{
     border: none;
