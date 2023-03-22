@@ -153,6 +153,56 @@ namespace profefolio.Controllers
             }
         }
 
+        [HttpPut("{id:int}")]
+        public async Task<ActionResult> Put(int id, [FromBody] ClaseDTO dto){
+            if(!ModelState.IsValid){
+                return BadRequest("Peticion Invalida");
+            }
+
+            if(dto.Anho <= 0){
+                return BadRequest("Anho invalido");
+            }
+
+            try{
+                var clase = await _claseService.FindById(id);
+                if(clase == null){
+                    return NotFound("No existe la clase");
+                }
+
+                var ciclo = await _cicloService.FindById(dto.CicloId);
+                if(ciclo == null){
+                    return NotFound("No existe el ciclo");
+                }
+
+                var colegio = await _colegioService.FindById(dto.ColegioId);                
+                if(colegio == null){
+                    return NotFound("No existe el colegio");
+                }
+                
+                var userId = User.Identity.GetUserId();
+                clase.ModifiedBy = userId;
+                clase.Modified = DateTime.Now;
+                clase.Deleted = false;
+
+                clase.Nombre = dto.Nombre;
+                clase.Anho = dto.Anho;
+                clase.CicloId = dto.CicloId;
+                clase.ColegioId = dto.ColegioId;
+                clase.Turno = dto.Turno;
+
+                _claseService.Edit(clase);
+                await _claseService.Save();
+
+                return NoContent();
+            }catch(Exception e){
+                _claseService.Dispose();
+
+                Console.WriteLine(e);
+                return BadRequest("Error durante la edicion");
+            }
+
+        }
+
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> Delete(int id)
         {
