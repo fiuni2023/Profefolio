@@ -8,6 +8,8 @@ import axios from "axios";
 import Pagination from 'react-bootstrap/Pagination';
 import { useGeneralContext } from "../../context/GeneralContext";
 import APILINK from "../../components/link";
+import ModalVerColegios from './ModalVerColegios'
+
 const ListarColegios = (triggerState = () => { }) => {
 
   const { getToken, verifyToken, cancan } = useGeneralContext()
@@ -18,7 +20,7 @@ const ListarColegios = (triggerState = () => { }) => {
   const [totalPage, setTotalPage] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
   const [colegios, setColegios] = useState([]);
-
+  const [datoIdColegio, setDatoIdColegio] = useState('');
   useEffect(() => {
 
     verifyToken()
@@ -63,10 +65,14 @@ const ListarColegios = (triggerState = () => { }) => {
 
 
   }
+  const idColegio = (idCol) => {
+    setDatoIdColegio(idCol);
+  }
 
   return (
     <>
       <div>
+     
         <div className={styles.nombrePagina}>
           <div className={styles.divNombrePagina}>
             <button className={styles.buttonBack} onClick={() => { navigate('/') }}><BiArrowBack className={styles.arrowButton} /></button>
@@ -79,12 +85,12 @@ const ListarColegios = (triggerState = () => { }) => {
             datas={colegios}
             parseToRow={(col, index) => {
               return (
-                <tr key={index}>
+                <tr key={index} onClick={()=>idColegio(col?.id)}>
                   <td>{index + 1}</td>
                   <td>{col?.nombre}</td>
                   <td>{col?.nombreAdministrador} {col?.apellido}</td>
-
-                  <td></td>
+                  <td><ModalVerColegios idColegio={datoIdColegio}></ModalVerColegios></td>
+                  
                 </tr>
               )
             }}
