@@ -116,6 +116,88 @@ public class AlumnosController : ControllerBase
         {
             return await _personasService.DeleteUser(id) ? Ok() : NotFound();
         }
+        
+        
+        [HttpPut]
+        [Route("{id}")]
+        public async Task<ActionResult<AlumnoGetDTO>> Put(string id, [FromBody] AlumnoEditDTO dto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+        
+            if (dto.Nacimiento > DateTime.Now)
+            {
+                return BadRequest("El nacimiento no puede ser mayor a la fecha de hoy");
+            }
+
+            if (!(dto.Genero.Equals("M") || dto.Genero.Equals("F")))
+            {
+                return BadRequest("Solo se aceptan valores F para femenino y M para masculino");
+            }
+
+            if (!id.Equals(dto.Id))
+                return BadRequest("No valido");
+
+            try
+            {
+                var persona = await _personasService.FindById(id);
+            
+                var userId = User.Identity.GetUserId();
+
+                var existMail =await  _personasService.ExistMail(dto.Email);
+
+                var isEqual = dto.Email.Equals(persona.Email);
+
+                if (!isEqual && existMail)
+                {
+                    return BadRequest($"Ya existe el email '{dto.Email}', intente con otro");
+                }
+            
+                MapOldToNew(persona, dto, userId);
+
+                if ((!persona.Email.Equals(dto.Email)) && await _personasService.ExistMail(dto.Email))
+                {
+                    return BadRequest("El email nuevo que queres actualizar ya existe");
+                }
+            
+            
+            
+                var query = await _personasService.EditProfile(persona);
+
+                return Ok(_mapper.Map<AlumnoGetDTO>(query));
+            }
+            catch (BadHttpRequestException e)
+            {
+                Console.WriteLine(e.Message);
+                return BadRequest(e.Message);
+            }
+            catch (FileNotFoundException e)
+            {
+                Console.WriteLine(e.Message);
+                return NotFound();
+            }
+
+        }
+        
+        
+        private static void MapOldToNew(Persona persona, AlumnoEditDTO dto, string userId)
+        {
+            persona.Nombre = dto.Nombre;
+            persona.Apellido = dto.Apellido;
+            persona.Email = dto.Email;
+            persona.EsM = dto.Genero.Equals("M");
+            persona.Nacimiento = dto.Nacimiento;
+            persona.Documento = dto.Documento;
+            persona.Direccion = dto.Direccion;
+            persona.Modified = DateTime.Now;
+            persona.DocumentoTipo = dto.DocumentoTipo;
+            persona.ModifiedBy = userId;
+            persona.UserName = dto.Email;
+            persona.NormalizedUserName = dto.Email.ToUpper();
+            persona.NormalizedEmail = dto.Email.ToUpper();
+        }
 
 
 }
