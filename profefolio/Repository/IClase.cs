@@ -8,6 +8,7 @@ namespace profefolio.Repository
 {
     public interface IClase : IRepository<Clase>
     {
+        Task<int> Count(int idColegio);
         Task<IEnumerable<Clase>> GetByIdColegio(int idColegio);
         Task<IEnumerable<Clase>> GetAllByIdColegio(int page, int cantPorPag, int idColegio);
     }
