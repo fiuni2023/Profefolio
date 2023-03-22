@@ -9,13 +9,37 @@ import "./components/create/Index.module.css";
 
 import APILINK from '../../components/link.js';
 import { useNavigate } from 'react-router';
+import ListDetallesProfesor from './list/ListDetallesProfesor.jsx';
+
 
 
 function Profesores() {
+
   const [profesores, setProfesores] = useState([]);
   const [page, setPage] = useState(0);
 
   const { getToken, cancan, verifyToken } = useGeneralContext();
+
+
+  const handleRowClick = (id) => {
+    axios.get(`${APILINK}/api/profesor/${id}`,{
+    headers: {
+      Authorization: `Bearer ${getToken()}`,
+    }})
+      .then(response => {
+        setProfesores(response.data.dataList);
+        alert(`Detalles de   ${id}: `);
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }//[page, cancan, verifyToken, nav, getToken]);
+ 
+  
+  
+  
+  
+  
 
   const nav = useNavigate()
 
@@ -88,7 +112,7 @@ function Profesores() {
               <tbody>
 
                 {profesores.map(profe => (
-                  <tr key={profe.id}>
+                  <tr key={profe.id} onClick={() => handleRowClick(profe.id)}>
                     <td>{profe.documento}</td>
                     <td>{profe.nombre}</td>
                     <td>{profe.apellido}</td>
@@ -132,6 +156,9 @@ function Profesores() {
             <CreateModal title="My Modal" onClose={() => setShow(false)}  show={show}
              triggerState={(profesor)=>{doFetch(profesor)}}>
             </CreateModal>
+
+            
+            <ListDetallesProfesor > </ListDetallesProfesor>
             
           </div>
 
