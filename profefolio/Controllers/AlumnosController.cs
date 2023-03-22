@@ -2,6 +2,7 @@
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using profefolio.Models.DTOs;
 using profefolio.Models.DTOs.Alumno;
 using profefolio.Models.DTOs.Persona;
 using profefolio.Models.Entities;
@@ -16,8 +17,9 @@ public class AlumnosController : ControllerBase
     private readonly IPersona _personasService;
     private readonly IMapper _mapper;
     private readonly IRol _rolService;
+    private const int CantPerPage = 20;
 
-        public AlumnosController(IPersona personasService, IMapper mapper, IRol rolService)
+    public AlumnosController(IPersona personasService, IMapper mapper, IRol rolService)
     {
         _personasService = personasService;
         _mapper = mapper;
@@ -63,6 +65,51 @@ public class AlumnosController : ControllerBase
             return BadRequest($"Error al crear al Usuario ${dto.Email}");
         
         }
+        [Authorize(Roles = "Administrador de Colegio,Profesor")]
+        [HttpGet]
+        [Route("page/{page:int}")]
+        public async Task<ActionResult<DataListDTO<AlumnoGetDTO>>> Get(int page)
+        {
+            const string rol = "Alumno";
+            var query = await _personasService
+                .FilterByRol(page, CantPerPage, rol);
+
+            var cantPages = (int) (await _personasService.CountByRol(rol) / CantPerPage)  + 1;
+
+            var result = new DataListDTO<AlumnoGetDTO>();
+
+            if(page >= cantPages) 
+            {
+                return BadRequest($"No existe la pagina: {page} ");
+            }
+
+            var enumerable = query as Persona[] ?? query.ToArray();
+            result.CantItems = enumerable.Length;
+            result.CurrentPage = page;
+            result.Next = result.CurrentPage + 1 < cantPages;
+            result.DataList = _mapper.Map<List<AlumnoGetDTO>>(enumerable.ToList());
+            result.TotalPage = cantPages;
+            return Ok(result);
+        }
+        [Authorize(Roles = "Administrador de Colegio,Profesor")]
+        [HttpGet]
+        [Route("id/{id}")]
+        public async Task<ActionResult<AlumnoGetDTO>> Get(string id)
+        {
+            try
+            {
+                var persona = await _personasService.FindById(id);
+                return Ok(_mapper.Map<AlumnoGetDTO>(persona));
+            }
+            catch (FileNotFoundException e)
+            {
+                Console.WriteLine(e.Message);
+
+            }
+
+            return NotFound();
+        }
+        
 
 
 }
