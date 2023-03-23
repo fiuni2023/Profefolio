@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNet.Identity;
@@ -86,7 +87,9 @@ namespace profefolio.Controllers
 
                 var ciclo = _mapper.Map<Ciclo>(dto);
 
-                var userId = User.Identity.GetUserId();
+                //var userId = User.Identity.GetUserId();
+                var userId = User.FindFirstValue(ClaimTypes.Name);
+
                 ciclo.CreatedBy = userId;
                 ciclo.Created = DateTime.Now;
                 ciclo.Deleted = false;
@@ -103,7 +106,7 @@ namespace profefolio.Controllers
             }
         }
 
-        
+
         [HttpPut("{id:int}")]
         [Authorize(Roles = "Administrador de Colegio")]
         public async Task<ActionResult> Put(int id, [FromBody] CicloDTO dto)
@@ -122,7 +125,8 @@ namespace profefolio.Controllers
                 }
                 var ciclo = await _cicloService.FindById(id);
 
-                if(ciclo == null){
+                if (ciclo == null)
+                {
                     return BadRequest("El Ciclo no encontrado");
                 }
 
