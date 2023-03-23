@@ -125,4 +125,51 @@ public class CicloPostOk
         Assert.Equal("Peticion invalido", r.Value.ToString());
         Assert.IsType<BadRequestObjectResult>(result.Result);
     }
+
+    [Fact]
+    public async void Post_ExistOtherWithEqualName_BadRequest(){
+                Mock<IMapper> mapper = new Mock<IMapper>();
+        Mock<ICiclo> service = new Mock<ICiclo>();
+        CicloController controller = new CicloController(mapper.Object, service.Object);
+
+
+        CicloDTO dto = new CicloDTO()
+        {
+            Nombre = "Primero"
+        };
+
+        profefolio.Models.Entities.Ciclo modelo = new profefolio.Models.Entities.Ciclo()
+        {
+            Id = 1,
+            Nombre = "Primero",
+            Created = DateTime.Now,
+            Deleted = false,
+            CreatedBy = "123456"
+        };
+
+        CicloResultDTO resultDto = new CicloResultDTO()
+        {
+            Id = 1,
+            Nombre = "Primero"
+        };
+
+        var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+        {
+            new Claim(ClaimTypes.Name, "user1") 
+        }, "mock"));
+
+        controller.ControllerContext = new ControllerContext()
+        {
+            HttpContext = new DefaultHttpContext() { User = user }
+        };
+
+        service.Setup(a => a.ExisitNombre(dto.Nombre)).ReturnsAsync(true);
+
+        var result = await controller.Post(dto);
+        BadRequestObjectResult r = (BadRequestObjectResult)result.Result;
+        
+        
+        Assert.Equal("Ya existe un Ciclo con ese nombre", r.Value.ToString());
+        Assert.IsType<BadRequestObjectResult>(result.Result);
+    }
 }
