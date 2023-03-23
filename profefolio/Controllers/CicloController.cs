@@ -88,9 +88,9 @@ namespace profefolio.Controllers
                 var ciclo = _mapper.Map<Ciclo>(dto);
 
                 //var userId = User.Identity.GetUserId();
-                var userId = User.FindFirstValue(ClaimTypes.Name);
+                var name = User.FindFirstValue(ClaimTypes.Name);
 
-                ciclo.CreatedBy = userId;
+                ciclo.CreatedBy = name;
                 ciclo.Created = DateTime.Now;
                 ciclo.Deleted = false;
 
