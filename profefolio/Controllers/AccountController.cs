@@ -83,7 +83,7 @@ public class AccountController : ControllerBase
         var query = await _personasService
             .FilterByRol(page, CantPorPage, rol);
 
-        var cantPages = (int) (await _personasService.CountByRol(rol) / CantPorPage)  + 1;
+        var cantPages = (int)(await _personasService.CountByRol(rol)  / CantPorPage) + 1;
 
         var result = new DataListDTO<PersonaResultDTO>();
 
