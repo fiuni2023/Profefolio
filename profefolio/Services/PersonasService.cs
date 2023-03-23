@@ -166,4 +166,11 @@ public class PersonasService : IPersona
         return query
             .Count(p => !p.Deleted);
     }
+
+    public async Task<IEnumerable<Persona>> GetAllByRol(string roleName)
+    {
+        var query = await _userManager.GetUsersInRoleAsync(roleName);
+
+        return query.Where(p => !p.Deleted).ToList();
+    }
 }
