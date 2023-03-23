@@ -1,5 +1,5 @@
 import axios from "axios";
-import APILINK from "../../../components/link";
+import APILINK from "../components/link";
 
 const getList = async (page, token)=>{
     const result = await axios.get(`${APILINK}/api/administrador/page/${page}`,

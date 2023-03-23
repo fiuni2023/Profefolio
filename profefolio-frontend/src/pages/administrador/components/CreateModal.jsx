@@ -8,7 +8,7 @@ import ModalContainer from "../../../components/Modals";
 import { useGeneralContext } from '../../../context/GeneralContext'
 
 import styles from './CreateModal.module.css'
-import AdminService from "../servicios/Administradores";
+import AdminService from "../../../sevices/administrador";
 import { toast } from "react-hot-toast";
 
 const LACreateModal = ({

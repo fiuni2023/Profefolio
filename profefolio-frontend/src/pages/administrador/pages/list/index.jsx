@@ -2,19 +2,21 @@ import React, { useEffect, useState } from "react";
 import styles from "./index.module.css"
 import { HiArrowLeft } from 'react-icons/hi'
 import { AiOutlinePlus } from 'react-icons/ai'
-import { BsInfoCircle } from 'react-icons/bs'
 import { Table } from "../../../../components/Table";
 import LACreateModal from "../../components/CreateModal";
 import { useGeneralContext } from "../../../../context/GeneralContext";
-import AdminService from "../../servicios/Administradores";
 import { Pagination } from "react-bootstrap";
 
 import { toast } from "react-hot-toast";
 import { useFetchEffect } from "../../../../components/utils/useFetchEffect";
 import { useNavigate } from "react-router-dom";
+import AdminService from "../../../../sevices/administrador";
+import { useAdminContext } from "../../context/AdminContext";
+import LAEditPanel from "../../components/EditPanel";
 
 const ListAdministrador = () => {
     const {getToken, cancan, verifyToken} = useGeneralContext()
+    const {selectedAdmin, setSelectedAdmin, showAdmin, setShowAdmin } = useAdminContext()
 
     const [showCreateModal, setShowCreateModal] = useState(false)
     const [admins, setAdmins] = useState([])
@@ -42,7 +44,7 @@ const ListAdministrador = () => {
         ()=>{
             return AdminService.getList(currentPage, getToken())
         }, 
-        [currentPage, getToken],
+        [currentPage, getToken, condFetch],
         {
             condition: condFetch,
             handleSuccess: (r)=>{
@@ -69,6 +71,11 @@ const ListAdministrador = () => {
         )
     }
 
+    const doChangeAdmin = (data) => {
+        setSelectedAdmin(data)
+        setShowAdmin(true)
+    }
+
     return (
         <>
             <LACreateModal show={showCreateModal} handleClose={()=>{setShowCreateModal(!showCreateModal) }} triggerState={()=>{doFetch()}} />
@@ -78,18 +85,18 @@ const ListAdministrador = () => {
                     <h5 className={styles.LANText}>Administradores</h5>
                 </div>
                 <div className={styles.TableContainer}>
+                    { showAdmin && <LAEditPanel />}
                     <Table 
-                        headers={["CI", "Nombre", "Fecha de Nacimiento", "Direccion", "Telefono", "Acciones"]}
+                        headers={["CI", "Nombre", "Fecha de Nacimiento", "Direccion", "Telefono"]}
                         datas={admins}
                         parseToRow = {(d, index) =>{
                             return(
-                                <tr key={index}>
+                                <tr key={index} className={`${d?.id === selectedAdmin?.id ? styles.SelectedTR : ""}`} onClick={()=>{doChangeAdmin(d)}}>
                                     <td>{d?.documento}</td>
                                     <td>{`${d?.nombre} ${d?.apellido}`}</td>
                                     <td>{parseToDate(new Date(d?.nacimiento))}</td>
                                     <td>{d?.direccion}</td>
                                     <td>{d?.telefono}</td>
-                                    <td><BsInfoCircle size={10} onClick={()=>{toast.success(`Administrador con id ${d?.id}`)}} style={{cursor:"pointer"}} /></td>
                                 </tr>
                             )
                         }}

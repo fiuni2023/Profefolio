@@ -1,0 +1,27 @@
+.PanelContainer{
+    margin: 1%;
+    width: 98%;
+    border-radius: 10px;
+    background-color: #C6D8D3;
+    padding: 20px;
+}
+
+.invisInput{
+    background-color: transparent;
+    font-size: 14px;
+    outline: none;
+    border: none;
+}
+.invisInput:hover, .invisInput:focus {
+    background-color: #bdeee2;
+}
+
+.invisInputB{
+    background-color: transparent;
+    font-size: 20px;
+    outline: none;
+    border: none;
+}
+.invisInputB:hover, .invisInputB:focus {
+    background-color: #bdeee2;
+}
