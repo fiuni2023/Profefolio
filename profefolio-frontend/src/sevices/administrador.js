@@ -24,5 +24,18 @@ const createAdmin = async (body, token)=>{
     return result.status === 200? result : null
 }
 
-const AdminService = { getList, createAdmin }
+const updateAdmin = async (id, body, token)=>{
+    const result = await axios.put(`${APILINK}/api/administrador/${id}`,
+    body,
+    {
+        headers:{
+            "Authorization": 'Bearer ' + token,
+            "Content-Type": "application/json"
+        },
+        
+    })
+    return result.status === 200? result : null
+}
+
+const AdminService = { getList, createAdmin, updateAdmin }
 export default AdminService

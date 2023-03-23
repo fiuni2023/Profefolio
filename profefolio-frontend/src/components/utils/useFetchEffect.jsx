@@ -7,9 +7,7 @@ export const useFetchEffect = (asyncFunc = async () => { }, dependences = [], se
 
 
     const doFetch = () => {
-        let newFetch = toggle
-        newFetch = [...newFetch, {}]
-        toggleFetch(newFetch)
+        toggleFetch((prev)=>[...prev, {}])
     }
 
 
@@ -34,7 +32,7 @@ export const useFetchEffect = (asyncFunc = async () => { }, dependences = [], se
             })
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, dependences)
+    }, [...dependences, toggle])
 
-    return [loading, error, doFetch]
+    return {loading, error, doFetch}
 }

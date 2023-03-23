@@ -40,7 +40,7 @@ const ListAdministrador = () => {
     }, [cancan, verifyToken, nav])
     
 
-    const [isLoading, error, doFetch] = useFetchEffect(
+    const { isLoading, error, doFetch } = useFetchEffect(
         ()=>{
             return AdminService.getList(currentPage, getToken())
         }, 
@@ -78,14 +78,16 @@ const ListAdministrador = () => {
 
     return (
         <>
-            <LACreateModal show={showCreateModal} handleClose={()=>{setShowCreateModal(!showCreateModal) }} triggerState={()=>{doFetch()}} />
+            <LACreateModal show={showCreateModal} handleClose={()=>{setShowCreateModal(!showCreateModal) }} triggerState={()=>{doFetch(true)}} />
             <div className={styles.GridContainer}>
                 <div className={styles.LANavbar}> 
                     <HiArrowLeft size={"20px"} onClick={()=>nav("/")}/>
                     <h5 className={styles.LANText}>Administradores</h5>
                 </div>
                 <div className={styles.TableContainer}>
-                    { showAdmin && <LAEditPanel />}
+                    { showAdmin && 
+                        <LAEditPanel onUpdate={()=>{console.log("a");doFetch(true)}}/>
+                    }
                     <Table 
                         headers={["CI", "Nombre", "Fecha de Nacimiento", "Direccion", "Telefono"]}
                         datas={admins}

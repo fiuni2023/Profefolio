@@ -40,7 +40,7 @@ export const AdminProvider = ({children}) => {
         adminFormik.setFieldValue("id", admin.id)
         adminFormik.setFieldValue("nombre", admin.nombre)
         adminFormik.setFieldValue("apellido", admin.apellido)
-        adminFormik.setFieldValue("nacimiento", `${admin.nacimiento}Z`)
+        adminFormik.setFieldValue("nacimiento", `${admin.nacimiento.split("T")[0]}`)
         adminFormik.setFieldValue("documento", admin.documento)
         adminFormik.setFieldValue("documentoTipo", admin.documentoTipo)
         adminFormik.setFieldValue("genero", admin.genero)
