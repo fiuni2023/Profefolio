@@ -1,29 +1,35 @@
 ﻿
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.JsonWebTokens;
+using Microsoft.IdentityModel.Tokens;
 using profefolio.Helpers;
 using profefolio.Models;
+using profefolio.Models.DTOs.Auth;
 using profefolio.Models.Entities;
+using profefolio.Services;
+using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames;
 
 namespace TestProfefolio.Auth;
 
 public class AuthTest
 {
-    private Mock<UserManager<Persona>> _userManagerMock = new Mock<UserManager<Persona>>();
+    private Mock<UserManager<Persona>> _userManagerMock = new Mock<UserManager<Persona>>(new Mock<IUserStore<Persona>>().Object, null, null, null, null, null, null, null, null);
     private Mock<IConfiguration> _configurationMock = new Mock<IConfiguration>();
-    private string _connectionString = "Server=localhost;Database=TestDb;User Id=testuser;Password=testpassword;";
     private DbContextOptions<ApplicationDbContext> _contextOptions;
     private IConfigurationRoot _configurationBuilder;
     private Mock<TokenGenerator> _tokenGeneratorMock = new Mock<TokenGenerator>();
     private Persona _p;
+    private ApplicationDbContext _db;
+    private AuthService _authService;
 
     public AuthTest()
     {
         _contextOptions = new DbContextOptionsBuilder<ApplicationDbContext>()
-            .UseNpgsql(_connectionString)
+            .UseInMemoryDatabase("profefolio")
             .Options;
 
         _configurationBuilder = new ConfigurationBuilder().Build();
@@ -40,12 +46,32 @@ public class AuthTest
         };
         var hasher = new PasswordHasher<Persona>();
         _p.PasswordHash = hasher.HashPassword(_p, "Carlos.Torres123");
+        _db = new ApplicationDbContext(_contextOptions);
         
+        LoadData();
+        MockSetUp();
 
-
+        _authService = new AuthService(_userManagerMock.Object, _configurationMock.Object);
     }
 
-    public void MockSetUp()
+    private void LoadData()
+    {
+        var p = _db.Users.Add(_p).Entity;
+        var r = _db.Roles.Add(new IdentityRole()
+        {
+            Name = "Master"
+        }).Entity;
+
+        _db.UserRoles.Add(new IdentityUserRole<string>()
+        {
+            UserId = p.Id,
+            RoleId = r.Id
+        });
+
+        _db.SaveChanges();
+
+    }
+    private void MockSetUp()
     {
         _configurationMock.Setup(x => x["JWT:Secret"])
             .Returns("JWTAuthenticationHIGHsecuredPasswordVVVp1OH7Xzyr");
@@ -56,9 +82,7 @@ public class AuthTest
         _configurationMock.Setup(x => x["JWT:ValidAudience"])
             .Returns("http://localhost:4200");
 
-        _userManagerMock.Setup(x => x.CreateAsync(_p));
-
-        _userManagerMock.Setup(x => x.AddToRoleAsync(_p, "Master"));
+       
         
         
         var authClaims = new List<Claim>()
@@ -70,15 +94,42 @@ public class AuthTest
         
         authClaims.Add(new Claim(ClaimTypes.Role, "Master"));
         
-        
+        var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configurationMock.Object["JWT:Secret"]));
+
+        var token = new JwtSecurityToken(
+            issuer: _configurationMock.Object["JWT:ValidIssuer"],
+            audience: _configurationMock.Object["JWT:ValidAudience"],
+            expires: DateTime.Now.AddHours(3),
+            claims: authClaims,
+            signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
+        );
+
         
 
+        _userManagerMock.Setup(x => x.FindByEmailAsync(It.IsAny<string>()))
+            .ReturnsAsync(_p);
+            
+        _userManagerMock.Setup(x => x
+            .CheckPasswordAsync(It.IsAny<Persona>(), It.IsAny<string>()))
+            .ReturnsAsync(true);
+        _userManagerMock.Setup(x => x.GetRolesAsync(It.IsAny<Persona>()))
+            .ReturnsAsync(new List<string>()
+            {
+                "Master"
+            });
     }
 
     [Fact]
     public async Task Login()
     {
-
+        var response = await _authService.Login(new Login()
+        {
+            Email = "Carlos.Torres123@mail.com",
+            Password = "Carlos.Torres123@mail.com"
+        });
+        
+        Assert.NotNull(response);
+        Assert.Equal("Carlos.Torres123@mail.com", response.Email);
     }
 
 
