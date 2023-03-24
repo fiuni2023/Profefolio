@@ -146,8 +146,7 @@ namespace profefolio.Controllers
             {
                 _cicloService.Dispose();
                 Console.WriteLine(e);
-                return BadRequest(e);
-                //return BadRequest("Error durante la edicion");
+                return BadRequest("Error durante la edicion");
             }
         }
 
