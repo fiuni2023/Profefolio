@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Modal, Form,Col,Row ,ListGroup, ListGroupItem} from 'react-bootstrap';
+import { Modal, Form,Col,Row } from 'react-bootstrap';
 import { useGeneralContext } from '../../../context/GeneralContext';
 import styles from  '../components/create/Modal.module.css';
 import APILINK from '../../../components/link';
@@ -26,6 +26,7 @@ function ListDetallesProfesor({id, triggerState = () => {}}) {
     
           .then(response => {
             setProfesores(response.data);
+           // triggerState(response.data)
         
     
   
@@ -37,6 +38,18 @@ function ListDetallesProfesor({id, triggerState = () => {}}) {
     }, [ id, getToken]);
 
 
+    // Define state variables for the input field values
+const [nombre, setNombre] = useState(profesor.nombre);
+const [apellido, setApellido] = useState(profesor.apellido);
+const [telefono, setTelefono] = useState(profesor.telefono);
+const [direccion, setDireccion] = useState(profesor.direccion);
+const [nacimiento, setNacimiento] = useState(profesor.nacimiento);
+const [email, setEmail] = useState(profesor.email);
+const [genero, setGenero] = useState(profesor.genero);
+const [documento, setDocumento] = useState(profesor.documento);
+const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
+
+
 
   const [showModal, setShowModal] = useState(true);
 
@@ -44,12 +57,8 @@ function ListDetallesProfesor({id, triggerState = () => {}}) {
 
   function closeModal() {
     setShowModal(false);
-     
-    setShowModal(false);
   }
 
-  
-  const handleShowModal = () => setShowModal(true);
 
   const handleModificar = () => {
     setReadOnly(false);
@@ -72,12 +81,12 @@ function ListDetallesProfesor({id, triggerState = () => {}}) {
     
 
    
-      <Modal show={showModal} onHide={handleCloseModal}  closeButton >
+      <Modal show={showModal} onHide={handleCloseModal}  >
 
 
 
 
-        <Modal.Header className={styles.contentModal}>
+        <Modal.Header className={styles.contentModal} closeButton>
           <Modal.Title className="">Detalles Profesor</Modal.Title>
 
         </Modal.Header>
