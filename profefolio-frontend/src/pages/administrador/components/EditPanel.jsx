@@ -7,6 +7,7 @@ import { useAdminContext } from "../context/AdminContext";
 import { useGeneralContext } from '../../../context/GeneralContext'
 
 import styles from './EditPanel.module.css'
+import { RxCross2 } from "react-icons/rx";
 
 const LAEditPanel = ({
     onUpdate = () => {}
@@ -17,6 +18,7 @@ const LAEditPanel = ({
     const { selectedAdmin, setSelectedAdmin, resetAdmin, changeAdminData, setShowAdmin } = useAdminContext()
 
     const [editing, setEditing] = useState(false)
+    const [erasing, setErasing] = useState(false)
     const [before, setBefore] = useState({})
 
     const handleChange = (area, value) => {
@@ -26,6 +28,18 @@ const LAEditPanel = ({
     const handleClose = () => {
         setShowAdmin(false)
         resetAdmin()
+    }
+
+    const handleDelete = () => {
+        AdminService.deleteAdmin(selectedAdmin.id, getToken())
+        .then((r)=>{
+            toast.success("Eliminado con exito")
+            onUpdate()
+            handleClose()
+        })
+        .catch((error)=>{
+            toast.error("Error en Eliminar, Intente de nuevo")
+        })
     }
 
     const handleUpdate = () => {
@@ -76,7 +90,9 @@ const LAEditPanel = ({
                                     <label>E-mail:</label>
                                     <input disabled={!editing} className = {styles.invisInputB} placeholder={"Agregar Email"} style={{width: widthOf(selectedAdmin.email, "Agregar Email")}} value={selectedAdmin.email ?? ""} onChange={(event) => { handleChange("email", event.target.value) }} />
                                 </div>
-                                <button onClick={()=>handleClose()}>a</button>
+                                <div className={styles.ExitContainer} onClick={()=>{handleClose()}}>
+                                    <RxCross2 size={18} />
+                                </div>
                             </div>  
                         </Col>
                     </Row>
@@ -105,23 +121,43 @@ const LAEditPanel = ({
                         </Col>
                     </Row>
                     <Row className="mt-2">
-                        <Col className="d-flex gap-2 justify-content-end">
-                            { !editing &&
-                                <ButtonInput variant="primary-inv" text="EDITAR" handleClick={()=>{
-                                    setBefore(selectedAdmin)
-                                    setEditing(true)
-                                }} />
-                            }
-                            { editing &&
-                                <>
-                                    <ButtonInput variant="primary-inv" text="CANCELAR" handleClick={()=>{
-                                            toast.success("Cambios revertidos")
-                                            setSelectedAdmin(before)
-                                            setEditing(false)
-                                        }} />
-                                    <ButtonInput variant="primary-inv" text="CONFIRMAR" handleClick={()=>{handleUpdate()}} />
-                                </>
-                            }
+                        <Col className="d-flex gap-2 justify-content-between">
+                            <div className="d-flex gap-2">
+                                { erasing?
+                                    <>
+                                        <div className="d-flex flex-column ">
+                                            <label className="align-self-center" >¿Desea eliminar? <label className="text-danger">ESTA ACCION ES IRREVERSIBLE</label></label>
+                                            <div className="d-flex gap-2">
+                                                <ButtonInput variant="danger-inv" text="CANCELAR" handleClick={()=>{
+                                                        setErasing(false)
+                                                    }} />
+                                                <ButtonInput variant="danger" text="CONFIRMAR" handleClick={()=>{handleDelete()}} />
+                                            </div>
+                                        </div>
+                                    </>
+                                    :
+                                    <ButtonInput variant="danger" text="ELIMINAR" handleClick={()=>{
+                                        setErasing(true)
+                                    }} />
+                                }
+                            </div>
+                            <div className="d-flex gap-2">
+                                { editing?
+                                    <>
+                                        <ButtonInput variant="primary-inv" text="CANCELAR" handleClick={()=>{
+                                                toast.success("Cambios revertidos")
+                                                setSelectedAdmin(before)
+                                                setEditing(false)
+                                            }} />
+                                        <ButtonInput variant="primary-inv" text="CONFIRMAR" handleClick={()=>{handleUpdate()}} />
+                                    </>
+                                    :
+                                    <ButtonInput variant="primary-inv" text="EDITAR" handleClick={()=>{
+                                        setBefore(selectedAdmin)
+                                        setEditing(true)
+                                    }} />
+                                }
+                            </div>
                         </Col>
                     </Row>
                 </div>

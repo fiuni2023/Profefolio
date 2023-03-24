@@ -48,7 +48,7 @@ export const GeneralProvider = ({children}) => {
     }
 
     const getUserName = () => {
-        return getLoginData().email.split("@")[0]
+        return getLoginData().email?.split("@")[0]
     }
 
     const values = {

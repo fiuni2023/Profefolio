@@ -14,6 +14,8 @@ export const ButtonInput = ({text = "Texto", className ="", handleClick = () => 
     const returnVariantColor = (variant) => {
         if (variant === "primary") return {backgroundColor:"#331832", color: "white", width: width, height: height, fontSize: fontSize}
         if (variant === "primary-inv") return { border:"2px solid #331832", color: "#331832", width: width, height: height, fontSize: fontSize}
+        if (variant === "danger") return {backgroundColor:"#D81E5B", color: "white", width: width, height: height, fontSize: fontSize}
+        if (variant === "danger-inv") return { border:"2px solid #D81E5B", backgroundColor: "#FFE3E9", color: "#D81E5B", width: width, height: height, fontSize: fontSize}
         if (variant === "secondary") return {backgroundColor:"#D3D3D3", color: "white", width: width, height: height, fontSize: fontSize}
         if (variant === "secondary-black") return {backgroundColor:"#D3D3D3", color: "black", width: width, height: height, fontSize: fontSize}
     }

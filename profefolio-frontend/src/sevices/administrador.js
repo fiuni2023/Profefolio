@@ -37,5 +37,17 @@ const updateAdmin = async (id, body, token)=>{
     return result.status === 200? result : null
 }
 
-const AdminService = { getList, createAdmin, updateAdmin }
+const deleteAdmin = async (id, token)=>{
+    const result = await axios.delete(`${APILINK}/api/administrador/${id}`,
+    {
+        headers:{
+            "Authorization": 'Bearer ' + token,
+            "Content-Type": "application/json"
+        },
+        
+    })
+    return result.status === 200? result : null
+}
+
+const AdminService = { getList, createAdmin, updateAdmin, deleteAdmin }
 export default AdminService
