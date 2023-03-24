@@ -49,7 +49,7 @@ const LAEditPanel = ({
             apellido: apellido,
             nacimiento: nacimiento,
             documento: documento,
-            documentoTipo: documentoTipo,
+            documentoTipo: documentoTipo?? "CIN",
             genero: genero==="Masculino"? "M" : "F",
             direccion: direccion,
             telefono: telefono, 
@@ -63,6 +63,7 @@ const LAEditPanel = ({
                 setSelectedAdmin(r.data)
             })
             .catch((error)=>{
+                console.log(error)
                 toast.error("No se pudieron editar los administradores, verifique sus datos e intente de nuevo")
             })
     }
@@ -108,7 +109,7 @@ const LAEditPanel = ({
                                     <input disabled={!editing} className = {styles.invisInput} placeholder={"Agregar Telefono"} style={{width: widthOf(selectedAdmin.telefono, "Agregar CIN")}} value={selectedAdmin.telefono ?? ""} onChange={(event) => { handleChange("telefono", event.target.value) }} />
                                 </div>
                                 <div className="d-flex gap-2 align-items-center">
-                                    <label>Fecha Nacimiento:</label>
+                                    <label>Fecha Nac.:</label>
                                     <input disabled={!editing} type={"date"} className = {styles.invisInput} style={{width: 120 }} value={selectedAdmin.nacimiento.split('T')[0] ?? ""} onChange={(event) => { handleChange("nacimiento", event.target.value) }} /> 
                                 </div>
                             </div>
