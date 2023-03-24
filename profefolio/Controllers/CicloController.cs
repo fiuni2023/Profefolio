@@ -130,8 +130,8 @@ namespace profefolio.Controllers
                     return BadRequest("El Ciclo no encontrado");
                 }
 
-                var userId = User.Identity.GetUserId();
-                ciclo.ModifiedBy = userId;
+                var name = User.FindFirstValue(ClaimTypes.Name);
+                ciclo.ModifiedBy = name;
                 ciclo.Modified = DateTime.Now;
                 ciclo.Deleted = false;
                 ciclo.Nombre = dto.Nombre;
@@ -146,7 +146,8 @@ namespace profefolio.Controllers
             {
                 _cicloService.Dispose();
                 Console.WriteLine(e);
-                return BadRequest("Error durante la edicion");
+                return BadRequest(e);
+                //return BadRequest("Error durante la edicion");
             }
         }
 
