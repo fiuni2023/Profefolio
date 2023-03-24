@@ -162,8 +162,8 @@ namespace profefolio.Controllers
                     return BadRequest("Ciclo no encontrado");
                 }
 
-                string userId = User.Identity.GetUserId();
-                ciclo.ModifiedBy = userId;
+                var name = User.FindFirstValue(ClaimTypes.Name);
+                ciclo.ModifiedBy = name;
                 ciclo.Modified = DateTime.Now;
                 ciclo.Deleted = true;
 
