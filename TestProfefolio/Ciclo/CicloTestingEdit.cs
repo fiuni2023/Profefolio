@@ -53,7 +53,6 @@ namespace TestProfefolio.Ciclo
 
             service.Setup(a => a.FindById(id)).ReturnsAsync(modelo);
 
-            var modelo2 = modelo;
 
             service.Setup(s => s.Edit(modelo)).Returns(modelo);
 
@@ -63,6 +62,53 @@ namespace TestProfefolio.Ciclo
             var result = await controller.Put(id, dto);
 
             Assert.IsType<NoContentResult>(result);
+        }
+
+
+
+        /*
+            Testea cuando se edita y sucede un error porque ya existe un Ciclo con el nuevo nombre
+        */
+        [Fact]
+        public async void Edit_ExistOtherWithEqualName_BadRequest()
+        {
+            int id = 1;
+            Mock<IMapper> mapper = new Mock<IMapper>();
+            Mock<ICiclo> service = new Mock<ICiclo>();
+            CicloController controller = new CicloController(mapper.Object, service.Object);
+
+            CicloDTO dto = new CicloDTO()
+            {
+                Nombre = "Primero"
+            };
+
+            profefolio.Models.Entities.Ciclo modelo = new profefolio.Models.Entities.Ciclo()
+            {
+                Id = 1,
+                Nombre = "Primero",
+                Created = DateTime.Now,
+                Deleted = false,
+                CreatedBy = "123456"
+            };
+
+            var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+            {
+            new Claim(ClaimTypes.Name, "user1")
+            }, "mock"));
+
+            controller.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext() { User = user }
+            };
+
+            service.Setup(a => a.ExisitOther(id, dto.Nombre)).ReturnsAsync(true);
+
+            var result = await controller.Put(id, dto);
+
+            var resultBad = (BadRequestObjectResult)result;
+
+            Assert.Equal("Ya existe un Ciclo con ese nombre", resultBad.Value);
+            Assert.IsType<BadRequestObjectResult>(result);
         }
 
 
