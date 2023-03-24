@@ -13,30 +13,22 @@ import ListDetallesProfesor from './list/ListDetallesProfesor.jsx';
 
 
 
+
 function Profesores() {
 
   const [profesores, setProfesores] = useState([]);
   const [page, setPage] = useState(0);
-
+  const [showModal, setShowModal] = useState(false);
+  const [id, setId] = useState("");
   const { getToken, cancan, verifyToken } = useGeneralContext();
 
 
-  const handleRowClick = (id) => {
-    axios.get(`${APILINK}/api/profesor/${id}`,{
-    headers: {
-      Authorization: `Bearer ${getToken()}`,
-    }})
-      .then(response => {
-        setProfesores(response.data.dataList);
-        alert(`Detalles de   ${id}: `);
-      })
-      .catch(error => {
-        console.error(error);
-      });
-  }//[page, cancan, verifyToken, nav, getToken]);
- 
   
   
+  
+
+  
+
   
   
   
@@ -60,6 +52,7 @@ function Profesores() {
           setProfesores(response.data.dataList);
       
   
+
         })
         .catch(error => {
           console.error(error);
@@ -70,8 +63,15 @@ function Profesores() {
   const doFetch =(profesor) =>{
     setProfesores([...profesores, profesor])
 }
+const btndetalles = (id) => {
+  setShowModal(true);
+  setId(id);
+};
 
 
+function handleCloseModal() {
+  setShowModal(false);
+}
 
 
   const handlePrevClick = () => {
@@ -111,8 +111,8 @@ function Profesores() {
               </thead>
               <tbody>
 
-                {profesores.map(profe => (
-                  <tr key={profe.id} onClick={() => handleRowClick(profe.id)}>
+              {profesores && profesores.length > 0 && profesores.map(profe => (
+            <tr key={profe.id} onClick={() => btndetalles(profe.id)}>
                     <td>{profe.documento}</td>
                     <td>{profe.nombre}</td>
                     <td>{profe.apellido}</td>
@@ -122,9 +122,20 @@ function Profesores() {
                   
 
                   </tr>
+                 
                 ))}
               </tbody>
             </table>
+            {showModal && (
+        <ListDetallesProfesor
+          onClose={() => setShowModal(false)}
+          show={showModal}
+          id={id}
+          triggerState={(profesor)=>{doFetch(profesor)}}
+
+         
+        />
+      )}
             <div >
 
            
@@ -157,10 +168,12 @@ function Profesores() {
              triggerState={(profesor)=>{doFetch(profesor)}}>
             </CreateModal>
 
-            
-            <ListDetallesProfesor > </ListDetallesProfesor>
+
+      
             
           </div>
+
+     
 
         </footer>
 
