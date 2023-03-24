@@ -13,7 +13,7 @@ import CreatePartidos from "../partidos/components/create";
 import PartidosEdit from "../partidos/components/edit";
 import PartidosList from "../partidos/components/list";
 import ListarColegios from "../colegios/ListarColegios";
-import CreateProfesor from "../profesor/components/create/CreateProfesor.jsx";
+import CreateProfesor from "../profesor/components/create/CreateModal.jsx";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 

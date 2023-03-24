@@ -11,11 +11,11 @@ public class ApplicationDbContext : IdentityDbContext<Persona>
     {
         AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
     }
-    
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        
+
         var user = new Persona()
         {
             Email = "Carlos.Torres123@mail.com",
@@ -79,7 +79,7 @@ public class ApplicationDbContext : IdentityDbContext<Persona>
             UserId = administrador.Id,
             RoleId = rolAdministrador.Id
         };
-        
+
 
         modelBuilder.Entity<IdentityRole>()
             .HasData(rolMaster);
@@ -103,9 +103,14 @@ public class ApplicationDbContext : IdentityDbContext<Persona>
 
     }
 
-     public DbSet<Colegio> Colegios
+   
+     public DbSet<Materia> Materias{get;set;}
+    public DbSet<Colegio> Colegios
     {
         get;
         set;
     }
+
+    public DbSet<Ciclo> Ciclos { get; set; }
+    public DbSet<Clase> Clases { get; set; }
 }

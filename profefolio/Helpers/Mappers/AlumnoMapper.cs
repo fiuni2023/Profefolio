@@ -1,14 +1,15 @@
 ﻿using AutoMapper;
+using profefolio.Models.DTOs.Alumno;
 using profefolio.Models.DTOs.Persona;
 using profefolio.Models.Entities;
 
 namespace profefolio.Helpers.Mappers;
 
-public class PersonaMapper : Profile
+public class AlumnoMapper : Profile
 {
-    public PersonaMapper()
+    public AlumnoMapper()
     {
-        CreateMap<PersonaDTO, Persona>()
+        CreateMap<AlumnoCreateDTO, Persona>()
             .ForMember(dest => dest.Id,
                 opt => opt.Ignore())
             .ForMember(dest => dest.Created,
@@ -22,35 +23,24 @@ public class PersonaMapper : Profile
                 opt => opt.MapFrom(
                     src => src.Genero != null && src.Genero.Equals("M")
                 ))
-            .ForMember(dest => dest.PhoneNumber,
-                opt => opt.MapFrom(
-                    src => src.Telefono))
             .ForMember(dest => dest.SecurityStamp,
                 opt => opt.MapFrom(
                     t => Guid.NewGuid().ToString()))
-            .ForMember(dest => dest.UserName,
+            .ForMember(dest => dest.UserName, 
                 opt => opt.MapFrom(
-                    dest => dest.Email))
-            .ForMember(dest => dest.NormalizedEmail,
-                opt => opt.MapFrom(
-                    src => src.Email == null ? "" : src.Email.ToUpper()))
-            .ForMember(dest => dest.NormalizedUserName,
-                opt => opt.MapFrom(
-                    src => src.Email == null ? "" : src.Email.ToUpper()));
+                    src => src.Email));
 
 
-        CreateMap<Persona, PersonaResultDTO>()
+        CreateMap<Persona, AlumnoGetDTO>()
             .ForMember(dest => dest.Genero,
                 opt => opt.MapFrom(
-                    src => src.EsM ? "Masculino" : "Femenino"))
-            .ForMember(dest => dest.Telefono,
-                opt => opt.MapFrom(
-                    src => src.PhoneNumber));
-
-        CreateMap<PersonaEditDTO, Persona>()
+                    src => src.EsM ? "Masculino" : "Femenino"));
+        
+        
+        CreateMap<AlumnoEditDTO, Persona>()
             .ForMember(dest => dest.Id,
                 opt => opt.Ignore())
-            .ForMember(dest => dest.Modified,
+            .ForMember(dest => dest.Created,
                 opt => opt.MapFrom(
                     src => DateTime.Now))
             .ForMember(dest => dest.Modified,
@@ -61,14 +51,13 @@ public class PersonaMapper : Profile
                 opt => opt.MapFrom(
                     src => src.Genero != null && src.Genero.Equals("M")
                 ))
-            .ForMember(dest => dest.PhoneNumber,
+            .ForMember(dest => dest.SecurityStamp,
                 opt => opt.MapFrom(
-                    src => src.Telefono));
+                    t => Guid.NewGuid().ToString()))
+            .ForMember(dest => dest.UserName, 
+                opt => opt.MapFrom(
+                    src => src.Email));
 
-        CreateMap<Persona, PersonaSimpleDTO>()
-        .ForMember(dest => dest.Id
-            , opt => opt.MapFrom(p => p.Id))
-        .ForMember(dest => dest.Nombre
-            , opt => opt.MapFrom(p => $"{p.Nombre} {p.Apellido}"));
+
     }
 }
