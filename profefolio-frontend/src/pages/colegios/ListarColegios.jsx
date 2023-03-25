@@ -8,6 +8,8 @@ import axios from "axios";
 import Pagination from 'react-bootstrap/Pagination';
 import { useGeneralContext } from "../../context/GeneralContext";
 import APILINK from "../../components/link";
+import ModalVerColegios from './ModalVerColegios'
+import { AiOutlineEye } from "react-icons/ai";
 const ListarColegios = (triggerState = () => { }) => {
 
   const { getToken, verifyToken, cancan } = useGeneralContext()
@@ -18,7 +20,7 @@ const ListarColegios = (triggerState = () => { }) => {
   const [totalPage, setTotalPage] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
   const [colegios, setColegios] = useState([]);
-
+  const [datoIdColegio, setDatoIdColegio] = useState('');
   useEffect(() => {
 
     verifyToken()
@@ -63,10 +65,19 @@ const ListarColegios = (triggerState = () => { }) => {
 
 
   }
+  const [show, setShow] = useState(false);
+
+  const handleShow = (id) =>{
+    setDatoIdColegio(id);
+    console.log(datoIdColegio);
+    setShow(true);
+  } 
+  
 
   return (
     <>
       <div>
+     
         <div className={styles.nombrePagina}>
           <div className={styles.divNombrePagina}>
             <button className={styles.buttonBack} onClick={() => { navigate('/') }}><BiArrowBack className={styles.arrowButton} /></button>
@@ -79,12 +90,12 @@ const ListarColegios = (triggerState = () => { }) => {
             datas={colegios}
             parseToRow={(col, index) => {
               return (
-                <tr key={index}>
+                <tr key={index} >
                   <td>{index + 1}</td>
                   <td>{col?.nombre}</td>
                   <td>{col?.nombreAdministrador} {col?.apellido}</td>
-
-                  <td></td>
+                  <td><button className={styles.iconButton} onClick={()=>handleShow(col?.id)}><AiOutlineEye /></button></td>
+                  
                 </tr>
               )
             }}
@@ -92,7 +103,7 @@ const ListarColegios = (triggerState = () => { }) => {
           <Pagination onClick={e => handleCurrentPage(e.target.text)} size="sm">{items} </Pagination>
         </div>
 
-
+        <ModalVerColegios idColegio={datoIdColegio} show={show} setShow={setShow}></ModalVerColegios>
 
         <ModalAgregarColegios triggerState={(colegio)=>{doFetch(colegio)}}></ModalAgregarColegios>
       </div>
