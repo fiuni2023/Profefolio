@@ -1,44 +1,65 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Modal, Form,Col,Row } from 'react-bootstrap';
+import { Modal, Form,Col,Row,Button } from 'react-bootstrap';
 import { useGeneralContext } from '../../../context/GeneralContext';
 import styles from  '../components/create/Modal.module.css';
 import APILINK from '../../../components/link';
 
+function ListDetallesProfesor(props) {
+  const { showModal, setShowModal ,id} = props;
 
-function ListDetallesProfesor({id, triggerState = () => {}}) {
+  const [profesor, setProfesores] = useState([]);
 
-    const [profesor, setProfesores] = useState([]);
+  const { getToken } = useGeneralContext();
 
-    const { getToken } = useGeneralContext();
+  const [readOnly, setReadOnly] = useState(true);
 
-    const [readOnly, setReadOnly] = useState(true);
+  const [eliminarVisible, setEliminarVisible] = useState(true);
 
-    
 
-    useEffect(() => {
+  const handleCloseModal = () => {
+    setShowModal(false);
+    //setReadOnly(true);
+  };
+
+  function closeModal() {
+    setShowModal(false);
+  }
+  const handleModificar = () => {
+   // setReadOnly(false);
+
+    console.log('setReadOnly',readOnly);
+    setReadOnly(!readOnly);
+  };
+
+
+  const handleGuardar = () => {
+    setReadOnly(true);
+    setEliminarVisible(true);
+    // Aquí puedes agregar la lógica para guardar los cambios
+  };
+
+  useEffect(() => {
       
-        axios.get(`${APILINK}/api/profesor/${id}`, {
-          headers: {
-            Authorization: `Bearer ${getToken()}`,
-          }
-        })
+    axios.get(`${APILINK}/api/profesor/${id}`, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+      }
+    })
+
+      .then(response => {
+        setProfesores(response.data);
+        //triggerState(response.data)
     
-          .then(response => {
-            setProfesores(response.data);
-           // triggerState(response.data)
-        
-    
-  
-          })
-          .catch(error => {
-            console.error(error);
-          });
-    
-    }, [ id, getToken]);
 
 
-    // Define state variables for the input field values
+      })
+      .catch(error => {
+        console.error(error);
+      });
+
+}, [ id, getToken]);
+
 const [nombre, setNombre] = useState(profesor.nombre);
 const [apellido, setApellido] = useState(profesor.apellido);
 const [telefono, setTelefono] = useState(profesor.telefono);
@@ -49,50 +70,12 @@ const [genero, setGenero] = useState(profesor.genero);
 const [documento, setDocumento] = useState(profesor.documento);
 const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
 
-
-
-  const [showModal, setShowModal] = useState(true);
-
-  const [eliminarVisible, setEliminarVisible] = useState(true);
-
-  function closeModal() {
-    setShowModal(false);
-  }
-
-
-  const handleModificar = () => {
-    setReadOnly(false);
-  };
-
-  const handleCloseModal = () => {
-    setShowModal(false);
-    setReadOnly(true);
-  };
-
-  const handleGuardar = () => {
-    setReadOnly(true);
-    setEliminarVisible(true);
-    // Aquí puedes agregar la lógica para guardar los cambios
-  };
-
   return (
-
-    <>
-    
-
-   
-      <Modal show={showModal} onHide={handleCloseModal}  >
-
-
-
-
-        <Modal.Header className={styles.contentModal} closeButton>
-          <Modal.Title className="">Detalles Profesor</Modal.Title>
-
-        </Modal.Header>
-
-
-
+    <Modal show={showModal} onHide={handleCloseModal}>
+      <Modal.Header className={styles.contentModal} closeButton>
+      <Modal.Title className="">Detalles Profesor</Modal.Title>
+      </Modal.Header>
+      
       <Modal.Body className={styles.contentModal} >
 
           <form>
@@ -103,10 +86,11 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
               <Form.Label >Nombre: </Form.Label>
               <div >
                 <Form.Control
-               
                   type="text"
                   value= {profesor.nombre}
                   placeholder="Ingrese su nombre"
+                  readOnly={readOnly}
+                  onChange={event => setNombre(event.target.value)}
                 />
               </div>
              
@@ -120,6 +104,7 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
                   type="text"
                   value={profesor.apellido}
                   placeholder="Ingrese su apellido"
+                  readOnly={readOnly}
                 />
               </Col>
             </Row>
@@ -246,8 +231,6 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
            
            
             <br/>
-            
-        
             {readOnly ? (
           <>
             <button variant="primary" onClick={handleModificar}>
@@ -262,28 +245,22 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
             Guardar
           </button>
         )}
-            <div className="modal-footer">
-              <button className={styles.buttonClose} onClick={closeModal}> Cerrar</button>
-
-            </div>
-
+            
 
           </form>
-        </Modal.Body>  
+        </Modal.Body> 
 
-      </Modal>
+        <Modal.Footer>
+       
+        <button variant="primary" onClick={closeModal} className={styles.buttonClose}>Cerrar</button>
 
+        </Modal.Footer>
+      
+    
+     
 
-
-
-      <style jsx='true'>{`
-          
-            
-            `}</style>
-    </>
-
-  )
+    </Modal>
+  );
 }
-
 
 export default ListDetallesProfesor;

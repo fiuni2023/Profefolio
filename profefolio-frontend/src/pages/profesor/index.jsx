@@ -19,19 +19,8 @@ function Profesores() {
   const [profesores, setProfesores] = useState([]);
   const [page, setPage] = useState(0);
   const [showModal, setShowModal] = useState(false);
-  const [id, setId] = useState("");
+  const [id, setId] = useState(null);
   const { getToken, cancan, verifyToken } = useGeneralContext();
-
-
-  
-  
-  
-
-  
-
-  
-  
-  
 
   const nav = useNavigate()
 
@@ -63,15 +52,17 @@ function Profesores() {
   const doFetch =(profesor) =>{
     setProfesores([...profesores, profesor])
 }
+
+
 const btndetalles = (id) => {
   setShowModal(true);
   setId(id);
 };
 
-
-function handleCloseModal() {
+const handleCloseModal = () => {
   setShowModal(false);
-}
+  setProfesores([]);
+};
 
 
   const handlePrevClick = () => {
@@ -126,16 +117,19 @@ function handleCloseModal() {
                 ))}
               </tbody>
             </table>
-            {showModal && (
+           
+            <ListDetallesProfesor showModal={showModal} setShowModal={setShowModal} id={id}  triggerState={(profesor)=>{doFetch(profesor)}}/>
+
+        {/*    {showModal && (
         <ListDetallesProfesor
           onClose={() => setShowModal(false)}
-          show={showModal}
-          id={id}
-          triggerState={(profesor)=>{doFetch(profesor)}}
+          show={show}
+         onCloseModal={handleCloseModal}
 
-         
+         triggerState={(profesor)=>{doFetch(profesor)}}
+          id={id}
         />
-      )}
+      )}*/} 
             <div >
 
            
