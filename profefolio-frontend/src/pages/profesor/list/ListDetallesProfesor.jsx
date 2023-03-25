@@ -222,12 +222,13 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
            
             {eliminarVisible && (         
 
+// {new Date(fecha).toLocaleDateString()} profesor.nacimiento
             
               <Form.Control
                 className={styles.option}
-                  type="date"
+                  type="text"
                   name="nacimiento"
-                  value={profesor.nacimiento}
+                  value={new Date(profesor.nacimiento).toLocaleDateString()}
                   placeholder="aaaa/mm/ddd"
                   readOnly={readOnly}
 
