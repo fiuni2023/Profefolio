@@ -4,6 +4,7 @@ import { Modal, Form,Col,Row,Button } from 'react-bootstrap';
 import { useGeneralContext } from '../../../context/GeneralContext';
 import styles from  '../components/create/Modal.module.css';
 import APILINK from '../../../components/link';
+import { BsTrash, BsPencilFill, BsInfoCircle } from 'react-icons/bs';
 
 function ListDetallesProfesor(props) {
   const { showModal, setShowModal ,id} = props;
@@ -26,7 +27,7 @@ function ListDetallesProfesor(props) {
     setShowModal(false);
   }
   const handleModificar = () => {
-   // setReadOnly(false);
+    setReadOnly(false);
 
     console.log('setReadOnly',readOnly);
     setReadOnly(!readOnly);
@@ -80,18 +81,18 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
 
           <form>
             
-            
             <Row>
               <Col>
               <Form.Label >Nombre: </Form.Label>
-              <div >
-                <Form.Control
+              <div >    
+              <Form.Control
                   type="text"
                   value= {profesor.nombre}
                   placeholder="Ingrese su nombre"
-                  readOnly={readOnly}
-                  onChange={event => setNombre(event.target.value)}
-                />
+                   readOnly={readOnly}
+                /> 
+          
+             
               </div>
              
             
@@ -176,14 +177,11 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
               <Form.Label className="">Genero:  </Form.Label>
               <Form.Control
                  className={styles.option}
-                  as="select"
+                 type="text"
                   name="genero"
                   value={profesor.genero}
                   readOnly={readOnly}
                 >
-                  <option value="" className={styles.option} >Seleccione </option>
-                  <option value="F" className={styles.option}>Femenino</option>
-                  <option value="M"className={styles.option}>Masculino</option>
                   </Form.Control>
             </Form.Group>
 
@@ -212,15 +210,11 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
               <div className="">
                 <Form.Control
                  className={styles.option}
-                  as="select"
+                 type="text"
                   name="documentoTipo"
                   value={profesor.documentoTipo}
                   readOnly={readOnly}
                 >
-                  <option value="" className={styles.option}>Seleccione un tipo</option>
-                  <option value="cedula" className={styles.option}> Cédula</option>
-                  <option value="dni" className={styles.option}>DNI</option>
-                  <option value="pasaporte" className={styles.option}>Pasaporte</option>
                 </Form.Control>
               </div>
               </Col>
@@ -231,26 +225,28 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
            
            
             <br/>
-            {readOnly ? (
-          <>
-            <button variant="primary" onClick={handleModificar}>
-              Modificar
-            </button>
-            {eliminarVisible && (
-              <button variant="danger">Eliminar</button>
-            )}
-          </>
-        ) : (
-          <button variant="primary" onClick={handleGuardar}>
-            Guardar
-          </button>
-        )}
+       
             
 
           </form>
         </Modal.Body> 
 
-        <Modal.Footer>
+     
+        <Modal.Footer className={styles.footerModal}>
+        {readOnly ? (
+          <>
+            <button variant="primary" className={styles.buttonModify} onClick={handleModificar}>
+            <BsPencilFill />
+            </button>
+            {eliminarVisible && (
+              <button variant="danger" className={styles.buttonDelete}>   <BsTrash />  </button>
+            )}
+          </>
+        ) : (
+          <button variant="primary" className={styles.button} onClick={handleGuardar}>
+            Guardar
+          </button>
+        )}
        
         <button variant="primary" onClick={closeModal} className={styles.buttonClose}>Cerrar</button>
 
