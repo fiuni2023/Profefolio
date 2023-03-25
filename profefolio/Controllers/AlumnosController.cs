@@ -74,7 +74,7 @@ public class AlumnosController : ControllerBase
             var query = await _personasService
                 .FilterByRol(page, CantPerPage, rol);
 
-            var cantPages = (int) (await _personasService.CountByRol(rol) / CantPerPage)  + 1;
+            var cantPages = (int)Math.Ceiling((double) await _personasService.CountByRol(rol)/ CantPerPage);
 
             var result = new DataListDTO<AlumnoGetDTO>();
 

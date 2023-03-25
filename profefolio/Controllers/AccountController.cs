@@ -21,6 +21,9 @@ public class AccountController : ControllerBase
     private const int CantPorPage = 5;
     private const string ROL_ADMIN = "Administrador de Colegio";
 
+    private const int CantPorPage = 20;
+
+
 
     public AccountController(IMapper mapper, IPersona personasService, IRol rolService)
     {
@@ -84,7 +87,9 @@ public class AccountController : ControllerBase
         var query = await _personasService
             .FilterByRol(page, CantPorPage, rol);
 
-        var cantPages = (int)(await _personasService.CountByRol(rol) / CantPorPage) + 1;
+
+        var cantPages = (int)Math.Ceiling((double) await _personasService.CountByRol(rol)/ CantPorPage);
+
 
         var result = new DataListDTO<PersonaResultDTO>();
 
