@@ -118,8 +118,8 @@ namespace profefolio.Controllers
 
             try
             {
-
-                if (await _cicloService.ExisitOther(id, dto.Nombre))
+                var exist = await _cicloService.ExisitOther(id, dto.Nombre);
+                if (exist)
                 {
                     return BadRequest("Ya existe un Ciclo con ese nombre");
                 }
@@ -130,8 +130,8 @@ namespace profefolio.Controllers
                     return BadRequest("El Ciclo no encontrado");
                 }
 
-                var userId = User.Identity.GetUserId();
-                ciclo.ModifiedBy = userId;
+                var name = User.FindFirstValue(ClaimTypes.Name);
+                ciclo.ModifiedBy = name;
                 ciclo.Modified = DateTime.Now;
                 ciclo.Deleted = false;
                 ciclo.Nombre = dto.Nombre;
@@ -162,8 +162,8 @@ namespace profefolio.Controllers
                     return BadRequest("Ciclo no encontrado");
                 }
 
-                string userId = User.Identity.GetUserId();
-                ciclo.ModifiedBy = userId;
+                var name = User.FindFirstValue(ClaimTypes.Name);
+                ciclo.ModifiedBy = name;
                 ciclo.Modified = DateTime.Now;
                 ciclo.Deleted = true;
 
