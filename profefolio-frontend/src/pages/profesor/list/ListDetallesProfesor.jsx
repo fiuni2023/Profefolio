@@ -215,8 +215,14 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
             <br/>
             <Row>
             <Col>
-              <Form.Label className="">Fecha de nacimiento:  </Form.Label>
+            <Form.Label className="">Fecha de nacimiento:  </Form.Label>
 
+            {readOnly ? (
+          <>
+           
+            {eliminarVisible && (         
+
+            
               <Form.Control
                 className={styles.option}
                   type="date"
@@ -226,6 +232,9 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
                   readOnly={readOnly}
 
                 />
+                 )}
+                </>
+              ) : (
 
                 <Form.Control
                 className={styles.option}
@@ -236,11 +245,17 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
                   placeholder="aaaa/mm/ddd"
 
                 />
-
+ )}
                 </Col>
 
                 <Col>
               <Form.Label className="">Correo Electronico:  </Form.Label>
+
+              {readOnly ? (
+          <>
+           
+            {eliminarVisible && (         
+
               <Form.Control
                  className={styles.option}
                  type="email"
@@ -249,28 +264,69 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
                   placeholder="Ingrese su correo electronico"
                   readOnly={readOnly}
                 />
+   )}
+                </>
+              ) : (
+              
+              <Form.Control
+                 className={styles.option}
+                 type="email"
+                  name="email"
+                  value={email}
+                  onChange={event => setEmail(event.target.value)}
+                  placeholder="Ingrese su correo electronico"
+                />
+)}
+
                 </Col>
 
             </Row>
             <br/>
             <Row>
               <Col>
-              <Form.Group className="">
+            
               <Form.Label className="">Genero:  </Form.Label>
+              
+              {readOnly ? (
+          <>
+           
+            {eliminarVisible && (         
+
               <Form.Control
                  className={styles.option}
                  type="text"
                   name="genero"
                   value={profesor.genero}
                   readOnly={readOnly}
+                />
+                 )}
+                </>
+              ) : (
+
+          <Form.Control
+                 className={styles.option}
+                  as="select"
+                  name="genero"
+                  value={genero}
+                  onChange={event => setGenero(event.target.value)}
                 >
-                  </Form.Control>
-            </Form.Group>
+                  <option value="" className={styles.option}>Seleccione </option>
+                  <option value="F" className={styles.option}>Femenino</option>
+                  <option value="M"className={styles.option}>Masculino</option>
+                </Form.Control>
+                 
+                )}
+          
 
               </Col>
 
               <Col>
               <Form.Label className="">Documento: </Form.Label>
+   
+              {readOnly ? (
+          <>
+           
+            {eliminarVisible && (         
               <Form.Control
                  className={styles.option}
                   type="text"
@@ -279,7 +335,19 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
                   placeholder="Ingrese su documento"
                   readOnly={readOnly}
                 />
-              
+                )}
+                </>
+              ) : (
+
+              <Form.Control
+                 className={styles.option}
+                  type="text"
+                  name="documento"
+                  value={documento}
+                  onChange={event => setDocumento(event.target.value)}
+                  placeholder="Ingrese su documento"
+                />
+             )}  
             
               </Col>
             </Row>
@@ -289,16 +357,39 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
               <Col>
 
               <Form.Label className="">Tipo de documento:</Form.Label>
-              <div className="">
+
+              
+              {readOnly ? (
+          <>
+           
+            {eliminarVisible && (         
+            
                 <Form.Control
                  className={styles.option}
                  type="text"
                   name="documentoTipo"
                   value={profesor.documentoTipo}
                   readOnly={readOnly}
+               />
+               
+
+                )}
+                </>
+              ) : (
+                <Form.Control
+                 className={styles.option}
+                  as="select"
+                  name="documentoTipo"
+                  value={documentoTipo}
+                  onChange={event => setDocumentoTipo(event.target.value)}
                 >
+                  <option value="" className={styles.option}>Seleccione un tipo</option>
+                  <option value="cedula" className={styles.option}> Cédula</option>
+                  <option value="dni" className={styles.option}>DNI</option>
+                  <option value="pasaporte" className={styles.option}>Pasaporte</option>
                 </Form.Control>
-              </div>
+                )}  
+             
               </Col>
 
               <Col>
