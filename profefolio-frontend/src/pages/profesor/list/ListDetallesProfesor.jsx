@@ -19,6 +19,8 @@ function ListDetallesProfesor(props) {
 
   const [mostrarInput, setMostrarInput] = useState(false);
 
+  const [formData, setFormData] = useState({});
+
 
   const handleCloseModal = () => {
     setShowModal(false);
@@ -28,11 +30,24 @@ function ListDetallesProfesor(props) {
   function closeModal() {
     setShowModal(false);
   }
-  const handleModificar = () => {
-    setReadOnly(false);
+  
 
-    console.log('setReadOnly',readOnly);
+  const handleModificar = event => {
     setReadOnly(!readOnly);
+  
+    /*event.preventDefault();
+    axios.get(`${APILINK}/api/profesor/${id}`{
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+      }
+    })
+    .then(response => {
+      setProfesores(response.data);
+
+    })
+    .catch(error => {
+      console.error(error);
+    });*/
   };
 
 
@@ -94,8 +109,8 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
             {eliminarVisible && (
               <Form.Control
               type="text"
-              value= {profesor.nombre}
-              placeholder="Ingrese su nombre"
+              defaultValue={profesor.nombre}
+              
                readOnly={readOnly}
             /> 
             )}
@@ -105,9 +120,9 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
           <Form.Control
           className={styles.option}
           type="text"
+          defaultValue={profesor.nombre|| ""} 
           value={nombre}
-          onChange={event => setNombre(event.target.value)}
-          placeholder="Ingrese su nombre"
+          onChange={event => setFormData({...formData, name: event.target.value})}
         />
           
         )}
@@ -139,6 +154,7 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
                  className={styles.option}
                   type="text"
                   value={apellido}
+                  defaultValue={profesor.apellido|| ""} 
                   onChange={event => setApellido(event.target.value)}
                   placeholder="Ingrese su apellido"
                 />
@@ -170,7 +186,9 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
                  className={styles.option}
                   type="number"
                   name="telefono"
+                  defaultValue={profesor.telefono|| ""} 
                   value={telefono}
+
                   onChange={event => setTelefono(event.target.value)}
                   placeholder="09xxxxxxxxx"
                 />
@@ -202,6 +220,7 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
                  className={styles.option}
                   type="text"
                   name="direccion"
+                  defaultValue={profesor.direccion|| ""} 
                   value={direccion}
                   onChange={event => setDireccion(event.target.value)}
                   placeholder="Ingrese su direccion"
@@ -229,7 +248,7 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
                   type="text"
                   name="nacimiento"
                   value={new Date(profesor.nacimiento).toLocaleDateString()}
-                  placeholder="aaaa/mm/ddd"
+
                   readOnly={readOnly}
 
                 />
@@ -241,10 +260,10 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
                 className={styles.option}
                   type="date"
                   name="nacimiento"
+                  defaultValue={profesor.nacimiento|| ""} 
                   value={nacimiento}
                   onChange={event => setNacimiento(event.target.value)}
-                  placeholder="aaaa/mm/ddd"
-
+                 
                 />
  )}
                 </Col>
@@ -273,6 +292,7 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
                  className={styles.option}
                  type="email"
                   name="email"
+                  defaultValue={profesor.email|| ""} 
                   value={email}
                   onChange={event => setEmail(event.target.value)}
                   placeholder="Ingrese su correo electronico"
@@ -308,10 +328,11 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
                  className={styles.option}
                   as="select"
                   name="genero"
+                  defaultValue={profesor.genero|| ""} 
                   value={genero}
                   onChange={event => setGenero(event.target.value)}
                 >
-                  <option value="" className={styles.option}>Seleccione </option>
+                  <option value="" className={styles.option}> {profesor.genero|| ""}  </option>
                   <option value="F" className={styles.option}>Femenino</option>
                   <option value="M"className={styles.option}>Masculino</option>
                 </Form.Control>
@@ -344,6 +365,7 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
                  className={styles.option}
                   type="text"
                   name="documento"
+                  defaultValue={profesor.documento|| ""} 
                   value={documento}
                   onChange={event => setDocumento(event.target.value)}
                   placeholder="Ingrese su documento"
@@ -381,10 +403,11 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
                  className={styles.option}
                   as="select"
                   name="documentoTipo"
-                  value={documentoTipo}
+
+                  value={documentoTipo}       
                   onChange={event => setDocumentoTipo(event.target.value)}
                 >
-                  <option value="" className={styles.option}>Seleccione un tipo</option>
+                  <option value=""  className={styles.option}>{profesor.documentoTipo|| ""}</option>
                   <option value="cedula" className={styles.option}> Cédula</option>
                   <option value="dni" className={styles.option}>DNI</option>
                   <option value="pasaporte" className={styles.option}>Pasaporte</option>
