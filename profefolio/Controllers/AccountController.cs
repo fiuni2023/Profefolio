@@ -18,7 +18,11 @@ public class AccountController : ControllerBase
     private readonly IMapper _mapper;
     private readonly IPersona _personasService;
     private readonly IRol _rolService;
+    private const int CantPorPage = 5;
+    private const string ROL_ADMIN = "Administrador de Colegio";
+
     private const int CantPorPage = 20;
+
 
 
     public AccountController(IMapper mapper, IPersona personasService, IRol rolService)
@@ -26,11 +30,11 @@ public class AccountController : ControllerBase
         _mapper = mapper;
         _personasService = personasService;
         _rolService = rolService;
-       
+
     }
-    
+
     [HttpPost]
-    public async Task<ActionResult<PersonaResultDTO>> Post([FromBody]PersonaDTO dto)
+    public async Task<ActionResult<PersonaResultDTO>> Post([FromBody] PersonaDTO dto)
     {
         if (!ModelState.IsValid)
         {
@@ -70,9 +74,9 @@ public class AccountController : ControllerBase
             Console.WriteLine(e.Message);
             return BadRequest($"El email {dto.Email} ya existe");
         }
-        
+
         return BadRequest($"Error al crear al Usuario ${dto.Email}");
-        
+
     }
 
     [HttpGet]
@@ -83,11 +87,13 @@ public class AccountController : ControllerBase
         var query = await _personasService
             .FilterByRol(page, CantPorPage, rol);
 
+
         var cantPages = (int)Math.Ceiling((double) await _personasService.CountByRol(rol)/ CantPorPage);
+
 
         var result = new DataListDTO<PersonaResultDTO>();
 
-        if(page >= cantPages) 
+        if (page >= cantPages)
         {
             return BadRequest($"No existe la pagina: {page} ");
         }
@@ -120,6 +126,22 @@ public class AccountController : ControllerBase
         return NotFound();
     }
 
+    [HttpGet]
+    public async Task<ActionResult<List<PersonaSimpleDTO>>> GetAll()
+    {
+        try
+        {
+            var personas = await _personasService.GetAllByRol(ROL_ADMIN);
+            return Ok(_mapper.Map<List<PersonaSimpleDTO>>(personas));
+        }
+        catch (FileNotFoundException e)
+        {
+            Console.WriteLine(e.Message);
+        }
+
+        return NotFound();
+    }
+
     [HttpDelete]
     [Route("{id}")]
     public async Task<ActionResult> Delete(string id)
@@ -136,7 +158,7 @@ public class AccountController : ControllerBase
         {
             return BadRequest(ModelState);
         }
-        
+
         if (dto.Nacimiento > DateTime.Now)
         {
             return BadRequest("El nacimiento no puede ser mayor a la fecha de hoy");
@@ -150,10 +172,10 @@ public class AccountController : ControllerBase
         try
         {
             var persona = await _personasService.FindById(id);
-            
+
             var userId = User.Identity.GetUserId();
 
-            var existMail =await  _personasService.ExistMail(dto.Email);
+            var existMail = await _personasService.ExistMail(dto.Email);
 
             var isEqual = dto.Email.Equals(persona.Email);
 
@@ -161,16 +183,16 @@ public class AccountController : ControllerBase
             {
                 return BadRequest($"Ya existe el email '{dto.Email}', intente con otro");
             }
-            
+
             MapOldToNew(persona, dto, userId);
 
             if ((!persona.Email.Equals(dto.Email)) && await _personasService.ExistMail(dto.Email))
             {
                 return BadRequest("El email nuevo que queres actualizar ya existe");
             }
-            
-            
-            
+
+
+
             var query = await _personasService.EditProfile(persona);
 
             return Ok(_mapper.Map<PersonaResultDTO>(query));
@@ -200,7 +222,7 @@ public class AccountController : ControllerBase
         try
         {
             var personaOld = await _personasService.FindById(id);
-            
+
             Console.WriteLine(personaOld.Id);
 
             if (await _personasService.ChangePassword(personaOld, dto.Password))
