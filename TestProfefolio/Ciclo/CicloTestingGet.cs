@@ -164,5 +164,32 @@ namespace TestProfefolio.Ciclo
             Assert.Same(resultDTO, cicloResult);
         }
     
+
+        /*
+            Testea cuando se realiza un get por id de Ciclo y no es encontrado el Ciclo
+        */
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        [InlineData(4)]
+        [InlineData(5)]
+        [InlineData(6)]
+        [InlineData(7)]
+        [InlineData(8)]
+        public async void Get_ById_NotFound(int id)
+        {
+            Mock<IMapper> mapper = new Mock<IMapper>();
+            Mock<ICiclo> service = new Mock<ICiclo>();
+            CicloController controller = new CicloController(mapper.Object, service.Object);
+
+            service.Setup(a => a.FindById(id));
+
+            var result = await controller.Get(id);
+
+            var jsonResult = Assert.IsType<BadRequestObjectResult>(result.Result);;
+            Assert.Equal("Ciclo no encontrado", jsonResult.Value);
+        }
+
     }
 }
