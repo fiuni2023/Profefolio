@@ -43,6 +43,11 @@ function ModalVerColegios({ idColegio, setShow, show }) {
   const handleEdit=()=>{
     setDisabled(false);
   }
+
+  const handleDelete=(id)=>{
+    https://localhost:7063/api/Colegios/5
+
+  }
   return (
     <>
       <div>
@@ -67,7 +72,7 @@ function ModalVerColegios({ idColegio, setShow, show }) {
             </div>
           </Modal.Body>
           <Modal.Footer id={styles.modalContenido}>
-            <Button className={styles.btnCancelar} onClick={handleClose} >Eliminar</Button>
+            <Button className={styles.btnCancelar} onClick={handleDelete} >Eliminar</Button>
             <Button className={styles.btnGuardar} onClick={handleEdit}>Editar</Button>
           </Modal.Footer>
         </Modal>
