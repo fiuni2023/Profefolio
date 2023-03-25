@@ -25,7 +25,7 @@ namespace TestProfefolio.Clase
         [InlineData(3)]
         [InlineData(4)]
         [InlineData(5)]
-        public async void Delete_Ok(int id)
+        public void Delete_Ok(int id)
         {
             Mock<IMapper> mapper = new Mock<IMapper>();
             Mock<ICiclo> cicloService = new Mock<ICiclo>();
@@ -85,5 +85,35 @@ namespace TestProfefolio.Clase
             Assert.IsType<OkResult>(result.Result);
         }
 
+
+
+        /*
+            Testea un caso exitoso de eliminacion
+        */
+
+        [Theory]
+        [InlineData(-1)]
+        [InlineData(-2)]
+        [InlineData(-3)]
+        [InlineData(-4)]
+        [InlineData(-5)]
+        public void Delete_InvalidId_BadRequest(int id)
+        {
+            Mock<IMapper> mapper = new Mock<IMapper>();
+            Mock<ICiclo> cicloService = new Mock<ICiclo>();
+            Mock<IClase> claseService = new Mock<IClase>();
+            Mock<IColegio> colegioService = new Mock<IColegio>();
+
+            ClaseController controller = new ClaseController(
+                mapper.Object, 
+                claseService.Object, 
+                cicloService.Object, 
+                colegioService.Object);
+
+            var result = controller.Delete(id);
+
+            var response = Assert.IsType<BadRequestObjectResult>(result.Result);
+            Assert.Equal("Identificador invalido", response.Value);
+        }
     }
 }
