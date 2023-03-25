@@ -114,7 +114,7 @@ namespace profefolio.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest("Datos invalido");
+                return BadRequest("Datos invalidos");
             }
 
             try

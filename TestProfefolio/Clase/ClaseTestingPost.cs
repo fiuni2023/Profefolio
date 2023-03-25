@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using profefolio.Controllers;
 using profefolio.Models.DTOs.Clase;
 using profefolio.Repository;
@@ -26,9 +27,9 @@ namespace TestProfefolio.Clase
             Mock<IColegio> colegioService = new Mock<IColegio>();
 
             ClaseController controller = new ClaseController(
-                mapper.Object, 
-                claseService.Object, 
-                cicloService.Object, 
+                mapper.Object,
+                claseService.Object,
+                cicloService.Object,
                 colegioService.Object);
 
             var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
@@ -41,7 +42,8 @@ namespace TestProfefolio.Clase
                 HttpContext = new DefaultHttpContext() { User = user }
             };
 
-            var dto = new ClaseDTO(){
+            var dto = new ClaseDTO()
+            {
                 Nombre = "Primer grado",
                 Turno = "Tarde",
                 Anho = 2023,
@@ -49,7 +51,8 @@ namespace TestProfefolio.Clase
                 ColegioId = 1
             };
 
-            var clase = new profefolio.Models.Entities.Clase(){
+            var clase = new profefolio.Models.Entities.Clase()
+            {
                 Anho = 2023,
                 CicloId = 1,
                 ColegioId = 1,
@@ -60,7 +63,8 @@ namespace TestProfefolio.Clase
                 CreatedBy = "juan.perez@gmail.com"
             };
 
-            var claseResult = new ClaseResultDTO(){
+            var claseResult = new ClaseResultDTO()
+            {
                 Id = 1,
                 Anho = 2023,
                 Nombre = "Primer grado",
@@ -71,12 +75,14 @@ namespace TestProfefolio.Clase
                 Colegio = "San Juan"
             };
 
-            var ciclo = new profefolio.Models.Entities.Ciclo(){
+            var ciclo = new profefolio.Models.Entities.Ciclo()
+            {
                 Id = 1,
                 Nombre = "Primero"
             };
 
-            var colegio = new profefolio.Models.Entities.Colegio(){
+            var colegio = new profefolio.Models.Entities.Colegio()
+            {
                 Id = 1,
                 Nombre = "San Juan",
                 PersonaId = "123456789"
@@ -97,6 +103,55 @@ namespace TestProfefolio.Clase
             var result = await controller.Post(dto);
 
             Assert.IsType<OkObjectResult>(result.Result);
+        }
+
+
+
+
+        /*
+            Testea un caso de fallo cuando el modelo mandado es invalido
+        */
+        [Fact]
+        public async void Post_ModelInvalid_BadRequest()
+        {
+            Mock<IMapper> mapper = new Mock<IMapper>();
+            Mock<ICiclo> cicloService = new Mock<ICiclo>();
+            Mock<IClase> claseService = new Mock<IClase>();
+            Mock<IColegio> colegioService = new Mock<IColegio>();
+
+            ClaseController controller = new ClaseController(
+                mapper.Object,
+                claseService.Object,
+                cicloService.Object,
+                colegioService.Object);
+
+            var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+            {
+                new Claim(ClaimTypes.Name, "user1")
+            }, "mock"));
+
+            controller.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext() { User = user }
+            };
+
+            var modelState = new ModelStateDictionary();
+            modelState.AddModelError("Nombre", "Propiedad invalida");
+            controller.ModelState.Merge(modelState);
+
+            var dto = new ClaseDTO()
+            {
+                Nombre = "Primer grado",
+                Turno = "Tarde",
+                Anho = 2023,
+                CicloId = 1,
+                ColegioId = 1
+            };
+
+            var result = await controller.Post(dto);
+
+            var response = Assert.IsType<BadRequestObjectResult>(result.Result);
+            Assert.Equal("Datos invalidos", response.Value);
         }
     }
 }
