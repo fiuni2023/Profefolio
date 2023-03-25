@@ -7,18 +7,20 @@ import { toast } from 'react-hot-toast';
 import APILINK from '../../components/link';
 import { useNavigate } from "react-router-dom";
 
-function ModalVerColegios({ idColegio, setShow, show }) {
+function ModalVerColegios({ idColegio, setShow, show, disabled, setDisabled }) {
   const handleClose = () => setShow(false);
   const [colegio, setColegio] = useState([]);
   const { getToken, verifyToken, cancan } = useGeneralContext();
   const nav = useNavigate();
   const navigate = useNavigate();
-  const [disabled, setDisabled] = useState(true);
+  //const [disabled, setDisabled] = useState(true);
   const [administradores, setAdministradores] = useState([]);
-  const [nombreNuevoCol, setNombreNuevoCol]=useState("")
+  const [nombreNuevoCol, setNombreNuevoCol] = useState("")
   const [idAdmin, setIdAdmin] = useState(0);
 
   //Lamada de los datos del colegio
+
+
   useEffect(() => {
     console.log(idColegio);
     verifyToken()
@@ -36,6 +38,7 @@ function ModalVerColegios({ idColegio, setShow, show }) {
         .then(function (response) {
           setColegio(response.data); //Guarda los datos
           console.log(colegio);
+          setDisabled(true);
 
         })
         .catch(function (error) {
@@ -43,7 +46,7 @@ function ModalVerColegios({ idColegio, setShow, show }) {
         });
     }
   }, [cancan, verifyToken, nav, getToken, idColegio])
-//Llamada para obtener los datos de admninistradores
+  //Llamada para obtener los datos de admninistradores
   const handleGetAdmin = () => {
     verifyToken()
     if (!cancan("Master")) {
@@ -71,22 +74,23 @@ function ModalVerColegios({ idColegio, setShow, show }) {
   const handleEdit = () => {
     handleGetAdmin();
     setDisabled(false);
-    
+    console.log("Hola", disabled);
+
 
   }
-//Guardar el id del admin
+  //Guardar el id del admin
   const handleAdmin = (idAdmin) => {
     setIdAdmin(idAdmin);
   }
   const handleIDAdmin = (event) => {
-    handleAdmin(event.target.value)
+    handleAdmin(event.target.value || '')
   }
 
-  const handleNombre=(nombre)=>{
+  const handleNombre = (nombre) => {
     setNombreNuevoCol(nombre);
   }
-  const handleInputColegio=(event)=>{
-    handleNombre(event.target.value);
+  const handleInputColegio = (event) => {
+    handleNombre(event.target.value || '');
   }
   //Eliminar colegio
   const handleDelete = (id) => {
@@ -107,16 +111,23 @@ function ModalVerColegios({ idColegio, setShow, show }) {
             <div>
               <form>
                 <label htmlFor="colegio-nombre" className={styles.labelForm}>Nombre Colegio</label><br />
-                <input required type="text" id={styles.inputColegio} name="colegio-nombre" value={colegio.nombre || ''} onChange={event=>handleInputColegio(event)} disabled={disabled}></input><br />
+                {disabled
+                  ? <div> <input type="text" id={styles.inputColegio} value={colegio.nombre || ''} disabled onChange={event => handleInputColegio(event)}></input><br />
+                    <br /></div>
+
+                  : <div> <input type="text" id={styles.inputColegio} name="colegio-nombre" onChange={event => handleInputColegio(event)}></input><br />
+                  <br /></div>
+                }
+               
 
                 <label htmlFor="administrador"><strong> Administrador</strong></label><br />
                 {disabled
-                  ? <div> < input required type="text" id={styles.inputColegio} name="colegio-admin" value={colegio.nombreAdministrador + " " + colegio.apellido || ''} disabled={disabled}>
+                  ? <div> < input required type="text" id={styles.inputColegio} name="colegio-admin" value={colegio.nombreAdministrador + " " + colegio.apellido || ''} disabled>
                   </input>
                     <br /></div>
 
-                  : <select required name="admin" onChange={event => handleIDAdmin(event)} className={styles.selectAdmin}>
-                    
+                  : <select required name="admin" onChange={event => handleIDAdmin(event)} placeholder="Seleccionar Administrador" className={styles.selectAdmin}>
+                    <option disabled value={0|| '' }>Seleccione Administrador</option>
                     {administradores.map((administrador) =>
                       <option key={administrador.id} value={administrador.id || ''}>{administrador.nombre} {administrador.apellido}</option>
                     )}
@@ -131,11 +142,11 @@ function ModalVerColegios({ idColegio, setShow, show }) {
                 <Button className={styles.btnCancelar} onClick={handleDelete} >Eliminar</Button>
                 <Button className={styles.btnGuardar} onClick={handleEdit}>Editar</Button>
               </div>
-              :<div>
-              <Button className={styles.btnCancelar} onClick={handleClose} >Cancelar</Button>
-              <Button className={styles.btnGuardar} onClick={handleEdit}>Guardar</Button>
-            </div>
-          }
+              : <div>
+                <Button className={styles.btnCancelar} onClick={handleClose} >Cancelar</Button>
+                <Button className={styles.btnGuardar} onClick={handleEdit}>Guardar</Button>
+              </div>
+            }
 
           </Modal.Footer>
         </Modal>

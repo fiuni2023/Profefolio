@@ -114,9 +114,9 @@ function ModalAgregarColegios({ onSubmit = () => { }, triggerState = () => { } }
                             <label htmlFor="administrador"><strong> Administrador</strong></label><br />
 
                             <select required name="admin" value={idAdmin || ''} onChange={event => handleIDAdmin(event)} className={styles.selectAdmin}>
-                                <option disabled value={0 }>Seleccione Administrador</option>
+                                <option disabled value={0|| '' }>Seleccione Administrador</option>
                                 {administradores.map((administrador) =>
-                                    <option key={administrador.id} value={administrador.id}>{administrador.nombre} {administrador.apellido}</option>
+                                    <option key={administrador.id} value={administrador.id || ''}>{administrador.nombre} {administrador.apellido}</option>
                                 )}
                             </select>
                             <p className={styles.mensajeError}>{mensajeError}</p>
