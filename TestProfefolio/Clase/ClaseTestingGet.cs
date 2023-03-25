@@ -45,7 +45,7 @@ namespace TestProfefolio.Clase
                 Id = 1,
                 Anho = 2023,
                 CicloId = 1,
-                ColegioId = 1,
+                ColegioId = idColegio,
                 Deleted = false,
                 Nombre = "Primer grado",
                 Turno = "Tarde",
@@ -95,5 +95,40 @@ namespace TestProfefolio.Clase
 
             Assert.IsType<OkObjectResult>(result.Result);
         }
+    
+    
+    
+        /*
+            Testea el caso de que el Id de Colegio recibido es menor a cero 
+            y retorna una error de NotFound
+        */
+        [Theory]
+        [InlineData(-1)]
+        [InlineData(-2)]
+        [InlineData(-3)]
+        [InlineData(-4)]
+        [InlineData(-5)]
+        [InlineData(-6)]
+        [InlineData(-7)]
+        [InlineData(-8)]
+        public async void GetAllByIdColegio_IdColegioInvalid_NotFound(int idColegio)
+        {
+            Mock<IMapper> mapper = new Mock<IMapper>();
+            Mock<ICiclo> cicloService = new Mock<ICiclo>();
+            Mock<IClase> claseService = new Mock<IClase>();
+            Mock<IColegio> colegioService = new Mock<IColegio>();
+
+            ClaseController controller = new ClaseController(
+                mapper.Object,
+                claseService.Object,
+                cicloService.Object,
+                colegioService.Object);
+
+
+            var result = await controller.GetAllByColegioId(idColegio);
+
+            Assert.IsType<NotFoundResult>(result.Result);
+        }
+    
     }
 }
