@@ -18,7 +18,7 @@ public class AccountController : ControllerBase
     private readonly IMapper _mapper;
     private readonly IPersona _personasService;
     private readonly IRol _rolService;
-    private const int CantPorPage = 5;
+    private const int CantPorPage = 20;
 
 
     public AccountController(IMapper mapper, IPersona personasService, IRol rolService)
@@ -83,7 +83,7 @@ public class AccountController : ControllerBase
         var query = await _personasService
             .FilterByRol(page, CantPorPage, rol);
 
-        var cantPages = (int)(await _personasService.CountByRol(rol)  / CantPorPage) + 1;
+        var cantPages = (int)Math.Ceiling((double) await _personasService.CountByRol(rol)/ CantPorPage);
 
         var result = new DataListDTO<PersonaResultDTO>();
 
