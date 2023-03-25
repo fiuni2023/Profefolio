@@ -362,7 +362,7 @@ namespace TestProfefolio.Clase
 
 
         /*
-            Testea un caso de fallo en el que sucede un error durante el guardado de los cambios
+            Testea un caso de fallo el cual sucede durante el guardado
         */
         [Fact]
         public async void Post_SaveFailed_BadRequest()
