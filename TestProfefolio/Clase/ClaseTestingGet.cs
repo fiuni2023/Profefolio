@@ -1,3 +1,4 @@
+using System.Reflection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -128,6 +129,42 @@ namespace TestProfefolio.Clase
             var result = await controller.GetAllByColegioId(idColegio);
 
             Assert.IsType<NotFoundResult>(result.Result);
+        }
+    
+
+        /*
+            Testea el caso de error al momento de obtener 
+            las clases por medio del id del Colegio
+        */
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        [InlineData(4)]
+        [InlineData(5)]
+        [InlineData(6)]
+        [InlineData(7)]
+        [InlineData(8)]
+        public async void GetAllByIdColegio_GetFailed_BadRequest(int idColegio)
+        {
+            Mock<IMapper> mapper = new Mock<IMapper>();
+            Mock<ICiclo> cicloService = new Mock<ICiclo>();
+            Mock<IClase> claseService = new Mock<IClase>();
+            Mock<IColegio> colegioService = new Mock<IColegio>();
+
+            ClaseController controller = new ClaseController(
+                mapper.Object,
+                claseService.Object,
+                cicloService.Object,
+                colegioService.Object);
+
+            claseService.Setup(m => m.GetByIdColegio(idColegio)).ThrowsAsync(new Exception());
+
+            var result = await controller.GetAllByColegioId(idColegio);
+
+            var response = Assert.IsType<BadRequestObjectResult>(result.Result);
+        
+            Assert.Equal("Error durante la busqueda", response.Value);
         }
     
     }
