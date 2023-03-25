@@ -17,10 +17,12 @@ function ListDetallesProfesor(props) {
 
   const [eliminarVisible, setEliminarVisible] = useState(true);
 
+  const [mostrarInput, setMostrarInput] = useState(false);
+
 
   const handleCloseModal = () => {
     setShowModal(false);
-    //setReadOnly(true);
+    setReadOnly(true);
   };
 
   function closeModal() {
@@ -84,22 +86,44 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
             <Row>
               <Col>
               <Form.Label >Nombre: </Form.Label>
-              <div >    
+             
+
+                 {readOnly ? (
+          <>
+           
+            {eliminarVisible && (
               <Form.Control
-                  type="text"
-                  value= {profesor.nombre}
-                  placeholder="Ingrese su nombre"
-                   readOnly={readOnly}
-                /> 
+              type="text"
+              value= {profesor.nombre}
+              placeholder="Ingrese su nombre"
+               readOnly={readOnly}
+            /> 
+            )}
+          </>
+        ) : (
+
+          <Form.Control
+          className={styles.option}
+          type="text"
+          value={nombre}
+          onChange={event => setNombre(event.target.value)}
+          placeholder="Ingrese su nombre"
+        />
           
-             
-              </div>
-             
-            
+        )}
+    
               </Col>
 
               <Col>
+
               <Form.Label className="">Apellido:  </Form.Label>
+              {readOnly ? (
+          <>
+           
+            {eliminarVisible && (
+             
+      
+             
                 <Form.Control
                  className={styles.option}
                   type="text"
@@ -107,6 +131,19 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
                   placeholder="Ingrese su apellido"
                   readOnly={readOnly}
                 />
+
+                )}
+                </>
+              ) : (
+              <Form.Control
+                 className={styles.option}
+                  type="text"
+                  value={apellido}
+                  onChange={event => setApellido(event.target.value)}
+                  placeholder="Ingrese su apellido"
+                />
+                
+                )}
               </Col>
             </Row>
             <br/>
@@ -114,6 +151,10 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
             <Row>
             <Col>
             <Form.Label >Telefono: </Form.Label>
+            {readOnly ? (
+          <>
+           
+            {eliminarVisible && (         
             <Form.Control
                  className={styles.option}
                   type="number"
@@ -122,12 +163,29 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
                   placeholder="09xxxxxxxxx"
                   readOnly={readOnly}
                 />
-            
+                )}
+                </>
+              ) : (
+            <Form.Control
+                 className={styles.option}
+                  type="number"
+                  name="telefono"
+                  value={telefono}
+                  onChange={event => setTelefono(event.target.value)}
+                  placeholder="09xxxxxxxxx"
+                />
+                )}
+
               </Col>
 
               <Col>
              
               <Form.Label className="">Direccion:  </Form.Label>
+              {readOnly ? (
+          <>
+           
+            {eliminarVisible && (         
+
               <Form.Control
                  className={styles.option}
                   type="text"
@@ -136,6 +194,19 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
                   placeholder="Ingrese su direccion"
                   readOnly={readOnly}
                 />
+                )}
+                </>
+              ) : (
+
+            <Form.Control
+                 className={styles.option}
+                  type="text"
+                  name="direccion"
+                  value={direccion}
+                  onChange={event => setDireccion(event.target.value)}
+                  placeholder="Ingrese su direccion"
+                />
+                )}
               </Col>
 
                
@@ -155,6 +226,17 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
                   readOnly={readOnly}
 
                 />
+
+                <Form.Control
+                className={styles.option}
+                  type="date"
+                  name="nacimiento"
+                  value={nacimiento}
+                  onChange={event => setNacimiento(event.target.value)}
+                  placeholder="aaaa/mm/ddd"
+
+                />
+
                 </Col>
 
                 <Col>
