@@ -88,7 +88,8 @@ namespace TestProfefolio.Clase
 
 
         /*
-            Testea un caso exitoso de eliminacion
+            Testea un caso de error en el que el ID mandado por parametro es 
+            menor a cero
         */
 
         [Theory]
@@ -114,6 +115,40 @@ namespace TestProfefolio.Clase
 
             var response = Assert.IsType<BadRequestObjectResult>(result.Result);
             Assert.Equal("Identificador invalido", response.Value);
+        }
+
+
+
+        /*
+            Testea un caso de fallo porque el id mandado por parametro
+            no se encuentra disponible.
+        */
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        [InlineData(4)]
+        [InlineData(5)]
+        public void Delete_NotFoundId_NotFound(int id)
+        {
+            Mock<IMapper> mapper = new Mock<IMapper>();
+            Mock<ICiclo> cicloService = new Mock<ICiclo>();
+            Mock<IClase> claseService = new Mock<IClase>();
+            Mock<IColegio> colegioService = new Mock<IColegio>();
+
+            ClaseController controller = new ClaseController(
+                mapper.Object, 
+                claseService.Object, 
+                cicloService.Object, 
+                colegioService.Object);
+            
+            claseService.Setup(c => c.FindById(id));
+
+            var result = controller.Delete(id);
+
+            Assert.IsType<NotFoundResult>(result.Result);
+
         }
     }
 }
