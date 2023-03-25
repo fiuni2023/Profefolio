@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using AutoMapper;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Authorization;
@@ -191,8 +192,8 @@ namespace profefolio.Controllers
                     return NotFound("El campo de Colegio es invalido");
                 }
 
-                var userId = User.Identity.GetUserId();
-                clase.ModifiedBy = userId;
+                var name = User.FindFirstValue(ClaimTypes.Name);
+                clase.ModifiedBy = name;
                 clase.Modified = DateTime.Now;
                 clase.Deleted = false;
 
