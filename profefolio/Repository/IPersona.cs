@@ -16,6 +16,8 @@ public interface IPersona : IRepository<Persona>
     Task<IEnumerable<Persona>> GetAllByRol(string roleName, int page, int cantPorPag);
 
     Task<int> CountByRol(string rol);
+    Task<IEnumerable<Persona>> GetAllByRol(string roleName);
+
 
 
 }
