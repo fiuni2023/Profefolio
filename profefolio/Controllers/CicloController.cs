@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNet.Identity;
@@ -13,7 +14,6 @@ using profefolio.Repository;
 namespace profefolio.Controllers
 {
     [ApiController]
-    [Authorize(Roles = "Administrador de Colegio,Profesor")]
     [Route("api/[controller]")]
     public class CicloController : ControllerBase
     {
@@ -28,6 +28,7 @@ namespace profefolio.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Administrador de Colegio,Profesor")]
         public async Task<ActionResult<IEnumerable<CicloResultDTO>>> GetAll()
         {
             try
@@ -47,20 +48,16 @@ namespace profefolio.Controllers
         }
 
         [HttpGet("{id:int}")]
+        [Authorize(Roles = "Administrador de Colegio,Profesor")]
         public async Task<ActionResult<CicloResultDTO>> Get(int id)
         {
-            if (id < 0)
-            {
-                return BadRequest("Id invalido");
-            }
-
             try
             {
                 var result = await _cicloService.FindById(id);
 
                 return result != null
                         ? Ok(_mapper.Map<CicloResultDTO>(result))
-                        : BadRequest("Id no encontrado");
+                        : BadRequest("Ciclo no encontrado");
 
             }
             catch (Exception e)
@@ -70,12 +67,14 @@ namespace profefolio.Controllers
             }
         }
 
+
         [HttpPost]
+        [Authorize(Roles = "Administrador de Colegio")]
         public async Task<ActionResult<CicloResultDTO>> Post([FromBody] CicloDTO dto)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest("Objeto invalido");
+                return BadRequest("Peticion invalido");
             }
 
             try
@@ -83,13 +82,15 @@ namespace profefolio.Controllers
 
                 if (await _cicloService.ExisitNombre(dto.Nombre))
                 {
-                    return BadRequest("Ya existe un ciclo con ese nombre");
+                    return BadRequest("Ya existe un Ciclo con ese nombre");
                 }
 
                 var ciclo = _mapper.Map<Ciclo>(dto);
 
-                var userId = User.Identity.GetUserId();
-                ciclo.CreatedBy = userId;
+                //var userId = User.Identity.GetUserId();
+                var name = User.FindFirstValue(ClaimTypes.Name);
+
+                ciclo.CreatedBy = name;
                 ciclo.Created = DateTime.Now;
                 ciclo.Deleted = false;
 
@@ -105,29 +106,32 @@ namespace profefolio.Controllers
             }
         }
 
+
         [HttpPut("{id:int}")]
+        [Authorize(Roles = "Administrador de Colegio")]
         public async Task<ActionResult> Put(int id, [FromBody] CicloDTO dto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest("Objeto invalido");
             }
-            if (id < 0)
-            {
-                return BadRequest("Id invalido");
-            }
 
             try
             {
-
-                if (await _cicloService.ExisitOther(id, dto.Nombre))
+                var exist = await _cicloService.ExisitOther(id, dto.Nombre);
+                if (exist)
                 {
-                    return BadRequest("Ya existe un ciclo con ese nombre");
+                    return BadRequest("Ya existe un Ciclo con ese nombre");
                 }
                 var ciclo = await _cicloService.FindById(id);
 
-                var userId = User.Identity.GetUserId();
-                ciclo.ModifiedBy = userId;
+                if (ciclo == null)
+                {
+                    return BadRequest("El Ciclo no encontrado");
+                }
+
+                var name = User.FindFirstValue(ClaimTypes.Name);
+                ciclo.ModifiedBy = name;
                 ciclo.Modified = DateTime.Now;
                 ciclo.Deleted = false;
                 ciclo.Nombre = dto.Nombre;
@@ -147,13 +151,9 @@ namespace profefolio.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [Authorize(Roles = "Administrador de Colegio")]
         public async Task<ActionResult> Delete(int id)
         {
-            if (id < 0)
-            {
-                return BadRequest("Id invalido");
-            }
-
             try
             {
                 var ciclo = await _cicloService.FindById(id);
@@ -162,8 +162,8 @@ namespace profefolio.Controllers
                     return BadRequest("Ciclo no encontrado");
                 }
 
-                string userId = User.Identity.GetUserId();
-                ciclo.ModifiedBy = userId;
+                var name = User.FindFirstValue(ClaimTypes.Name);
+                ciclo.ModifiedBy = name;
                 ciclo.Modified = DateTime.Now;
                 ciclo.Deleted = true;
 
