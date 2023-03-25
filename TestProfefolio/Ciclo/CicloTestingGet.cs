@@ -117,5 +117,52 @@ namespace TestProfefolio.Ciclo
             Assert.IsType<BadRequestObjectResult>(result.Result);
             Assert.Equal("Error durante la busqueda", r.Value);
         }
+    
+    
+        /*
+            Testea cuando se realiza un get por id de Ciclo exitosa
+        */
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        [InlineData(4)]
+        [InlineData(5)]
+        [InlineData(6)]
+        [InlineData(7)]
+        [InlineData(8)]
+        public async void Get_ById_Ok(int id)
+        {
+            Mock<IMapper> mapper = new Mock<IMapper>();
+            Mock<ICiclo> service = new Mock<ICiclo>();
+            CicloController controller = new CicloController(mapper.Object, service.Object);
+
+
+            CicloResultDTO resultDTO = new CicloResultDTO()
+            {
+                Id = id,
+                Nombre = "Primero"
+            };
+
+
+            profefolio.Models.Entities.Ciclo modelo = new profefolio.Models.Entities.Ciclo()
+            {
+                Id = id,
+                Nombre = "Primero",
+                Created = DateTime.Now,
+                Deleted = false,
+                CreatedBy = "juan"
+            };
+
+            service.Setup(a => a.FindById(id)).ReturnsAsync(modelo);
+            mapper.Setup(m => m.Map<CicloResultDTO>(modelo)).Returns(resultDTO);
+
+            var result = await controller.Get(id);
+
+            var jsonResult = Assert.IsType<OkObjectResult>(result.Result);
+            var cicloResult = Assert.IsType<CicloResultDTO>(jsonResult.Value);
+            Assert.Same(resultDTO, cicloResult);
+        }
+    
     }
 }
