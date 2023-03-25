@@ -17,7 +17,7 @@ function ModalAgregarColegios({ onSubmit = () => { }, triggerState = () => { } }
     useEffect(() => {
         var config = {
             method: 'get',
-            url: `${APILINK}/api/administrador/page/0`,
+            url: `${APILINK}/api/administrador`,
             headers: {
                 'Authorization': `Bearer ${getToken()}`,
                 'Content-Type': 'application/json'
@@ -25,7 +25,7 @@ function ModalAgregarColegios({ onSubmit = () => { }, triggerState = () => { } }
         };
         axios(config)
             .then(function (response) {
-                setAdministradores(response.data.dataList);
+                setAdministradores(response.data);
             })
             .catch(function (error) {
                 console.log(error);
@@ -113,8 +113,8 @@ function ModalAgregarColegios({ onSubmit = () => { }, triggerState = () => { } }
                             <p className={styles.mensajeError}>{mensajeError}</p>
                             <label htmlFor="administrador"><strong> Administrador</strong></label><br />
 
-                            <select required name="admin" value={idAdmin} onChange={event => handleIDAdmin(event)} className={styles.selectAdmin}>
-                                <option disabled value={0}>Seleccione Administrador</option>
+                            <select required name="admin" value={idAdmin || ''} onChange={event => handleIDAdmin(event)} className={styles.selectAdmin}>
+                                <option disabled value={0 }>Seleccione Administrador</option>
                                 {administradores.map((administrador) =>
                                     <option key={administrador.id} value={administrador.id}>{administrador.nombre} {administrador.apellido}</option>
                                 )}
