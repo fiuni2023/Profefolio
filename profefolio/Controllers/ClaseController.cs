@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using AutoMapper;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Authorization;
@@ -113,7 +114,7 @@ namespace profefolio.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest("Datos invalido");
+                return BadRequest("Datos invalidos");
             }
 
             try
@@ -138,8 +139,8 @@ namespace profefolio.Controllers
                 }
 
 
-                var userId = User.Identity.GetUserId();
-                clase.CreatedBy = userId;
+                var name = User.FindFirstValue(ClaimTypes.Name);
+                clase.CreatedBy = name;
                 clase.Created = DateTime.Now;
                 clase.Deleted = false;
 
