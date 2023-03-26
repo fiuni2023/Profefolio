@@ -127,59 +127,12 @@ function ListDetallesProfesor(props) {
 
   const handleModificar = () => {
     setReadOnly(!readOnly);
-    setNombre(profesor.nombre, () => {
-      console.log('Nombre actualizado:', nombre);
-    });
-
-    setApellido(profesor.apellido, () => {
-      console.log('Nombre actualizado:', nombre);
-    });
-
-    setTelefono(profesor.telefono, () => {
-      console.log('Nombre actualizado:', nombre);
-    });
-
-    setDireccion(profesor.direccion, () => {
-      console.log('Nombre actualizado:', nombre);
-    });
-  
-    const fecha = new Date(profesor.nacimiento);
-    const nacimiento = fecha.toISOString().substring(0, 10);
-    //const [nacimientoState, setNacimientoState] = useState(nacimiento);
-
-
-    setNacimiento(nacimiento, () => {
-      console.log('Nacimiento actualizado:', nacimiento.toLocaleDateString());
-    });
-
-    setEmail(profesor.email, () => {
-      console.log('Nombre actualizado:', nombre);
-    });
-
-    setGenero(profesor.genero === "Femenino" ? "F" : "M", () => {
-      console.log('Género actualizado:', genero);
-    });
-
-    setDocumento(profesor.documento, () => {
-      console.log('Nombre actualizado:', nombre);
-    });
-
-    setDocumentoTipo(profesor.documentoTipo, () => {
-      console.log('Nombre actualizado:', nombre);
-    });
-
-
-
+   
   
   
   };
 
-  const handleGuardar = () => {
-    setReadOnly(true);
-    setEliminarVisible(true);
-    // Aquí puedes agregar la lógica para guardar los cambios
-  };
-
+ 
   useEffect(() => {
       
     axios.get(`${APILINK}/api/profesor/${id}`, {
@@ -191,6 +144,18 @@ function ListDetallesProfesor(props) {
       .then(response => {
 
         setProfesores(response.data);
+        const { nombre, apellido, telefono, direccion, nacimiento, email, genero, documento, documentoTipo } = response.data;
+        setNombre(nombre);
+        setApellido(apellido);
+        setTelefono(telefono);
+        setDireccion(direccion);
+        const fecha = new Date(nacimiento);
+        const nacimientoFormatted = fecha.toISOString().substring(0, 10);
+        setNacimiento(nacimientoFormatted);
+        setEmail(email);
+        setGenero(genero === "Femenino" ? "F" : "M");
+        setDocumento(documento);
+        setDocumentoTipo(documentoTipo);
 
 
         //triggerState(response.data)
