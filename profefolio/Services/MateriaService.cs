@@ -27,6 +27,12 @@ public class MateriaService : IMateria
             .Where(p => !p.Deleted && p.Nombre_Materia == n)
             .FirstOrDefaultAsync();
     }
+     public async Task<Materia> FindByNameMateriaId(string n, int id)
+    {
+        return await _dbContext.Materias
+            .Where(p => !p.Deleted && p.Nombre_Materia == n && p.Id != id)
+            .FirstOrDefaultAsync();
+    }
     public IEnumerable<Materia> GetAll()
     {
         return _dbContext.Materias.Where(p => p.Deleted);
