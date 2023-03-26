@@ -5,7 +5,8 @@ import { useGeneralContext } from '../../../context/GeneralContext';
 import styles from  '../components/create/Modal.module.css';
 import APILINK from '../../../components/link';
 import { toast } from 'react-hot-toast';
-import { BsTrash, BsPencilFill, BsInfoCircle } from 'react-icons/bs';
+import { BsTrash, BsPencilFill } from 'react-icons/bs';
+
 
 function ListDetallesProfesor(props) {
   const { showModal, setShowModal ,id,triggerState} = props;
@@ -17,8 +18,6 @@ function ListDetallesProfesor(props) {
   const [readOnly, setReadOnly] = useState(true);
 
   const [eliminarVisible, setEliminarVisible] = useState(true);
-
-  const [mostrarInput, setMostrarInput] = useState(false);
 
 
 
@@ -114,7 +113,12 @@ function ListDetallesProfesor(props) {
       console.log('Nombre actualizado:', nombre);
     });
   
-    setNacimiento(profesor.nacimiento, () => {
+    const fecha = new Date(profesor.nacimiento);
+    const nacimiento = fecha.toISOString().substring(0, 10);
+    //const [nacimientoState, setNacimientoState] = useState(nacimiento);
+
+
+    setNacimiento(nacimiento, () => {
       console.log('Nacimiento actualizado:', nacimiento.toLocaleDateString());
     });
 
@@ -184,12 +188,12 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
       <Modal.Title className="">Detalles Profesor</Modal.Title>
       </Modal.Header>
 
-      <form  profesor={handleSubmit}>
-      
+    
       <Modal.Body className={styles.contentModal} >
 
          
-            
+      <form  profesor={handleSubmit}> 
+      
             <Row>
               <Col>
               <Form.Label >Nombre: </Form.Label>
@@ -349,8 +353,7 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
                 name="nacimiento"
                 value={nacimiento}
                 onChange={event => {
-                  console.log(event.target.value);
-                  setNacimiento(new Date(event.target.value));
+                  setNacimiento(event.target.value);
                 }}
               />
 
@@ -509,7 +512,7 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
             <br/>
        
             
-
+            </form>    
         
         </Modal.Body> 
 
@@ -525,7 +528,7 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
             )}
           </>
         ) : (
-          <button type="submit" className={styles.button} onClick={handleSubmit}>
+          <button type='submit' className={styles.button} onClick={handleSubmit}>
             Guardar
           </button>
         )}
@@ -533,8 +536,8 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
         <button variant="primary" onClick={closeModal} className={styles.buttonClose}>Cerrar</button>
 
         </Modal.Footer>
-        </form>
-    
+       
+      
      
 
     </Modal>
