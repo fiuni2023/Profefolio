@@ -26,6 +26,7 @@ export const GeneralProvider = ({children}) => {
     const depricateLoginData = () => {
         if(localStorage.getItem('loginData')? true : false) localStorage.removeItem('loginData')
         if(sessionStorage.getItem('loginData')? true : false) sessionStorage.removeItem('loginData')
+        setIsLogged(false)
     }
 
     const verifyToken = () => {
@@ -48,7 +49,7 @@ export const GeneralProvider = ({children}) => {
     }
 
     const getUserName = () => {
-        return getLoginData().email.split("@")[0]
+        return getLoginData()?.email?.split("@")[0]
     }
 
     const values = {

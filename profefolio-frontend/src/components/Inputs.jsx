@@ -1,18 +1,11 @@
 import React, { useState } from "react";
 
+import styles from './Inputs.module.css'
+
 export const TextInput = ({placeholder = "pon un placeholder", value , handleChange = () => {}, handleBlur = () => {}, handleFocus = () => {}, name = "", height="40px", width="120px"}) => {
     return (
         <>
-            <input className="input" name={name} type={'text'} placeholder = {placeholder} onChange={handleChange} onBlur={handleBlur} onFocus={handleFocus} value={value}/>
-            <style jsx = "true">{`
-            .input{
-                height: ${height};
-                width: ${width};
-                outline: none;
-                border: lightgray;
-                border-radius: 10px;                
-            }
-            `}</style>
+            <input className={styles.TI} name={name} type={'text'} style={{height: `${height}`, width: `${width}`}} placeholder = {placeholder} onChange={handleChange} onBlur={handleBlur} onFocus={handleFocus} value={value}/>
         </>
     )
 }   
@@ -20,6 +13,9 @@ export const TextInput = ({placeholder = "pon un placeholder", value , handleCha
 export const ButtonInput = ({text = "Texto", className ="", handleClick = () => {}, variant = "primary", disabled= false, width= "120px", height="40px", fontSize ="15px"}) => {
     const returnVariantColor = (variant) => {
         if (variant === "primary") return {backgroundColor:"#331832", color: "white", width: width, height: height, fontSize: fontSize}
+        if (variant === "primary-inv") return { border:"2px solid #331832", color: "#331832", width: width, height: height, fontSize: fontSize}
+        if (variant === "danger") return {backgroundColor:"#D81E5B", color: "white", width: width, height: height, fontSize: fontSize}
+        if (variant === "danger-inv") return { border:"2px solid #D81E5B", backgroundColor: "#FFE3E9", color: "#D81E5B", width: width, height: height, fontSize: fontSize}
         if (variant === "secondary") return {backgroundColor:"#D3D3D3", color: "white", width: width, height: height, fontSize: fontSize}
         if (variant === "secondary-black") return {backgroundColor:"#D3D3D3", color: "black", width: width, height: height, fontSize: fontSize}
     }
@@ -27,21 +23,7 @@ export const ButtonInput = ({text = "Texto", className ="", handleClick = () => 
     const styleBtn=returnVariantColor(variant)
     return(
         <>
-            <button className={`button ${className}`} style={styleBtn} onClick={handleClick} disabled={disabled}>{text}</button>
-            <style jsx = "true">{`
-            .button{
-                border-radius: 10px;
-                border: none;
-                outline: none;
-                transition: 0.25s all;
-            }
-            .button:hover{
-                filter: brightness(80%);
-            }
-            .button:active{
-                filter: brightness(50%);
-            }   
-            `}</style>
+            <button className={`${styles.BI} ${className}`} style={styleBtn} onClick={handleClick} disabled={disabled}>{text}</button>
         </>
     )
 }

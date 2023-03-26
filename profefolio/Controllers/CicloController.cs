@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNet.Identity;
@@ -53,7 +54,6 @@ namespace profefolio.Controllers
             try
             {
                 var result = await _cicloService.FindById(id);
-
                 return result != null
                         ? Ok(_mapper.Map<CicloResultDTO>(result))
                         : BadRequest("Ciclo no encontrado");
@@ -86,8 +86,10 @@ namespace profefolio.Controllers
 
                 var ciclo = _mapper.Map<Ciclo>(dto);
 
-                var userId = User.Identity.GetUserId();
-                ciclo.CreatedBy = userId;
+                //var userId = User.Identity.GetUserId();
+                var name = User.FindFirstValue(ClaimTypes.Name);
+
+                ciclo.CreatedBy = name;
                 ciclo.Created = DateTime.Now;
                 ciclo.Deleted = false;
 
@@ -103,7 +105,7 @@ namespace profefolio.Controllers
             }
         }
 
-        
+
         [HttpPut("{id:int}")]
         [Authorize(Roles = "Administrador de Colegio")]
         public async Task<ActionResult> Put(int id, [FromBody] CicloDTO dto)
@@ -115,19 +117,20 @@ namespace profefolio.Controllers
 
             try
             {
-
-                if (await _cicloService.ExisitOther(id, dto.Nombre))
+                var exist = await _cicloService.ExisitOther(id, dto.Nombre);
+                if (exist)
                 {
                     return BadRequest("Ya existe un Ciclo con ese nombre");
                 }
                 var ciclo = await _cicloService.FindById(id);
 
-                if(ciclo == null){
+                if (ciclo == null)
+                {
                     return BadRequest("El Ciclo no encontrado");
                 }
 
-                var userId = User.Identity.GetUserId();
-                ciclo.ModifiedBy = userId;
+                var name = User.FindFirstValue(ClaimTypes.Name);
+                ciclo.ModifiedBy = name;
                 ciclo.Modified = DateTime.Now;
                 ciclo.Deleted = false;
                 ciclo.Nombre = dto.Nombre;
@@ -158,8 +161,8 @@ namespace profefolio.Controllers
                     return BadRequest("Ciclo no encontrado");
                 }
 
-                string userId = User.Identity.GetUserId();
-                ciclo.ModifiedBy = userId;
+                var name = User.FindFirstValue(ClaimTypes.Name);
+                ciclo.ModifiedBy = name;
                 ciclo.Modified = DateTime.Now;
                 ciclo.Deleted = true;
 

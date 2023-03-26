@@ -3,7 +3,7 @@ import { toast } from "react-hot-toast";
 import { Logo } from "../../assets";
 import { ButtonInput } from "../../components/Inputs";
 import styles from './index.module.css'
-import LoginService from './services/Login'
+import LoginService from '../../sevices/login'
 
 const Login = ({changeState = () => {}}) => {
 
