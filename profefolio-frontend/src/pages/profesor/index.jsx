@@ -9,12 +9,17 @@ import "./components/create/Index.module.css";
 
 import APILINK from '../../components/link.js';
 import { useNavigate } from 'react-router';
+import ListDetallesProfesor from './list/ListDetallesProfesor.jsx';
+
+
 
 
 function Profesores() {
+
   const [profesores, setProfesores] = useState([]);
   const [page, setPage] = useState(0);
-
+  const [showModal, setShowModal] = useState(false);
+  const [id, setId] = useState(null);
   const { getToken, cancan, verifyToken } = useGeneralContext();
 
   const nav = useNavigate()
@@ -36,6 +41,7 @@ function Profesores() {
           setProfesores(response.data.dataList);
       
   
+
         })
         .catch(error => {
           console.error(error);
@@ -48,6 +54,15 @@ function Profesores() {
 }
 
 
+const btndetalles = (id) => {
+  setShowModal(true);
+  setId(id);
+};
+
+const handleCloseModal = () => {
+  setShowModal(false);
+  setProfesores([]);
+};
 
 
   const handlePrevClick = () => {
@@ -87,20 +102,35 @@ function Profesores() {
               </thead>
               <tbody>
 
-                {profesores.map(profe => (
-                  <tr key={profe.id}>
+              {profesores && profesores.length > 0 && profesores.map(profe => (
+            <tr key={profe.id} onClick={() => btndetalles(profe.id)}>
                     <td>{profe.documento}</td>
                     <td>{profe.nombre}</td>
                     <td>{profe.apellido}</td>
-                    <td>{profe.nacimiento}</td>
+                    <td>{(new Date(profe.nacimiento)).toLocaleDateString()}</td>
+                 
                     <td>{profe.direccion}</td>
                     <td>{profe.telefono}</td>
                   
 
                   </tr>
+                 
                 ))}
               </tbody>
             </table>
+           
+            <ListDetallesProfesor showModal={showModal} setShowModal={setShowModal} id={id}  triggerState={(profesor)=>{doFetch(profesor)}}/>
+
+        {/*    {showModal && (
+        <ListDetallesProfesor
+          onClose={() => setShowModal(false)}
+          show={show}
+         onCloseModal={handleCloseModal}
+
+         triggerState={(profesor)=>{doFetch(profesor)}}
+          id={id}
+        />
+      )}*/} 
             <div >
 
            
@@ -132,8 +162,13 @@ function Profesores() {
             <CreateModal title="My Modal" onClose={() => setShow(false)}  show={show}
              triggerState={(profesor)=>{doFetch(profesor)}}>
             </CreateModal>
+
+
+      
             
           </div>
+
+     
 
         </footer>
 
