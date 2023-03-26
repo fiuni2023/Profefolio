@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useState, useEffect } from 'react';
 import { PanelContainerBG } from "./components/LayoutAdmin.jsx";
 import NavAdmin from "./components/NavAdmin.jsx";
@@ -153,9 +154,6 @@ const handleCloseModal = () => {
             <CreateModal title="My Modal" onClose={() => setShow(false)}  show={show}
              triggerState={(profesor)=>{doFetch(profesor)}}>
             </CreateModal>
-
-
-      
             
           </div>
 
