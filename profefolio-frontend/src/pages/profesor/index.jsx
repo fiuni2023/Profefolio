@@ -107,7 +107,8 @@ const handleCloseModal = () => {
                     <td>{profe.documento}</td>
                     <td>{profe.nombre}</td>
                     <td>{profe.apellido}</td>
-                    <td>{profe.nacimiento}</td>
+                    <td>{(new Date(profe.nacimiento)).toLocaleDateString()}</td>
+                 
                     <td>{profe.direccion}</td>
                     <td>{profe.telefono}</td>
                   

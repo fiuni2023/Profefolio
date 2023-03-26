@@ -4,10 +4,11 @@ import { Modal, Form,Col,Row,Button } from 'react-bootstrap';
 import { useGeneralContext } from '../../../context/GeneralContext';
 import styles from  '../components/create/Modal.module.css';
 import APILINK from '../../../components/link';
+import { toast } from 'react-hot-toast';
 import { BsTrash, BsPencilFill, BsInfoCircle } from 'react-icons/bs';
 
 function ListDetallesProfesor(props) {
-  const { showModal, setShowModal ,id} = props;
+  const { showModal, setShowModal ,id,triggerState} = props;
 
   const [profesor, setProfesores] = useState([]);
 
@@ -19,8 +20,71 @@ function ListDetallesProfesor(props) {
 
   const [mostrarInput, setMostrarInput] = useState(false);
 
-  const [formData, setFormData] = useState({});
 
+
+  const handleSubmit = (event) => {
+
+    console.log('nombre',nombre);
+    console.log('apellido',apellido);
+    console.log('documento',documento);
+    console.log('email',email);
+    console.log('nacimiento',nacimiento);
+
+    console.log('genero',genero);
+
+    event.preventDefault();
+
+    if (nombre === "" || apellido === "" || documento === "" || documentoTipo === "" || email === "" || nacimiento === "" || genero === "" || direccion === "" || telefono === "") toast.error("revisa los datos, los campos deben ser completados")
+    else if( new Date()< new Date(nacimiento)) toast.error("Ingrese una fecha valida")
+    
+    
+
+    else {
+      axios.put(`${APILINK}/api/profesor/${id}`, {
+        nombre,
+        apellido,
+        documento,
+        documentoTipo,
+        email,
+        nacimiento,
+        genero,
+        direccion,
+        telefono,
+
+      }, {
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+        }
+      })
+        .then(response => {
+          triggerState(response.data)
+          setProfesores(response.data)
+          toast.success("Guardado exitoso");
+
+          setShowModal(false);
+          setNombre("")
+          setApellido("")
+          setDireccion("")
+          setDocumentoTipo("")
+          setDocumento("")
+          setEmail("")
+          setNacimiento("")
+          setGenero("")
+          setTelefono("")
+
+        })
+        .catch(error => {
+          if(typeof(error.response.data) === "string"? true:false){
+            toast.error(error.response.data)
+          }else{
+            toast.error(error.response.data?.errors.Email[0])
+          }
+        });
+
+    }
+    
+
+  };
 
   const handleCloseModal = () => {
     setShowModal(false);
@@ -32,24 +96,49 @@ function ListDetallesProfesor(props) {
   }
   
 
-  const handleModificar = event => {
+  const handleModificar = (event) => {
     setReadOnly(!readOnly);
+    setNombre(profesor.nombre, () => {
+      console.log('Nombre actualizado:', nombre);
+    });
+
+    setApellido(profesor.apellido, () => {
+      console.log('Nombre actualizado:', nombre);
+    });
+
+    setTelefono(profesor.telefono, () => {
+      console.log('Nombre actualizado:', nombre);
+    });
+
+    setDireccion(profesor.direccion, () => {
+      console.log('Nombre actualizado:', nombre);
+    });
   
-    /*event.preventDefault();
-    axios.get(`${APILINK}/api/profesor/${id}`{
-      headers: {
-        Authorization: `Bearer ${getToken()}`,
-      }
-    })
-    .then(response => {
-      setProfesores(response.data);
+    setNacimiento(profesor.nacimiento, () => {
+      console.log('Nacimiento actualizado:', nacimiento.toLocaleDateString());
+    });
 
-    })
-    .catch(error => {
-      console.error(error);
-    });*/
+    setEmail(profesor.email, () => {
+      console.log('Nombre actualizado:', nombre);
+    });
+
+    setGenero(profesor.genero === "Femenino" ? "F" : "M", () => {
+      console.log('Género actualizado:', genero);
+    });
+
+    setDocumento(profesor.documento, () => {
+      console.log('Nombre actualizado:', nombre);
+    });
+
+    setDocumentoTipo(profesor.documentoTipo, () => {
+      console.log('Nombre actualizado:', nombre);
+    });
+
+
+
+  
+  
   };
-
 
   const handleGuardar = () => {
     setReadOnly(true);
@@ -76,10 +165,11 @@ function ListDetallesProfesor(props) {
         console.error(error);
       });
 
-}, [ id, getToken]);
+
+}, [ id, getToken ]);
 
 const [nombre, setNombre] = useState(profesor.nombre);
-const [apellido, setApellido] = useState(profesor.apellido);
+const [apellido, setApellido] = useState(profesor.nombre);
 const [telefono, setTelefono] = useState(profesor.telefono);
 const [direccion, setDireccion] = useState(profesor.direccion);
 const [nacimiento, setNacimiento] = useState(profesor.nacimiento);
@@ -93,10 +183,12 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
       <Modal.Header className={styles.contentModal} closeButton>
       <Modal.Title className="">Detalles Profesor</Modal.Title>
       </Modal.Header>
+
+      <form  profesor={handleSubmit}>
       
       <Modal.Body className={styles.contentModal} >
 
-          <form>
+         
             
             <Row>
               <Col>
@@ -110,7 +202,6 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
               <Form.Control
               type="text"
               defaultValue={profesor.nombre}
-              
                readOnly={readOnly}
             /> 
             )}
@@ -122,7 +213,8 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
           type="text"
           defaultValue={profesor.nombre|| ""} 
           value={nombre}
-          onChange={event => setFormData({...formData, name: event.target.value})}
+          onChange={event => setNombre(event.target.value)}
+          //placeholder={profesor.nombre} 
         />
           
         )}
@@ -136,14 +228,9 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
           <>
            
             {eliminarVisible && (
-             
-      
-             
                 <Form.Control
-                 className={styles.option}
                   type="text"
                   value={profesor.apellido}
-                  placeholder="Ingrese su apellido"
                   readOnly={readOnly}
                 />
 
@@ -153,10 +240,9 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
               <Form.Control
                  className={styles.option}
                   type="text"
-                  value={apellido}
                   defaultValue={profesor.apellido|| ""} 
+                  value={apellido}
                   onChange={event => setApellido(event.target.value)}
-                  placeholder="Ingrese su apellido"
                 />
                 
                 )}
@@ -247,6 +333,7 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
                 className={styles.option}
                   type="text"
                   name="nacimiento"
+                  //value={profesor.nacimiento}
                   value={new Date(profesor.nacimiento).toLocaleDateString()}
 
                   readOnly={readOnly}
@@ -258,13 +345,15 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
 
                 <Form.Control
                 className={styles.option}
-                  type="date"
-                  name="nacimiento"
-                  defaultValue={profesor.nacimiento|| ""} 
-                  value={nacimiento}
-                  onChange={event => setNacimiento(event.target.value)}
-                 
-                />
+                type="date"
+                name="nacimiento"
+                value={nacimiento}
+                onChange={event => {
+                  console.log(event.target.value);
+                  setNacimiento(new Date(event.target.value));
+                }}
+              />
+
  )}
                 </Col>
 
@@ -328,18 +417,15 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
                  className={styles.option}
                   as="select"
                   name="genero"
-                  defaultValue={profesor.genero|| ""} 
                   value={genero}
                   onChange={event => setGenero(event.target.value)}
                 >
-                  <option value="" className={styles.option}> {profesor.genero|| ""}  </option>
+                  <option value="" className={styles.option}> Seleccionar</option>
                   <option value="F" className={styles.option}>Femenino</option>
                   <option value="M"className={styles.option}>Masculino</option>
                 </Form.Control>
                  
                 )}
-          
-
               </Col>
 
               <Col>
@@ -403,11 +489,10 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
                  className={styles.option}
                   as="select"
                   name="documentoTipo"
-
                   value={documentoTipo}       
                   onChange={event => setDocumentoTipo(event.target.value)}
                 >
-                  <option value=""  className={styles.option}>{profesor.documentoTipo|| ""}</option>
+                  <option value=""  className={styles.option}>Seleccionar</option>
                   <option value="cedula" className={styles.option}> Cédula</option>
                   <option value="dni" className={styles.option}>DNI</option>
                   <option value="pasaporte" className={styles.option}>Pasaporte</option>
@@ -425,7 +510,7 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
        
             
 
-          </form>
+        
         </Modal.Body> 
 
      
@@ -440,7 +525,7 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
             )}
           </>
         ) : (
-          <button variant="primary" className={styles.button} onClick={handleGuardar}>
+          <button type="submit" className={styles.button} onClick={handleSubmit}>
             Guardar
           </button>
         )}
@@ -448,7 +533,7 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
         <button variant="primary" onClick={closeModal} className={styles.buttonClose}>Cerrar</button>
 
         </Modal.Footer>
-      
+        </form>
     
      
 
