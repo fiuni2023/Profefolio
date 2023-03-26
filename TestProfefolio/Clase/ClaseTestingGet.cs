@@ -296,6 +296,38 @@ namespace TestProfefolio.Clase
     
 
 
+        /*
+            Testea un caso de fallo del metodo Get por Id de Colegio con paginacion en la 
+            que el ID del colegio es menor a cero
+        */
+        [Theory]
+        [InlineData(-1, 1)]
+        [InlineData(-2, 8)]
+        [InlineData(-3, 31)]
+        [InlineData(-4, 12)]
+        [InlineData(-5, 10)]
+        [InlineData(-6, 36)]
+        [InlineData(-7, 2)]
+        [InlineData(-8, 5)]
+        public async void GetAllByIdColegioWithPage_ColiegioIdInvalid_BadRequest(int idColegio, int pag)
+        {
+            Mock<IMapper> mapper = new Mock<IMapper>();
+            Mock<ICiclo> cicloService = new Mock<ICiclo>();
+            Mock<IClase> claseService = new Mock<IClase>();
+            Mock<IColegio> colegioService = new Mock<IColegio>();
+
+            ClaseController controller = new ClaseController(
+                mapper.Object,
+                claseService.Object,
+                cicloService.Object,
+                colegioService.Object);
+
+            var result = await controller.GetAll(idColegio, pag);
+
+            var response = Assert.IsType<BadRequestObjectResult>(result.Result);
+            Assert.Equal("El campo de colegio es invalido", response.Value);
+        }
+    
 
 
     }
