@@ -10,7 +10,6 @@ using profefolio.Repository;
 namespace profefolio.Controllers
 {
     [Route("api/[controller]")]
-    [Authorize(Roles = "Master, Administrador de Colegio")]
     [ApiController]
     public class MateriaController : ControllerBase
     {
@@ -23,9 +22,10 @@ namespace profefolio.Controllers
             _mapper = mapper;
         }
 
-        
+
         [HttpGet]
         [Route("page/{page}")]
+        [Authorize(Roles = "Administrador de Colegio,Profesor")]
         public ActionResult<DataListDTO<MateriaResultDTO>> GetMaterias(int page)
         {
             var query = _materiaService.GetAll(page, _cantPorPag);
@@ -46,6 +46,7 @@ namespace profefolio.Controllers
         // GET: api/Materias/1
         //TODO: si data.delete = false no retornar.
         [HttpGet("{id}")]
+        [Authorize(Roles = "Administrador de Colegio,Profesor")]
         public async Task<ActionResult<MateriaResultDTO>> GetMateria(int id)
         {
             var materia = await _materiaService.FindById(id);
@@ -63,6 +64,7 @@ namespace profefolio.Controllers
         // 
         // una solicitud PUT requiere que el cliente envíe toda la entidad actualizada, no solo los cambios.
         [HttpPut("{id}")]
+        [Authorize(Roles = "Administrador de Colegio")]
         public async Task<ActionResult<MateriaResultDTO>> PutMateria(int id, MateriaDTO materia)
         {
             //verificar el modelo
@@ -71,7 +73,7 @@ namespace profefolio.Controllers
                 return BadRequest("Objeto No valido");
             }
             //verificar que no sea nulo
-           if (materia.Nombre_Materia == null || materia.Nombre_Materia == " " || materia.Nombre_Materia == "")
+            if (materia.Nombre_Materia == null || materia.Nombre_Materia == " " || materia.Nombre_Materia == "")
             {
                 return BadRequest("Nombre de materia No valido");
             }
@@ -81,13 +83,19 @@ namespace profefolio.Controllers
             {
                 return NotFound();
             }
+            //VERIFICAR REPETIDOS con nombre igual
+            var verificarNombreMateria = await _materiaService.FindByNameMateriaId(materia.Nombre_Materia,id);
+            if (verificarNombreMateria != null)
+            {
+                return BadRequest($"Ya existe una materia con el mismo nombre.");
+            }
             string userId = User.Identity.GetUserId();
             p.ModifiedBy = userId;
             p.Deleted = false;
             p.Modified = DateTime.Now;
 
             p.Nombre_Materia = materia.Nombre_Materia;
-            var query =  _materiaService.Edit(p);
+            var query = _materiaService.Edit(p);
             await _materiaService.Save();
 
             return Ok(_mapper.Map<MateriaResultDTO>(query));
@@ -96,6 +104,7 @@ namespace profefolio.Controllers
         // POST: api/Materias
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize(Roles = "Administrador de Colegio")]
         public async Task<ActionResult<MateriaResultDTO>> PostMateria([FromBody] MateriaDTO materia)
         {
 
@@ -107,8 +116,8 @@ namespace profefolio.Controllers
             {
                 return BadRequest("Nombre de materia No valido");
             }
-           
-              //VERIFICAR REPETIDOS con nombre igual
+
+            //VERIFICAR REPETIDOS con nombre igual
             var verificarNombreMateria = await _materiaService.FindByNameMateria(materia.Nombre_Materia);
             if (verificarNombreMateria != null)
             {
@@ -135,6 +144,7 @@ namespace profefolio.Controllers
         // DELETE: api/Materias/1
         //TODO: estado = false al eliminar.
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Administrador de Colegio")]
         public async Task<IActionResult> Delete(int id)
         {
             var data = await _materiaService.FindById(id);
@@ -143,7 +153,7 @@ namespace profefolio.Controllers
             {
                 return NotFound();
             }
-            
+
             data.Modified = DateTime.Now;
             data.Deleted = true;
             data.ModifiedBy = "Anonimous";
