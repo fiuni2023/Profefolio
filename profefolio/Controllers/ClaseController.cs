@@ -235,8 +235,10 @@ namespace profefolio.Controllers
                     return NotFound();
                 }
 
-                string userId = User.Identity.GetUserId();
-                clase.ModifiedBy = userId;
+                //string userId = User.Identity.GetUserId();
+                var name = User.FindFirstValue(ClaimTypes.Name);
+
+                clase.ModifiedBy = name;
                 clase.Modified = DateTime.Now;
                 clase.Deleted = true;
 
