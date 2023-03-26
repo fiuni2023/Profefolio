@@ -18,10 +18,15 @@ import ListDetallesProfesor from './list/ListDetallesProfesor.jsx';
 function Profesores() {
 
   const [profesores, setProfesores] = useState([]);
-  const [page, setPage] = useState(0);
+  
   const [showModal, setShowModal] = useState(false);
   const [id, setId] = useState(null);
   const { getToken, cancan, verifyToken } = useGeneralContext();
+
+  const [page, setPage] = useState(0);
+
+  const [totalPage, setTotalPage] = useState(0);
+  const isLastPage = page === totalPage;
 
   const nav = useNavigate()
 
@@ -40,6 +45,7 @@ function Profesores() {
   
         .then(response => {
           setProfesores(response.data.dataList);
+          setTotalPage(response.data.totalPage);//Total de Paginas
       
   
 
@@ -70,8 +76,11 @@ const handleCloseModal = () => {
     setPage(page - 1);
   };
 
+
   const handleNextClick = () => {
-    setPage(page + 1);
+    if (!isLastPage) {
+      setPage(page + 1);
+    }
   };
 
 
@@ -141,7 +150,10 @@ const handleCloseModal = () => {
                   <button className="btn page-item btn-sm" onClick={handlePrevClick} disabled={page === 0}>Anterior</button>
                 </li>
                 <li className="page-item">
-                  <button className="btn page-item btn-sm" href="#" onClick={handleNextClick}>Siguiente</button>
+                 
+                <button className="btn page-item btn-sm" onClick={handleNextClick}  disabled={isLastPage}>
+                          Siguiente
+                        </button>
                 </li>
               </ul>
             </nav>
