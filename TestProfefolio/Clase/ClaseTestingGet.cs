@@ -330,5 +330,94 @@ namespace TestProfefolio.Clase
     
 
 
+
+        /*
+            Testea el metodod de Get por Id de Colegio con paginacion
+            el cual sufre un error porque el numero de pagina recibido 
+            es mayor que el numero de paginas disponible
+        */
+        [Theory]
+        [InlineData(1, 10)]
+        [InlineData(2, 1)]
+        [InlineData(3, 2)]
+        [InlineData(4, 3)]
+        [InlineData(5, 4)]
+        [InlineData(6, 5)]
+        [InlineData(7, 6)]
+        [InlineData(8, 11)]
+        public async void GetAllByIdColegioWithPage_FearchedFailed_BadRequest(int idColegio, int pag)
+        {
+            int cantidadPorPag = 20;
+            Mock<IMapper> mapper = new Mock<IMapper>();
+            Mock<ICiclo> cicloService = new Mock<ICiclo>();
+            Mock<IClase> claseService = new Mock<IClase>();
+            Mock<IColegio> colegioService = new Mock<IColegio>();
+
+            ClaseController controller = new ClaseController(
+                mapper.Object,
+                claseService.Object,
+                cicloService.Object,
+                colegioService.Object);
+
+            var clase1 = new profefolio.Models.Entities.Clase()
+            {
+                Id = 1,
+                Anho = 2023,
+                CicloId = 1,
+                ColegioId = idColegio,
+                Deleted = false,
+                Nombre = "Primer grado",
+                Turno = "Tarde",
+                Created = DateTime.Now,
+                CreatedBy = "juan.perez@gmail.com"
+            };
+
+            var clase2 = new profefolio.Models.Entities.Clase()
+            {
+                Id = 2,
+                Anho = 2023,
+                CicloId = 1,
+                ColegioId = 1,
+                Deleted = false,
+                Nombre = "Segundo grado",
+                Turno = "Tarde",
+                Created = DateTime.Now,
+                CreatedBy = "juan.perez@gmail.com"
+            };
+
+            var clases = new List<profefolio.Models.Entities.Clase>(){
+                clase1, clase2
+            };
+
+            var resultClases = new List<ClaseResultSimpleDTO>(){
+                new ClaseResultSimpleDTO() {
+                    Id = 1,
+                    Ciclo = "Primero",
+                    CicloId = 1,
+                    Anho = 2023,
+                    Turno = "Tarde",
+                    Nombre = "Primer grado"
+                },
+                new ClaseResultSimpleDTO() {
+                    Id = 2,
+                    Ciclo = "Primero",
+                    CicloId = 1,
+                    Anho = 2023,
+                    Turno = "Tarde",
+                    Nombre = "Segundo grado"
+                }
+            };
+
+            claseService.Setup(c => c.GetAllByIdColegio(pag, cantidadPorPag, idColegio)).ReturnsAsync(clases);
+            
+            claseService.Setup(c => c.Count(idColegio)).ReturnsAsync(clases.Count);
+
+            var result = await controller.GetAll(idColegio, pag);
+
+            var response = Assert.IsType<BadRequestObjectResult>(result.Result);
+            Assert.Equal($"No existe la pagina: {pag} ", response.Value);
+
+        }
+    
     }
 }
