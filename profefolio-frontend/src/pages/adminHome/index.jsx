@@ -12,7 +12,7 @@ const Home = () => {
 
     return(
         <div className={styles.HomeDiv}>
-            <Row>
+            <Row className="mb-3">
                 <Col>
                     <h3>Bienvenido,</h3>  
                     <h3 className={`${styles.RubyText} mt-2 `}>{getUserName()}</h3>
@@ -21,13 +21,27 @@ const Home = () => {
             <Row>
                 <Col>
                     <CategoryPanel text="Administradores" handleClick={()=>{nav('/administrador/list')}}>
-                        <div className={styles.Panel}>
-                            
+                        <div className ="d-flex flex-column"> 
+                            <p>Aca podras:</p>
+                            <ul>
+                                <li><p>Agregar Administradores.</p></li>
+                                <li><p>Editar / Ver Administradores ya existentes.</p></li>
+                                <li><p>Borrar Administradores.</p></li>
+                            </ul>
                         </div>
                     </CategoryPanel>
                 </Col>
                 <Col>
-                    <CategoryPanel text="Colegios" handleClick={()=>{nav('/colegio')}}></CategoryPanel>
+                    <CategoryPanel text="Colegios" handleClick={()=>{nav('/colegio')}}>
+                        <div className ="d-flex flex-column"> 
+                            <p>Aca podras:</p>
+                            <ul>
+                                <li><p>Agregar Colegios.</p></li>
+                                <li><p>Editar / Ver Colegios ya existentes.</p></li>
+                                <li><p>Borrar Colegios.</p></li>
+                            </ul>
+                        </div>
+                    </CategoryPanel>
                 </Col>
             </Row>
         </div>
