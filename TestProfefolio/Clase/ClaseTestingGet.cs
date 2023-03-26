@@ -253,12 +253,50 @@ namespace TestProfefolio.Clase
             mapper.Setup(m => m.Map<List<ClaseResultSimpleDTO>>(clases)).Returns(resultClases);
 
 
-            var result = await controller.GetAll(idColegio, 0);
+            var result = await controller.GetAll(idColegio, pag);
 
             var response = Assert.IsType<OkObjectResult>(result.Result);
 
         }
     
     
+
+        /*
+            Testea un caso de fallo del metodo Get por Id de Colegio con paginacion en la 
+            que el numero de pagina es menor a cero
+        */
+        [Theory]
+        [InlineData(1, -1)]
+        [InlineData(2, -8)]
+        [InlineData(3, -31)]
+        [InlineData(4, -12)]
+        [InlineData(5, -10)]
+        [InlineData(6, -36)]
+        [InlineData(7, -2)]
+        [InlineData(8, -5)]
+        public async void GetAllByIdColegioWithPage_PageInvalid_BadRequest(int idColegio, int pag)
+        {
+            Mock<IMapper> mapper = new Mock<IMapper>();
+            Mock<ICiclo> cicloService = new Mock<ICiclo>();
+            Mock<IClase> claseService = new Mock<IClase>();
+            Mock<IColegio> colegioService = new Mock<IColegio>();
+
+            ClaseController controller = new ClaseController(
+                mapper.Object,
+                claseService.Object,
+                cicloService.Object,
+                colegioService.Object);
+
+            var result = await controller.GetAll(idColegio, pag);
+
+            var response = Assert.IsType<BadRequestObjectResult>(result.Result);
+            Assert.Equal("El numero de pagina debe ser mayor o igual que cero", response.Value);
+        }
+    
+    
+
+
+
+
     }
 }
