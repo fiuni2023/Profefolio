@@ -1,0 +1,39 @@
+.iconButton{
+    border: none;
+    background-color: white;
+}
+#modalContenido{
+    background-color: #C6D8D3;
+    
+}
+.btnGuardar{
+    color: white !important;
+    font-size: 13px !important;
+    background-color: #331832 !important;
+    width: 100px !important;
+    border: none !important;
+    height: 30px;
+}
+.btnCancelar{
+    background-color: gainsboro !important;
+    color: black !important;
+    font-size: 13px!important;
+    width: 100px !important;
+    height: 30px;
+    border: none !important;
+}
+
+.labelForm{
+    font-size: 12px !important;
+    font-weight: 600 !important;
+}
+.tituloForm{
+    margin-left: 32%;
+}
+#inputColegio{
+    border: none;
+    height:40px;
+    width:100%;
+    border-radius: 10px;
+    color: black;
+}

@@ -1,8 +1,9 @@
 import React from "react";
+import styles from './Table.module.css'
 
-export const Table = ({headers = [], datas=[], parseToRow =() =>{return <tr><td>create a parseToRow function for your tablerow</td></tr>}}) => {
+export const Table = ({headers = [], datas=[], className = "", parseToRow =() =>{return <tr><td>create a parseToRow function for your tablerow</td></tr>}}) => {
     return(<>
-        <table className="CustomTable">
+        <table className={`${styles.CustomTable} ${className}`}>
             <thead>
                 <tr>
                     {headers.map((h, index)=>{return <th key={index}>{h}</th>})}
@@ -12,19 +13,5 @@ export const Table = ({headers = [], datas=[], parseToRow =() =>{return <tr><td>
                     {datas.map((d,index)=>{return parseToRow(d,index)})}
             </tbody>
         </table>
-        <style jsx="true">{`
-            .CustomTable{
-                width: 100%;
-                border-spacing: 0px;
-            }
-            .CustomTable>thead>tr>th{
-                border: 1px solid black;
-                padding-left: 5px;
-            }
-            .CustomTable>tbody>tr>td{
-                text-align: center;
-                border: 1px solid black;
-            }
-        `}</style>
     </>)
 }

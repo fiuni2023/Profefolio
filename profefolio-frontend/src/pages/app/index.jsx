@@ -40,8 +40,6 @@ const App = () => {
                                 </Route>
                                 <Route path="/administrador" element={<Administrador />}>
                                     <Route path="list" element={<ListAdministrador />} />
-                                   
-       
                                 </Route>
 
                                 <Route path="/colegio" element={<ListarColegios />}>
