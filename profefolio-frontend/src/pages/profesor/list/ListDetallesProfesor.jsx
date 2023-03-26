@@ -9,15 +9,36 @@ import { BsTrash, BsPencilFill } from 'react-icons/bs';
 
 
 function ListDetallesProfesor(props) {
-  const { showModal, setShowModal ,id,triggerState} = props;
+  const { showModal, setShowModal ,id,triggerState , page} = props;
 
-  const [profesor, setProfesores] = useState([]);
+ const [profesor, setProfesores] = useState([]);
 
   const { getToken } = useGeneralContext();
 
   const [readOnly, setReadOnly] = useState(true);
 
   const [eliminarVisible, setEliminarVisible] = useState(true);
+ 
+
+
+  const handleUpdate = () => {
+    axios.get(`${APILINK}/api/profesor/page/${page}`, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+      }
+    })
+
+      .then(response => {
+        triggerState(response.data.dataList);
+    
+
+
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }
+
 
 
 
@@ -56,7 +77,10 @@ function ListDetallesProfesor(props) {
         }
       })
         .then(response => {
-          triggerState(response.data)
+          //triggerState(response.data)
+          handleUpdate();
+
+          
           setProfesores(response.data)
           toast.success("Guardado exitoso");
 
@@ -94,8 +118,14 @@ function ListDetallesProfesor(props) {
     setShowModal(false);
   }
   
+  const handleCancelar = () => {
+    console.log('entro en cancelar');
 
-  const handleModificar = (event) => {
+    setReadOnly(true);
+
+  }
+
+  const handleModificar = () => {
     setReadOnly(!readOnly);
     setNombre(profesor.nombre, () => {
       console.log('Nombre actualizado:', nombre);
@@ -159,7 +189,10 @@ function ListDetallesProfesor(props) {
     })
 
       .then(response => {
+
         setProfesores(response.data);
+
+
         //triggerState(response.data)
     
 
@@ -192,7 +225,7 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
       <Modal.Body className={styles.contentModal} >
 
          
-      <form  profesor={handleSubmit}> 
+   
       
             <Row>
               <Col>
@@ -206,7 +239,7 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
               <Form.Control
               type="text"
               defaultValue={profesor.nombre}
-               readOnly={readOnly}
+              readOnly={readOnly}
             /> 
             )}
           </>
@@ -215,7 +248,6 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
           <Form.Control
           className={styles.option}
           type="text"
-          defaultValue={profesor.nombre|| ""} 
           value={nombre}
           onChange={event => setNombre(event.target.value)}
           //placeholder={profesor.nombre} 
@@ -244,7 +276,6 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
               <Form.Control
                  className={styles.option}
                   type="text"
-                  defaultValue={profesor.apellido|| ""} 
                   value={apellido}
                   onChange={event => setApellido(event.target.value)}
                 />
@@ -276,7 +307,6 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
                  className={styles.option}
                   type="number"
                   name="telefono"
-                  defaultValue={profesor.telefono|| ""} 
                   value={telefono}
 
                   onChange={event => setTelefono(event.target.value)}
@@ -310,7 +340,6 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
                  className={styles.option}
                   type="text"
                   name="direccion"
-                  defaultValue={profesor.direccion|| ""} 
                   value={direccion}
                   onChange={event => setDireccion(event.target.value)}
                   placeholder="Ingrese su direccion"
@@ -384,7 +413,6 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
                  className={styles.option}
                  type="email"
                   name="email"
-                  defaultValue={profesor.email|| ""} 
                   value={email}
                   onChange={event => setEmail(event.target.value)}
                   placeholder="Ingrese su correo electronico"
@@ -454,7 +482,6 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
                  className={styles.option}
                   type="text"
                   name="documento"
-                  defaultValue={profesor.documento|| ""} 
                   value={documento}
                   onChange={event => setDocumento(event.target.value)}
                   placeholder="Ingrese su documento"
@@ -512,12 +539,13 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
             <br/>
        
             
-            </form>    
+               
         
         </Modal.Body> 
 
      
         <Modal.Footer className={styles.footerModal}>
+         
         {readOnly ? (
           <>
             <button variant="primary" className={styles.buttonModify} onClick={handleModificar}>
@@ -528,9 +556,17 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
             )}
           </>
         ) : (
-          <button type='submit' className={styles.button} onClick={handleSubmit}>
+          <div>
+          <button type='submit' className={styles.buttonModify} onClick={handleSubmit}>
             Guardar
           </button>
+
+          <button variant="primary"  className={styles.buttonDelete} onClick={handleCancelar}>
+          Cancelar
+        </button>
+          </div>
+
+
         )}
        
         <button variant="primary" onClick={closeModal} className={styles.buttonClose}>Cerrar</button>
