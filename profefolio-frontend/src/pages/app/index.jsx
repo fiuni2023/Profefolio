@@ -18,6 +18,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 import Profesor from "../profesor/index.jsx";
+import Clases from "../clases/index.jsx";
 
 const App = () => {
 
@@ -52,6 +53,9 @@ const App = () => {
 
                                 <Route path="/profesor/create" element={<CreateProfesor />}>
                                     <Route path="list" element={<CreateProfesor />} />
+                                </Route>
+
+                                <Route path="/clases" element={<Clases />}>
                                 </Route>
                             </Routes>
                         </div>

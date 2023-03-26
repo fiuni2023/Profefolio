@@ -32,6 +32,7 @@ const SideBar = () => {
                     cancan("Administrador de Colegio") &&
                     <>
                         <SideBarTab page={"profesor"}  handleClick={()=>{navigate("/profesor")}}>- Profesor</SideBarTab>
+                        <SideBarTab page={"clases"}  handleClick={()=>{navigate("/clases")}}>- Clases</SideBarTab>
                     </>
                 }
 
