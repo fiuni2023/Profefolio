@@ -27,7 +27,7 @@ const ListarColegios = (triggerState = () => { }) => {
     if (!cancan("Master")) {
       nav("/")
     } else {
-      var config = {
+      let config = {
         method: 'get',
         url: `${APILINK}/api/ColegiosFull/page/${currentPage}`,
         headers: {

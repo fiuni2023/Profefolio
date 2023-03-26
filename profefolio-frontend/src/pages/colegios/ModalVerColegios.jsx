@@ -9,12 +9,12 @@ import { useNavigate } from "react-router-dom";
 
 function ModalVerColegios({ idColegio, setShow, show, disabled, setDisabled }) {
   const handleClose = () => setShow(false);
-  const [colegio, setColegio] = useState([]);
+  const [colegio, setColegio] = useState([""]);
   const { getToken, verifyToken, cancan } = useGeneralContext();
   const nav = useNavigate();
   const navigate = useNavigate();
-  //const [disabled, setDisabled] = useState(true);
   const [administradores, setAdministradores] = useState([]);
+  const [nombreColegio, setNombreColegio] = useState("");
   const [nombreNuevoCol, setNombreNuevoCol] = useState("")
   const [idAdmin, setIdAdmin] = useState(0);
 
@@ -22,28 +22,30 @@ function ModalVerColegios({ idColegio, setShow, show, disabled, setDisabled }) {
 
 
   useEffect(() => {
-    console.log(idColegio);
-    verifyToken()
-    if (!cancan("Master")) {
-      nav("/")
-    } else {
-      var config = {
-        method: 'get',
-        url: `${APILINK}/api/ColegiosFull/${idColegio}`,
-        headers: {
-          'Authorization': `Bearer ${getToken()}`
-        }
-      };
-      axios(config)
-        .then(function (response) {
-          setColegio(response.data); //Guarda los datos
-          console.log(colegio);
-          setDisabled(true);
+    if (show) {
+      verifyToken()
+      if (!cancan("Master")) {
+        nav("/")
+      } else {
+        let config = {
+          method: 'get',
+          url: `${APILINK}/api/ColegiosFull/${idColegio}`,
+          headers: {
+            'Authorization': `Bearer ${getToken()}`
+          }
+        };
+        axios(config)
+          .then(function (response) {
+            setColegio(response.data); //Guarda los datos
+            setDisabled(true);
+            
 
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+      }
+      handleEdit();
     }
   }, [cancan, verifyToken, nav, getToken, idColegio])
   //Llamada para obtener los datos de admninistradores
@@ -52,7 +54,7 @@ function ModalVerColegios({ idColegio, setShow, show, disabled, setDisabled }) {
     if (!cancan("Master")) {
       nav("/")
     } else {
-      var config = {
+      let config = {
         method: 'get',
         url: `${APILINK}/api/administrador`,
         headers: {
@@ -74,23 +76,57 @@ function ModalVerColegios({ idColegio, setShow, show, disabled, setDisabled }) {
   const handleEdit = () => {
     handleGetAdmin();
     setDisabled(false);
-    console.log("Hola", disabled);
-
-
   }
+
+  const handleSubmit = () => {
+    console.log(idAdmin);
+    if (nombreNuevoCol == nombreColegio && idAdmin != 0 || nombreNuevoCol != "" && idAdmin != 0) {
+      let data = JSON.stringify({
+        "nombre": nombreNuevoCol,
+        "personaId": idAdmin
+      });
+      console.log(data);
+      verifyToken()
+      let config = {
+          method: 'put',
+          url: `${APILINK}/api/Colegios/${idColegio}`,
+          headers: {
+            'Authorization': `Bearer ${getToken()}`
+          },
+          data: data
+        };
+        axios.request(config)
+          .then((response) => {
+            console.log(JSON.stringify(response.data));
+            toast.success("Cambios Guardados");
+          })
+          .catch((error) => {
+            console.log(error);
+            toast.error("Hubo un error al guardar los cambios", error);
+          });
+
+      
+    }
+    else {
+      toast.error("Rellene todos los campos");
+
+    }
+  }
+
+
   //Guardar el id del admin
   const handleAdmin = (idAdmin) => {
     setIdAdmin(idAdmin);
   }
   const handleIDAdmin = (event) => {
-    handleAdmin(event.target.value || '')
+    setIdAdmin(event.target.value)
   }
 
   const handleNombre = (nombre) => {
     setNombreNuevoCol(nombre);
   }
   const handleInputColegio = (event) => {
-    handleNombre(event.target.value || '');
+    handleNombre(event.target.value);
   }
   //Eliminar colegio
   const handleDelete = (id) => {
@@ -112,31 +148,32 @@ function ModalVerColegios({ idColegio, setShow, show, disabled, setDisabled }) {
               <form>
                 <label htmlFor="colegio-nombre" className={styles.labelForm}>Nombre Colegio</label><br />
                 {disabled
-                  ? <div> <input type="text" id={styles.inputColegio} value={colegio.nombre || ''} disabled onChange={event => handleInputColegio(event)}></input><br />
+                  ? <div> <input type="text" id={styles.inputColegio} defaultValue={colegio.nombre || ''} disabled></input><br />
                     <br /></div>
 
-                  : <div> <input type="text" id={styles.inputColegio} name="colegio-nombre" onChange={event => handleInputColegio(event)}></input><br />
-                  <br /></div>
+                  : <div> <input type="text" id={styles.inputColegio} defaultValue={colegio.nombre || ''} name="colegio-nombre" onChange={event => handleInputColegio(event)}></input><br />
+                    <br /></div>
                 }
-               
+
 
                 <label htmlFor="administrador"><strong> Administrador</strong></label><br />
                 {disabled
-                  ? <div> < input required type="text" id={styles.inputColegio} name="colegio-admin" value={colegio.nombreAdministrador + " " + colegio.apellido || ''} disabled>
+                  ? <div> < input required type="text" id={styles.inputColegio} name="colegio-admin" defaultValue={colegio.nombreAdministrador + " " + colegio.apellido || ''} disabled>
                   </input>
                     <br /></div>
 
-                  : <select required name="admin" onChange={event => handleIDAdmin(event)} placeholder="Seleccionar Administrador" className={styles.selectAdmin}>
-                    <option disabled value={0|| '' }>Seleccione Administrador</option>
+                  : <div>  <select required name="admin" defaultValue={idAdmin || ''} onChange={event => handleIDAdmin(event)} className={styles.selectAdmin}>
+                    <option disabled value={0 || ''}>Seleccione Administrador</option>
                     {administradores.map((administrador) =>
                       <option key={administrador.id} value={administrador.id || ''}>{administrador.nombre} {administrador.apellido}</option>
                     )}
                   </select>
+                  </div>
                 }
               </form>
             </div>
           </Modal.Body>
-          <Modal.Footer id={styles.modalContenido}>
+          <Modal.Footer >
             {disabled
               ? <div>
                 <Button className={styles.btnCancelar} onClick={handleDelete} >Eliminar</Button>
@@ -144,7 +181,7 @@ function ModalVerColegios({ idColegio, setShow, show, disabled, setDisabled }) {
               </div>
               : <div>
                 <Button className={styles.btnCancelar} onClick={handleClose} >Cancelar</Button>
-                <Button className={styles.btnGuardar} onClick={handleEdit}>Guardar</Button>
+                <Button className={styles.btnGuardar} onClick={handleSubmit}>Guardar</Button>
               </div>
             }
 

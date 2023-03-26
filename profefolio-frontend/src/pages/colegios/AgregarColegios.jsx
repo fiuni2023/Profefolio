@@ -15,7 +15,7 @@ function ModalAgregarColegios({ onSubmit = () => { }, triggerState = () => { } }
     //Get administadores
 
     useEffect(() => {
-        var config = {
+        let config = {
             method: 'get',
             url: `${APILINK}/api/administrador`,
             headers: {
@@ -46,12 +46,12 @@ function ModalAgregarColegios({ onSubmit = () => { }, triggerState = () => { } }
             return
         }
         else {
-            var data = JSON.stringify({
+            let data = JSON.stringify({
                 "nombre": nombreColegio,
                 "personaId": idAdmin
             });
 
-            var config = {
+            let config = {
                 method: 'post',
                 maxBodyLength: Infinity,
                 url: `${APILINK}/api/Colegios`,
@@ -125,7 +125,7 @@ function ModalAgregarColegios({ onSubmit = () => { }, triggerState = () => { } }
                         </form>
                     </div>
                 </Modal.Body>
-                <Modal.Footer id={styles.modalContenido}>
+                <Modal.Footer >
                     <Button className={styles.btnCancelar} onClick={handleClose} >Cancelar</Button>
                     <Button className={styles.btnGuardar} onClick={() => handleSubmit()}>Guardar</Button>
                 </Modal.Footer>
