@@ -177,7 +177,7 @@ namespace profefolio.Controllers
                 var clase = await _claseService.FindById(id);
                 if (clase == null)
                 {
-                    return NotFound("El no se ha encontrado la Clase a editar");
+                    return NotFound("No se ha encontrado la Clase a editar");
                 }
 
                 var ciclo = await _cicloService.FindById(dto.CicloId);
@@ -192,8 +192,8 @@ namespace profefolio.Controllers
                     return NotFound("El campo de Colegio es invalido");
                 }
 
-                var userId = User.Identity.GetUserId();
-                clase.ModifiedBy = userId;
+                var name = User.FindFirstValue(ClaimTypes.Name);
+                clase.ModifiedBy = name;
                 clase.Modified = DateTime.Now;
                 clase.Deleted = false;
 
