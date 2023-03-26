@@ -23,9 +23,14 @@ namespace profefolio.Services
             return result.Entity;
         }
 
+        public async Task<int> Count(int idColegio)
+        {
+            return await _context.Clases.CountAsync(c => !c.Deleted && c.ColegioId == idColegio);
+        }
+
         public int Count()
         {
-            return _context.Clases.Count(c => !c.Deleted);
+            throw new NotImplementedException();
         }
 
         public void Dispose()

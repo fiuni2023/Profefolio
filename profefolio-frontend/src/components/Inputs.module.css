@@ -1,0 +1,20 @@
+.TI {
+    outline: none;
+    border: lightgray;
+    border-radius: 10px;
+}
+
+.BI {
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    transition: 0.25s all;
+}
+
+.BI:hover {
+    filter: brightness(0.9);
+}
+
+.BI:active {
+    filter: brightness(0.7);
+}
