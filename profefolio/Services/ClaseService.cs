@@ -23,6 +23,11 @@ namespace profefolio.Services
             return result.Entity;
         }
 
+        public async Task<int> Count(int idColegio)
+        {
+            return await _context.Clases.CountAsync(c => !c.Deleted && c.ColegioId == idColegio);
+        }
+
         public int Count()
         {
             throw new NotImplementedException();
@@ -46,23 +51,40 @@ namespace profefolio.Services
 
         public async Task<Clase> FindById(int id)
         {
-            return await _context.Clases.Where(c => !c.Deleted && c.Id == id).FirstOrDefaultAsync();
+            return await _context.Clases
+                        .Where(c => !c.Deleted && c.Id == id)
+                        .Include(c => c.Ciclo)
+                        .Include(c => c.Colegio)
+                        .FirstOrDefaultAsync();
         }
 
-        public IEnumerable<Clase> GetAll(int page, int cantPorPag)
+        public async Task<IEnumerable<Clase>> GetAllByIdColegio(int page, int cantPorPag, int idColegio)
         {
-            return _context.Clases
-                    .Where(c => !c.Deleted)
+            return await _context.Clases
+                    .Where(c => !c.Deleted && c.ColegioId == idColegio)
                     .Include(c => c.Ciclo)
-                    .ThenInclude(ciclo => ciclo.Nombre)
                     .Include(c => c.Colegio)
-                    .ThenInclude(colegio => colegio.Nombre)
-                    .Skip(page * cantPorPag).Take(cantPorPag).ToList();
+                    .Skip(page * cantPorPag).Take(cantPorPag)
+                    .OrderByDescending(c => c.Id).ToListAsync();
         }
+
+        public async Task<IEnumerable<Clase>> GetByIdColegio(int idColegio)
+        {
+            return await _context.Clases.Where(c => !c.Deleted && c.ColegioId == idColegio)
+            .Include(c => c.Ciclo)
+            .OrderByDescending(clase => clase.Id)
+            .ToListAsync();
+        }
+
 
         public Task Save()
         {
             return _context.SaveChangesAsync();
+        }
+
+        IEnumerable<Clase> IRepository<Clase>.GetAll(int page, int cantPorPag)
+        {
+            throw new NotImplementedException();
         }
     }
 }

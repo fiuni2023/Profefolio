@@ -30,6 +30,11 @@ namespace profefolio.Helpers.Mappers
                         opt => opt.MapFrom(v => v.CicloId))
             .ForMember(dest => dest.IdColegio,
                         opt => opt.MapFrom(v => v.ColegioId));
+            
+
+            CreateMap<Clase, ClaseResultSimpleDTO>()
+            .ForMember(dest => dest.Ciclo, 
+                        opt => opt.MapFrom(v => v.Ciclo.Nombre));
         }
         
     }

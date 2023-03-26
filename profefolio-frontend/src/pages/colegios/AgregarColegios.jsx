@@ -6,14 +6,14 @@ import axios from "axios";
 import { useGeneralContext } from "../../context/GeneralContext";
 import { toast } from 'react-hot-toast';
 import APILINK from '../../components/link';
-function ModalAgregarColegios({setColegios = ()=>{}}) {
+function ModalAgregarColegios({ onSubmit = () => { }, triggerState = () => { } }) {
     const { getToken } = useGeneralContext()
     const [nombreColegio, setNombreColegio] = useState("");
     const [idAdmin, setIdAdmin] = useState(0);
     const [administradores, setAdministradores] = useState([]);
     const [mensajeError, setMensajeError] = useState(null);
     //Get administadores
-    
+
     useEffect(() => {
         var config = {
             method: 'get',
@@ -38,11 +38,11 @@ function ModalAgregarColegios({setColegios = ()=>{}}) {
     const handleSubmit = () => {
 
         if (nombreColegio === "") {
-            toast.error("Rellenar todos los campos");
+            toast.error("Ingrese todos los datos");
             return
         }
         if (idAdmin === 0) {
-            toast.error("Rellenar todos los campos");
+            toast.error("Ingrese todos los datos");
             return
         }
         else {
@@ -68,13 +68,15 @@ function ModalAgregarColegios({setColegios = ()=>{}}) {
                         toast.error("Hubo un error")
                     }
                     else if (response.status >= 200) {
+                        triggerState(response.data)
+                        onSubmit(response.data)
                         toast.success("Guardado correctamente");
                     }
                 })
                 .catch(function (error) {
-                    if(typeof(error.response.data) === "string"? true:false){
+                    if (typeof (error.response.data) === "string" ? true : false) {
                         toast.error(error.response.data)
-                    }else{
+                    } else {
                     }
                 });
             handleClose();
@@ -101,12 +103,12 @@ function ModalAgregarColegios({setColegios = ()=>{}}) {
             <button className={styles.buttonAgregar} onClick={handleShow}><BsFillPlusCircleFill className={styles.iconoAgregar} /></button>
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header id={styles.modalContenido} closeButton onClick={handleClose}>
-                    <h5 >Agregar Colegio</h5>
+                    <h5 className={styles.tituloForm} >Agregar Colegio</h5>
                 </Modal.Header>
                 <Modal.Body id={styles.modalContenido}>
                     <div>
                         <form>
-                            <label htmlFor="colegio-nombre"><strong>Nombre</strong></label><br />
+                            <label htmlFor="colegio-nombre" className={styles.labelForm}>Nombre</label><br />
                             <input required type="text" id={styles.inputColegio} name="colegio-nombre" onChange={event => handleNombreColegio(event)}></input><br />
                             <p className={styles.mensajeError}>{mensajeError}</p>
                             <label htmlFor="administrador"><strong> Administrador</strong></label><br />
