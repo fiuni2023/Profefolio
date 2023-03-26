@@ -60,7 +60,7 @@ namespace TestProfefolio.Clase
                 Id = 2,
                 Anho = 2023,
                 CicloId = 1,
-                ColegioId = 1,
+                ColegioId = idColegio,
                 Deleted = false,
                 Nombre = "Segundo grado",
                 Turno = "Tarde",
@@ -215,7 +215,7 @@ namespace TestProfefolio.Clase
                 Id = 2,
                 Anho = 2023,
                 CicloId = 1,
-                ColegioId = 1,
+                ColegioId = idColegio,
                 Deleted = false,
                 Nombre = "Segundo grado",
                 Turno = "Tarde",
@@ -377,7 +377,7 @@ namespace TestProfefolio.Clase
                 Id = 2,
                 Anho = 2023,
                 CicloId = 1,
-                ColegioId = 1,
+                ColegioId = idColegio,
                 Deleted = false,
                 Nombre = "Segundo grado",
                 Turno = "Tarde",
@@ -416,6 +416,68 @@ namespace TestProfefolio.Clase
 
             var response = Assert.IsType<BadRequestObjectResult>(result.Result);
             Assert.Equal($"No existe la pagina: {pag} ", response.Value);
+
+        }
+    
+
+
+        /*
+            Testea un caso exitoso de Get por Id de Clase 
+        */
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        [InlineData(4)]
+        [InlineData(5)]
+        [InlineData(6)]
+        [InlineData(7)]
+        [InlineData(8)]
+        public async void GetById_Ok(int id)
+        {
+            Mock<IMapper> mapper = new Mock<IMapper>();
+            Mock<ICiclo> cicloService = new Mock<ICiclo>();
+            Mock<IClase> claseService = new Mock<IClase>();
+            Mock<IColegio> colegioService = new Mock<IColegio>();
+
+            ClaseController controller = new ClaseController(
+                mapper.Object,
+                claseService.Object,
+                cicloService.Object,
+                colegioService.Object);
+
+            var clase = new profefolio.Models.Entities.Clase()
+            {
+                Id = id,
+                Anho = 2023,
+                CicloId = 1,
+                ColegioId = 1,
+                Deleted = false,
+                Nombre = "Primer grado",
+                Turno = "Tarde",
+                Created = DateTime.Now,
+                CreatedBy = "juan.perez@gmail.com"
+            };
+
+
+            var resultClase = new ClaseResultDTO() {
+                    Id = id,
+                    Ciclo = "Primero",
+                    IdCiclo = 1,
+                    Colegio = "San Juan",
+                    IdColegio = 1,
+                    Anho = 2023,
+                    Turno = "Tarde",
+                    Nombre = "Primer grado"
+                };
+
+            claseService.Setup(c => c.FindById(id)).ReturnsAsync(clase);
+
+            mapper.Setup(m => m.Map<ClaseResultDTO>(clase)).Returns(resultClase);
+
+            var result = await controller.GetById(id);
+
+            var response = Assert.IsType<OkObjectResult>(result.Result);
 
         }
     
