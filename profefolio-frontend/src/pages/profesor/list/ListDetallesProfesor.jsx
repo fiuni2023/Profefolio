@@ -84,6 +84,7 @@ function ListDetallesProfesor(props) {
     console.log('documento',documento);
     console.log('email',email);
     console.log('nacimiento',nacimiento);
+    console.log('tipoDocumento',documentoTipo);
 
     console.log('genero',genero);
 
@@ -152,6 +153,8 @@ function ListDetallesProfesor(props) {
 
   function closeModal() {
     setShowModal(false);
+    setReadOnly(true);
+    setEliminarVisible(true);
   }
   
   const handleCancelar = () => {
@@ -191,7 +194,9 @@ function ListDetallesProfesor(props) {
         setEmail(email);
         setGenero(genero === "Femenino" ? "F" : "M");
         setDocumento(documento);
-        setDocumentoTipo(documentoTipo);
+
+        setDocumentoTipo(documentoTipo === "cedula" ? "cedula" : documentoTipo === "CI" ? "cedula" : documentoTipo === "Cedula" ? "cedula" : documentoTipo === "dni" ? "dni" :documentoTipo === "pasaporte" ? "pasaporte" :"");
+       // setDocumentoTipo(documentoTipo );
 
 
         //triggerState(response.data)
