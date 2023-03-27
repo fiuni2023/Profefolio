@@ -8,6 +8,8 @@ import { useGeneralContext } from '../../../context/GeneralContext'
 
 import styles from './EditPanel.module.css'
 import { RxCross2 } from "react-icons/rx";
+import { BsPencilFill } from 'react-icons/bs'
+import { GoTrashcan } from 'react-icons/go'
 
 const LAEditPanel = ({
     onUpdate = () => {}
@@ -63,15 +65,15 @@ const LAEditPanel = ({
                 setSelectedAdmin(r.data)
             })
             .catch((error)=>{
-                toast.error("No se pudieron editar los administradores, verifique sus datos e intente de nuevo")
+                toast.error(error.response.data)
             })
     }
 
-    const widthOf = (data, ph) => {
-        if(!(data)) return ( ph?.length * 12 ) + 8 < 400? ( ph?.length * 12 ) + 8 : 400
-        if(data?.length === 0) return ( ph?.length * 12 ) + 8 < 400? ( ph?.length * 12 ) + 8 : 400
-        return ( data?.length * 12 ) + 8 < 400? ( data?.length * 12 ) + 8 : 400
-    }
+    // const widthOf = (data, ph) => {
+    //     if(!(data)) return ( ph?.length * 12 ) + 8 < 400? ( ph?.length * 12 ) + 8 : 400
+    //     if(data?.length === 0) return ( ph?.length * 12 ) + 8 < 400? ( ph?.length * 12 ) + 8 : 400
+    //     return ( data?.length * 12 ) + 8 < 400? ( data?.length * 12 ) + 8 : 400
+    // }
 
     return (
         <>
@@ -80,15 +82,15 @@ const LAEditPanel = ({
                     <Row>
                         <Col>
                             <div className="d-flex gap-2">
-                                <input disabled={!editing} className = {styles.invisInputB} style={{width: widthOf(selectedAdmin.nombre)}} value={selectedAdmin.nombre} onChange={(event) => { handleChange("nombre", event.target.value) }} />
-                                <input disabled={!editing} className = {styles.invisInputB} placeholder={"Agregar Apellido"} style={{width: widthOf(selectedAdmin.apellido, "Agregar Apellido")}} value={selectedAdmin.apellido} onChange={(event) => { handleChange("apellido", event.target.value) }} />
+                                <input disabled={!editing} className = {''} style={{width: '49%'}} value={selectedAdmin.nombre} onChange={(event) => { handleChange("nombre", event.target.value) }} />
+                                <input disabled={!editing} className = {''} placeholder={"Agregar Apellido"} style={{width: '49%'}} value={selectedAdmin.apellido} onChange={(event) => { handleChange("apellido", event.target.value) }} />
                             </div>    
                         </Col>
                         <Col>
                             <div className="d-flex justify-content-between">
-                                <div className="d-flex gap-2 align-items-center">
+                                <div className="d-flex gap-2 align-items-center w-75">
                                     <label>E-mail:</label>
-                                    <input disabled={!editing} className = {styles.invisInputB} placeholder={"Agregar Email"} style={{width: widthOf(selectedAdmin.email, "Agregar Email")}} value={selectedAdmin.email ?? ""} onChange={(event) => { handleChange("email", event.target.value) }} />
+                                    <input disabled={!editing} className = {''} placeholder={"Agregar Email"} style={{width: '85%'}} value={selectedAdmin.email ?? ""} onChange={(event) => { handleChange("email", event.target.value) }} />
                                 </div>
                                 <div className={styles.ExitContainer} onClick={()=>{handleClose()}}>
                                     <RxCross2 size={18} />
@@ -101,22 +103,22 @@ const LAEditPanel = ({
                             <div className="d-flex gap-2 align-items-center">
                                 <div className="d-flex gap-2 align-items-center">
                                     <label>CIN:</label>
-                                    <input disabled={!editing} className = {styles.invisInput} placeholder={"Agregar CIN"} style={{width: widthOf(selectedAdmin.documento, "Agregar CIN")}} value={selectedAdmin.documento ?? ""} onChange={(event) => { handleChange("documento", event.target.value) }} />
+                                    <input disabled={!editing} className = {''} placeholder={"Agregar CIN"} style={{width: 'auto'}} value={selectedAdmin.documento ?? ""} onChange={(event) => { handleChange("documento", event.target.value) }} />
                                 </div>
                                 <div className="d-flex gap-2 align-items-center">
                                     <label>Tel:</label>
-                                    <input disabled={!editing} className = {styles.invisInput} placeholder={"Agregar Telefono"} style={{width: widthOf(selectedAdmin.telefono, "Agregar CIN")}} value={selectedAdmin.telefono ?? ""} onChange={(event) => { handleChange("telefono", event.target.value) }} />
+                                    <input disabled={!editing} className = {''} placeholder={"Agregar Telefono"} style={{width: 'auto'}} value={selectedAdmin.telefono ?? ""} onChange={(event) => { handleChange("telefono", event.target.value) }} />
                                 </div>
                                 <div className="d-flex gap-2 align-items-center">
                                     <label>Fecha Nac.:</label>
-                                    <input disabled={!editing} type={"date"} className = {styles.invisInput} style={{width: 120 }} value={selectedAdmin.nacimiento.split('T')[0] ?? ""} onChange={(event) => { handleChange("nacimiento", event.target.value) }} /> 
+                                    <input disabled={!editing} type={"date"} className = {''} style={{width: 'auto' }} value={selectedAdmin.nacimiento.split('T')[0] ?? ""} onChange={(event) => { handleChange("nacimiento", event.target.value) }} /> 
                                 </div>
                             </div>
                         </Col>
                         <Col>
                             <div className="d-flex gap-2 align-items-center">
                                 <label>Direccion:</label>
-                                <input disabled={!editing} className = {styles.invisInput} placeholder={"Agregar Direccion"} style={{width: widthOf(selectedAdmin.direccion, "Agregar Direccion")}} value={selectedAdmin.direccion ?? ""} onChange={(event) => { handleChange("direccion", event.target.value) }} />
+                                <input disabled={!editing} className = {''} placeholder={"Agregar Direccion"} style={{width: "90%"}} value={selectedAdmin.direccion ?? ""} onChange={(event) => { handleChange("direccion", event.target.value) }} />
                             </div>
                         </Col>
                     </Row>
@@ -125,11 +127,11 @@ const LAEditPanel = ({
                             <div className="d-flex gap-2">
                                 <div className="d-flex gap-2 align-items-center">
                                     <label>Tipo de Documento:</label>
-                                    <input disabled={!editing} className = {styles.invisInput} placeholder={"Tipo de documento"} style={{width: widthOf(selectedAdmin.documentoTipo, "Tipo de documento")}} value={selectedAdmin.documentoTipo ?? ""} onChange={(event) => { handleChange("documentoTipo", event.target.value) }} />
+                                    <input disabled={!editing} className = {''} placeholder={"Tipo de documento"} style={{width: "auto"}} value={selectedAdmin.documentoTipo ?? ""} onChange={(event) => { handleChange("documentoTipo", event.target.value) }} />
                                 </div>
                                 <div className="d-flex gap-2 align-items-center">
                                     <label>Genero:</label>
-                                    <select disabled={!editing} className = {styles.invisInput} style={{width: widthOf(selectedAdmin.documento, "Seleccione Su Genero")}} value={selectedAdmin.genero ?? ""} onChange={(event) => { handleChange("genero", event.target.value) }} >
+                                    <select disabled={!editing} className = {""} style={{width: "auto"}} value={selectedAdmin.genero ?? ""} onChange={(event) => { handleChange("genero", event.target.value) }} >
                                         <option value={"M"}>Masculino</option>
                                         <option value={"F"}>Femenino</option>
                                     </select>
@@ -147,15 +149,19 @@ const LAEditPanel = ({
                                         <div className="d-flex flex-column ">
                                             <label className="align-self-center" >¿Desea eliminar? <label className="text-danger">ESTA ACCION ES IRREVERSIBLE</label></label>
                                             <div className="d-flex gap-2">
-                                                <ButtonInput variant="danger-inv" text="CANCELAR" handleClick={()=>{
+                                                <ButtonInput variant="danger-inv" width="100%" height="100%" fontSize="12px" text="CANCELAR" handleClick={()=>{
                                                         setErasing(false)
                                                     }} />
-                                                <ButtonInput variant="danger" text="CONFIRMAR" handleClick={()=>{handleDelete()}} />
+                                                <ButtonInput variant="danger" width="100%" height="100%" fontSize="12px" text="CONFIRMAR" handleClick={()=>{
+                                                        handleDelete()
+                                                    }} />
                                             </div>
                                         </div>
                                     </>
                                     :
-                                    <ButtonInput variant="danger" text="ELIMINAR" handleClick={()=>{
+                                    <ButtonInput variant="danger" width="100%" height="100%" text={
+                                        <GoTrashcan size={12} />
+                                    } handleClick={()=>{
                                         setErasing(true)
                                     }} />
                                 }
@@ -163,15 +169,17 @@ const LAEditPanel = ({
                             <div className="d-flex gap-2">
                                 { editing?
                                     <>
-                                        <ButtonInput variant="primary-inv" text="CANCELAR" handleClick={()=>{
+                                        <ButtonInput variant="primary-inv" width="100%" height="100%" fontSize="12px" text="CANCELAR" handleClick={()=>{
                                                 toast.success("Cambios revertidos")
                                                 setSelectedAdmin(before)
                                                 setEditing(false)
                                             }} />
-                                        <ButtonInput variant="primary-inv" text="CONFIRMAR" handleClick={()=>{handleUpdate()}} />
+                                        <ButtonInput variant="primary-inv" width="100%" height="100%" fontSize="12px" text="CONFIRMAR" handleClick={()=>{handleUpdate()}} />
                                     </>
                                     :
-                                    <ButtonInput variant="primary-inv" text="EDITAR" handleClick={()=>{
+                                    <ButtonInput variant="primary-inv" width="100%" height="100%" fontSize="12px" text={
+                                        <BsPencilFill />
+                                    } handleClick={()=>{
                                         setBefore(selectedAdmin)
                                         setEditing(true)
                                     }} />
