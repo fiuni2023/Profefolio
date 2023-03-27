@@ -17,6 +17,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 import Profesor from "../profesor/index.jsx";
+import Home from "../home/index.jsx";
 
 const App = () => {
 
@@ -30,7 +31,7 @@ const App = () => {
                             <SideBar />
                             <Routes>
 
-                                <Route path="/" element={<></>} />
+                                <Route path="/" element={<Home />} />
 
                                 <Route path="/pagina1" element={<Partidos />}>
                                     <Route path="list" element={<PartidosList />} />

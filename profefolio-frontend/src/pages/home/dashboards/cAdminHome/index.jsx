@@ -1,5 +1,5 @@
 import React from "react";
-import { useGeneralContext } from "../../context/GeneralContext";
+import { useGeneralContext } from "../../../../context/GeneralContext";
 import styles from "./index.module.css";
 import { Row, Col } from "react-bootstrap";
 
