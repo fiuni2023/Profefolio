@@ -241,7 +241,7 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo || '')
             {eliminarVisible && (
               <Form.Control
               type="text"
-              defaultValue={profesor.nombre}
+              defaultValue={profesor.nombre  || ''}
               readOnly={readOnly}
             /> 
             )}
@@ -269,7 +269,7 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo || '')
             {eliminarVisible && (
                 <Form.Control
                   type="text"
-                  value={profesor.apellido}
+                  value={profesor.apellido  || ''}
                   readOnly={readOnly}
                 />
 
@@ -299,7 +299,7 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo || '')
                  className={styles.option}
                   type="number"
                   name="telefono"
-                  value= {profesor.telefono}
+                  value= {profesor.telefono  || ''}
                   placeholder="09xxxxxxxxx"
                   readOnly={readOnly}
                 />
@@ -331,7 +331,7 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo || '')
                  className={styles.option}
                   type="text"
                   name="direccion"
-                  value={profesor.direccion}
+                  value={profesor.direccion  || ''}
                   placeholder="Ingrese su direccion"
                   readOnly={readOnly}
                 />
@@ -370,7 +370,7 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo || '')
                   type="text"
                   name="nacimiento"
                   //value={profesor.nacimiento}
-                  value={new Date(profesor.nacimiento).toLocaleDateString()}
+                  value={new Date(profesor.nacimiento).toLocaleDateString()  || ''}
 
                   readOnly={readOnly}
 
@@ -404,7 +404,7 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo || '')
                  className={styles.option}
                  type="email"
                   name="email"
-                  value={profesor.email}
+                  value={profesor.email  || ''}
                   placeholder="Ingrese su correo electronico"
                   readOnly={readOnly}
                 />
@@ -440,7 +440,7 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo || '')
                  className={styles.option}
                  type="text"
                   name="genero"
-                  value={profesor.genero}
+                  value={profesor.genero  || ''}
                   readOnly={readOnly}
                 />
                  )}
@@ -473,7 +473,7 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo || '')
                  className={styles.option}
                   type="text"
                   name="documento"
-                  value={profesor.documento}
+                  value={profesor.documento  || ''}
                   placeholder="Ingrese su documento"
                   readOnly={readOnly}
                 />
@@ -510,7 +510,7 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo || '')
                  className={styles.option}
                  type="text"
                   name="documentoTipo"
-                  value={profesor.documentoTipo}
+                  value={profesor.documentoTipo  || ''}
                   readOnly={readOnly}
                />
                

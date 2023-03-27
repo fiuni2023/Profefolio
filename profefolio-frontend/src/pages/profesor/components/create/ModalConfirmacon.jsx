@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Modal, Button } from "react-bootstrap";
 import styles from  './Modal.module.css';
 function ModalConfirmacion(props) {
