@@ -79,15 +79,6 @@ function ListDetallesProfesor(props) {
 
   const handleSubmit = (event) => {
 
-    console.log('nombre',nombre);
-    console.log('apellido',apellido);
-    console.log('documento',documento);
-    console.log('email',email);
-    console.log('nacimiento',nacimiento);
-    console.log('tipoDocumento',documentoTipo);
-
-    console.log('genero',genero);
-
     event.preventDefault();
 
     if (nombre === "" || apellido === "" || documento === "" || documentoTipo === "" || email === "" || nacimiento === "" || genero === "" || direccion === "" || telefono === "") toast.error("revisa los datos, los campos deben ser completados")
@@ -158,7 +149,6 @@ function ListDetallesProfesor(props) {
   }
   
   const handleCancelar = () => {
-    console.log('entro en cancelar');
 
     setReadOnly(true);
 
