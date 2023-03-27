@@ -1,6 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useGeneralContext } from "../context/GeneralContext";
+import styles from './Sidebar.module.css'
+import {RxCross2} from 'react-icons/rx'
 
 const SideBar = () => {
     
@@ -15,10 +17,21 @@ const SideBar = () => {
         
     }
 
+    const style = {
+        height: showSB? "100%" : "0%",
+        paddingTop: showSB? "20px": "0px"
+    }
+
     return <>
-        <div className="container">
+        <div className={styles.container} style={style}>
             {showSB && <>
-                <SideBarClose> Cerrar </SideBarClose>
+                <SideBarClose>
+                    <div className="d-flex justify-content-end h-100 w-100">
+                        <div className={styles.ExitContainer}>
+                            <RxCross2 size={12} />
+                        </div>
+                    </div>
+                </SideBarClose>
                 <SideBarTab page={"home"} handleClick={handleLogOut} > Cerrar Sesión </SideBarTab>
                 <SideBarTab page={"home"} handleClick={()=>{navigate("/")}} > - Home </SideBarTab>
                 {   
@@ -37,22 +50,6 @@ const SideBar = () => {
 
             </>}
         </div>
-        <style jsx="true">{`
-            .container{
-                position: fixed;
-                display: flex;
-                flex-direction: column;
-                width: 20%;
-                height: ${showSB? "100%" : "0%"};
-                background-color: #363636;
-                border: none;
-                gap: 2px;
-                padding-top: ${showSB? "20px": "0px"};
-                transition: 0.25s all;
-                background-color: #F0544F;
-                z-index: 100000000;
-            }
-        `}</style>
     </>
 }
 
@@ -61,31 +58,11 @@ const SideBarTab = ({ children, page="", current="", handleClick = () => {} }) =
     const {showSB, setShowSB} = useGeneralContext()
 
     return <>
-        <div className="tab-container" onClick={()=>{ handleClick(); setShowSB(!showSB)}}>
-            <span className={`sbt ${selected ? "selected" : ""}`} >
+        <div className={styles.tabContainer} onClick={()=>{ handleClick(); setShowSB(!showSB)}}>
+            <span className={`${styles.sbt} ${selected ? styles.selected: ""}`} >
                 {children}
             </span>
         </div>
-        <style jsx="true" >{`
-            .tab-container{
-                display: flex;
-                width: 85%;
-                height: 30px;
-                cursor: pointer;
-                align-items: center;
-                justify-content: flex-start;
-                padding-left: 15%;
-            }
-            .sbt{
-                font-size: 16px;
-                color: white;
-                font-weight: 500;
-            }
-            .selected{
-                color: white;
-                font-weight: 600;
-            }
-        `}</style>
     </>
 }
 
@@ -93,26 +70,9 @@ const SideBarClose = ({ children }) => {
     const { setShowSB } = useGeneralContext()
 
     return <>
-        <div className="tab-container" onClick={() => { setShowSB(false) }}>
-            <span className={`sbt`} >
+        <div className={styles.tabContainer} onClick={() => { setShowSB(false) }}>
                 {children}
-            </span>
         </div>
-        <style jsx="true" >{`
-            .tab-container{
-                display: flex;
-                width: 85%;
-                height: 30px;
-                cursor: pointer;
-                align-items: center;
-                justify-content: flex-start;
-                padding-left: 15%;
-            }
-            .sbt{
-                font-size: 16px;
-                color: #B4B4B4;
-            }
-        `}</style>
     </>
 }
 
