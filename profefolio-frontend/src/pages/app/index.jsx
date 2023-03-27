@@ -6,7 +6,6 @@ import { GeneralProvider } from "../../context/GeneralContext";
 import Administrador from "../administrador/index.jsx";
 import ListAdministrador from "../administrador/pages/list/index.jsx";
 
-import AdminHome from "../adminHome/index.jsx";
 import ProfesorList from "../profesor/list/index.jsx";
 import Partidos from "../partidos";
 import CreatePartidos from "../partidos/components/create";
@@ -21,8 +20,6 @@ import Profesor from "../profesor/index.jsx";
 
 const App = () => {
 
-
-
     return (
         <>
             <BrowserRouter>
@@ -33,7 +30,7 @@ const App = () => {
                             <SideBar />
                             <Routes>
 
-                                <Route path="/" element={<AdminHome />} />
+                                <Route path="/" element={<></>} />
 
                                 <Route path="/pagina1" element={<Partidos />}>
                                     <Route path="list" element={<PartidosList />} />

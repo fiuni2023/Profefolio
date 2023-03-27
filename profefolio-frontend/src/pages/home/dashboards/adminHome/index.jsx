@@ -1,11 +1,11 @@
 import React from "react";
-import { useGeneralContext } from "../../context/GeneralContext";
+import { useGeneralContext } from "../../../../context/GeneralContext";
 import styles from "./index.module.css";
 import { Row, Col } from "react-bootstrap";
 import CategoryPanel from "./components/categoryPanel";
 import { useNavigate } from "react-router";
 
-const Home = () => {
+const AdminHome = () => {
 
     const {getUserName} = useGeneralContext()
     const nav = useNavigate()
@@ -48,4 +48,4 @@ const Home = () => {
     )
 }
 
-export default Home
+export default AdminHome
