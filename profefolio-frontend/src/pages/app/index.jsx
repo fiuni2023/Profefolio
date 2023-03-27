@@ -6,7 +6,6 @@ import { GeneralProvider } from "../../context/GeneralContext";
 import Administrador from "../administrador/index.jsx";
 import ListAdministrador from "../administrador/pages/list/index.jsx";
 
-import AdminHome from "../adminHome/index.jsx";
 import ProfesorList from "../profesor/list/index.jsx";
 import Partidos from "../partidos";
 import CreatePartidos from "../partidos/components/create";
@@ -18,10 +17,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 import Profesor from "../profesor/index.jsx";
+import Home from "../home/index.jsx";
 
 const App = () => {
-
-
 
     return (
         <>
@@ -33,7 +31,7 @@ const App = () => {
                             <SideBar />
                             <Routes>
 
-                                <Route path="/" element={<AdminHome />} />
+                                <Route path="/" element={<Home />} />
 
                                 <Route path="/pagina1" element={<Partidos />}>
                                     <Route path="list" element={<PartidosList />} />

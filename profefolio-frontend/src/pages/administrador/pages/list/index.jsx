@@ -86,7 +86,7 @@ const ListAdministrador = () => {
                 </div>
                 <div className={styles.TableContainer}>
                     { showAdmin && 
-                        <LAEditPanel onUpdate={()=>{console.log("a");doFetch(true)}}/>
+                        <LAEditPanel onUpdate={()=>{setCurrentPage(0);doFetch(true)}}/>
                     }
                     <Table 
                         headers={["CI", "Nombre", "Fecha de Nacimiento", "Direccion", "Telefono"]}
