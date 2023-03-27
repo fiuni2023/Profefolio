@@ -63,15 +63,14 @@ const LAEditPanel = ({
                 setSelectedAdmin(r.data)
             })
             .catch((error)=>{
-                console.log(error)
                 toast.error("No se pudieron editar los administradores, verifique sus datos e intente de nuevo")
             })
     }
 
     const widthOf = (data, ph) => {
-        if(!(data)) return ( ph?.length * 14 ) + 10 < 400? ( ph?.length * 14 ) + 10 : 400
-        if(data?.length === 0) return ( ph?.length * 14 ) + 10 < 400? ( ph?.length * 14 ) + 10 : 400
-        return ( data?.length * 14 ) + 10 < 400? ( data?.length * 14 ) + 10 : 400
+        if(!(data)) return ( ph?.length * 12 ) + 8 < 400? ( ph?.length * 12 ) + 8 : 400
+        if(data?.length === 0) return ( ph?.length * 12 ) + 8 < 400? ( ph?.length * 12 ) + 8 : 400
+        return ( data?.length * 12 ) + 8 < 400? ( data?.length * 12 ) + 8 : 400
     }
 
     return (
@@ -121,6 +120,25 @@ const LAEditPanel = ({
                             </div>
                         </Col>
                     </Row>
+                    <Row className="my-2">
+                        <Col>
+                            <div className="d-flex gap-2">
+                                <div className="d-flex gap-2 align-items-center">
+                                    <label>Tipo de Documento:</label>
+                                    <input disabled={!editing} className = {styles.invisInput} placeholder={"Tipo de documento"} style={{width: widthOf(selectedAdmin.documentoTipo, "Tipo de documento")}} value={selectedAdmin.documentoTipo ?? ""} onChange={(event) => { handleChange("documentoTipo", event.target.value) }} />
+                                </div>
+                                <div className="d-flex gap-2 align-items-center">
+                                    <label>Genero:</label>
+                                    <select disabled={!editing} className = {styles.invisInput} style={{width: widthOf(selectedAdmin.documento, "Seleccione Su Genero")}} value={selectedAdmin.genero ?? ""} onChange={(event) => { handleChange("genero", event.target.value) }} >
+                                        <option value={"M"}>Masculino</option>
+                                        <option value={"F"}>Femenino</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </Col>
+                        <Col>
+                        </Col>
+                    </Row>
                     <Row className="mt-2">
                         <Col className="d-flex gap-2 justify-content-between">
                             <div className="d-flex gap-2">
@@ -161,6 +179,7 @@ const LAEditPanel = ({
                             </div>
                         </Col>
                     </Row>
+                    
                 </div>
             </div>
         </>
