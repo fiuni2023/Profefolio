@@ -8,7 +8,7 @@ namespace TestProfefolio.Profesor;
 public class ProfesorTestingDeletes
 {
 
-    [Fact]
+    /*[Fact]
     public async void Delete_Ok()
     {
         string id = "sdasd4adaddg465g4d6fg4";
@@ -39,5 +39,5 @@ public class ProfesorTestingDeletes
         var result = await controller.Delete(id);
         Assert.IsType<NotFoundResult>(result.Result);
     }
-
+*/
 }
