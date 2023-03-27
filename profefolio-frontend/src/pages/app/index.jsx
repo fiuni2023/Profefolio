@@ -6,7 +6,7 @@ import { GeneralProvider } from "../../context/GeneralContext";
 import Administrador from "../administrador/index.jsx";
 import ListAdministrador from "../administrador/pages/list/index.jsx";
 
-import Home from "../home/index.jsx";
+import AdminHome from "../adminHome/index.jsx";
 import ProfesorList from "../profesor/list/index.jsx";
 import Partidos from "../partidos";
 import CreatePartidos from "../partidos/components/create";
@@ -32,12 +32,15 @@ const App = () => {
                         <div className="content">
                             <SideBar />
                             <Routes>
-                                <Route path="/" element={<Home />} />
+
+                                <Route path="/" element={<AdminHome />} />
+
                                 <Route path="/pagina1" element={<Partidos />}>
                                     <Route path="list" element={<PartidosList />} />
                                     <Route path='create' element={<CreatePartidos />} />
                                     <Route path="edit" element={<PartidosEdit />} />
                                 </Route>
+
                                 <Route path="/administrador" element={<Administrador />}>
                                     <Route path="list" element={<ListAdministrador />} />
                                 </Route>
@@ -53,10 +56,10 @@ const App = () => {
                                 <Route path="/profesor/create" element={<CreateProfesor />}>
                                     <Route path="list" element={<CreateProfesor />} />
                                 </Route>
+
                             </Routes>
                         </div>
-
-                        </div>
+                    </div>
                 </GeneralProvider>
             </BrowserRouter>
             <style jsx='true'>{`

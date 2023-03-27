@@ -16,7 +16,7 @@ namespace TestProfefolio.Profesor;
 
 public class ProfesorTesting
 {
-    private readonly Mock<IMapper> _mapper = new Mock<IMapper>();
+    /*private readonly Mock<IMapper> _mapper = new Mock<IMapper>();
     private readonly Mock<IPersona> _service = new Mock<IPersona>();
     private readonly Mock<IRol> _rol = new Mock<IRol>();
 
@@ -27,7 +27,7 @@ public class ProfesorTesting
     public ProfesorTesting()
     {
         _controller = new ProfesorController(_mapper.Object, _service.Object, _rol.Object);
-    }
+    }*/
 
     /*[Fact]
     public async void GetPage0_Ok()

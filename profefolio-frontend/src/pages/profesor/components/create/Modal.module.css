@@ -6,7 +6,8 @@
     gap: 5px;
 }
 .footerModal{
-    background-color:  #C6D8D3;
+  background-color: #FDF0D5;
+    
 }
 .content{
     width: 100%;
@@ -25,12 +26,26 @@
     border-radius: 10px;
   
 }
+
+.buttonGuardar{
+  background-color: #52d575;
+    border: none;
+    color: white;
+    padding: 10px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 15px;
+    border-radius: 10px;
+  
+}
 ::placeholder {
   font-size: 12px;
 }
 
 .option {
   font-size: 12px;
+  
 
 }
 

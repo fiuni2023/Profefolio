@@ -1,23 +1,79 @@
+/* eslint-disable */
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Modal, Form,Col,Row,Button } from 'react-bootstrap';
+import { Modal, Form,Col,Row } from 'react-bootstrap';
 import { useGeneralContext } from '../../../context/GeneralContext';
 import styles from  '../components/create/Modal.module.css';
 import APILINK from '../../../components/link';
 import { toast } from 'react-hot-toast';
 import { BsTrash, BsPencilFill } from 'react-icons/bs';
+import ModalConfirmacion from '../components/create/ModalConfirmacon';
 
 
 function ListDetallesProfesor(props) {
-  const { showModal, setShowModal ,id,triggerState} = props;
+  const { showModal, setShowModal ,id,triggerState , page} = props;
 
-  const [profesor, setProfesores] = useState([]);
+ const [profesor, setProfesores] = useState([]);
 
   const { getToken } = useGeneralContext();
 
   const [readOnly, setReadOnly] = useState(true);
 
   const [eliminarVisible, setEliminarVisible] = useState(true);
+
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+
+  const handleDeleteClick = () => {
+    setShowConfirmDialog(true);
+  };
+
+  const handleConfirmDelete = () => {
+    axios.delete(`${APILINK}/api/profesor/${id}`, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+      }
+    })
+
+      .then(response => {
+        handleUpdate(); 
+        setProfesores(response.data)
+        toast.success("Eliminado exitoso");
+        setShowModal(false);
+    
+
+
+      })
+      .catch(error => {
+        console.error(error);
+      });
+    setShowConfirmDialog(false);
+  };
+
+  const handleClose = () => {
+    setShowConfirmDialog(false);
+  };
+ 
+
+
+  const handleUpdate = () => {
+    axios.get(`${APILINK}/api/profesor/page/${page}`, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+      }
+    })
+
+      .then(response => {
+        triggerState(response.data.dataList);
+
+    
+
+
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }
+
 
 
 
@@ -56,9 +112,12 @@ function ListDetallesProfesor(props) {
         }
       })
         .then(response => {
-          triggerState(response.data)
+          //triggerState(response.data)
+          handleUpdate();
+
+          
           setProfesores(response.data)
-          toast.success("Guardado exitoso");
+          toast.success("Editado exitoso");
 
           setShowModal(false);
           setNombre("")
@@ -88,68 +147,28 @@ function ListDetallesProfesor(props) {
   const handleCloseModal = () => {
     setShowModal(false);
     setReadOnly(true);
+    setEliminarVisible(true);
   };
 
   function closeModal() {
     setShowModal(false);
   }
   
+  const handleCancelar = () => {
+    console.log('entro en cancelar');
 
-  const handleModificar = (event) => {
-    setReadOnly(!readOnly);
-    setNombre(profesor.nombre, () => {
-      console.log('Nombre actualizado:', nombre);
-    });
-
-    setApellido(profesor.apellido, () => {
-      console.log('Nombre actualizado:', nombre);
-    });
-
-    setTelefono(profesor.telefono, () => {
-      console.log('Nombre actualizado:', nombre);
-    });
-
-    setDireccion(profesor.direccion, () => {
-      console.log('Nombre actualizado:', nombre);
-    });
-  
-    const fecha = new Date(profesor.nacimiento);
-    const nacimiento = fecha.toISOString().substring(0, 10);
-    //const [nacimientoState, setNacimientoState] = useState(nacimiento);
-
-
-    setNacimiento(nacimiento, () => {
-      console.log('Nacimiento actualizado:', nacimiento.toLocaleDateString());
-    });
-
-    setEmail(profesor.email, () => {
-      console.log('Nombre actualizado:', nombre);
-    });
-
-    setGenero(profesor.genero === "Femenino" ? "F" : "M", () => {
-      console.log('Género actualizado:', genero);
-    });
-
-    setDocumento(profesor.documento, () => {
-      console.log('Nombre actualizado:', nombre);
-    });
-
-    setDocumentoTipo(profesor.documentoTipo, () => {
-      console.log('Nombre actualizado:', nombre);
-    });
-
-
-
-  
-  
-  };
-
-  const handleGuardar = () => {
     setReadOnly(true);
-    setEliminarVisible(true);
-    // Aquí puedes agregar la lógica para guardar los cambios
+
+  }
+
+  const handleModificar = () => {
+    setReadOnly(!readOnly);
+   
+  
+  
   };
 
+ 
   useEffect(() => {
       
     axios.get(`${APILINK}/api/profesor/${id}`, {
@@ -159,7 +178,22 @@ function ListDetallesProfesor(props) {
     })
 
       .then(response => {
+
         setProfesores(response.data);
+        const { nombre, apellido, telefono, direccion, nacimiento, email, genero, documento, documentoTipo } = response.data;
+        setNombre(nombre);
+        setApellido(apellido);
+        setTelefono(telefono);
+        setDireccion(direccion);
+        const fecha = new Date(nacimiento);
+        const nacimientoFormatted = fecha.toISOString().substring(0, 10);
+        setNacimiento(nacimientoFormatted);
+        setEmail(email);
+        setGenero(genero === "Femenino" ? "F" : "M");
+        setDocumento(documento);
+        setDocumentoTipo(documentoTipo);
+
+
         //triggerState(response.data)
     
 
@@ -172,19 +206,21 @@ function ListDetallesProfesor(props) {
 
 }, [ id, getToken ]);
 
-const [nombre, setNombre] = useState(profesor.nombre);
-const [apellido, setApellido] = useState(profesor.nombre);
-const [telefono, setTelefono] = useState(profesor.telefono);
-const [direccion, setDireccion] = useState(profesor.direccion);
-const [nacimiento, setNacimiento] = useState(profesor.nacimiento);
-const [email, setEmail] = useState(profesor.email);
-const [genero, setGenero] = useState(profesor.genero);
-const [documento, setDocumento] = useState(profesor.documento);
-const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
+const [nombre, setNombre] = useState(profesor.nombre || '');
+const [apellido, setApellido] = useState(profesor.nombre || '');
+const [telefono, setTelefono] = useState(profesor.telefono || '');
+const [direccion, setDireccion] = useState(profesor.direccion || '');
+const [nacimiento, setNacimiento] = useState(profesor.nacimiento || '');
+const [email, setEmail] = useState(profesor.email || '');
+const [genero, setGenero] = useState(profesor.genero || '');
+const [documento, setDocumento] = useState(profesor.documento || '');
+const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo || '');
 
   return (
+
+    <>
     <Modal show={showModal} onHide={handleCloseModal}>
-      <Modal.Header className={styles.contentModal} closeButton>
+      <Modal.Header className={styles.contentModal}>
       <Modal.Title className="">Detalles Profesor</Modal.Title>
       </Modal.Header>
 
@@ -192,7 +228,7 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
       <Modal.Body className={styles.contentModal} >
 
          
-      <form  profesor={handleSubmit}> 
+   
       
             <Row>
               <Col>
@@ -205,8 +241,8 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
             {eliminarVisible && (
               <Form.Control
               type="text"
-              defaultValue={profesor.nombre}
-               readOnly={readOnly}
+              defaultValue={profesor.nombre  || ''}
+              readOnly={readOnly}
             /> 
             )}
           </>
@@ -215,7 +251,6 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
           <Form.Control
           className={styles.option}
           type="text"
-          defaultValue={profesor.nombre|| ""} 
           value={nombre}
           onChange={event => setNombre(event.target.value)}
           //placeholder={profesor.nombre} 
@@ -234,7 +269,7 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
             {eliminarVisible && (
                 <Form.Control
                   type="text"
-                  value={profesor.apellido}
+                  value={profesor.apellido  || ''}
                   readOnly={readOnly}
                 />
 
@@ -244,7 +279,6 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
               <Form.Control
                  className={styles.option}
                   type="text"
-                  defaultValue={profesor.apellido|| ""} 
                   value={apellido}
                   onChange={event => setApellido(event.target.value)}
                 />
@@ -265,7 +299,7 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
                  className={styles.option}
                   type="number"
                   name="telefono"
-                  value= {profesor.telefono}
+                  value= {profesor.telefono  || ''}
                   placeholder="09xxxxxxxxx"
                   readOnly={readOnly}
                 />
@@ -276,7 +310,6 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
                  className={styles.option}
                   type="number"
                   name="telefono"
-                  defaultValue={profesor.telefono|| ""} 
                   value={telefono}
 
                   onChange={event => setTelefono(event.target.value)}
@@ -298,7 +331,7 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
                  className={styles.option}
                   type="text"
                   name="direccion"
-                  value={profesor.direccion}
+                  value={profesor.direccion  || ''}
                   placeholder="Ingrese su direccion"
                   readOnly={readOnly}
                 />
@@ -310,7 +343,6 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
                  className={styles.option}
                   type="text"
                   name="direccion"
-                  defaultValue={profesor.direccion|| ""} 
                   value={direccion}
                   onChange={event => setDireccion(event.target.value)}
                   placeholder="Ingrese su direccion"
@@ -338,7 +370,7 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
                   type="text"
                   name="nacimiento"
                   //value={profesor.nacimiento}
-                  value={new Date(profesor.nacimiento).toLocaleDateString()}
+                  value={new Date(profesor.nacimiento).toLocaleDateString()  || ''}
 
                   readOnly={readOnly}
 
@@ -372,7 +404,7 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
                  className={styles.option}
                  type="email"
                   name="email"
-                  value={profesor.email}
+                  value={profesor.email  || ''}
                   placeholder="Ingrese su correo electronico"
                   readOnly={readOnly}
                 />
@@ -384,7 +416,6 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
                  className={styles.option}
                  type="email"
                   name="email"
-                  defaultValue={profesor.email|| ""} 
                   value={email}
                   onChange={event => setEmail(event.target.value)}
                   placeholder="Ingrese su correo electronico"
@@ -409,7 +440,7 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
                  className={styles.option}
                  type="text"
                   name="genero"
-                  value={profesor.genero}
+                  value={profesor.genero  || ''}
                   readOnly={readOnly}
                 />
                  )}
@@ -442,7 +473,7 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
                  className={styles.option}
                   type="text"
                   name="documento"
-                  value={profesor.documento}
+                  value={profesor.documento  || ''}
                   placeholder="Ingrese su documento"
                   readOnly={readOnly}
                 />
@@ -454,7 +485,6 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
                  className={styles.option}
                   type="text"
                   name="documento"
-                  defaultValue={profesor.documento|| ""} 
                   value={documento}
                   onChange={event => setDocumento(event.target.value)}
                   placeholder="Ingrese su documento"
@@ -480,7 +510,7 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
                  className={styles.option}
                  type="text"
                   name="documentoTipo"
-                  value={profesor.documentoTipo}
+                  value={profesor.documentoTipo  || ''}
                   readOnly={readOnly}
                />
                
@@ -512,35 +542,54 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo);
             <br/>
        
             
-            </form>    
+               
         
         </Modal.Body> 
 
      
         <Modal.Footer className={styles.footerModal}>
+         
         {readOnly ? (
           <>
             <button variant="primary" className={styles.buttonModify} onClick={handleModificar}>
             <BsPencilFill />
             </button>
             {eliminarVisible && (
-              <button variant="danger" className={styles.buttonDelete}>   <BsTrash />  </button>
+              <button variant="danger" onClick={handleDeleteClick} className={styles.buttonDelete}>   <BsTrash />  </button>
             )}
           </>
         ) : (
-          <button type='submit' className={styles.button} onClick={handleSubmit}>
+          <div>
+          <button type='submit' className={styles.buttonModify} onClick={handleSubmit}>
             Guardar
           </button>
+
+          <button variant="primary"  className={styles.buttonDelete} onClick={handleCancelar}>
+          Cancelar
+        </button>
+          </div>
+
+
         )}
        
         <button variant="primary" onClick={closeModal} className={styles.buttonClose}>Cerrar</button>
 
+
+      <ModalConfirmacion
+        show={showConfirmDialog}
+        onHide={handleClose}
+        onConfirm={handleConfirmDelete}
+        message="¿Está seguro de que desea eliminar ?"
+      />
+
         </Modal.Footer>
        
-      
-     
-
+  
     </Modal>
+
+
+    
+    </>
   );
 }
 

@@ -37,6 +37,7 @@ export const AdminProvider = ({children}) => {
     }
 
     const setSelectedAdmin = (admin) => {
+        console.log(admin)
         adminFormik.setFieldValue("id", admin.id)
         adminFormik.setFieldValue("nombre", admin.nombre)
         adminFormik.setFieldValue("apellido", admin.apellido)
