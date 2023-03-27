@@ -81,6 +81,11 @@ public class PersonasService : IPersona
             throw new BadHttpRequestException("El email al cual quiere registrarse ya existe");
         }
 
+        if (await ExistDoc(user))
+        {
+            throw new BadHttpRequestException($"El usuario con doc {user.Documento} ya existe");
+        }
+
         await _userManager.CreateAsync(user, password);
 
         return await _userManager.Users
@@ -172,5 +177,15 @@ public class PersonasService : IPersona
         var query = await _userManager.GetUsersInRoleAsync(roleName);
 
         return query.Where(p => !p.Deleted).ToList();
+    }
+
+    public async Task<bool> ExistDoc(Persona persona)
+    {
+        return await _userManager.Users
+            .Where(p => !p.Deleted)
+            .AnyAsync(p => p.DocumentoTipo != null
+                           && persona.Documento != null 
+                           && persona.Documento.Equals(p.Documento) 
+                           && p.DocumentoTipo.Equals(p.DocumentoTipo));
     }
 }
