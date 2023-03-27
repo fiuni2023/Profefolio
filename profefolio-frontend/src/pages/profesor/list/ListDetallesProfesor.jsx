@@ -7,6 +7,7 @@ import styles from  '../components/create/Modal.module.css';
 import APILINK from '../../../components/link';
 import { toast } from 'react-hot-toast';
 import { BsTrash, BsPencilFill } from 'react-icons/bs';
+import ModalConfirmacion from '../components/create/ModalConfirmacon';
 
 
 function ListDetallesProfesor(props) {
@@ -19,6 +20,38 @@ function ListDetallesProfesor(props) {
   const [readOnly, setReadOnly] = useState(true);
 
   const [eliminarVisible, setEliminarVisible] = useState(true);
+
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+
+  const handleDeleteClick = () => {
+    setShowConfirmDialog(true);
+  };
+
+  const handleConfirmDelete = () => {
+    axios.delete(`${APILINK}/api/profesor/${id}`, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+      }
+    })
+
+      .then(response => {
+        handleUpdate(); 
+        setProfesores(response.data)
+        toast.success("Eliminado exitoso");
+        setShowModal(false);
+    
+
+
+      })
+      .catch(error => {
+        console.error(error);
+      });
+    setShowConfirmDialog(false);
+  };
+
+  const handleClose = () => {
+    setShowConfirmDialog(false);
+  };
  
 
 
@@ -31,6 +64,7 @@ function ListDetallesProfesor(props) {
 
       .then(response => {
         triggerState(response.data.dataList);
+
     
 
 
@@ -83,7 +117,7 @@ function ListDetallesProfesor(props) {
 
           
           setProfesores(response.data)
-          toast.success("Guardado exitoso");
+          toast.success("Editado exitoso");
 
           setShowModal(false);
           setNombre("")
@@ -183,8 +217,10 @@ const [documento, setDocumento] = useState(profesor.documento || '');
 const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo || '');
 
   return (
+
+    <>
     <Modal show={showModal} onHide={handleCloseModal}>
-      <Modal.Header className={styles.contentModal} closeButton>
+      <Modal.Header className={styles.contentModal}>
       <Modal.Title className="">Detalles Profesor</Modal.Title>
       </Modal.Header>
 
@@ -519,7 +555,7 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo || '')
             <BsPencilFill />
             </button>
             {eliminarVisible && (
-              <button variant="danger" className={styles.buttonDelete}>   <BsTrash />  </button>
+              <button variant="danger" onClick={handleDeleteClick} className={styles.buttonDelete}>   <BsTrash />  </button>
             )}
           </>
         ) : (
@@ -538,12 +574,22 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo || '')
        
         <button variant="primary" onClick={closeModal} className={styles.buttonClose}>Cerrar</button>
 
+
+      <ModalConfirmacion
+        show={showConfirmDialog}
+        onHide={handleClose}
+        onConfirm={handleConfirmDelete}
+        message="¿Está seguro de que desea eliminar ?"
+      />
+
         </Modal.Footer>
        
-      
-     
-
+  
     </Modal>
+
+
+    
+    </>
   );
 }
 
