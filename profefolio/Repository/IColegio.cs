@@ -9,6 +9,6 @@ public interface IColegio : IRepository<Colegio>
     Task<Colegio> FindByNamePerson(string nombre, string idpersona);
     Task<Colegio> FindByNameColegio(string nombre);
     Task<Persona> FindByPerson(string id);
-
+    Task<int> FindByPersonRol(string id);
 
 }

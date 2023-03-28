@@ -89,19 +89,19 @@ namespace profefolio.Controllers
             var verificar = await _colegioService.FindByNamePerson(colegio.Nombre, colegio.PersonaId);
             if (verificar != null)
             {
-                return BadRequest($"Ya existe el colegio ${colegio.Nombre} y el id persona ingresado.");
+                return BadRequest($"Ya existe el colegio.");
             }
-             //VERIFICAR REPETIDOS con nombre de colegio igual
+            //VERIFICAR REPETIDOS con nombre de colegio igual
             var verificarNombreColegio = await _colegioService.FindByNameColegio(colegio.Nombre);
             if (verificarNombreColegio != null)
             {
-                return BadRequest($"Ya existe un colegio con el mismo nombre: ${colegio.Nombre}.");
+                return BadRequest($"Ya existe un colegio con el mismo nombre.");
             }
             //verificar que no se repita PersonaId
             var persona = await _colegioService.FindByPerson(colegio.PersonaId);
              if (persona == null)
             {
-                return BadRequest($"No existe el administrador con id ${colegio.PersonaId}.");
+                return BadRequest($"No existe el administrador.");
             }
             var p = await _colegioService.FindById(id);
             if (p == null)
@@ -136,24 +136,29 @@ namespace profefolio.Controllers
             {
                 return BadRequest("Colegio No valido");
             }
+            var rol = await _colegioService.FindByPersonRol(colegio.PersonaId);
+             if (rol == 0)
+            {
+                return BadRequest("Persona No valido");
+            }
             //VERIFICAR REPETIDOS con nombre de colegio e id iguales
             var verificar = await _colegioService.FindByNamePerson(colegio.Nombre, colegio.PersonaId);
             if (verificar != null)
             {
-                return BadRequest($"Ya existe el colegio ${colegio.Nombre} y el id persona ingresado.");
+                return BadRequest($"Ya existe el colegio y el id persona ingresado.");
             }
 
              //VERIFICAR REPETIDOS con nombre de colegio igual
             var verificarNombreColegio = await _colegioService.FindByNameColegio(colegio.Nombre);
             if (verificarNombreColegio != null)
             {
-                return BadRequest($"Ya existe un colegio con el mismo nombre: ${colegio.Nombre}.");
+                return BadRequest($"Ya existe un colegio con el mismo nombre.");
             }
             //VERIFICAR ID
             var persona = await _colegioService.FindByPerson(colegio.PersonaId);
              if (persona == null)
             {
-                return BadRequest($"No existe el administrador con id ${colegio.PersonaId}.");
+                return BadRequest($"No existe el administrador.");
             }
             try
             {

@@ -25,7 +25,7 @@ const ListAdministrador = () => {
     const [condFetch, setCondFetch] = useState(false)
 
     const parseToDate = (d=new Date()) => {
-        return `${d.getFullYear()}-${d.getMonth()>10? d.getMonth()+1:`0${d.getMonth()+1}`}-${d.getDate()>10? d.getDate():`0${d.getDate()}`}`
+        return `${d.getFullYear()}-${d.getMonth()>10? d.getMonth()+1:`0${d.getMonth()+1}`}-${d.getDate()>9? d.getDate():`0${d.getDate()}`}`
     }
 
     const nav = useNavigate()
@@ -86,7 +86,7 @@ const ListAdministrador = () => {
                 </div>
                 <div className={styles.TableContainer}>
                     { showAdmin && 
-                        <LAEditPanel onUpdate={()=>{console.log("a");doFetch(true)}}/>
+                        <LAEditPanel onUpdate={()=>{setCurrentPage(0);doFetch(true)}}/>
                     }
                     <Table 
                         headers={["CI", "Nombre", "Fecha de Nacimiento", "Direccion", "Telefono"]}

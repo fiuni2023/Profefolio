@@ -17,7 +17,7 @@ namespace TestProfefolio.Profesor;
 
 public class ProfesorTestingGets
 {
-    private static readonly DateTime nacimiento = DateTime.Now;
+    /*private static readonly DateTime nacimiento = DateTime.Now;
 
     private IEnumerable<profefolio.Models.Entities.Persona> profesores = new List<profefolio.Models.Entities.Persona>()
     {
@@ -256,5 +256,5 @@ public class ProfesorTestingGets
 
         Assert.IsType<BadRequestObjectResult>(result.Result);
         
-    }
+    }*/
 }

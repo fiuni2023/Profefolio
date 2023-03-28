@@ -26,6 +26,7 @@ const LACreateModal = ({
     const formik = useFormik({
         initialValues: {
             cin: "",
+            documentoTipo: "",
             name: "",
             surname: "",
             nacimiento: parseToDate(new Date()),
@@ -58,7 +59,7 @@ const LACreateModal = ({
     }
 
     const handleSubmit = () => {
-        if (formik.values.cin === "" || formik.values.name === "" || formik.values.surname === "" || formik.values.documento === "" || formik.values.correo === "" || formik.values.telefono === "") toast.error("Ingrese todos los datos importantes")
+        if (formik.values.cin === "" || formik.values.name === "" || formik.values.surname === "" || formik.values.documento === "" || formik.values.documentoTipo === "" || formik.values.correo === "" || formik.values.telefono === "") toast.error("Ingrese todos los datos importantes")
         else if (validarPass(formik.values.pass, formik.values.passConf)) toast.error("la contraseña es invalida")
         else if (validarDate(formik.values.date)) toast.error("ingresa una fecha valida")
         else {
@@ -67,7 +68,7 @@ const LACreateModal = ({
                 "apellido": formik.values.surname,
                 "nacimiento": toDate(),
                 "documento": formik.values.cin,
-                "documentoTipo": "CIN",
+                "documentoTipo": formik.values.documentoTipo,
                 "genero": formik.values.genero,
                 "direccion": formik.values.direccion,
                 "telefono": formik.values.telefono,
@@ -110,8 +111,8 @@ const LACreateModal = ({
                             <Col>
                                 <label>CI: <RedText>*</RedText></label>
                                 <TextInput name="cin" placeholder="" value={formik.values.cin} handleChange={formik.handleChange} width={"100%"} />
-                                <label>Fecha de Nacimiento: <RedText>*</RedText></label>
-                                <DateInput name="nacimiento" value={formik.values.nacimiento} handleChange={formik.handleChange} width={"100%"} />
+                                <label>Tipo de Documento: <RedText>*</RedText></label>
+                                <TextInput name="documentoTipo" placeholder="" value={formik.values.documentoTipo} handleChange={formik.handleChange} width={"100%"} />
                             </Col>
                             <Col>
                                 <label>Nombres: <RedText>*</RedText></label>
@@ -129,19 +130,21 @@ const LACreateModal = ({
                                 <TextInput name="telefono" placeholder="" value={formik.values.telefono} handleChange={formik.handleChange} width={"100%"} />
                             </Col>
                             <Col>
-                                <label>Correo Electrónico: <RedText>*</RedText></label>
-                                <TextInput name="correo" placeholder="" value={formik.values.correo} handleChange={formik.handleChange} width={"100%"} />
+                                <label>Fecha de Nacimiento: <RedText>*</RedText></label>
+                                <DateInput name="nacimiento" value={formik.values.nacimiento} handleChange={formik.handleChange} width={"100%"} />
                             </Col>
                             <Col>
                                 <label>Género: <RedText>*</RedText></label>
                                 <select name="genero" className={styles.Select} placeholder="" value={formik.values.genero} onChange={formik.handleChange} width={"100%"}>
-                                    <option value={"F"}>Mujer</option>
-                                    <option value={"M"}>Hombre</option>
+                                    <option value={"F"}>Femenino</option>
+                                    <option value={"M"}>Masculino</option>
                                 </select>
                             </Col>
                         </Row>
                         <Row>
                             <Col>
+                                <label>Correo Electrónico: <RedText>*</RedText></label>
+                                <TextInput name="correo" placeholder="" value={formik.values.correo} handleChange={formik.handleChange} width={"100%"} />
                                 <label>Dirección:</label>
                                 <TextInput name="direccion" placeholder="" value={formik.values.direccion} handleChange={formik.handleChange} width={"100%"} />
                             </Col>

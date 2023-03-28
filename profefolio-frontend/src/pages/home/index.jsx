@@ -1,17 +1,23 @@
 import React from "react";
 import { useGeneralContext } from "../../context/GeneralContext";
-import styles from "./index.module.css"
+import AdminHome from './dashboards/adminHome';
+import ProfeHome from "./dashboards/profeHome";
+import CAdminHome from './dashboards/cAdminHome'
+
 
 const Home = () => {
+    
+    const { cancan } = useGeneralContext()
 
-    const {getUserName} = useGeneralContext()
+    const getDashBoard = () => {
+        if(cancan("Master")) return <AdminHome />
+        if(cancan("Administrador de Colegio")) return <CAdminHome />
+        if(cancan("Profesor")) return <ProfeHome />
+    }
 
-    return(
-        <div className={styles.HomeDiv}>
-            <h3>Bienvenido, {getUserName()}!</h3>
-            <label>Profefolio version 0.0.1</label>
-        </div>
-    )
+    return <>
+        {getDashBoard()}
+    </>
 }
 
 export default Home

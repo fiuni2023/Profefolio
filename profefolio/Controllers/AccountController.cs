@@ -18,8 +18,9 @@ public class AccountController : ControllerBase
     private readonly IMapper _mapper;
     private readonly IPersona _personasService;
     private readonly IRol _rolService;
-    private const int CantPorPage = 5;
-    private const string ROL_ADMIN = "Administrador de Colegio";
+    private const string RolAdmin = "Administrador de Colegio";
+    private const int CantPerPage = 20;
+
 
 
     public AccountController(IMapper mapper, IPersona personasService, IRol rolService)
@@ -69,7 +70,7 @@ public class AccountController : ControllerBase
         catch (BadHttpRequestException e)
         {
             Console.WriteLine(e.Message);
-            return BadRequest($"El email {dto.Email} ya existe");
+            return BadRequest(e.Message);
         }
 
         return BadRequest($"Error al crear al Usuario ${dto.Email}");
@@ -80,11 +81,13 @@ public class AccountController : ControllerBase
     [Route("page/{page:int}")]
     public async Task<ActionResult<DataListDTO<PersonaResultDTO>>> Get(int page)
     {
-        const string rol = "Administrador de Colegio";
+       
         var query = await _personasService
-            .FilterByRol(page, CantPorPage, rol);
+            .FilterByRol(page, CantPerPage, RolAdmin);
 
-        var cantPages = (int)(await _personasService.CountByRol(rol) / CantPorPage) + 1;
+
+        var cantPages = (int)Math.Ceiling((double) await _personasService.CountByRol(RolAdmin)/ CantPerPage);
+
 
         var result = new DataListDTO<PersonaResultDTO>();
 
@@ -126,7 +129,7 @@ public class AccountController : ControllerBase
     {
         try
         {
-            var personas = await _personasService.GetAllByRol(ROL_ADMIN);
+            var personas = await _personasService.GetAllByRol(RolAdmin);
             return Ok(_mapper.Map<List<PersonaSimpleDTO>>(personas));
         }
         catch (FileNotFoundException e)
