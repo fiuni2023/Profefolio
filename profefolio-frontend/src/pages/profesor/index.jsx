@@ -25,8 +25,11 @@ function Profesores() {
 
   const [page, setPage] = useState(0);
 
-  const [totalPage, setTotalPage] = useState(0);
-  const isLastPage = page === totalPage;
+  const [totalPage, setTotalPage] = useState(1);
+    
+  const [next, setNext] = useState(false);
+  const isLastPage = page === totalPage -1;
+  const [currentPage, setCurrentPage] = useState(0);
 
   const nav = useNavigate()
 
@@ -46,6 +49,8 @@ function Profesores() {
         .then(response => {
           setProfesores(response.data.dataList);
           setTotalPage(response.data.totalPage);//Total de Paginas
+          setCurrentPage(response.data.currentPage);
+          setNext(response.data.next);
       
   
 
@@ -78,11 +83,11 @@ const handleCloseModal = () => {
 
 
   const handleNextClick = () => {
+
     if (!isLastPage) {
       setPage(page + 1);
     }
   };
-
 
 
   const [show, setShow] = useState(false);
@@ -151,7 +156,7 @@ const handleCloseModal = () => {
                 </li>
                 <li className="page-item">
                  
-                <button className="btn page-item btn-sm" onClick={handleNextClick}  disabled={isLastPage}>
+                <button className="btn page-item btn-sm" onClick={handleNextClick}  disabled={isLastPage} >
                           Siguiente
                         </button>
                 </li>
@@ -187,6 +192,18 @@ const handleCloseModal = () => {
       </div>
 
       <style jsx='true'>{`
+
+        footer {
+          position: fixed;
+          background-color: hwb(0 99% 0%);
+          color: rgb(245, 249, 249);
+          bottom: 0;
+          left: 0;
+          right: 0;
+          padding: 20px;
+          text-align: right;
+        }
+
            
 
             
