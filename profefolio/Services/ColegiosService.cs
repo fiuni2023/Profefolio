@@ -20,8 +20,6 @@ public class ColegiosService : IColegio
     }
     public async Task<Colegio> FindById(int id)
     {
-        Console.Write("\nid a buscar: {0}", id);
-        Console.Write("\n");
         return await _dbContext.Colegios
             .Where(p => !p.Deleted  && p.Id == id)
             .FirstOrDefaultAsync();
@@ -32,16 +30,12 @@ public class ColegiosService : IColegio
     */
   public async Task<Colegio> FindByNamePerson(string name, string idPerson)
     {
-        Console.Write("\nColegio a buscar: {0}", name);
-        Console.Write("\n");
         return await _dbContext.Colegios
             .Where(p => !p.Deleted  && p.Nombre == name && p.PersonaId == idPerson)
             .FirstOrDefaultAsync();
     }
     public async Task<Colegio> FindByNameColegio(string name)
     {
-        Console.Write("\nColegio a buscar: {0}", name);
-        Console.Write("\n");
         return await _dbContext.Colegios
             .Where(p => !p.Deleted  && p.Nombre == name)
             .FirstOrDefaultAsync();

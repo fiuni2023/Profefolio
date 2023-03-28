@@ -56,10 +56,10 @@ namespace profefolio.Controllers
         public async Task<ActionResult<ColegioResultDTO>> GetColegio(int id)
         {
             var colegio = await _colegioService.FindById(id);
-            Console.Write("Colegio: ", colegio);
+           
             if (colegio == null)
             {
-                Console.Write("Colegio == null");
+                
                 return NotFound();
             }
 
@@ -169,7 +169,7 @@ namespace profefolio.Controllers
             }
             catch (BadHttpRequestException e)
             {
-                Console.WriteLine(e.Message);
+                
                 return BadRequest($"Error al crear el colegio ${colegio.Nombre}");
             }
 

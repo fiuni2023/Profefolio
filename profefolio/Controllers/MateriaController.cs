@@ -6,6 +6,7 @@ using profefolio.Models.DTOs;
 using profefolio.Models.DTOs.Materia;
 using profefolio.Models.Entities;
 using profefolio.Repository;
+using log4net;
 
 namespace profefolio.Controllers
 {
@@ -14,6 +15,7 @@ namespace profefolio.Controllers
     [ApiController]
     public class MateriaController : ControllerBase
     {
+        private static readonly ILog _log = LogManager.GetLogger(typeof(MateriaController));
         private readonly IMateria _materiaService;
         private readonly int _cantPorPag = 10;
         private readonly IMapper _mapper;
@@ -23,11 +25,12 @@ namespace profefolio.Controllers
             _mapper = mapper;
         }
 
-        
+
         [HttpGet]
         [Route("page/{page}")]
         public ActionResult<DataListDTO<MateriaResultDTO>> GetMaterias(int page)
         {
+
             var query = _materiaService.GetAll(page, _cantPorPag);
             int totalPage = (int)Math.Ceiling((double)_materiaService.Count() / _cantPorPag);
 
@@ -51,6 +54,7 @@ namespace profefolio.Controllers
             var materia = await _materiaService.FindById(id);
             if (materia == null)
             {
+                _log.Error("An error occurred in the Get method");
                 return NotFound();
             }
 
@@ -68,17 +72,20 @@ namespace profefolio.Controllers
             //verificar el modelo
             if (!ModelState.IsValid)
             {
+                 _log.Error("An error occurred in the put method");
                 return BadRequest("Objeto No valido");
             }
             //verificar que no sea nulo
-           if (materia.Nombre_Materia == null || materia.Nombre_Materia == " " || materia.Nombre_Materia == "")
+            if (materia.Nombre_Materia == null || materia.Nombre_Materia == " " || materia.Nombre_Materia == "")
             {
+                _log.Error("An error occurred in the put method");
                 return BadRequest("Nombre de materia No valido");
             }
-            
+
             var p = await _materiaService.FindById(id);
             if (p == null)
             {
+                _log.Error("An error occurred in the put method");
                 return NotFound();
             }
             string userId = User.Identity.GetUserId();
@@ -87,7 +94,7 @@ namespace profefolio.Controllers
             p.Modified = DateTime.Now;
 
             p.Nombre_Materia = materia.Nombre_Materia;
-            var query =  _materiaService.Edit(p);
+            var query = _materiaService.Edit(p);
             await _materiaService.Save();
 
             return Ok(_mapper.Map<MateriaResultDTO>(query));
@@ -107,8 +114,8 @@ namespace profefolio.Controllers
             {
                 return BadRequest("Nombre de materia No valido");
             }
-           
-              //VERIFICAR REPETIDOS con nombre igual
+
+            //VERIFICAR REPETIDOS con nombre igual
             var verificarNombreMateria = await _materiaService.FindByNameMateria(materia.Nombre_Materia);
             if (verificarNombreMateria != null)
             {
@@ -127,8 +134,7 @@ namespace profefolio.Controllers
             }
             catch (BadHttpRequestException e)
             {
-                Console.WriteLine(e.Message);
-                return BadRequest($"Error al crear la materia ${materia.Nombre_Materia}");
+                return BadRequest($"Error al crear la materia.");
             }
         }
 
@@ -143,7 +149,7 @@ namespace profefolio.Controllers
             {
                 return NotFound();
             }
-            
+
             data.Modified = DateTime.Now;
             data.Deleted = true;
             data.ModifiedBy = "Anonimous";
