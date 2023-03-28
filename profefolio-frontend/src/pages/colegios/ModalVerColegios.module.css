@@ -1,7 +1,4 @@
-.iconButton{
-    border: none;
-    background-color: white;
-}
+
 #modalContenido{
     background-color: #C6D8D3;
     
@@ -15,12 +12,13 @@
     height: 30px;
 }
 .btnCancelar{
-    background-color: gainsboro !important;
-    color: black !important;
+    background-color: #948e8e !important;
+    color: white !important;
     font-size: 13px!important;
     width: 100px !important;
     height: 30px;
     border: none !important;
+    
 }
 
 .labelForm{
@@ -36,4 +34,10 @@
     width:100%;
     border-radius: 10px;
     color: black;
+}
+.selectAdmin{
+    border: none;
+    width: 100%;
+    height:40px;
+    border-radius: 10px;
 }
