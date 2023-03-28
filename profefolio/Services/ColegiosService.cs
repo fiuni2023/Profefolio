@@ -148,4 +148,13 @@ public class ColegiosService : IColegio
          .Skip(page * cantPorPag)
          .Take(cantPorPag);
     }
+
+    public async Task<Colegio> FindByIdAdmin(string id)
+    {
+        return await _dbContext.Colegios.Include(p => p.personas).FirstOrDefaultAsync(
+                    c => !c.Deleted 
+                    && c.PersonaId != null 
+                    && id.Equals(c.PersonaId)
+                    && !c.personas.Deleted);
+    }
 }

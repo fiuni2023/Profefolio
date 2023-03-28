@@ -188,4 +188,9 @@ public class PersonasService : IPersona
                            && persona.Documento.Equals(p.Documento) 
                            && p.DocumentoTipo.Equals(p.DocumentoTipo));
     }
+
+    public async Task<Persona> FindByEmail(string email = "")
+    {
+        return await _userManager.Users.FirstOrDefaultAsync(u => !u.Deleted && email.Equals(u.Email));
+    }
 }
