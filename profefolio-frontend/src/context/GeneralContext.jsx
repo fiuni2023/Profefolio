@@ -52,6 +52,10 @@ export const GeneralProvider = ({children}) => {
         return getLoginData()?.email?.split("@")[0]
     }
 
+    const getUserMail = () => {
+        return getLoginData()?.email
+    }
+
     const values = {
         currentPage, 
         setCurrentPage,
@@ -63,7 +67,8 @@ export const GeneralProvider = ({children}) => {
         getToken,
         verifyToken,
         cancan,
-        getUserName
+        getUserName,
+        getUserMail
     }
 
     verifyToken()
