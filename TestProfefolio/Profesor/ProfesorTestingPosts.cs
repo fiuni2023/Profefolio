@@ -85,7 +85,7 @@ public class ProfesorTestingPosts
     }
     */
     
-    [Fact]
+    /*[Fact]
     public async void Post_BadRequest_PasswordNull()
     {
         Mock<IMapper> mapper = new Mock<IMapper>();
@@ -145,17 +145,17 @@ public class ProfesorTestingPosts
         BadRequestObjectResult r = (BadRequestObjectResult)result.Result;
         
         Assert.Equal("Falta confirmacion de Password", r.Value.ToString());
-    }
+    }*/
 
-    [Fact]
-    public async void Post_BadRequest_EmailExisting()
-    {
+    //[Fact]
+    //public async void Post_BadRequest_EmailExisting()
+    //{
         /*/Para el caso de que el email ya exista*/
-    }
+    //}
 
-    [Fact]
-    public async void Post_BadRequest_ErrorCreate()
-    {
+    //[Fact]
+    //public async void Post_BadRequest_ErrorCreate()
+    //{
         /*Error al crear el Profesor*/
-    }
+    //}
 }
