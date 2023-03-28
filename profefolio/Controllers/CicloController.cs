@@ -54,7 +54,6 @@ namespace profefolio.Controllers
             try
             {
                 var result = await _cicloService.FindById(id);
-
                 return result != null
                         ? Ok(_mapper.Map<CicloResultDTO>(result))
                         : BadRequest("Ciclo no encontrado");

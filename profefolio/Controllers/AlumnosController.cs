@@ -49,18 +49,18 @@ public class AlumnosController : ControllerBase
             entity.Deleted = false;
             entity.CreatedBy = userId;
 
-            try
-            {
-                var saved = await _personasService.CreateUser(entity, $"{dto.Email}.Mm123");
+        try
+        {
+            var saved = await _personasService.CreateUser(entity, $"{dto.Email}.Mm123");
 
-                if (await _rolService.AsignToUser("Alumno", saved))
-                    return Ok(_mapper.Map<AlumnoGetDTO>(saved));
-            }
-            catch (BadHttpRequestException e)
-            {
-                Console.WriteLine(e.Message);
-                return BadRequest($"El email {dto.Email} ya existe");
-            }
+            if (await _rolService.AsignToUser("Alumno", saved))
+                return Ok(_mapper.Map<AlumnoGetDTO>(saved));
+        }
+        catch (BadHttpRequestException e)
+        {
+            Console.WriteLine(e.Message);
+            return BadRequest(e.Message);
+        }
         
             return BadRequest($"Error al crear al Usuario ${dto.Email}");
         
@@ -74,7 +74,7 @@ public class AlumnosController : ControllerBase
             var query = await _personasService
                 .FilterByRol(page, CantPerPage, rol);
 
-            var cantPages = (int) (await _personasService.CountByRol(rol) / CantPerPage)  + 1;
+            var cantPages = (int)Math.Ceiling((double) await _personasService.CountByRol(rol)/ CantPerPage);
 
             var result = new DataListDTO<AlumnoGetDTO>();
 

@@ -6,7 +6,6 @@ import { GeneralProvider } from "../../context/GeneralContext";
 import Administrador from "../administrador/index.jsx";
 import ListAdministrador from "../administrador/pages/list/index.jsx";
 
-import Home from "../home/index.jsx";
 import ProfesorList from "../profesor/list/index.jsx";
 import Partidos from "../partidos";
 import CreatePartidos from "../partidos/components/create";
@@ -14,14 +13,15 @@ import PartidosEdit from "../partidos/components/edit";
 import PartidosList from "../partidos/components/list";
 import ListarColegios from "../colegios/ListarColegios";
 import CreateProfesor from "../profesor/components/create/CreateModal.jsx";
+import ListarMaterias from "../materias/list/ListarMaTerias.jsx"
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 import Profesor from "../profesor/index.jsx";
+import Clases from "../clases/index.jsx";
+import Home from "../home/index.jsx";
 
 const App = () => {
-
-
 
     return (
         <>
@@ -32,12 +32,15 @@ const App = () => {
                         <div className="content">
                             <SideBar />
                             <Routes>
+
                                 <Route path="/" element={<Home />} />
+
                                 <Route path="/pagina1" element={<Partidos />}>
                                     <Route path="list" element={<PartidosList />} />
                                     <Route path='create' element={<CreatePartidos />} />
                                     <Route path="edit" element={<PartidosEdit />} />
                                 </Route>
+
                                 <Route path="/administrador" element={<Administrador />}>
                                     <Route path="list" element={<ListAdministrador />} />
                                 </Route>
@@ -53,10 +56,16 @@ const App = () => {
                                 <Route path="/profesor/create" element={<CreateProfesor />}>
                                     <Route path="list" element={<CreateProfesor />} />
                                 </Route>
+
+                                <Route path="/clases" element={<Clases />}>
+                                </Route>
+                                
+                                <Route path="/materias" element={<ListarMaterias />}>
+                                    <Route path="list" element={<ListarMaterias />} />
+                                </Route>
                             </Routes>
                         </div>
-
-                        </div>
+                    </div>
                 </GeneralProvider>
             </BrowserRouter>
             <style jsx='true'>{`

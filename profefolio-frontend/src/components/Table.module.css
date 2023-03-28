@@ -10,7 +10,6 @@
     text-align: center;
     border: 1px solid black;
 }
-
-CustomTable>tbody>tr:hover{
-    background-color: #EDEDED;
+.CustomTable>tbody>tr:hover{
+    color: white;
 }

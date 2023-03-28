@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using AutoMapper;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Authorization;
@@ -113,7 +114,7 @@ namespace profefolio.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest("Datos invalido");
+                return BadRequest("Datos invalidos");
             }
 
             try
@@ -138,8 +139,8 @@ namespace profefolio.Controllers
                 }
 
 
-                var userId = User.Identity.GetUserId();
-                clase.CreatedBy = userId;
+                var name = User.FindFirstValue(ClaimTypes.Name);
+                clase.CreatedBy = name;
                 clase.Created = DateTime.Now;
                 clase.Deleted = false;
 
@@ -176,7 +177,7 @@ namespace profefolio.Controllers
                 var clase = await _claseService.FindById(id);
                 if (clase == null)
                 {
-                    return NotFound("El no se ha encontrado la Clase a editar");
+                    return NotFound("No se ha encontrado la Clase a editar");
                 }
 
                 var ciclo = await _cicloService.FindById(dto.CicloId);
@@ -191,8 +192,8 @@ namespace profefolio.Controllers
                     return NotFound("El campo de Colegio es invalido");
                 }
 
-                var userId = User.Identity.GetUserId();
-                clase.ModifiedBy = userId;
+                var name = User.FindFirstValue(ClaimTypes.Name);
+                clase.ModifiedBy = name;
                 clase.Modified = DateTime.Now;
                 clase.Deleted = false;
 
@@ -234,8 +235,10 @@ namespace profefolio.Controllers
                     return NotFound();
                 }
 
-                string userId = User.Identity.GetUserId();
-                clase.ModifiedBy = userId;
+                //string userId = User.Identity.GetUserId();
+                var name = User.FindFirstValue(ClaimTypes.Name);
+
+                clase.ModifiedBy = name;
                 clase.Modified = DateTime.Now;
                 clase.Deleted = true;
 
