@@ -96,7 +96,7 @@ const Clases = () => {
                     </div>
 
 
-                    <nav aria-label="Page navigation example">
+                    <nav className='mt-2'>
                         <ul className="pagination justify-content-end">
                             <li className="page-item disabled">
 
