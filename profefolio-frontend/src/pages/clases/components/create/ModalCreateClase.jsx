@@ -9,14 +9,19 @@ import { BsPlusCircleFill } from "react-icons/bs";
 import { MdCancel } from "react-icons/md";
 import { IoSaveSharp } from "react-icons/io5";
 import FormAddCiclo from "./FormAddCiclo";
+import axios from "axios";
+import APILINK from "../../../../components/link";
+import { toast } from "react-hot-toast";
+
 
 const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = false, triggerState = () => { } }) => {
     const CREATE_CICLO = "___option____create____ciclo";
 
-    const { getToken, cancan, verifyToken } = useGeneralContext();
+    const { getToken, cancan, verifyToken, getUserMail } = useGeneralContext();
 
     const [addCiclos, setAddCiclos] = useState(false);
 
+    const [isSend, setIsSend] = useState(false);    
 
     const onSetAddCiclos = () => {
         setAddCiclos(!addCiclos)
@@ -30,13 +35,14 @@ const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = 
     }
 
     const [data, loading, error, setData] = useAxiosGet(`api/ciclo`, getToken());
-
+    const [colegio, loadingColegio, errorColegio, setColegio] = useAxiosGet(`api/administrador/${getUserMail()}`, getToken());
 
 
     console.log(data);
 
     useEffect(() => {
         verifyToken();
+        
     }, [show])
 
     const addCicloList = (ciclo) => {
@@ -44,24 +50,47 @@ const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = 
     }
 
     const schema = Yup.object().shape({
-        nombre: Yup.string().required(),
-        turno: Yup.string().required(),
+        nombre: Yup.string().required().max(128),
+        turno: Yup.string().required().max(32),
         ciclo: Yup.string().required(),
         anho: Yup.number().required().min(1951).max(new Date().getFullYear() + 1),
     });
 
-    const handleSubmit = (e) => {
-        /* const result = await axios.post(`${APILINK}/api/clase`,
-            {
-                "colegioId": 0,
-                "cicloId": 0,
-                "nombre": "string",
-                "turno": "string",
-                "anho": 0
-            })
+    const handleSubmit = async (e) => {
+        setIsSend(true);
+        const toastLoadig = toast.loading("Guardando Clase.");
+        const obj = {
+            "colegioId": colegio?.id,
+            "cicloId": parseInt(e.ciclo),
+            "nombre": e.nombre,
+            "turno": e.turno,
+            "anho": e.anho
+        }
+        
+        const result = await axios.post(`${APILINK}/api/clase`, obj, {
+            headers: {
+                Authorization: `Bearer ${getToken()}`,
+            }
+        })
 
-        result.status === 200 && handleChangeListCiclos(result) */
-        console.log(e)
+        if(result.status === 200){
+            console.log("Result: ", result);
+            setIsSend(false);
+            handleClose(false);
+
+
+
+            //actualizar lista de la tabla aqui
+            
+
+            
+            toast.success("Guardado exitoso.");
+        } else{
+            console.log("Error: ", result.data)
+            setIsSend(false);
+            toast.error(`Error: ${result.data.error}`);
+        }
+        toast.dismiss(toastLoadig);
     }
 
     return <>
@@ -100,13 +129,13 @@ const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = 
                         errors,
                         blur
                     }) => {
-                        return <Form noValidate onSubmit={handleSubmit} as={`${addCiclos ? "div" : "form"}`}>
+                        return <Form noValidate onSubmit={handleSubmit} as={`${addCiclos ? "div" : "form"}`} >
 
                             <Row className="mb-3">
                                 <Form.Group as={Col} md="12" controlId="validationFormikNombre">
                                     <Form.Label>Nombre</Form.Label>
                                     <InputGroup hasValidation >
-                                        <Form.Control disabled={addCiclos}
+                                        <Form.Control disabled={addCiclos || isSend}
                                             type="text"
                                             placeholder="Nombre"
                                             aria-describedby="inputGroupPrepend"
@@ -126,7 +155,7 @@ const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = 
                                 <Form.Group as={Col} md="12" controlId="validationFormikTurno">
                                     <Form.Label>Turno</Form.Label>
                                     <InputGroup hasValidation >
-                                        <Form.Control disabled={addCiclos}
+                                        <Form.Control disabled={addCiclos || isSend}
                                             type="text"
                                             placeholder="Turno"
                                             aria-describedby="inputGroupPrepend"
@@ -147,7 +176,7 @@ const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = 
                                     <Form.Group as={Col} md="12" controlId="validationFormikCiclo" >
                                         <Form.Label>Ciclo</Form.Label>
 
-                                        <Form.Select aria-label="Default select"
+                                        <Form.Select aria-label="Default select" disabled={isSend}
                                             name="ciclo"
                                             value={values.ciclo}
                                             onChange={(e) => {
@@ -178,7 +207,7 @@ const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = 
                                     className="position-relative"
                                 >
                                     <Form.Label>Año</Form.Label>
-                                    <Form.Control disabled={addCiclos}
+                                    <Form.Control disabled={addCiclos || isSend}
                                         type="number"
                                         placeholder="Año"
                                         name="anho"
@@ -195,7 +224,7 @@ const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = 
                                 </Form.Group>
                             </Row>
 
-                            <Button className="btn-save" type="submit" disabled={addCiclos}>Guardar</Button>
+                            <Button className="btn-save" type="submit" disabled={addCiclos || isSend}>Guardar</Button>
                         </Form>
                     }}
                 </Formik>
