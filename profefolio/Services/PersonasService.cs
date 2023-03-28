@@ -123,7 +123,7 @@ public class PersonasService : IPersona
     {
         var query = await _userManager.GetUsersInRoleAsync(rol);
 
-        return query.Where(p => !p.Deleted)
+        return query.Where(p => !p.Deleted).OrderByDescending(i => i.Created)
             .Skip(page * cantPorPag)
             .Take(cantPorPag).ToList();
     }
