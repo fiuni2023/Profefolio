@@ -1,13 +1,10 @@
-import { Button, Col, Form, FormGroup, InputGroup, Modal, Row } from "react-bootstrap";
+import { Button, Col, Form, InputGroup, Modal, Row } from "react-bootstrap";
 import * as Yup from 'yup';
 import { Formik } from "formik";
 import { map } from "lodash";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import useAxiosGet from "../../hooks/useAxiosGet";
 import { useGeneralContext } from "../../../../context/GeneralContext";
-import { BsPlusCircleFill } from "react-icons/bs";
-import { MdCancel } from "react-icons/md";
-import { IoSaveSharp } from "react-icons/io5";
 import FormAddCiclo from "./FormAddCiclo";
 import axios from "axios";
 import APILINK from "../../../../components/link";
@@ -17,11 +14,12 @@ import { toast } from "react-hot-toast";
 const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = false, triggerState = () => { } }) => {
     const CREATE_CICLO = "___option____create____ciclo";
 
+    // eslint-disable-next-line no-unused-vars
     const { getToken, cancan, verifyToken, getUserMail } = useGeneralContext();
 
     const [addCiclos, setAddCiclos] = useState(false);
 
-    const [isSend, setIsSend] = useState(false);    
+    const [isSend, setIsSend] = useState(false);
 
     const onSetAddCiclos = () => {
         setAddCiclos(!addCiclos)
@@ -34,15 +32,18 @@ const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = 
         }
     }
 
+    // eslint-disable-next-line no-unused-vars
     const [data, loading, error, setData] = useAxiosGet(`api/ciclo`, getToken());
+    // eslint-disable-next-line no-unused-vars
     const [colegio, loadingColegio, errorColegio, setColegio] = useAxiosGet(`api/administrador/${getUserMail()}`, getToken());
 
 
-    console.log(data);
 
     useEffect(() => {
         verifyToken();
-        
+        setAddCiclos(false);
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [show])
 
     const addCicloList = (ciclo) => {
@@ -66,14 +67,14 @@ const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = 
             "turno": e.turno,
             "anho": e.anho
         }
-        
+
         const result = await axios.post(`${APILINK}/api/clase`, obj, {
             headers: {
                 Authorization: `Bearer ${getToken()}`,
             }
         })
 
-        if(result.status === 200){
+        if (result.status === 200) {
             console.log("Result: ", result);
             setIsSend(false);
             handleClose(false);
@@ -81,11 +82,11 @@ const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = 
 
 
             //actualizar lista de la tabla aqui
-            
+            triggerState(result.data)
 
-            
+
             toast.success("Guardado exitoso.");
-        } else{
+        } else {
             console.log("Error: ", result.data)
             setIsSend(false);
             toast.error(`Error: ${result.data.error}`);
@@ -224,7 +225,11 @@ const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = 
                                 </Form.Group>
                             </Row>
 
-                            <Button className="btn-save" type="submit" disabled={addCiclos || isSend}>Guardar</Button>
+                            <Row className="btn-save-contanier">
+                                <Col className="btn-save-subcontanier" md={4}>
+                                    <Button className="btn-save" type="submit" disabled={addCiclos || isSend}>Guardar</Button>
+                                </Col>
+                            </Row>
                         </Form>
                     }}
                 </Formik>
@@ -259,6 +264,11 @@ const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = 
                         border: 1px solid #F0544F;
                     }
 
+                    .btn-save:disabled {
+                        background: gray;
+                        border: 1px solid #F0544F;
+                    }
+
                     .btn-save:hover {
                         background: #F05418;
                         border: 1px solid #F0544F;
@@ -266,6 +276,10 @@ const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = 
 
                     .btn-cancel-icon {
                         color: #FDF0D5;
+                    }
+                    .btn-save-contanier, .btn-save-subcontanier{
+                        display: flex;
+                        justify-content: center;
                     }
 
                 `
