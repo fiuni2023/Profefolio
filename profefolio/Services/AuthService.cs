@@ -31,7 +31,7 @@ public class AuthService : IAuth
         var user = await _userManager
             .Users
             .Where(p => !p.Deleted && p.Email.Equals(login.Email))
-            .FirstAsync();
+            .FirstOrDefaultAsync();
             
         
         if ((user == null || user.Deleted) || !await _userManager.CheckPasswordAsync(user, login.Password))
