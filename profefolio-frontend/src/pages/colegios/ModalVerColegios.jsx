@@ -7,22 +7,20 @@ import { toast } from 'react-hot-toast';
 import APILINK from '../../components/link';
 import { useNavigate } from "react-router-dom";
 
-function ModalVerColegios({ idColegio, setShow, show, disabled, setDisabled }) {
+function ModalVerColegios({ idColegio, setShow, show, disabled, setDisabled, onSubmit = () => { }, triggerState = () => { } }) {
   const handleClose = () => setShow(false);
   const [colegio, setColegio] = useState([""]);
   const { getToken, verifyToken, cancan } = useGeneralContext();
   const nav = useNavigate();
-  const navigate = useNavigate();
   const [administradores, setAdministradores] = useState([]);
   const [nombreColegio, setNombreColegio] = useState("");
   const [nombreNuevoCol, setNombreNuevoCol] = useState("")
-  const [idAdmin, setIdAdmin] = useState(0);
-
+  const [idAdmin, setIdAdmin] = useState("");
+  
   //Lamada de los datos del colegio
-
-
   useEffect(() => {
     if (show) {
+      console.log(idColegio)
       verifyToken()
       if (!cancan("Master")) {
         nav("/")
@@ -37,17 +35,18 @@ function ModalVerColegios({ idColegio, setShow, show, disabled, setDisabled }) {
         axios(config)
           .then(function (response) {
             setColegio(response.data); //Guarda los datos
+            setNombreColegio(response.data.nombre);
             setDisabled(true);
-            
+            console.log(colegio);
 
           })
           .catch(function (error) {
-            console.log(error);
+            toast.error(error);
           });
       }
       handleEdit();
     }
-  }, [cancan, verifyToken, nav, getToken, idColegio])
+  }, [cancan, verifyToken, nav, getToken, show, idColegio])
   //Llamada para obtener los datos de admninistradores
   const handleGetAdmin = () => {
     verifyToken()
@@ -67,7 +66,7 @@ function ModalVerColegios({ idColegio, setShow, show, disabled, setDisabled }) {
 
         })
         .catch(function (error) {
-          console.log(error);
+          toast.error(error.resonse.data);
         });
     }
   }
@@ -80,46 +79,38 @@ function ModalVerColegios({ idColegio, setShow, show, disabled, setDisabled }) {
 
   const handleSubmit = () => {
     console.log(idAdmin);
-    if (nombreNuevoCol == nombreColegio && idAdmin != 0 || nombreNuevoCol != "" && idAdmin != 0) {
-      let data = JSON.stringify({
-        "nombre": nombreNuevoCol,
-        "personaId": idAdmin
+
+    axios.put(`${APILINK}/api/Colegios/${idColegio}`, {
+      "nombre": nombreNuevoCol,
+      "personaId": idAdmin
+
+    }, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+      }
+    })
+      .then(response => {
+        triggerState(response.data)
+        onSubmit(response.data)
+        toast.success("Guardado exitoso");
+        handleClose();
+        setNombreNuevoCol("");
+        setIdAdmin("");
+
+      })
+      .catch(error => {
+
+        toast.error(error.response.data)
+
       });
-      console.log(data);
-      verifyToken()
-      let config = {
-          method: 'put',
-          url: `${APILINK}/api/Colegios/${idColegio}`,
-          headers: {
-            'Authorization': `Bearer ${getToken()}`
-          },
-          data: data
-        };
-        axios.request(config)
-          .then((response) => {
-            console.log(JSON.stringify(response.data));
-            toast.success("Cambios Guardados");
-          })
-          .catch((error) => {
-            console.log(error);
-            toast.error("Hubo un error al guardar los cambios", error);
-          });
 
-      
-    }
-    else {
-      toast.error("Rellene todos los campos");
-
-    }
   }
 
 
   //Guardar el id del admin
-  const handleAdmin = (idAdmin) => {
-    setIdAdmin(idAdmin);
-  }
   const handleIDAdmin = (event) => {
     setIdAdmin(event.target.value)
+    console.log(typeof event.target.value);
   }
 
   const handleNombre = (nombre) => {
@@ -130,13 +121,68 @@ function ModalVerColegios({ idColegio, setShow, show, disabled, setDisabled }) {
   }
   //Eliminar colegio
   const handleDelete = (id) => {
-    //https://localhost:7063/api/Colegios/5
+    verifyToken()
+    if (!cancan("Master")) {
+      nav("/")
+    } else {
+      let config = {
+        method: 'delete',
+        url: `${APILINK}/api/Colegios/${idColegio}`,
+        headers: {
+          'Authorization': `Bearer ${getToken()}`
+        }
+      };
+      axios(config)
+        .then(function (response) {
+          if (response.status >= 400) {
+            toast.error("Hubo un error")
+          }
+          else if (response.status >= 200) {
+            triggerState(response.data)
+            onSubmit(response.data)
+            toast.success("Colegio Eliminado");
+          }
+        })
+        .catch(function (error) {
+          if (typeof (error.response.data) === "string" ? true : false) {
+            toast.error(error.response.data)
+          } else {
+          }
+        });
+      handleCloseDelete();
+      handleClose();
+    }
+
 
   }
+  const [showDelete, setShowDelete] = useState(false);
+
+  const handleCloseDelete = () => setShowDelete(false);
+  const handleShowDelete = () => setShowDelete(true);
+
 
   return (
 
     <>
+      <div
+        className="modal show"
+        style={{ display: 'block', position: 'initial' }}
+      >
+        <Modal show={showDelete} onHide={handleCloseDelete}>
+          <Modal.Header closeButton id={styles.modalContenido}>
+            <Modal.Title>Eliminar</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>Desea eliminar el colegio {nombreColegio}?</Modal.Body>
+          <Modal.Footer id={styles.modalContenido}>
+            <Button variant="secondary" onClick={handleCloseDelete}>
+              No
+            </Button>
+            <Button variant="primary" onClick={handleDelete}>
+              Si
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      </div>
       <div>
 
         <Modal show={show} onHide={handleClose}>
@@ -148,10 +194,10 @@ function ModalVerColegios({ idColegio, setShow, show, disabled, setDisabled }) {
               <form>
                 <label htmlFor="colegio-nombre" className={styles.labelForm}>Nombre Colegio</label><br />
                 {disabled
-                  ? <div> <input type="text" id={styles.inputColegio} defaultValue={colegio.nombre || ''} disabled></input><br />
+                  ? <div> <input type="text" id={styles.inputColegio} defaultValue={nombreColegio || ''} disabled></input><br />
                     <br /></div>
 
-                  : <div> <input type="text" id={styles.inputColegio} defaultValue={colegio.nombre || ''} name="colegio-nombre" onChange={event => handleInputColegio(event)}></input><br />
+                  : <div> <input type="text" id={styles.inputColegio} defaultValue={nombreColegio || ''} name="colegio-nombre" onChange={event => handleInputColegio(event)}></input><br />
                     <br /></div>
                 }
 
@@ -176,7 +222,7 @@ function ModalVerColegios({ idColegio, setShow, show, disabled, setDisabled }) {
           <Modal.Footer >
             {disabled
               ? <div>
-                <Button className={styles.btnCancelar} onClick={handleDelete} >Eliminar</Button>
+                <Button className={styles.btnCancelar} onClick={handleShowDelete} >Eliminar</Button>
                 <Button className={styles.btnGuardar} onClick={handleEdit}>Editar</Button>
               </div>
               : <div>
@@ -184,6 +230,7 @@ function ModalVerColegios({ idColegio, setShow, show, disabled, setDisabled }) {
                 <Button className={styles.btnGuardar} onClick={handleSubmit}>Guardar</Button>
               </div>
             }
+
 
           </Modal.Footer>
         </Modal>

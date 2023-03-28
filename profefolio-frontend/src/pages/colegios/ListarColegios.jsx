@@ -9,7 +9,6 @@ import Pagination from 'react-bootstrap/Pagination';
 import { useGeneralContext } from "../../context/GeneralContext";
 import APILINK from "../../components/link";
 import ModalVerColegios from './ModalVerColegios'
-import { AiOutlineEye } from "react-icons/ai";
 const ListarColegios = (triggerState = () => { }) => {
 
   const { getToken, verifyToken, cancan } = useGeneralContext()
@@ -45,7 +44,7 @@ const ListarColegios = (triggerState = () => { }) => {
           console.log(error);
         });
     }
-  }, [cancan, verifyToken, nav, currentPage, getToken])
+  }, [cancan, verifyToken, nav, currentPage, getToken, triggerState])
   
   const doFetch =(colegio) =>{
     setColegios([...colegios, colegio])
@@ -86,15 +85,15 @@ const ListarColegios = (triggerState = () => { }) => {
         </div>
         <div className={styles.tablePrincipal} >
           <Table
-            headers={["Numero", "Nombre", "Administrador", "Acciones"]}
+            headers={["Numero", "Nombre", "Administrador"]}
             datas={colegios}
             parseToRow={(col, index) => {
               return (
-                <tr key={index} >
+                <tr key={index} onClick={()=>handleShow(col?.id)} >
                   <td>{index + 1}</td>
                   <td>{col?.nombre}</td>
                   <td>{col?.nombreAdministrador} {col?.apellido}</td>
-                  <td><button className={styles.iconButton} onClick={()=>handleShow(col?.id)}><AiOutlineEye /></button></td>
+                  
                   
                 </tr>
               )
@@ -103,7 +102,7 @@ const ListarColegios = (triggerState = () => { }) => {
           <Pagination onClick={e => handleCurrentPage(e.target.text)} size="sm">{items} </Pagination>
         </div>
 
-        <ModalVerColegios idColegio={datoIdColegio} show={show} setShow={setShow} disabled={disabled} setDisabled={setDisabled}></ModalVerColegios>
+        <ModalVerColegios idColegio={datoIdColegio} show={show} setShow={setShow} disabled={disabled} setDisabled={setDisabled} triggerState={(colegio)=>{doFetch(colegio)}}></ModalVerColegios>
 
         <ModalAgregarColegios triggerState={(colegio)=>{doFetch(colegio)}}></ModalAgregarColegios>
       </div>

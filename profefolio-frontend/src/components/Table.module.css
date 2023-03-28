@@ -11,6 +11,6 @@
     border: 1px solid black;
 }
 
-/*.CustomTable>tbody>tr:hover{
-    background-color: rgb(161, 103, 159);
-}*/
+CustomTable>tbody>tr:hover{
+    background-color: #EDEDED;
+}
