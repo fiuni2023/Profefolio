@@ -51,7 +51,16 @@ const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = 
     });
 
     const handleSubmit = (e) => {
-        //e.preventDefault();
+        /* const result = await axios.post(`${APILINK}/api/clase`,
+            {
+                "colegioId": 0,
+                "cicloId": 0,
+                "nombre": "string",
+                "turno": "string",
+                "anho": 0
+            })
+
+        result.status === 200 && handleChangeListCiclos(result) */
         console.log(e)
     }
 
@@ -140,7 +149,7 @@ const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = 
 
                                         <Form.Select aria-label="Default select"
                                             name="ciclo"
-                                            value={ values.ciclo }
+                                            value={values.ciclo}
                                             onChange={(e) => {
                                                 validateSelect(e);
                                                 return handleChange(e);
@@ -196,7 +205,7 @@ const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = 
 
 
             </Modal.Body>
-            
+
         </Modal>
 
         <style jsx="true">
