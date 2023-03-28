@@ -7,7 +7,14 @@ using System.Text;
 using profefolio.Models.Entities;
 using profefolio.Repository;
 using profefolio.Services;
+using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Hosting;
+using log4net;
+using log4net.Config;
+using System.IO;
 
+var logRepository = LogManager.GetRepository(System.Reflection.Assembly.GetEntryAssembly());
+XmlConfigurator.Configure(logRepository, new FileInfo("log4net.config"));
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;

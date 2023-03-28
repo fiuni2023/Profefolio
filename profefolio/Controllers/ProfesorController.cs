@@ -41,7 +41,7 @@ namespace profefolio.Controllers
             var profesores = await _personasService.FilterByRol(page, CantPorPage, PROFESOR_ROLE);
 
 
-            int cantPages = (int)(await _personasService.CountByRol(PROFESOR_ROLE)  / CantPorPage) + 1;
+            int cantPages = (int)Math.Ceiling((double)(await _personasService.CountByRol(PROFESOR_ROLE)) / (double)CantPorPage);
 
 
             var result = new DataListDTO<PersonaResultDTO>();

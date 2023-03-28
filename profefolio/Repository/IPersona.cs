@@ -16,7 +16,7 @@ public interface IPersona : IRepository<Persona>
     Task<int> CountByRol(string rol);
     Task<IEnumerable<Persona>> GetAllByRol(string roleName);
     Task<bool> ExistDoc(Persona persona);
-
+    Task<Persona> FindByEmail(string email);
 
 
 }

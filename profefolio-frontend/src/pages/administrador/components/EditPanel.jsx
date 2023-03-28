@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Col, Row } from "react-bootstrap";
 import { toast } from "react-hot-toast";
 import { ButtonInput } from "../../../components/Inputs";
@@ -19,10 +19,19 @@ const LAEditPanel = ({
 
     const { selectedAdmin, setSelectedAdmin, resetAdmin, changeAdminData, setShowAdmin } = useAdminContext()
 
+    
     const [editing, setEditing] = useState(false)
     const [erasing, setErasing] = useState(false)
     const [before, setBefore] = useState({})
 
+    useEffect(()=>{
+        if (before?.id !== selectedAdmin.id && editing){
+            setEditing(false)
+        }
+    
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [setSelectedAdmin])
+    
     const handleChange = (area, value) => {
         changeAdminData(area, value)
     }
