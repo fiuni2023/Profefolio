@@ -6,6 +6,7 @@ using profefolio.Models.DTOs;
 using profefolio.Models.DTOs.Materia;
 using profefolio.Models.Entities;
 using profefolio.Repository;
+using log4net;
 
 namespace profefolio.Controllers
 {
@@ -13,6 +14,7 @@ namespace profefolio.Controllers
     [ApiController]
     public class MateriaController : ControllerBase
     {
+        private static readonly ILog _log = LogManager.GetLogger(typeof(MateriaController));
         private readonly IMateria _materiaService;
         private readonly int _cantPorPag = 10;
         private readonly IMapper _mapper;
@@ -28,6 +30,7 @@ namespace profefolio.Controllers
         [Authorize(Roles = "Administrador de Colegio,Profesor")]
         public ActionResult<DataListDTO<MateriaResultDTO>> GetMaterias(int page)
         {
+
             var query = _materiaService.GetAll(page, _cantPorPag);
             int totalPage = (int)Math.Ceiling((double)_materiaService.Count() / _cantPorPag);
 
@@ -52,6 +55,7 @@ namespace profefolio.Controllers
             var materia = await _materiaService.FindById(id);
             if (materia == null)
             {
+                _log.Error("An error occurred in the Get method");
                 return NotFound();
             }
 
@@ -70,17 +74,20 @@ namespace profefolio.Controllers
             //verificar el modelo
             if (!ModelState.IsValid)
             {
+                 _log.Error("An error occurred in the put method");
                 return BadRequest("Objeto No valido");
             }
             //verificar que no sea nulo
             if (materia.Nombre_Materia == null || materia.Nombre_Materia == " " || materia.Nombre_Materia == "")
             {
+                _log.Error("An error occurred in the put method");
                 return BadRequest("Nombre de materia No valido");
             }
-            
+
             var p = await _materiaService.FindById(id);
             if (p == null)
             {
+                _log.Error("An error occurred in the put method");
                 return NotFound();
             }
             //VERIFICAR REPETIDOS con nombre igual
@@ -136,8 +143,7 @@ namespace profefolio.Controllers
             }
             catch (BadHttpRequestException e)
             {
-                Console.WriteLine(e.Message);
-                return BadRequest($"Error al crear la materia ${materia.Nombre_Materia}");
+                return BadRequest($"Error al crear la materia.");
             }
         }
 

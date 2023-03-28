@@ -13,6 +13,7 @@ import PartidosEdit from "../partidos/components/edit";
 import PartidosList from "../partidos/components/list";
 import ListarColegios from "../colegios/ListarColegios";
 import CreateProfesor from "../profesor/components/create/CreateModal.jsx";
+import ListarMaterias from "../materias/list/ListarMaTerias.jsx"
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 
@@ -57,6 +58,10 @@ const App = () => {
                                 </Route>
 
                                 <Route path="/clases" element={<Clases />}>
+                                </Route>
+                                
+                                <Route path="/materias" element={<ListarMaterias />}>
+                                    <Route path="list" element={<ListarMaterias />} />
                                 </Route>
                             </Routes>
                         </div>
