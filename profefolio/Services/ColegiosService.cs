@@ -21,8 +21,6 @@ public class ColegiosService : IColegio
     }
     public async Task<Colegio> FindById(int id)
     {
-        Console.Write("\nid a buscar: {0}", id);
-        Console.Write("\n");
         return await _dbContext.Colegios
             .Where(p => !p.Deleted && p.Id == id)
             .FirstOrDefaultAsync();
@@ -33,16 +31,12 @@ public class ColegiosService : IColegio
     */
     public async Task<Colegio> FindByNamePerson(string name, string idPerson)
     {
-        Console.Write("\nColegio a buscar: {0}", name);
-        Console.Write("\n");
         return await _dbContext.Colegios
             .Where(p => !p.Deleted && p.Nombre == name && p.PersonaId == idPerson)
             .FirstOrDefaultAsync();
     }
     public async Task<Colegio> FindByNameColegio(string name)
     {
-        Console.Write("\nColegio a buscar: {0}", name);
-        Console.Write("\n");
         return await _dbContext.Colegios
             .Where(p => !p.Deleted && p.Nombre == name)
             .FirstOrDefaultAsync();
@@ -147,5 +141,14 @@ public class ColegiosService : IColegio
          .Where(p => !p.Deleted)
          .Skip(page * cantPorPag)
          .Take(cantPorPag);
+    }
+
+    public async Task<Colegio> FindByIdAdmin(string id)
+    {
+        return await _dbContext.Colegios.Include(p => p.personas).FirstOrDefaultAsync(
+                    c => !c.Deleted 
+                    && c.PersonaId != null 
+                    && id.Equals(c.PersonaId)
+                    && !c.personas.Deleted);
     }
 }
