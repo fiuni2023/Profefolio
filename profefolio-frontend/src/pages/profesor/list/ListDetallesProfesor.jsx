@@ -7,6 +7,7 @@ import styles from  '../components/create/Modal.module.css';
 import APILINK from '../../../components/link';
 import { toast } from 'react-hot-toast';
 import { BsTrash, BsPencilFill } from 'react-icons/bs';
+import ModalConfirmacion from '../components/create/ModalConfirmacon';
 
 
 function ListDetallesProfesor(props) {
@@ -19,6 +20,38 @@ function ListDetallesProfesor(props) {
   const [readOnly, setReadOnly] = useState(true);
 
   const [eliminarVisible, setEliminarVisible] = useState(true);
+
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+
+  const handleDeleteClick = () => {
+    setShowConfirmDialog(true);
+  };
+
+  const handleConfirmDelete = () => {
+    axios.delete(`${APILINK}/api/profesor/${id}`, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+      }
+    })
+
+      .then(response => {
+        handleUpdate(); 
+        setProfesores(response.data)
+        toast.success("Eliminado exitoso");
+        setShowModal(false);
+    
+
+
+      })
+      .catch(error => {
+        console.error(error);
+      });
+    setShowConfirmDialog(false);
+  };
+
+  const handleClose = () => {
+    setShowConfirmDialog(false);
+  };
  
 
 
@@ -31,6 +64,7 @@ function ListDetallesProfesor(props) {
 
       .then(response => {
         triggerState(response.data.dataList);
+
     
 
 
@@ -44,14 +78,6 @@ function ListDetallesProfesor(props) {
 
 
   const handleSubmit = (event) => {
-
-    console.log('nombre',nombre);
-    console.log('apellido',apellido);
-    console.log('documento',documento);
-    console.log('email',email);
-    console.log('nacimiento',nacimiento);
-
-    console.log('genero',genero);
 
     event.preventDefault();
 
@@ -83,7 +109,7 @@ function ListDetallesProfesor(props) {
 
           
           setProfesores(response.data)
-          toast.success("Guardado exitoso");
+          toast.success("Editado exitoso");
 
           setShowModal(false);
           setNombre("")
@@ -118,10 +144,11 @@ function ListDetallesProfesor(props) {
 
   function closeModal() {
     setShowModal(false);
+    setReadOnly(true);
+    setEliminarVisible(true);
   }
   
   const handleCancelar = () => {
-    console.log('entro en cancelar');
 
     setReadOnly(true);
 
@@ -157,7 +184,9 @@ function ListDetallesProfesor(props) {
         setEmail(email);
         setGenero(genero === "Femenino" ? "F" : "M");
         setDocumento(documento);
-        setDocumentoTipo(documentoTipo);
+
+        setDocumentoTipo(documentoTipo === "cedula" ? "cedula" : documentoTipo === "CI" ? "cedula" : documentoTipo === "Cedula" ? "cedula" : documentoTipo === "dni" ? "dni" :documentoTipo === "pasaporte" ? "pasaporte" :"");
+       // setDocumentoTipo(documentoTipo );
 
 
         //triggerState(response.data)
@@ -166,7 +195,7 @@ function ListDetallesProfesor(props) {
 
       })
       .catch(error => {
-        console.error(error);
+       // console.error(error);
       });
 
 
@@ -183,8 +212,10 @@ const [documento, setDocumento] = useState(profesor.documento || '');
 const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo || '');
 
   return (
+
+    <>
     <Modal show={showModal} onHide={handleCloseModal}>
-      <Modal.Header className={styles.contentModal} closeButton>
+      <Modal.Header className={styles.contentModal}>
       <Modal.Title className="">Detalles Profesor</Modal.Title>
       </Modal.Header>
 
@@ -205,7 +236,7 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo || '')
             {eliminarVisible && (
               <Form.Control
               type="text"
-              defaultValue={profesor.nombre}
+              defaultValue={profesor.nombre  || ''}
               readOnly={readOnly}
             /> 
             )}
@@ -233,7 +264,7 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo || '')
             {eliminarVisible && (
                 <Form.Control
                   type="text"
-                  value={profesor.apellido}
+                  value={profesor.apellido  || ''}
                   readOnly={readOnly}
                 />
 
@@ -263,7 +294,7 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo || '')
                  className={styles.option}
                   type="number"
                   name="telefono"
-                  value= {profesor.telefono}
+                  value= {profesor.telefono  || ''}
                   placeholder="09xxxxxxxxx"
                   readOnly={readOnly}
                 />
@@ -295,7 +326,7 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo || '')
                  className={styles.option}
                   type="text"
                   name="direccion"
-                  value={profesor.direccion}
+                  value={profesor.direccion  || ''}
                   placeholder="Ingrese su direccion"
                   readOnly={readOnly}
                 />
@@ -334,7 +365,7 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo || '')
                   type="text"
                   name="nacimiento"
                   //value={profesor.nacimiento}
-                  value={new Date(profesor.nacimiento).toLocaleDateString()}
+                  value={new Date(profesor.nacimiento).toLocaleDateString()  || ''}
 
                   readOnly={readOnly}
 
@@ -368,7 +399,7 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo || '')
                  className={styles.option}
                  type="email"
                   name="email"
-                  value={profesor.email}
+                  value={profesor.email  || ''}
                   placeholder="Ingrese su correo electronico"
                   readOnly={readOnly}
                 />
@@ -404,7 +435,7 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo || '')
                  className={styles.option}
                  type="text"
                   name="genero"
-                  value={profesor.genero}
+                  value={profesor.genero  || ''}
                   readOnly={readOnly}
                 />
                  )}
@@ -437,7 +468,7 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo || '')
                  className={styles.option}
                   type="text"
                   name="documento"
-                  value={profesor.documento}
+                  value={profesor.documento  || ''}
                   placeholder="Ingrese su documento"
                   readOnly={readOnly}
                 />
@@ -474,7 +505,7 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo || '')
                  className={styles.option}
                  type="text"
                   name="documentoTipo"
-                  value={profesor.documentoTipo}
+                  value={profesor.documentoTipo  || ''}
                   readOnly={readOnly}
                />
                
@@ -519,7 +550,7 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo || '')
             <BsPencilFill />
             </button>
             {eliminarVisible && (
-              <button variant="danger" className={styles.buttonDelete}>   <BsTrash />  </button>
+              <button variant="danger" onClick={handleDeleteClick} className={styles.buttonDelete}>   <BsTrash />  </button>
             )}
           </>
         ) : (
@@ -538,12 +569,22 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo || '')
        
         <button variant="primary" onClick={closeModal} className={styles.buttonClose}>Cerrar</button>
 
+
+      <ModalConfirmacion
+        show={showConfirmDialog}
+        onHide={handleClose}
+        onConfirm={handleConfirmDelete}
+        message="¿Está seguro de que desea eliminar ?"
+      />
+
         </Modal.Footer>
        
-      
-     
-
+  
     </Modal>
+
+
+    
+    </>
   );
 }
 
