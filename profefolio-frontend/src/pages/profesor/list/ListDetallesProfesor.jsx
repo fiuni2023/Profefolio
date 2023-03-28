@@ -79,14 +79,6 @@ function ListDetallesProfesor(props) {
 
   const handleSubmit = (event) => {
 
-    console.log('nombre',nombre);
-    console.log('apellido',apellido);
-    console.log('documento',documento);
-    console.log('email',email);
-    console.log('nacimiento',nacimiento);
-
-    console.log('genero',genero);
-
     event.preventDefault();
 
     if (nombre === "" || apellido === "" || documento === "" || documentoTipo === "" || email === "" || nacimiento === "" || genero === "" || direccion === "" || telefono === "") toast.error("revisa los datos, los campos deben ser completados")
@@ -152,10 +144,11 @@ function ListDetallesProfesor(props) {
 
   function closeModal() {
     setShowModal(false);
+    setReadOnly(true);
+    setEliminarVisible(true);
   }
   
   const handleCancelar = () => {
-    console.log('entro en cancelar');
 
     setReadOnly(true);
 
@@ -191,7 +184,9 @@ function ListDetallesProfesor(props) {
         setEmail(email);
         setGenero(genero === "Femenino" ? "F" : "M");
         setDocumento(documento);
-        setDocumentoTipo(documentoTipo);
+
+        setDocumentoTipo(documentoTipo === "cedula" ? "cedula" : documentoTipo === "CI" ? "cedula" : documentoTipo === "Cedula" ? "cedula" : documentoTipo === "dni" ? "dni" :documentoTipo === "pasaporte" ? "pasaporte" :"");
+       // setDocumentoTipo(documentoTipo );
 
 
         //triggerState(response.data)
@@ -200,7 +195,7 @@ function ListDetallesProfesor(props) {
 
       })
       .catch(error => {
-        console.error(error);
+       // console.error(error);
       });
 
 

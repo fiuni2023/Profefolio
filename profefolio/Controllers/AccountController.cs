@@ -1,10 +1,12 @@
-﻿using AutoMapper;
+﻿using System.Security.Claims;
+using AutoMapper;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using profefolio.Models.DTOs;
 using profefolio.Models.DTOs.Auth;
 using profefolio.Models.DTOs.Persona;
+using profefolio.Models.DTOs.Colegio;
 using profefolio.Models.Entities;
 using profefolio.Repository;
 
@@ -12,26 +14,27 @@ using profefolio.Repository;
 namespace profefolio.Controllers;
 
 [Route("api/administrador")]
-[Authorize(Roles = "Master")]
 public class AccountController : ControllerBase
 {
     private readonly IMapper _mapper;
     private readonly IPersona _personasService;
     private readonly IRol _rolService;
+    private readonly IColegio _colegioService;
     private const string RolAdmin = "Administrador de Colegio";
     private const int CantPerPage = 20;
 
 
 
-    public AccountController(IMapper mapper, IPersona personasService, IRol rolService)
+    public AccountController(IMapper mapper, IPersona personasService, IRol rolService, IColegio colegioService)
     {
         _mapper = mapper;
         _personasService = personasService;
         _rolService = rolService;
-
+        _colegioService = colegioService;
     }
 
     [HttpPost]
+    [Authorize(Roles = "Master")]
     public async Task<ActionResult<PersonaResultDTO>> Post([FromBody] PersonaDTO dto)
     {
         if (!ModelState.IsValid)
@@ -78,15 +81,17 @@ public class AccountController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize(Roles = "Master")]
+
     [Route("page/{page:int}")]
     public async Task<ActionResult<DataListDTO<PersonaResultDTO>>> Get(int page)
     {
-       
+
         var query = await _personasService
             .FilterByRol(page, CantPerPage, RolAdmin);
 
 
-        var cantPages = (int)Math.Ceiling((double) await _personasService.CountByRol(RolAdmin)/ CantPerPage);
+        var cantPages = (int)Math.Ceiling((double)await _personasService.CountByRol(RolAdmin) / CantPerPage);
 
 
         var result = new DataListDTO<PersonaResultDTO>();
@@ -108,6 +113,7 @@ public class AccountController : ControllerBase
 
     [HttpGet]
     [Route("id/{id}")]
+    [Authorize(Roles = "Master")]
     public async Task<ActionResult<PersonaResultDTO>> Get(string id)
     {
         try
@@ -125,6 +131,7 @@ public class AccountController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize(Roles = "Master")]
     public async Task<ActionResult<List<PersonaSimpleDTO>>> GetAll()
     {
         try
@@ -141,6 +148,7 @@ public class AccountController : ControllerBase
     }
 
     [HttpDelete]
+    [Authorize(Roles = "Master")]
     [Route("{id}")]
     public async Task<ActionResult> Delete(string id)
     {
@@ -149,6 +157,7 @@ public class AccountController : ControllerBase
 
 
     [HttpPut]
+    [Authorize(Roles = "Master")]
     [Route("{id}")]
     public async Task<ActionResult<PersonaResultDTO>> Put(string id, [FromBody] PersonaEditDTO dto)
     {
@@ -209,6 +218,7 @@ public class AccountController : ControllerBase
     }
 
     [HttpPut]
+    [Authorize(Roles = "Master")]
     [Route("change/password/{id}")]
     public async Task<ActionResult> ChangePassword(string id, [FromBody] ChangePasswordDTO dto)
     {
@@ -234,6 +244,45 @@ public class AccountController : ControllerBase
         {
             Console.WriteLine(e.Message);
             return NotFound();
+        }
+    }
+
+
+    [HttpGet("{email}")]
+    [Authorize(Roles = "Administrador de Colegio")]
+    public async Task<ActionResult<ColegioSimpleDTO>> GetColegioByAdminEmail(string email)
+    {
+        if (email == null)
+        {
+            return BadRequest("El email es invalido");
+        }
+        var emailToken = User.FindFirstValue(ClaimTypes.Name);
+        
+        if(!email.Equals(email)){
+            return BadRequest("El email recibido no coincide con el de su autorizacion.");
+        }
+
+        try
+        {
+            Persona persona = await _personasService.FindByEmail(email);
+            if(persona == null){
+                return NotFound("El email no fue encontrado.");
+            }
+
+            Colegio colegio = await _colegioService.FindByIdAdmin(persona.Id);
+            if(colegio == null){
+                return NotFound("El usuario no fue asignado a ningun colegio todavia.");
+            }
+            return Ok(new ColegioSimpleDTO(){
+                Id = colegio.Id,
+                Nombre = colegio.Nombre
+            });
+        }   
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+
+            return BadRequest("Error durante la busqueda");
         }
     }
 

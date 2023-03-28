@@ -36,15 +36,24 @@ export const AdminProvider = ({children}) => {
         adminFormik.setFieldValue(area, value)
     }
 
+    const getGenero = (genero) => {
+        if(genero==="Femenino"){
+            return "F"
+        }
+        if(genero==="Masculino"){
+            return "M"
+        }
+        return ""
+    }
+
     const setSelectedAdmin = (admin) => {
-        console.log(admin)
         adminFormik.setFieldValue("id", admin.id)
         adminFormik.setFieldValue("nombre", admin.nombre)
         adminFormik.setFieldValue("apellido", admin.apellido)
         adminFormik.setFieldValue("nacimiento", `${admin.nacimiento.split("T")[0]}`)
         adminFormik.setFieldValue("documento", admin.documento)
         adminFormik.setFieldValue("documentoTipo", admin.documentoTipo)
-        adminFormik.setFieldValue("genero", admin.genero)
+        adminFormik.setFieldValue("genero", getGenero(admin.genero))
         adminFormik.setFieldValue("direccion", admin.direccion)
         adminFormik.setFieldValue("telefono", admin.telefono)
         adminFormik.setFieldValue("email", admin.email)

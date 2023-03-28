@@ -112,9 +112,9 @@ function CreateModal({onSubmit = ()=>{}, triggerState = () => {}}) {
   return (
 
     <>
-      <div className='NButtonForSideA'>
-        <div className="buttonNavBarAa">
-          <button className="buttonNavBarA" onClick={handleShowModal}>
+      <div className={styles.NButtonForSideA}>
+        <div className={styles.buttonNavBarAa}>
+          <button className={styles.buttonNavBarA} onClick={handleShowModal}>
             <BsFillPlusCircleFill />
           </button>
         </div>

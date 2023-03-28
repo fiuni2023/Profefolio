@@ -15,9 +15,9 @@ function ModalAgregarColegios({ onSubmit = () => { }, triggerState = () => { } }
     //Get administadores
 
     useEffect(() => {
-        var config = {
+        let config = {
             method: 'get',
-            url: `${APILINK}/api/administrador/page/0`,
+            url: `${APILINK}/api/administrador`,
             headers: {
                 'Authorization': `Bearer ${getToken()}`,
                 'Content-Type': 'application/json'
@@ -25,7 +25,7 @@ function ModalAgregarColegios({ onSubmit = () => { }, triggerState = () => { } }
         };
         axios(config)
             .then(function (response) {
-                setAdministradores(response.data.dataList);
+                setAdministradores(response.data);
             })
             .catch(function (error) {
                 console.log(error);
@@ -46,12 +46,12 @@ function ModalAgregarColegios({ onSubmit = () => { }, triggerState = () => { } }
             return
         }
         else {
-            var data = JSON.stringify({
+            let data = JSON.stringify({
                 "nombre": nombreColegio,
                 "personaId": idAdmin
             });
 
-            var config = {
+            let config = {
                 method: 'post',
                 maxBodyLength: Infinity,
                 url: `${APILINK}/api/Colegios`,
@@ -113,10 +113,10 @@ function ModalAgregarColegios({ onSubmit = () => { }, triggerState = () => { } }
                             <p className={styles.mensajeError}>{mensajeError}</p>
                             <label htmlFor="administrador"><strong> Administrador</strong></label><br />
 
-                            <select required name="admin" value={idAdmin} onChange={event => handleIDAdmin(event)} className={styles.selectAdmin}>
-                                <option disabled value={0}>Seleccione Administrador</option>
+                            <select required name="admin" value={idAdmin || ''} onChange={event => handleIDAdmin(event)} className={styles.selectAdmin}>
+                                <option disabled value={0|| '' }>Seleccione Administrador</option>
                                 {administradores.map((administrador) =>
-                                    <option key={administrador.id} value={administrador.id}>{administrador.nombre} {administrador.apellido}</option>
+                                    <option key={administrador.id} value={administrador.id || ''}>{administrador.nombre} {administrador.apellido}</option>
                                 )}
                             </select>
                             <p className={styles.mensajeError}>{mensajeError}</p>
@@ -125,7 +125,7 @@ function ModalAgregarColegios({ onSubmit = () => { }, triggerState = () => { } }
                         </form>
                     </div>
                 </Modal.Body>
-                <Modal.Footer id={styles.modalContenido}>
+                <Modal.Footer >
                     <Button className={styles.btnCancelar} onClick={handleClose} >Cancelar</Button>
                     <Button className={styles.btnGuardar} onClick={() => handleSubmit()}>Guardar</Button>
                 </Modal.Footer>
