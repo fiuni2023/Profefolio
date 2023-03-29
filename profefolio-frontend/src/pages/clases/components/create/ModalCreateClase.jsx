@@ -134,11 +134,12 @@ const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = 
             onHide={handleClose}
             backdrop="static"
             keyboard={false}
+            
         >
-            <Modal.Header closeButton>
+            <Modal.Header closeButton className="modal-crear-clase">
                 <Modal.Title>{title}</Modal.Title>
             </Modal.Header>
-            <Modal.Body>
+            <Modal.Body className="modal-crear-clase modal-body-create-clase">
 
 
 
@@ -319,7 +320,12 @@ const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = 
                         background: #e59c68;
                         color: white;
                     }
-
+                    .modal-crear-clase{
+                        background: #C6D8D3;
+                    }
+                    .modal-body-create-clase{
+                        border-radius: 0 0 10px 10px;
+                    }
                 `
             }
         </style>

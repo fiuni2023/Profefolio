@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import APILINK from '../../components/link';
 import { useGeneralContext } from '../../context/GeneralContext';
@@ -111,7 +111,7 @@ const Clases = () => {
                                 <button className="btn page-item btn-sm btn-valid-page" onClick={handlePrevClick} disabled={page === 0}>Anterior</button>
                             </li>
                             <li className={`page-item ${!nextPage ? "disabled" : ""}`}>
-                                <button className="btn page-item btn-sm btn-valid-page" href="#" onClick={handleNextClick} disabled={!nextPage}>Siguiente</button>
+                                <button className="btn page-item btn-sm btn-valid-page" href="#" onClick={() => {handleNextClick();}} disabled={!nextPage}>Siguiente</button>
                             </li>
                         </ul>
                     </nav>
@@ -124,7 +124,10 @@ const Clases = () => {
 
 
                 <ModalCreateClase title="Agregar Clase" handleClose={handleClose} show={show}
-                    triggerState={(profesor) => { doFetch(profesor) }} handlePage={setNextPage}>
+                    triggerState={(profesor) => { doFetch(profesor) }} handlePage={(pag) => {
+                        setNextPage(pag);
+                        setPage(0); 
+                    }}>
                 </ModalCreateClase>
 
 
@@ -217,13 +220,13 @@ const Clases = () => {
                 
             }
             .btn-valid-page{
-                background: #FDF0D5;
+                /*background: #FDF0D5;*/
                 margin-left:1rem;
-                border: 1px solid black;
+                /*border: 1px solid black;*/
             }
 
             .btn-valid-page:hover{
-                background: #FADAAA;
+                /*background: #FADAAA;*/
                 margin-left:1rem;
                 border: 1px solid black;
             }
