@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import APILINK from '../../../components/link';
 
 const useAxiosGet = (url = "", token = "") => {
@@ -28,6 +28,9 @@ const useAxiosGet = (url = "", token = "") => {
                 setError(er)
                 console.error(er);
             });
+
+            
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [url])
     return [data, loading, error, setData];
 }
