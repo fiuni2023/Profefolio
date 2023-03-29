@@ -1,25 +1,35 @@
+/* eslint-disable */
 import React, { useState, useEffect } from 'react';
 import { PanelContainerBG } from "./components/LayoutAdmin.jsx";
 import NavAdmin from "./components/NavAdmin.jsx";
 import CreateModal from "./components/create/CreateModal.jsx";
-
 import { useGeneralContext } from "../../context/GeneralContext";
 import axios from 'axios';
 
-import "./components/create/Index.module.css";
+import styles from  "./components/create/Index.module.css";
 
-
-import { BsTrash, BsPencilFill, BsInfoCircle } from 'react-icons/bs';
 import APILINK from '../../components/link.js';
 import { useNavigate } from 'react-router';
+import ListDetallesProfesor from './list/ListDetallesProfesor.jsx';
+
+
 
 
 function Profesores() {
+
   const [profesores, setProfesores] = useState([]);
+  
+  const [showModal, setShowModal] = useState(false);
+  const [id, setId] = useState(null);
+  const { getToken, cancan, verifyToken } = useGeneralContext();
+
   const [page, setPage] = useState(0);
 
-
-  const { getToken, cancan, verifyToken } = useGeneralContext();
+  const [totalPage, setTotalPage] = useState(1);
+    
+  const [next, setNext] = useState(false);
+  const isLastPage = page === totalPage -1;
+  const [currentPage, setCurrentPage] = useState(0);
 
   const nav = useNavigate()
 
@@ -38,7 +48,12 @@ function Profesores() {
   
         .then(response => {
           setProfesores(response.data.dataList);
+          setTotalPage(response.data.totalPage);//Total de Paginas
+          setCurrentPage(response.data.currentPage);
+          setNext(response.data.next);
+      
   
+
         })
         .catch(error => {
           console.error(error);
@@ -46,18 +61,33 @@ function Profesores() {
     }
   }, [page, cancan, verifyToken, nav, getToken]);
 
+  const doFetch =(profesor) =>{
+    setProfesores([...profesores, profesor])
+}
 
 
+const btndetalles = (id) => {
+  setShowModal(true);
+  setId(id);
+};
+
+const handleCloseModal = () => {
+  setShowModal(false);
+  setProfesores([]);
+};
 
 
   const handlePrevClick = () => {
     setPage(page - 1);
   };
 
-  const handleNextClick = () => {
-    setPage(page + 1);
-  };
 
+  const handleNextClick = () => {
+
+    if (!isLastPage) {
+      setPage(page + 1);
+    }
+  };
 
 
   const [show, setShow] = useState(false);
@@ -73,7 +103,7 @@ function Profesores() {
 
 
           <div>
-            <table className="CustomTable">
+            <table className={styles.CustomTable}>
               <thead>
                 <tr>
                   <th>CI</th>
@@ -82,55 +112,69 @@ function Profesores() {
                   <th>Fecha de nacimiento</th>
                   <th>Direccion</th>
                   <th>Telefono</th>
-                  <th>Acciones</th>
+                 
                 </tr>
               </thead>
-              <tbody>
+              <tbody > 
 
-                {profesores.map(profe => (
-                  <tr key={profe.id}>
+              {profesores && profesores.length > 0 && profesores.map(profe => (
+            <tr  className={styles.tableRow} key={profe.id} onClick={() => btndetalles(profe.id)}>
                     <td>{profe.documento}</td>
                     <td>{profe.nombre}</td>
                     <td>{profe.apellido}</td>
-                    <td>{profe.nacimiento}</td>
+                    <td>{(new Date(profe.nacimiento)).toLocaleDateString()}</td>
+                 
                     <td>{profe.direccion}</td>
                     <td>{profe.telefono}</td>
-                    <td> <BsTrash />  <BsPencilFill /> <BsInfoCircle /></td>
+                  
 
                   </tr>
+                 
                 ))}
               </tbody>
             </table>
+           
+            <ListDetallesProfesor showModal={showModal} setShowModal={setShowModal} id={id}  triggerState={(profesor)=>{setProfesores(profesor)}} page={page} />
 
+  
+            <div >
 
+           
+        
+      </div>
+
+             
+     
+             
+                        
             <nav aria-label="Page navigation example">
               <ul className="pagination justify-content-end">
                 <li className="page-item disabled">
-                  <button className="pag" onClick={handlePrevClick} disabled={page === 0}>Anterior</button>
+
+              
+                  <button className="btn page-item btn-sm" onClick={handlePrevClick} disabled={page === 0}>Anterior</button>
                 </li>
                 <li className="page-item">
-                  <button className="pag" href="#" onClick={handleNextClick}>Siguiente</button>
+                 
+                <button className="btn page-item btn-sm" onClick={handleNextClick}  disabled={isLastPage} >
+                          Siguiente
+                        </button>
                 </li>
               </ul>
             </nav>
-
-
-
+ 
           </div>
-
-
-
-
-
-
 
         </PanelContainerBG>
         <footer>
-          <div className="NButtonForSideA ">
-            <CreateModal title="My Modal" onClose={() => setShow(false)} onSubmit={(value)=>{setProfesores([...profesores, value])}} show={show}>
+          <div className={styles.NButtonForSideA}>
+            <CreateModal title="My Modal" onClose={() => setShow(false)}  show={show}
+             triggerState={(profesor)=>{doFetch(profesor)}}>
             </CreateModal>
             
           </div>
+
+     
 
         </footer>
 
@@ -148,72 +192,19 @@ function Profesores() {
       </div>
 
       <style jsx='true'>{`
-            .page{
-                display: grid;
-                grid-template-rows: 5% 95%;
-                width: 100%;
-                height: 100vh;
-            }
-            .content{
-                width: 100%;
-                height: 100%;
-            }
-            
-            .NavbarA{
-                width: 100%;
-                height: 100%;
-                background-color:  #F0544F;
-                display: flex;
-                background-color: #F0544F;
-            }
-            .NButtonForSideA{
-               width: 25%;
-               position: absolute;
-               bottom: 5px;
-               right : 5px;
-            }
-            .buttonNavBarA{
-                width: 100%;
-                height: 100%;
-                outline: none;
-                border: none;
-                background-color: #FFFFFF;
-                font-size: 50px;
-                color: #F0544F;
-            }
-            .pag{
-              outline: none;
-              border: none;
-              background-color: #FFFFFF;
-              font-size: 10px;
-              color: #F0544F;
-          }
 
-            .buttonNavBarAa{
-                outline: none;
-                border: none;
-                background-color: #FFFFFF;
-                font-size: 20px;
-                color: black;
-            }
-            .navbarmainAd{
-                width: 97.5%;
-                display: flex;
-                justify-content: space-between;
-            }
+        footer {
+          position: fixed;
+          background-color: hwb(0 99% 0%);
+          color: rgb(245, 249, 249);
+          bottom: 0;
+          left: 0;
+          right: 0;
+          padding: 20px;
+          text-align: right;
+        }
 
-            .CustomTable{
-                width: 100%;
-                border-spacing: 0px;
-            }
-            .CustomTable>thead>tr>th{
-                border: 1px solid black;
-                padding-left: 5px;
-            }
-            .CustomTable>tbody>tr>td{
-                text-align: center;
-                border: 1px solid black;
-            }
+           
 
             
             `}</style>
