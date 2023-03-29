@@ -17,11 +17,16 @@ namespace profefolio.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
+<<<<<<< HEAD
                 .HasAnnotation("ProductVersion", "6.0.6")
+=======
+                .HasAnnotation("ProductVersion", "6.0.14")
+>>>>>>> main
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+<<<<<<< HEAD
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -197,6 +202,9 @@ namespace profefolio.Migrations
                 });
 
             modelBuilder.Entity("profefolio.Models.Entities.Ciclo", b =>
+=======
+            modelBuilder.Entity("profefolio.Models.Entities.Persona", b =>
+>>>>>>> main
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -204,6 +212,7 @@ namespace profefolio.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+<<<<<<< HEAD
                     b.Property<DateTime>("Created")
                         .HasColumnType("timestamp without time zone");
 
@@ -293,10 +302,18 @@ namespace profefolio.Migrations
 
                     b.Property<string>("CreatedBy")
                         .HasColumnType("text");
+=======
+                    b.Property<string>("Apellido")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("timestamp with time zone");
+>>>>>>> main
 
                     b.Property<bool>("Deleted")
                         .HasColumnType("boolean");
 
+<<<<<<< HEAD
                     b.Property<DateTime>("Modified")
                         .HasColumnType("timestamp without time zone");
 
@@ -568,6 +585,23 @@ namespace profefolio.Migrations
                         .HasForeignKey("PersonaId");
 
                     b.Navigation("personas");
+=======
+                    b.Property<int>("Edad")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("Modified")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Nombre")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Personas");
+>>>>>>> main
                 });
 #pragma warning restore 612, 618
         }
