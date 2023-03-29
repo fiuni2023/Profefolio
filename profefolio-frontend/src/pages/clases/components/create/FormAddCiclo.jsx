@@ -15,7 +15,7 @@ const FormAddCiclo = ({ handleClose, handleChangeListCiclos }) => {
 
 
     const schema = Yup.object().shape({
-        nombre: Yup.string().required().max(32)
+        nombre: Yup.string().required("Campo requerido").max(32, "La longitud maxima es de 32 caracteres")
     });
 
     const onClose = () => {
@@ -27,7 +27,7 @@ const FormAddCiclo = ({ handleClose, handleChangeListCiclos }) => {
             "nombre": ciclo.nombre
         }
         
-        console.log(obj)
+        //console.log(obj)
 
         const result = await axios.post(`${APILINK}/api/ciclo`, 
         obj, 
@@ -43,9 +43,9 @@ const FormAddCiclo = ({ handleClose, handleChangeListCiclos }) => {
             handleChangeListCiclos(result.data)
             toast.success("Guardado exitoso.");
         } else{
-            console.log("Error: ", result.data)
+            //console.log("Error: ", result.data)
             setIsSend(false);
-            toast.error(`Error: ${result.data.error}`);
+            toast.error(`Error durante el guardado, verifique que el nombre no exista.`);
         }
     }
 
