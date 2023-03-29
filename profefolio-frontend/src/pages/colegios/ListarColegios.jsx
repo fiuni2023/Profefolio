@@ -12,7 +12,7 @@ import ModalVerColegios from './ModalVerColegios'
 const ListarColegios = (triggerState = () => { }) => {
 
   const { getToken, verifyToken, cancan } = useGeneralContext()
-
+//pr
   const nav = useNavigate()
 
   const navigate = useNavigate()
