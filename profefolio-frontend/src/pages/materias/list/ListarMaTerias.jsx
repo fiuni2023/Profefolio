@@ -10,13 +10,15 @@ import styles from  '../create/Index.module.css';
 import APILINK from '../../../components/link.js';
 import { useNavigate } from 'react-router';
 
+import Pagination from 'react-bootstrap/Pagination';
+
 
 
 
 
 function ListarMaTerias() {
 
-  const [profesores, setProfesores] = useState([]);
+  const [materias, setMaterias] = useState([]);
   
   const [showModal, setShowModal] = useState(false);
   const [id, setId] = useState(null);
@@ -32,21 +34,21 @@ function ListarMaTerias() {
 
   const nav = useNavigate()
 
-  /*useEffect(() => {
+  useEffect(() => {
     verifyToken()
     if(!cancan("Administrador de Colegio")){
       nav("/")
     }else{
       //axios.get(`https://miapi.com/products?page=${page}&size=${size}`, {
   
-      axios.get(`${APILINK}/api/materias/page/${page}`, {
+      axios.get(`${APILINK}/api/Materia/page/${page}`, {
         headers: {
           Authorization: `Bearer ${getToken()}`,
         }
       })
   
         .then(response => {
-          setProfesores(response.data.dataList);
+          setMaterias(response.data.dataList);
           setTotalPage(response.data.totalPage);//Total de Paginas
           setCurrentPage(response.data.currentPage);
           setNext(response.data.next);
@@ -60,9 +62,9 @@ function ListarMaTerias() {
     }
   }, [page, cancan, verifyToken, nav, getToken]);
 
-  const doFetch =(profesor) =>{
-    setProfesores([...profesores, profesor])
-}*/
+  const doFetch =(materia) =>{
+    setMaterias([...materias, materia])
+}
 
 
 const btndetalles = (id) => {
@@ -72,7 +74,7 @@ const btndetalles = (id) => {
 
 const handleCloseModal = () => {
   setShowModal(false);
-  setProfesores([]);
+  setMaterias([]);
 };
 
 
@@ -101,32 +103,19 @@ const handleCloseModal = () => {
         <PanelContainerBG>
 
 
-          <div>
-         {/*   <table className={styles.CustomTable}>*/} 
-
-         {/* <table>
+          <div className={styles.container}>
+            <table className={styles.CustomTable}>
               <thead>
                 <tr>
-                  <th>CI</th>
-                  <th>Nombre</th>
-                  <th>Apellido</th>
-                  <th>Fecha de nacimiento</th>
-                  <th>Direccion</th>
-                  <th>Telefono</th>
+                  <th>Nombre de la Materia</th>
                  
                 </tr>
               </thead>
               <tbody > 
 
-          {profesores && profesores.length > 0 && profesores.map(profe => (
-            <tr  className={styles.tableRow} key={profe.id} onClick={() => btndetalles(profe.id)}>
-                    <td>{profe.documento}</td>
-                    <td>{profe.nombre}</td>
-                    <td>{profe.apellido}</td>
-                    <td>{(new Date(profe.nacimiento)).toLocaleDateString()}</td>
-                 
-                    <td>{profe.direccion}</td>
-                    <td>{profe.telefono}</td>
+          {materias && materias.length > 0 && materias.map(materia => (
+            <tr  className={styles.tableRow} key={materia.id}>
+                    <td>{materia.nombre_Materia}</td>
                       </tr>
 
                         ))}
@@ -136,35 +125,34 @@ const handleCloseModal = () => {
                  
               
               </tbody>
-            </table>*/}
+            </table>
+        
+  
            
             <div >
 
+            <div>
+  </div>
+
            
-        
+ 
       </div>
 
              
      
              
-                        
-          {/*  <nav aria-label="Page navigation example">
-              <ul className="pagination justify-content-end">
-                <li className="page-item disabled">
-
-              
-                  <button className="btn page-item btn-sm" onClick={handlePrevClick} disabled={page === 0}>Anterior</button>
-                </li>
-                <li className="page-item">
-                 
-                <button className="btn page-item btn-sm" onClick={handleNextClick}  disabled={isLastPage} >
-                          Siguiente
-                        </button>
-                </li>
-              </ul>
-            </nav>*/} 
- 
           </div>
+
+          
+          <div className={styles.container}>
+
+          <Pagination className="justify-content-end">
+      <Pagination.Prev onClick={handlePrevClick} disabled={page === 0} />
+      <Pagination.Next onClick={handleNextClick} disabled={isLastPage} />
+    </Pagination>
+
+</div>
+
 
         </PanelContainerBG>
          <footer>
@@ -203,6 +191,10 @@ const handleCloseModal = () => {
           right: 0;
           padding: 20px;
           text-align: right;
+        }
+
+        .btn-smaller {
+          font-size: 0.8rem;
         }
 
            

@@ -9,6 +9,13 @@ footer {
     text-align: right;
   }
 
+  .container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+   
+  }
+
   th, td {
     text-align: center;
   }
@@ -63,7 +70,7 @@ footer {
 }
 
 .CustomTable{
-    width: 100%;
+    width: 30%;
     border-spacing: 0px;
 }
 .CustomTable>thead>tr>th{
