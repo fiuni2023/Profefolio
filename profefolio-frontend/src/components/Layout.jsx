@@ -14,10 +14,10 @@ export const PanelContainer = ({ children, className }) => {
         `}</style>
     </>
 }
- // color original #363636
+// color original #363636
 export const PanelContainerBG = ({ children, className }) => {
     return <>
-        <PanelContainer className="PanelBig">
+        <PanelContainer className={`PanelBig ${className}`}>
             {children}
         </PanelContainer>
         <style jsx='true'>{`
@@ -32,7 +32,7 @@ export const PanelContainerBG = ({ children, className }) => {
 
 export const MainLayout = ({
     titleText = "",
-    
+
 }) => {
-    
+
 }

@@ -1,6 +1,11 @@
 bin/
 profefolio/bin/
-obj/
+profefolio/obj/
 /packages/
 riderModule.iml
 /_ReSharper.Caches/
+
+/.idea
+
+profefolio/appsettings.json
+/.vs

@@ -29,16 +29,16 @@ public class PersonaMapper : Profile
             .ForMember(dest => dest.SecurityStamp,
                 opt => opt.MapFrom(
                     t => Guid.NewGuid().ToString()))
-            .ForMember(dest => dest.UserName, 
+            .ForMember(dest => dest.UserName,
                 opt => opt.MapFrom(
                     dest => dest.Email))
             .ForMember(dest => dest.NormalizedEmail,
                 opt => opt.MapFrom(
-                    src =>src.Email == null? "" : src.Email.ToUpper()))
+                    src => src.Email == null ? "" : src.Email.ToUpper()))
             .ForMember(dest => dest.NormalizedUserName,
                 opt => opt.MapFrom(
                     src => src.Email == null ? "" : src.Email.ToUpper()));
-        
+
 
         CreateMap<Persona, PersonaResultDTO>()
             .ForMember(dest => dest.Genero,
@@ -66,5 +66,10 @@ public class PersonaMapper : Profile
                 opt => opt.MapFrom(
                     src => src.Telefono));
 
+        CreateMap<Persona, PersonaSimpleDTO>()
+        .ForMember(dest => dest.Id
+            , opt => opt.MapFrom(p => p.Id))
+        .ForMember(dest => dest.Nombre
+            , opt => opt.MapFrom(p => $"{p.Nombre} {p.Apellido}"));
     }
 }

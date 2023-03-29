@@ -33,20 +33,26 @@ namespace profefolio.Controllers
         [HttpGet("page/{page:int}")]
         public async Task<ActionResult<DataListDTO<PersonaResultDTO>>> Get(int page)
         {
-            if(page < 0){
-                return BadRequest("El numero de pagina debe ser mayor que cero");
+            if (page < 0)
+            {
+                return BadRequest("El numero de pagina debe ser mayor o igual que cero");
             }
 
             var profesores = await _personasService.FilterByRol(page, CantPorPage, PROFESOR_ROLE);
 
 
-            int cantPages = (int)Math.Ceiling((double)profesores.Count() / CantPorPage);
+            int cantPages = (int)Math.Ceiling((double)(await _personasService.CountByRol(PROFESOR_ROLE)) / (double)CantPorPage);
+
 
             var result = new DataListDTO<PersonaResultDTO>();
 
+            if (page >= cantPages)
+            {
+                return BadRequest($"No existe la pagina: {page} ");
+            }
             var enumerable = profesores as Persona[] ?? profesores.ToArray();
             result.CantItems = enumerable.Length;
-            result.CurrentPage = page >= cantPages - 1 ? cantPages - 1 : page;;
+            result.CurrentPage = page;
             result.Next = result.CurrentPage + 1 < cantPages;
             result.DataList = _mapper.Map<List<PersonaResultDTO>>(enumerable.ToList());
             result.TotalPage = cantPages;
@@ -167,7 +173,8 @@ namespace profefolio.Controllers
                 {
                     return BadRequest("Solo se aceptan valores F para femenino y M para masculino");
                 }
-                if(dto.Email == null){
+                if (dto.Email == null)
+                {
                     return BadRequest("No se mando el email");
                 }
                 try

@@ -9,11 +9,13 @@ public interface IPersona : IRepository<Persona>
     Task<Persona> EditProfile(Persona p);
     Task<bool> DeleteUser(string id);
     Task<IEnumerable<Persona>> FilterByRol(int page, int cantPorPag, string rol);
-
     Task<bool> ChangePassword(Persona p, string newPassword);
     Task<bool> ExistMail(string email);
-
     Task<IEnumerable<Persona>> GetAllByRol(string roleName, int page, int cantPorPag);
+    Task<int> CountByRol(string rol);
+    Task<IEnumerable<Persona>> GetAllByRol(string roleName);
+    Task<bool> ExistDoc(Persona persona);
+    Task<Persona> FindByEmail(string email);
 
 
 }

@@ -1,58 +1,80 @@
-.Divisor{
+.Divisor {
     width: 75%;
     border-bottom: 1px solid black;
     margin: 5px 12.5%;
 }
-.MarginedDivisor{
+
+.MarginedDivisor {
     width: 75%;
     border-bottom: 1px solid black;
     margin: 15px 12.5%;
 }
 
-.Header{
+.Header {
     width: 100%;
     height: 40px;
     display: grid;
     grid-template-columns: 91% 9%;
 }
 
-.Htext{
+.Htext {
     display: flex;
     align-items: center;
 }
-.Htext h5{
+
+.Htext h5 {
     margin: 0;
     margin-left: 31%;
 }
 
-.ExitContainer{
+.ExitContainer {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #BBBBBB;
+    background-color: #C6D8D3;
     border-radius: 50%;
+    width: 55%;
     cursor: pointer;
     transition: all 0.25s;
 }
-.ExitContainer:hover{
+
+.ExitContainer:hover {
     filter: brightness(0.95);
 }
-.ExitContainer:active{
+
+.ExitContainer:active {
     filter: brightness(0.8);
 }
 
-.ModalBody{
+.ModalBody {
     display: flex;
     flex-direction: column;
     gap: 5px;
 }
-.ModalBody label{
+
+.ModalBody label {
     font-size: 12px;
     font-weight: 600;
 }
 
-.ButtonGroup{
+.ButtonGroup {
     display: flex;
     gap: 20px;
     justify-content: flex-end;
+}
+
+.Select {
+    height: 40px;
+    width: 100%;
+    outline: none;
+    border: lightgray;
+    border-radius: 10px;
+}
+
+.PassInput {
+    height: 40px;
+    width: 100%;
+    outline: none;
+    border: lightgray;
+    border-radius: 10px;
 }

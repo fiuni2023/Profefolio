@@ -38,13 +38,13 @@ namespace profefolio.Controllers
             var query = _colegioService.GetAll(page, _cantPorPag);
             int totalPage = (int)Math.Ceiling((double)_colegioService.Count() / _cantPorPag);
 
-            var result = new DataListDTO<ColegioDTO>();
+            var result = new DataListDTO<ColegioResultDTO>();
 
             var enumerable = query as Colegio[] ?? query.ToArray();
             result.CantItems = enumerable.Length;
             result.CurrentPage = page > totalPage ? totalPage : page;
             result.Next = result.CurrentPage + 1 < totalPage;
-            result.DataList = _mapper.Map<List<ColegioDTO>>(enumerable.ToList());
+            result.DataList = _mapper.Map<List<ColegioResultDTO>>(enumerable.ToList());
             result.TotalPage = totalPage;
 
             return Ok(result);
@@ -56,14 +56,14 @@ namespace profefolio.Controllers
         public async Task<ActionResult<ColegioResultDTO>> GetColegio(int id)
         {
             var colegio = await _colegioService.FindById(id);
-            Console.Write("Colegio: ", colegio);
+           
             if (colegio == null)
             {
-                Console.Write("Colegio == null");
+                
                 return NotFound();
             }
 
-            var response = _mapper.Map<ColegioDTO>(colegio);
+            var response = _mapper.Map<ColegioResultDTO>(colegio);
 
             return Ok(response);
         }
@@ -73,22 +73,35 @@ namespace profefolio.Controllers
         // 
         // una solicitud PUT requiere que el cliente envíe toda la entidad actualizada, no solo los cambios.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutColegio(int id, ColegioDTO colegio)
+        public async Task<ActionResult<ColegioResultDTO>> PutColegio(int id, ColegioDTO colegio)
         {
+            //verificar el modelo
             if (!ModelState.IsValid)
             {
                 return BadRequest("Objeto No valido");
             }
+            //verificar que PersonaId no sea nulo
             if (colegio.PersonaId == null)
             {
                 return BadRequest("Administrador No valido");
             }
-            
-            //VERIFICAR ID
+            //VERIFICAR REPETIDOS con nombre de colegio e id iguales
+            var verificar = await _colegioService.FindByNamePerson(colegio.Nombre, colegio.PersonaId);
+            if (verificar != null)
+            {
+                return BadRequest($"Ya existe el colegio.");
+            }
+            //VERIFICAR REPETIDOS con nombre de colegio igual
+            var verificarNombreColegio = await _colegioService.FindByNameColegio(colegio.Nombre);
+            if (verificarNombreColegio != null)
+            {
+                return BadRequest($"Ya existe un colegio con el mismo nombre.");
+            }
+            //verificar que no se repita PersonaId
             var persona = await _colegioService.FindByPerson(colegio.PersonaId);
              if (persona == null)
             {
-                return BadRequest($"No existe el administrador con id ${colegio.PersonaId}.");
+                return BadRequest($"No existe el administrador.");
             }
             var p = await _colegioService.FindById(id);
             if (p == null)
@@ -100,18 +113,13 @@ namespace profefolio.Controllers
             p.Deleted = false;
             p.Modified = DateTime.Now;
 
-            //var newColegio = _mapper.Map<Colegio>(colegio);
-            //newColegio.ModifiedBy = "Anonimous";
             p.Nombre = colegio.Nombre;
             p.PersonaId = colegio.PersonaId;
-            _colegioService.Edit(p);
-
-           // var result = await _colegioService.Add(newColegio);
-
+            var query =  _colegioService.Edit(p);
             await _colegioService.Save();
 
-            return Ok(p);
-
+            //return Ok("Colegio: " + p.Nombre + ",PersonaId: " + p.PersonaId );
+            return Ok(_mapper.Map<ColegioResultDTO>(query));
         }
 
         // POST: api/Colegios
@@ -128,17 +136,29 @@ namespace profefolio.Controllers
             {
                 return BadRequest("Colegio No valido");
             }
-            //VERIFICAR REPETIDOS
+            var rol = await _colegioService.FindByPersonRol(colegio.PersonaId);
+             if (rol == 0)
+            {
+                return BadRequest("Persona No valido");
+            }
+            //VERIFICAR REPETIDOS con nombre de colegio e id iguales
             var verificar = await _colegioService.FindByNamePerson(colegio.Nombre, colegio.PersonaId);
             if (verificar != null)
             {
-                return BadRequest($"Ya existe el colegio ${colegio.Nombre}.");
+                return BadRequest($"Ya existe el colegio y el id persona ingresado.");
+            }
+
+             //VERIFICAR REPETIDOS con nombre de colegio igual
+            var verificarNombreColegio = await _colegioService.FindByNameColegio(colegio.Nombre);
+            if (verificarNombreColegio != null)
+            {
+                return BadRequest($"Ya existe un colegio con el mismo nombre.");
             }
             //VERIFICAR ID
             var persona = await _colegioService.FindByPerson(colegio.PersonaId);
              if (persona == null)
             {
-                return BadRequest($"No existe el administrador con id ${colegio.PersonaId}.");
+                return BadRequest($"No existe el administrador.");
             }
             try
             {
@@ -147,13 +167,14 @@ namespace profefolio.Controllers
                 var userId = User.Identity.GetUserId();
                 p.ModifiedBy = userId;
                 p.Deleted = false;
-                await _colegioService.Add(p);
+                var saved = await _colegioService.Add(p);
                 await _colegioService.Save();
-                return Ok(_mapper.Map<ColegioDTO>(colegio));
+                //return Ok("Colegio: " + p.Nombre + ", Id: " + p.Id + ", PersonaId: " + p.PersonaId);
+                return Ok(_mapper.Map<ColegioResultDTO>(saved));
             }
             catch (BadHttpRequestException e)
             {
-                Console.WriteLine(e.Message);
+                
                 return BadRequest($"Error al crear el colegio ${colegio.Nombre}");
             }
 

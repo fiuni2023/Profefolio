@@ -1,8 +1,9 @@
 import React, { useState } from "react";
+import { toast } from "react-hot-toast";
 import { Logo } from "../../assets";
 import { ButtonInput } from "../../components/Inputs";
 import styles from './index.module.css'
-import LoginService from './services/Login'
+import LoginService from '../../sevices/login'
 
 const Login = ({changeState = () => {}}) => {
 
@@ -11,14 +12,21 @@ const Login = ({changeState = () => {}}) => {
     const [remember, setRemember] = useState(false)
 
     const handleLogin = () => {
+        if(mail === "" || pass === "") return toast.error("Ingresa todas las credenciales para intentar ingresar a la plataforma")
         LoginService.PostLogin(mail,pass)
         .then(r=>{
-            console.log(JSON.stringify(r.data))
             if (remember) localStorage.setItem('loginData', JSON.stringify(r.data))
             else sessionStorage.setItem('loginData', JSON.stringify(r.data))
+            toast.success("Se ha logueado con exito!")
             changeState()
         })
-        .catch(error=>console.log)
+        .catch(error=>{
+            if(typeof(error.response.data) === "string"? true:false){
+                toast.error(error.response.data)
+            }else{
+                toast.error(error.response.data.Email[0])
+            }
+        })
         
     }
 

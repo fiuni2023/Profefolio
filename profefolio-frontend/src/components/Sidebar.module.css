@@ -1,0 +1,54 @@
+.tabContainer{
+    display: flex;
+    width: 85%;
+    height: 30px;
+    cursor: pointer;
+    align-items: center;
+    justify-content: flex-start;
+    padding-left: 15%;
+}
+.sbt{
+    font-size: 16px;
+    color: white;
+}
+.sbt2{
+    font-size: 16px;
+    color: white;
+    font-weight: 500;
+}
+.selected{
+    color: white;
+    font-weight: 600;
+}
+
+.container{
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    width: 20%;
+    border: none;
+    gap: 2px;
+    transition: 0.25s all;
+    background-color: #F0544F;
+    z-index: 100000000;
+}
+
+.ExitContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #F0544F;
+    border-radius: 50%;
+    width: 16%;
+    cursor: pointer;
+    transition: all 0.25s;
+    color: white;
+}
+
+.ExitContainer:hover {
+    filter: brightness(0.95);
+}
+
+.ExitContainer:active {
+    filter: brightness(0.8);
+}

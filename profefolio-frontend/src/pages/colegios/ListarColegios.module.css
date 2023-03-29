@@ -1,0 +1,56 @@
+.nombrePagina{
+    width: 100%;
+   
+    height: 35px;
+    background-color: #EDEDED;
+}
+.divNombrePagina{
+    padding-top: 5px;
+}
+.tituloPagina{
+    margin-left: 2%;
+    
+}
+.tablePrincipal{
+    padding: 1%;
+    
+}
+.buttonBack{
+    border: none;
+    background-color: #EDEDED;
+}
+.arrowButton{
+    width: 25px;
+    height: 25px;
+}
+
+.actionsTd{
+    align-items: center;
+    text-align: center;
+    width: 10%;
+}
+.actionsTh{
+    align-items: center;
+    text-align: center;
+   
+    
+} 
+#tableBorder{
+    border: 1px solid black;
+}
+.paginacion{
+    margin-top: -1%;
+    margin-left: 89%;
+}
+
+.numero-td{
+    align-items: center;
+    text-align: center;
+    width: 5%;
+
+}
+.iconButton{
+    border: none;
+    background-color: white;
+}
+

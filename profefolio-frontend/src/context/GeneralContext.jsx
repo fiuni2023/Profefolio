@@ -1,5 +1,6 @@
 import React, { useContext, useState } from "react";
 import { createContext } from "react";
+import { Toaster } from "react-hot-toast";
 import { useLocation } from "react-router-dom";
 import Login from "../pages/login";
 
@@ -16,16 +17,43 @@ export const GeneralProvider = ({children}) => {
     const [isLogged, setIsLogged] = useState(localStorage.getItem('loginData')? true : false)
     
 
-    console.log(localStorage.getItem('loginData'))
-
     const getLoginData = () => {
         if(localStorage.getItem('loginData')? true : false) return JSON.parse(localStorage.getItem('loginData'))
         if(sessionStorage.getItem('loginData')? true : false) return JSON.parse(sessionStorage.getItem('loginData')) 
         return null
     }
 
+    const depricateLoginData = () => {
+        if(localStorage.getItem('loginData')? true : false) localStorage.removeItem('loginData')
+        if(sessionStorage.getItem('loginData')? true : false) sessionStorage.removeItem('loginData')
+        setIsLogged(false)
+    }
+
+    const verifyToken = () => {
+        const expire = new Date(getLoginData()?.expires)
+        const now = new Date()
+        if(now>expire) depricateLoginData()
+    }
+
     const getToken = () => {
         return getLoginData().token
+    }
+
+    const getRole = () =>{
+        return getLoginData().roles[0]
+    }
+
+    const cancan = (role) => {
+        const hasRole = getRole()
+        return hasRole === role
+    }
+
+    const getUserName = () => {
+        return getLoginData()?.email?.split("@")[0]
+    }
+
+    const getUserMail = () => {
+        return getLoginData()?.email
     }
 
     const values = {
@@ -36,19 +64,28 @@ export const GeneralProvider = ({children}) => {
         isLogged,
         setIsLogged,
         getLoginData,
-        getToken
+        getToken,
+        verifyToken,
+        cancan,
+        getUserName,
+        getUserMail
     }
+
+    verifyToken()
 
     return (
         <GeneralContext.Provider value={values}>
-            {
-            isLogged?
-            children
-            :
             <>
-                <Login changeState={()=>{setIsLogged(!isLogged)}} />
+                <Toaster />
+                {
+                    isLogged?
+                    children
+                    :
+                    <>
+                    <Login changeState={()=>{setIsLogged(!isLogged)}} />
+                </>
+                }
             </>
-            }
         </GeneralContext.Provider>
     )
 }

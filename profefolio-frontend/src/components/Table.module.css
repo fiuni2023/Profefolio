@@ -1,0 +1,15 @@
+.CustomTable{
+    width: 100%;
+    border-spacing: 0px;
+}
+.CustomTable>thead>tr>th{
+    border: 1px solid black;
+    padding-left: 5px;
+}
+.CustomTable>tbody>tr>td{
+    text-align: center;
+    border: 1px solid black;
+}
+.CustomTable>tbody>tr:hover{
+    color: white;
+}

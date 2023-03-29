@@ -1,13 +1,13 @@
 import React from "react";
-import {Link, Outlet } from "react-router-dom";
+import { Outlet } from "react-router-dom";
+import { AdminProvider } from "./context/AdminContext";
 
 const Administrador = () => {
     return (
-        <>
-
-             <Link to="/profesor">Profesores</Link>
-               
-            <Outlet />
+        <>     
+            <AdminProvider>
+                <Outlet />
+            </AdminProvider>
         </>
     )
 }

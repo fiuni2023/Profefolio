@@ -13,7 +13,7 @@
     padding-left: 1%;
 }
 .LANText{
-    font-size: 20px;
+    font-size: 12px;
     margin-left: 2%;
     margin-top: auto;
     margin-bottom: auto;
@@ -38,4 +38,9 @@
 }
 .LAAddButton:active{
     filter: brightness(0.8);
+}
+
+.SelectedTR{
+    background-color: rgb(161, 103, 159);
+    color: white;
 }

@@ -4,7 +4,18 @@ using AutoMapper;
 using profefolio.Models.Entities;
 using profefolio.Repository;
 using profefolio.Services;
+using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Hosting;
+using log4net;
+using log4net.Config;
+using System.IO;
 
+<<<<<<< HEAD
+var logRepository = LogManager.GetRepository(System.Reflection.Assembly.GetEntryAssembly());
+XmlConfigurator.Configure(logRepository, new FileInfo("log4net.config"));
+
+=======
+>>>>>>> main
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 // Add services to the container.
@@ -26,6 +37,9 @@ builder.Services.AddSwaggerGen();
 //Servicios
 builder.Services.AddScoped<IPersona, PersonasService>();
 builder.Services.AddScoped<IColegio, ColegiosService>();
+builder.Services.AddScoped<IMateria, MateriaService>();
+builder.Services.AddScoped<ICiclo, CicloService>();
+builder.Services.AddScoped<IClase, ClaseService>();
 builder.Services.AddScoped<IFullColegio, ColegiosFullService>();
 builder.Services.AddScoped<IRol, RolService>();
 builder.Services.AddScoped<IAuth, AuthService>();
