@@ -195,7 +195,7 @@ function ListDetallesProfesor(props) {
 
       })
       .catch(error => {
-        console.error(error);
+       // console.error(error);
       });
 
 

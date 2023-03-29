@@ -13,10 +13,12 @@ import PartidosEdit from "../partidos/components/edit";
 import PartidosList from "../partidos/components/list";
 import ListarColegios from "../colegios/ListarColegios";
 import CreateProfesor from "../profesor/components/create/CreateModal.jsx";
+import ListarMaterias from "../materias/list/ListarMaTerias.jsx"
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 import Profesor from "../profesor/index.jsx";
+import Clases from "../clases/index.jsx";
 import Home from "../home/index.jsx";
 
 const App = () => {
@@ -55,6 +57,12 @@ const App = () => {
                                     <Route path="list" element={<CreateProfesor />} />
                                 </Route>
 
+                                <Route path="/clases" element={<Clases />}>
+                                </Route>
+                                
+                                <Route path="/materias" element={<ListarMaterias />}>
+                                    <Route path="list" element={<ListarMaterias />} />
+                                </Route>
                             </Routes>
                         </div>
                     </div>

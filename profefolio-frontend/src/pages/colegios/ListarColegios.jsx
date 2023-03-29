@@ -27,7 +27,7 @@ const ListarColegios = (triggerState = () => { }) => {
     if (!cancan("Master")) {
       nav("/")
     } else {
-      var config = {
+      let config = {
         method: 'get',
         url: `${APILINK}/api/ColegiosFull/page/${currentPage}`,
         headers: {
@@ -66,7 +66,7 @@ const ListarColegios = (triggerState = () => { }) => {
 
   }
   const [show, setShow] = useState(false);
-
+  const [disabled, setDisabled]=useState(true);
   const handleShow = (id) =>{
     setDatoIdColegio(id);
     console.log(datoIdColegio);
@@ -103,7 +103,7 @@ const ListarColegios = (triggerState = () => { }) => {
           <Pagination onClick={e => handleCurrentPage(e.target.text)} size="sm">{items} </Pagination>
         </div>
 
-        <ModalVerColegios idColegio={datoIdColegio} show={show} setShow={setShow}></ModalVerColegios>
+        <ModalVerColegios idColegio={datoIdColegio} show={show} setShow={setShow} disabled={disabled} setDisabled={setDisabled}></ModalVerColegios>
 
         <ModalAgregarColegios triggerState={(colegio)=>{doFetch(colegio)}}></ModalAgregarColegios>
       </div>
