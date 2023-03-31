@@ -3,17 +3,18 @@ import { Modal, Button } from 'react-bootstrap'
 import styles from "./ModalVerColegios.module.css"
 import axios from "axios";
 import { useGeneralContext } from "../../context/GeneralContext";
-import { toast } from 'react-hot-toast';
+
 import APILINK from '../../components/link';
 import { useNavigate } from "react-router-dom";
+import { toast } from 'react-hot-toast';
 
 function ModalVerColegios({ idColegio, setShow, show, disabled, setDisabled }) {
   const handleClose = () => setShow(false);
   const [colegio, setColegio] = useState([""]);
   const { getToken, verifyToken, cancan } = useGeneralContext();
   const nav = useNavigate();
-  const navigate = useNavigate();
   const [administradores, setAdministradores] = useState([]);
+  // eslint-disable-next-line no-unused-vars
   const [nombreColegio, setNombreColegio] = useState("");
   const [nombreNuevoCol, setNombreNuevoCol] = useState("")
   const [idAdmin, setIdAdmin] = useState(0);
@@ -47,6 +48,8 @@ function ModalVerColegios({ idColegio, setShow, show, disabled, setDisabled }) {
       }
       handleEdit();
     }
+    
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cancan, verifyToken, nav, getToken, idColegio])
   //Llamada para obtener los datos de admninistradores
   const handleGetAdmin = () => {
@@ -80,6 +83,7 @@ function ModalVerColegios({ idColegio, setShow, show, disabled, setDisabled }) {
 
   const handleSubmit = () => {
     console.log(idAdmin);
+    // eslint-disable-next-line no-mixed-operators, eqeqeq
     if (nombreNuevoCol == nombreColegio && idAdmin != 0 || nombreNuevoCol != "" && idAdmin != 0) {
       let data = JSON.stringify({
         "nombre": nombreNuevoCol,
@@ -115,6 +119,7 @@ function ModalVerColegios({ idColegio, setShow, show, disabled, setDisabled }) {
 
 
   //Guardar el id del admin
+  // eslint-disable-next-line no-unused-vars
   const handleAdmin = (idAdmin) => {
     setIdAdmin(idAdmin);
   }

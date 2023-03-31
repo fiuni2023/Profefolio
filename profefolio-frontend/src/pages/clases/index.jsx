@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import APILINK from '../../components/link';
 import { useGeneralContext } from '../../context/GeneralContext';
@@ -7,15 +7,21 @@ import NavAdminClases from './components/NavAdminClase.jsx';
 import { PanelContainerBG } from "../../components/Layout.jsx";
 import ModalCreateClase from './components/create/ModalCreateClase.jsx';
 import BtnAdd from './components/create/BtnAdd';
+import useAxiosGet from './hooks/useAxiosGet';
+import { toast } from 'react-hot-toast';
 
 const Clases = () => {
     const [clases, setClases] = useState([]);
     const [page, setPage] = useState(0);
     const [nextPage, setNextPage] = useState(false);
 
-    const { getToken, cancan, verifyToken } = useGeneralContext();
+    const { getToken, cancan, verifyToken, getUserMail } = useGeneralContext();
 
     const nav = useNavigate()
+
+    // eslint-disable-next-line no-unused-vars
+    const [colegio, loadingColegio, errorColegio, setColegio] = useAxiosGet(`api/administrador/${getUserMail()}`, getToken());
+
 
     useEffect(() => {
         verifyToken()
@@ -24,7 +30,7 @@ const Clases = () => {
         } else {
             //axios.get(`https://miapi.com/products?page=${page}&size=${size}`, {
 
-            axios.get(`${APILINK}/api/clase/page/${1}/${page}`, {
+            colegio && axios.get(`${APILINK}/api/clase/page/${colegio?.id}/${page}`, {
                 headers: {
                     Authorization: `Bearer ${getToken()}`,
                 }
@@ -34,21 +40,22 @@ const Clases = () => {
                     setNextPage(response.data.next);
                 })
                 .catch(error => {
-                    console.error(error);
+                    //console.error(error);
+                    toast.error("Recargue la pagina, no se pudo obtener las clases");
                 });
         }
-    }, [page, cancan, verifyToken, nav, getToken]);
+    }, [page, cancan, verifyToken, nav, getToken, colegio]);
 
     const doFetch = (clase) => {
-        setClases([...clases, clase])
+        setClases(clase)
     };
 
     const handlePrevClick = () => {
-        setPage(page - 1);
+        page > 0 && setPage(page - 1);
     };
 
     const handleNextClick = () => {
-        setPage(page + 1);
+        nextPage && setPage(page + 1);
     };
 
     const [show, setShow] = useState(false);
@@ -61,7 +68,7 @@ const Clases = () => {
         <div className="page">
             <NavAdminClases pageName={"Clases"} />
 
-            <PanelContainerBG>
+            <PanelContainerBG className="container-table">
 
 
                 <div>
@@ -101,10 +108,10 @@ const Clases = () => {
                             <li className="page-item disabled">
 
 
-                                <button className="btn page-item btn-sm" onClick={handlePrevClick} disabled={page === 0}>Anterior</button>
+                                <button className="btn page-item btn-sm btn-valid-page" onClick={handlePrevClick} disabled={page === 0}>Anterior</button>
                             </li>
                             <li className={`page-item ${!nextPage ? "disabled" : ""}`}>
-                                <button className="btn page-item btn-sm" href="#" onClick={handleNextClick} disabled={!nextPage}>Siguiente</button>
+                                <button className="btn page-item btn-sm btn-valid-page" href="#" onClick={() => {handleNextClick();}} disabled={!nextPage}>Siguiente</button>
                             </li>
                         </ul>
                     </nav>
@@ -117,7 +124,10 @@ const Clases = () => {
 
 
                 <ModalCreateClase title="Agregar Clase" handleClose={handleClose} show={show}
-                    triggerState={(profesor) => { doFetch(profesor) }}>
+                    triggerState={(profesor) => { doFetch(profesor) }} handlePage={(pag) => {
+                        setNextPage(pag);
+                        setPage(0); 
+                    }}>
                 </ModalCreateClase>
 
 
@@ -204,7 +214,22 @@ const Clases = () => {
                 text-align: center;
                 border: 1px solid black;
             }
+            
+            .container-table{
+                border: 0px !important;
+                
+            }
+            .btn-valid-page{
+                /*background: #FDF0D5;*/
+                margin-left:1rem;
+                /*border: 1px solid black;*/
+            }
 
+            .btn-valid-page:hover{
+                /*background: #FADAAA;*/
+                margin-left:1rem;
+                border: 1px solid black;
+            }
             
             `}</style>
     </>

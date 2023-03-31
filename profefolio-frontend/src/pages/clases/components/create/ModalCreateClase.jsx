@@ -9,9 +9,10 @@ import FormAddCiclo from "./FormAddCiclo";
 import axios from "axios";
 import APILINK from "../../../../components/link";
 import { toast } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 
-const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = false, triggerState = () => { } }) => {
+const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = false, triggerState = () => { }, handlePage = () => { } }) => {
     const CREATE_CICLO = "___option____create____ciclo";
 
     // eslint-disable-next-line no-unused-vars
@@ -50,12 +51,43 @@ const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = 
         setData([...data, ciclo])
     }
 
+    const nav = useNavigate()
+
     const schema = Yup.object().shape({
-        nombre: Yup.string().required().max(128),
-        turno: Yup.string().required().max(32),
-        ciclo: Yup.string().required(),
-        anho: Yup.number().required().min(1951).max(new Date().getFullYear() + 1),
+        nombre: Yup.string().required("Campo requerido").max(128, "La longitud maxima es de 128 caracteres"),
+        turno: Yup.string().required("Campo requerido").max(32, "La longitud es de 32 caracteres"),
+        ciclo: Yup.string().required("Seleccione una opcion"),
+        anho: Yup.number().required("Campo requerido").min(1951, "Año minimo valido es 1951").max(new Date().getFullYear() + 1, `Año maximo valido es ${new Date().getFullYear() + 1}`),
     });
+
+
+    const actualizarClase = () => {
+        verifyToken()
+        const toastLoadig = toast.loading("Obteniendo Clase.");
+
+        if (!cancan("Administrador de Colegio")) {
+            nav("/")
+        } else {
+            //axios.get(`https://miapi.com/products?page=${page}&size=${size}`, {
+
+            colegio && axios.get(`${APILINK}/api/clase/page/${colegio?.id}/${0}`, {
+                headers: {
+                    Authorization: `Bearer ${getToken()}`,
+                }
+            })
+                .then(response => {
+                    triggerState(response.data.dataList);
+                    handlePage(response.data.next);
+                })
+                .catch(error => {
+                    //console.error(error);
+                    toast.dismiss(toastLoadig);
+                    toast.error(`Error recargue la pagina`);
+                });
+            toast.dismiss(toastLoadig);
+
+        }
+    }
 
     const handleSubmit = async (e) => {
         setIsSend(true);
@@ -75,19 +107,21 @@ const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = 
         })
 
         if (result.status === 200) {
-            console.log("Result: ", result);
+            //console.log("Result: ", result);
             setIsSend(false);
             handleClose(false);
 
 
 
             //actualizar lista de la tabla aqui
-            triggerState(result.data)
+            actualizarClase();
+
+
 
 
             toast.success("Guardado exitoso.");
         } else {
-            console.log("Error: ", result.data)
+            //console.log("Error: ", result.data)
             setIsSend(false);
             toast.error(`Error: ${result.data.error}`);
         }
@@ -100,11 +134,12 @@ const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = 
             onHide={handleClose}
             backdrop="static"
             keyboard={false}
+            
         >
-            <Modal.Header closeButton>
+            <Modal.Header closeButton className="modal-crear-clase">
                 <Modal.Title>{title}</Modal.Title>
             </Modal.Header>
-            <Modal.Body>
+            <Modal.Body className="modal-crear-clase modal-body-create-clase">
 
 
 
@@ -188,7 +223,7 @@ const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = 
                                             isInvalid={!!errors.ciclo && touched.ciclo}
                                         >
                                             <option value={""} disabled>Seleccione un Ciclo</option>
-                                            <option value={CREATE_CICLO}>Crear Ciclo</option>
+                                            <option className="option-create-ciclo" value={CREATE_CICLO}>Crear Ciclo</option>
                                             {map(data, (c) => <option key={c.id} value={c.id}>{c.nombre}</option>)}
                                         </Form.Select>
 
@@ -281,7 +316,16 @@ const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = 
                         display: flex;
                         justify-content: center;
                     }
-
+                    .option-create-ciclo{
+                        background: #e59c68;
+                        color: white;
+                    }
+                    .modal-crear-clase{
+                        background: #C6D8D3;
+                    }
+                    .modal-body-create-clase{
+                        border-radius: 0 0 10px 10px;
+                    }
                 `
             }
         </style>
