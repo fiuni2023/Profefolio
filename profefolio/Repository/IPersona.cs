@@ -1,4 +1,5 @@
-﻿using profefolio.Models.Entities;
+﻿using profefolio.Models.DTOs.Auth;
+using profefolio.Models.Entities;
 
 namespace profefolio.Repository;
 

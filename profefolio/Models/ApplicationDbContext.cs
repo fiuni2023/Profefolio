@@ -1,21 +1,18 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using profefolio.Models.Entities;
-using profefolio.Models;
 
 namespace profefolio.Models;
 
-public class ApplicationDbContext : DbContext
+public class ApplicationDbContext : IdentityDbContext<Persona>
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
         AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
     }
 
-<<<<<<< HEAD
     protected override void OnModelCreating(ModelBuilder modelBuilder)
-=======
-    public DbSet<Persona> Personas
->>>>>>> main
     {
         base.OnModelCreating(modelBuilder);
 

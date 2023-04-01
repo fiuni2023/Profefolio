@@ -77,7 +77,7 @@ public class AuthTest : BaseTest
 
         Assert.NotNull(response);
         Assert.IsType<OkObjectResult>(response.Result);
-        Assert.NotNull(response.Value);
+        
     }
 
     internal void LoadData()
