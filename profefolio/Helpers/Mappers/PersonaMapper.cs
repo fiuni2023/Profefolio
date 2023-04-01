@@ -8,14 +8,13 @@ public class PersonaMapper : Profile
 {
     public PersonaMapper()
     {
-        CreateMap<Persona, PersonaDTO>();
-
         CreateMap<PersonaDTO, Persona>()
             .ForMember(dest => dest.Id,
                 opt => opt.Ignore())
-            .ForMember(dest => dest.Created, 
-                opt => opt.MapFrom(src => DateTime.Now))
-            .ForMember(dest => dest.Modified, 
+            .ForMember(dest => dest.Created,
+                opt => opt.MapFrom(
+                    src => DateTime.Now))
+            .ForMember(dest => dest.Modified,
                 opt => opt.Ignore())
             .ForMember(dest => dest.ModifiedBy,
                 opt => opt.Ignore())
