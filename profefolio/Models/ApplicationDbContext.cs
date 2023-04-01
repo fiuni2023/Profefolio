@@ -103,19 +103,19 @@ public class ApplicationDbContext : IdentityDbContext<Persona>
 
 
         // definicio de primary key de la tabla ColegiosAlumnos
-        modelBuilder.Entity<ColegiosAlumnos>().HashKey(ca => new { ca.Id });
+        modelBuilder.Entity<ColegiosAlumnos>().HasKey(ca => new { ca.Id });
 
         //definimos el foreign key de Colegio
         modelBuilder.Entity<ColegiosAlumnos>()
-        .HashOne<Colegio>(c => c.Colegio)
-        .WithMany<Persona>(c => c.ColegiosAlumnos)
-        .ForeignKey(c => c.ColegioId);
+        .HasOne<Colegio>(ca => ca.Colegio)
+        .WithMany(c => c.ColegiosAlumnos)
+        .HasForeignKey(c => c.ColegioId);
 
         //definimos el foreign key de Persona (Alumno)
         modelBuilder.Entity<ColegiosAlumnos>()
-        .HashOne<Colegio>(p => p.Persona)
-        .WithMany<Persona>(p => p.ColegiosAlumnos)
-        .ForeignKey(p => profefolio.PersonaId);
+        .HasOne<Persona>(p => p.Persona)
+        .WithMany(p => p.ColegiosAlumnos)
+        .HasForeignKey(p => p.PersonaId);
 
     }
 
