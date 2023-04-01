@@ -100,6 +100,22 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<IdentityUserRole<string>>()
             .HasData(identityUserRole, administradorRol);
 
+
+        // definicio de primary key de la tabla ColegiosAlumnos
+        modelBuilder.Entity<ColegiosAlumnos>().HashKey(ca => new { ca.Id });
+
+        //definimos el foreign key de Colegio
+        modelBuilder.Entity<ColegiosAlumnos>()
+        .HashOne<Colegio>(c => c.Colegio)
+        .WithMany<Persona>(c => c.ColegiosAlumnos)
+        .ForeignKey(c => c.ColegioId);
+
+        //definimos el foreign key de Persona (Alumno)
+        modelBuilder.Entity<ColegiosAlumnos>()
+        .HashOne<Colegio>(p => p.Persona)
+        .WithMany<Persona>(p => p.ColegiosAlumnos)
+        .ForeignKey(p => profefolio.PersonaId);
+
     }
 
 

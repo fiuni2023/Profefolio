@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace profefolio.Models.Entities
 {
-    public class ColegiosAlumnos
+    public class ColegiosAlumnos : Data
     {
         public int ColegioId { get; set; }
         
