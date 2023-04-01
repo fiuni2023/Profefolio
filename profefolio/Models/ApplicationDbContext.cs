@@ -11,11 +11,7 @@ public class ApplicationDbContext : DbContext
         AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
     }
 
-<<<<<<< HEAD
     protected override void OnModelCreating(ModelBuilder modelBuilder)
-=======
-    public DbSet<Persona> Personas
->>>>>>> main
     {
         base.OnModelCreating(modelBuilder);
 
@@ -106,8 +102,8 @@ public class ApplicationDbContext : DbContext
 
     }
 
-   
-     public DbSet<Materia> Materias{get;set;}
+
+    public DbSet<Materia> Materias { get; set; }
     public DbSet<Colegio> Colegios
     {
         get;
@@ -116,4 +112,5 @@ public class ApplicationDbContext : DbContext
 
     public DbSet<Ciclo> Ciclos { get; set; }
     public DbSet<Clase> Clases { get; set; }
+    public DbSet<ColegiosAlumnos> ColegiosAlumnos { get; set; }
 }
