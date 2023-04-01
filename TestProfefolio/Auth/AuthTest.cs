@@ -43,19 +43,54 @@ public class AuthTest : BaseTest
 
     }
 
+    [Fact]
+    public async Task LoginServiceNotFoundUser()
+    {
+        MockSetUpNotFoundUser();
+
+        var ex = await Assert.ThrowsAsync<BadHttpRequestException>(() =>
+
+         AuthService.Login(new Login()
+         {
+             Email = "Carlos.Torres123@mail.com",
+             Password = "Carlos.Torres@mail.com"
+         }));
+        Assert.Equal("Credenciales no validas", ex.Message);
+    }
+
     internal void LoadData()
     {
-        var p = Db.Users.Add(P).Entity;
-        var r = Db.Roles.Add(new IdentityRole()
+        var personaMaster= Db.Users.Add(P).Entity;
+
+        var personaAdministrador = new Persona();
+        personaAdministrador.Nombre = "Edgar";
+        personaAdministrador.Apellido = "Allan";
+        personaAdministrador.Created = DateTime.Now;
+        personaAdministrador.EsM = true;
+        personaAdministrador.Email = "Edgar.Allan123@mail.com";
+        personaAdministrador.Direccion = "avda123";
+        personaAdministrador.CreatedBy = "me";
+        var hasher = new PasswordHasher<Persona>();
+        personaAdministrador.PasswordHash = hasher.HashPassword(personaAdministrador, "Edgar.Allan123");
+
+        var personaAdministradorEnt = Db.Users.Add(personaAdministrador).Entity;
+
+        var rolMaster = Db.Roles.Add(new IdentityRole()
         {
             Name = "Master"
         }).Entity;
 
         Db.UserRoles.Add(new IdentityUserRole<string>()
         {
-            UserId = p.Id,
-            RoleId = r.Id
+            UserId = personaMaster.Id,
+            RoleId = rolMaster.Id
         });
+
+        var colegio = new Colegio();
+        colegio.Created = DateTime.Now;
+        colegio.CreatedBy = "Me";
+        colegio.Nombre = "CNDEN";
+        colegio.PersonaId = personaAdministradorEnt.Id;
         
         
         Db.SaveChanges();
@@ -85,6 +120,12 @@ public class AuthTest : BaseTest
                 .CheckPasswordAsync(It.IsAny<Persona>(), It.IsAny<string>()))
             .ReturnsAsync(false);
         
+    }
+    private void MockSetUpNotFoundUser()
+    {
+        UserManagerMock.Setup(x => x.FindByEmailAsync(It.IsAny<string>()))
+            .ReturnsAsync((Persona)null);
+
     }
   
 }

@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using profefolio.Models;
 using profefolio.Models.Entities;
+using profefolio.Repository;
 using profefolio.Services;
 
 namespace TestProfefolio;
@@ -11,6 +12,8 @@ public class BaseTest
 {
     protected readonly Mock<UserManager<Persona>> UserManagerMock = new Mock<UserManager<Persona>>(new Mock<IUserStore<Persona>>().Object, null, null, null, null, null, null, null, null);
     protected readonly Mock<IConfiguration> ConfigurationMock = new Mock<IConfiguration>();
+    protected readonly Mock<IColegio> IColegioMock = new Mock<IColegio>();
+
     protected readonly Persona P = new Persona()
     {
         Email = "Carlos.Torres123@mail.com",
@@ -35,7 +38,7 @@ public class BaseTest
         P.PasswordHash = hasher.HashPassword(P, "Carlos.Torres123");
         Db = new ApplicationDbContext(contextOptions);
 
-        AuthService = new AuthService(UserManagerMock.Object, ConfigurationMock.Object);
+        AuthService = new AuthService(UserManagerMock.Object, ConfigurationMock.Object, IColegioMock.Object);
         
         ConfigurationMock.Setup(x => x["JWT:Secret"])
             .Returns("JWTAuthenticationHIGHsecuredPasswordVVVp1OH7Xzyr");
