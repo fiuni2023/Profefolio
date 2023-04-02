@@ -3,6 +3,7 @@ import styles from "./index.module.css"
 import { HiArrowLeft } from 'react-icons/hi'
 import { AiOutlinePlus } from 'react-icons/ai'
 import { Table } from "../../../../components/Table";
+import  Tabla  from "../../../../components/Tabla";
 import LACreateModal from "../../components/CreateModal";
 import { useGeneralContext } from "../../../../context/GeneralContext";
 import { Pagination } from "react-bootstrap";
@@ -23,6 +24,9 @@ const ListAdministrador = () => {
     const [currentPage, setCurrentPage] = useState(0)
     const [next, setNext] = useState(true)
     const [condFetch, setCondFetch] = useState(false)
+    const [datosTabla, setDatosTabla] = useState({
+        tituloTabla: "adminsList", 
+        titulos: [{titulo: "CI"}, {titulo: "Nombre"}, {titulo: "Fecha de nacimiento"}, {titulo: "Dirección"}, {titulo: "Teléfono"}]});
 
     const parseToDate = (d=new Date()) => {
         return `${d.getFullYear()}-${d.getMonth()>10? d.getMonth()+1:`0${d.getMonth()+1}`}-${d.getDate()>9? d.getDate():`0${d.getDate()}`}`
@@ -39,6 +43,10 @@ const ListAdministrador = () => {
         }
     }, [cancan, verifyToken, nav])
     
+    const doChangeAdmin = (data) => {
+        setSelectedAdmin(data)
+        setShowAdmin(true)
+    }
 
     const { isLoading, error, doFetch } = useFetchEffect(
         ()=>{
@@ -50,6 +58,16 @@ const ListAdministrador = () => {
             handleSuccess: (r)=>{
                 setAdmins(r.data.dataList)
                 setNext(r.data.next)
+                setDatosTabla({...datosTabla,   clickable: {action: doChangeAdmin},
+                                                filas: r.data.dataList.map((dato)=> {return {fila: dato, 
+                                                    datos:[ 
+                                                        {dato: dato?.documento ? dato.documento : ""},
+                                                        {dato: dato?.nombre && dato.apellido ? dato.nombre + dato.apellido : ""},
+                                                        {dato: dato?.nacimiento ? parseToDate(new Date(dato.nacimiento)) : ""},
+                                                        {dato: dato?.direccion ? dato.direccion : ""},
+                                                        {dato: dato?.telefono ? dato.telefono : ""}]}})
+                                                
+                })
             },
             handleError: ()=>{
                 toast.error("No se pudieron cargar los administradores, intente de nuevo")
@@ -69,11 +87,6 @@ const ListAdministrador = () => {
                 }}/>
             </>
         )
-    }
-
-    const doChangeAdmin = (data) => {
-        setSelectedAdmin(data)
-        setShowAdmin(true)
     }
 
     return (
@@ -103,6 +116,10 @@ const ListAdministrador = () => {
                             )
                         }}
                     />
+                    <Tabla datosTabla = {datosTabla}/>
+
+                    
+
                     <Pagination size="sm mt-3">
                         {getPages()}
                     </Pagination>
