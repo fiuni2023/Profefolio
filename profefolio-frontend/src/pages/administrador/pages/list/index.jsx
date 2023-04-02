@@ -47,7 +47,7 @@ const ListAdministrador = () => {
         setSelectedAdmin(data)
         setShowAdmin(true)
     }
-
+    
     const { isLoading, error, doFetch } = useFetchEffect(
         ()=>{
             return AdminService.getList(currentPage, getToken())
@@ -116,7 +116,7 @@ const ListAdministrador = () => {
                             )
                         }}
                     />
-                    <Tabla datosTabla = {datosTabla}/>
+                    <Tabla datosTabla = {datosTabla} selected = {selectedAdmin?.id}/>
 
                     
 
