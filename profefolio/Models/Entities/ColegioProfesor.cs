@@ -13,5 +13,9 @@ namespace profefolio.Models.Entities
 
         [Required(ErrorMessage = "Es necesario indicar el Profesor")]
         public string? PersonaId { get; set; }
+
+
+        public Colegio? Colegio { get; set; }
+        public Persona? Profesor { get; set; }
     }
 }
