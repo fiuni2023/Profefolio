@@ -10,7 +10,7 @@ using profefolio.Repository;
 namespace profefolio.Services
 {
     public class ColegiosAlumnosServices : IColegiosAlumnos
-    {   
+    {
         private ApplicationDbContext _context;
         public ColegiosAlumnosServices(ApplicationDbContext context)
         {
@@ -52,6 +52,13 @@ namespace profefolio.Services
             throw new NotImplementedException();
         }
 
+        public async Task<bool> Exist(string idAlumno, int idColegio)
+        {
+            return await _context.ColegiosAlumnos.AnyAsync(ca => !ca.Deleted
+                    && ca.ColegioId == idColegio
+                    && ca.PersonaId.Equals(idAlumno));
+        }
+
         public async Task<IEnumerable<ColegiosAlumnos>> FindAllByIdColegio(int page, int cantPorPag, int idColegio)
         {
             return await _context.ColegiosAlumnos
@@ -73,7 +80,7 @@ namespace profefolio.Services
 
         public Task Save()
         {
-            throw new NotImplementedException();
+            return _context.SaveChangesAsync();
         }
     }
 }

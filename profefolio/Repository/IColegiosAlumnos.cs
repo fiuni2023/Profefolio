@@ -9,7 +9,8 @@ namespace profefolio.Repository
     public interface IColegiosAlumnos : IRepository<ColegiosAlumnos>
     {
         Task<int> Count(int idColegio);
-        Task<ColegiosAlumnos> FindById(int id);
+        Task<bool> Exist(string idAlumno, int idColegio);
+        //Task<ColegiosAlumnos> FindById(int id);
         Task<IEnumerable<ColegiosAlumnos>> FindAllByIdColegio(int page, int cantPorPag, int idColegio);
     }
 }
