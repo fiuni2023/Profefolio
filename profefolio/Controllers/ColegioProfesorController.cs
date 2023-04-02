@@ -73,6 +73,7 @@ namespace profefolio.Controllers
 
 
                 var roles = await _personaService.GetRolesPersona(persona);
+                
                 //se verifica que el id recibido sea de un profesor
                 if(!roles.Contains("Profesor")){
                     return BadRequest("No se pueden asignar usuarios no asignados como profesor a los colegios");

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using profefolio.Models;
 using profefolio.Models.Entities;
 using profefolio.Repository;
@@ -26,6 +27,12 @@ namespace profefolio.Services
             throw new NotImplementedException();
         }
 
+        public async Task<int> Count(int idColegio)
+        {
+            return await _context.ColegiosProfesors
+                            .CountAsync(ca => !ca.Deleted && ca.ColegioId == idColegio);
+        }
+
         public void Dispose()
         {
             _context.Dispose();
@@ -37,6 +44,20 @@ namespace profefolio.Services
         }
 
         public bool Exist()
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<bool> Exist(string idProf, int idColegio)
+        {
+            return await _context.ColegiosProfesors
+                    .AnyAsync(ca => !ca.Deleted
+                        && ca.PersonaId != null
+                        && ca.ColegioId == idColegio
+                        && ca.PersonaId.Equals(idProf));
+        }
+
+        public Task<IEnumerable<ColegioProfesor>> FindAllByIdColegio(int page, int cantPorPag, int idColegio)
         {
             throw new NotImplementedException();
         }
