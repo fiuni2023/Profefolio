@@ -7,10 +7,13 @@ public class Colegio : Data
         get;
         set;
     }
-     public string? PersonaId
+    public string? PersonaId
     {
         get;
         set;
     }
-    public Persona personas{ get; set; }
+    public Persona personas { get; set; }
+
+    //Para la relacion muchos a muchos
+    public IEnumerable<ColegiosAlumnos> ColegiosAlumnos { get; set; }
 }

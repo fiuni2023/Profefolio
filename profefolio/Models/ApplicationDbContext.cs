@@ -101,10 +101,26 @@ public class ApplicationDbContext : IdentityDbContext<Persona>
         modelBuilder.Entity<IdentityUserRole<string>>()
             .HasData(identityUserRole, administradorRol);
 
+
+        // definicio de primary key de la tabla ColegiosAlumnos
+        modelBuilder.Entity<ColegiosAlumnos>().HasKey(ca => new { ca.Id });
+
+        //definimos el foreign key de Colegio
+        modelBuilder.Entity<ColegiosAlumnos>()
+        .HasOne<Colegio>(ca => ca.Colegio)
+        .WithMany(c => c.ColegiosAlumnos)
+        .HasForeignKey(c => c.ColegioId);
+
+        //definimos el foreign key de Persona (Alumno)
+        modelBuilder.Entity<ColegiosAlumnos>()
+        .HasOne<Persona>(p => p.Persona)
+        .WithMany(p => p.ColegiosAlumnos)
+        .HasForeignKey(p => p.PersonaId);
+
     }
 
-   
-     public DbSet<Materia> Materias{get;set;}
+
+    public DbSet<Materia> Materias { get; set; }
     public DbSet<Colegio> Colegios
     {
         get;
@@ -113,4 +129,5 @@ public class ApplicationDbContext : IdentityDbContext<Persona>
 
     public DbSet<Ciclo> Ciclos { get; set; }
     public DbSet<Clase> Clases { get; set; }
+    public DbSet<ColegiosAlumnos> ColegiosAlumnos { get; set; }
 }
