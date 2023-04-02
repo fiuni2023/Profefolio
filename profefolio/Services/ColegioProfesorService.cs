@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using profefolio.Models;
 using profefolio.Models.Entities;
 using profefolio.Repository;
 
@@ -9,9 +10,15 @@ namespace profefolio.Services
 {
     public class ColegioProfesorService : IColegioProfesor
     {
-        public Task<ColegioProfesor> Add(ColegioProfesor t)
+        public ApplicationDbContext _context;
+        public ColegioProfesorService(ApplicationDbContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
+        }
+        public async Task<ColegioProfesor> Add(ColegioProfesor t)
+        {
+            var result = await _context.ColegiosProfesors.AddAsync(t);
+            return result.Entity;
         }
 
         public int Count()
@@ -21,7 +28,7 @@ namespace profefolio.Services
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            _context.Dispose();
         }
 
         public ColegioProfesor Edit(ColegioProfesor t)
@@ -46,7 +53,7 @@ namespace profefolio.Services
 
         public Task Save()
         {
-            throw new NotImplementedException();
+            return _context.SaveChangesAsync();
         }
     }
 }
