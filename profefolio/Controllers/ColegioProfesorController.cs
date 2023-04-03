@@ -93,7 +93,27 @@ namespace profefolio.Controllers
         }
 
         //Get All Profesores By Id Colegio {IdRelacion, nombre y apellido, CI}
+        [HttpGet("ByColegio/{idColegio:int}")]
+        public async Task<ActionResult<List<ColegioProfesorSimpleDTO>>> GetByIdColegio(int idColegio)
+        {
+            try
+            {
+                var colegio = await _colegioService.FindById(idColegio);
+                if(colegio == null){
+                    return NotFound("El Colegio no fue encontrado");
+                }
+                
+                var result = _mapper.Map<List<ColegioProfesorSimpleDTO>>(colegio.ColegioProfesores.OrderByDescending(cp => cp.Id));
 
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"{e}");
+
+                return BadRequest("Error durante la busqueda");
+            }
+        }
 
 
         [HttpPost]
