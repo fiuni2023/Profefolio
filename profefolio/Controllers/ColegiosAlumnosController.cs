@@ -50,7 +50,7 @@ namespace profefolio.Controllers
 
                 var nameUser = User.FindFirstValue(ClaimTypes.Name);
 
-                
+
 
                 //se verifica que exista un colegio en donde este asignado el administrador 
                 Colegio colegio = await _colegioService.FindById(dto.ColegioId);
@@ -60,7 +60,8 @@ namespace profefolio.Controllers
                 }
 
                 //se verifica que el administrador tenga el mismo email que el del administrador que hizo la peticion
-                if(!colegio.personas.Email.Equals(nameUser)){
+                if (!colegio.personas.Email.Equals(nameUser))
+                {
                     return Unauthorized("No puede agregar alumnos en otros colegios");
                 }
 
@@ -69,13 +70,14 @@ namespace profefolio.Controllers
                     excepcion si no encunetra
                 */
                 var persona = await _personaService.FindById(dto.AlumnoId);
-                
 
-                
+
+
 
                 var roles = await _personaService.GetRolesPersona(persona);
                 //se verifica que el id recibido sea de un alumno
-                if(!roles.Contains("Alumno")){
+                if (!roles.Contains("Alumno"))
+                {
                     return BadRequest("No se peden asignar usuarios no asignados como alumnos a las clases");
                 }
 
@@ -90,7 +92,8 @@ namespace profefolio.Controllers
 
                 return Ok(_mapper.Map<ColegiosAlumnosResultDTO>(colAlumno));
             }
-            catch(FileNotFoundException e){
+            catch (FileNotFoundException e)
+            {
                 Console.WriteLine(e);
                 return NotFound("El alumno no esta disponible");
             }
@@ -101,5 +104,56 @@ namespace profefolio.Controllers
             }
         }
 
+
+
+        [HttpDelete("{id:int}")]
+        [Authorize(Roles = "Administrador de Colegio")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            try
+            {
+                var colAlumno = await _cAlumnosService.FindById(id);
+                if (colAlumno == null)
+                {
+                    return NotFound("No encontrado");
+                }
+
+                //verificar que el administrador que hizo la peticion sea el administrador del colegio que quiere eliminar
+                var adminEmail = User.FindFirstValue(ClaimTypes.Name);
+                var admin = await _personaService.FindByEmail(adminEmail);
+                if (admin == null)
+                {
+                    return NotFound("El administrador de colegio no existe");
+                }
+
+                var colegio = await _colegioService.FindByIdAdmin(admin.Id);
+
+                if (colegio == null)
+                {
+                    return BadRequest("El administrador no tiene un colegio asignado");
+                }
+
+                colAlumno.Deleted = true;
+                colAlumno.ModifiedBy = adminEmail;
+                colAlumno.Modified = DateTime.Now;
+
+                _cAlumnosService.Edit(colAlumno);
+                await _cAlumnosService.Save();
+
+                return Ok();
+            }
+            catch (FileNotFoundException e)
+            {
+                Console.WriteLine(e);
+                return NotFound(e.Message);
+            }
+            catch (Exception e) { 
+                Console.WriteLine($"{e}");
+                return BadRequest("Error durante ele eliminado");
+                
+            }
+
+
+        }
     }
 }

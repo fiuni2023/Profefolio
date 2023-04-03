@@ -39,12 +39,13 @@ namespace profefolio.Services
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            _context.Dispose();
         }
 
         public ColegiosAlumnos Edit(ColegiosAlumnos t)
         {
-            throw new NotImplementedException();
+            _context.Entry(t).State = EntityState.Modified;
+            return t;
         }
 
         public bool Exist()
