@@ -62,7 +62,7 @@ const ListAdministrador = () => {
                                                 filas: r.data.dataList.map((dato)=> {return {fila: dato, 
                                                     datos:[ 
                                                         {dato: dato?.documento ? dato.documento : ""},
-                                                        {dato: dato?.nombre && dato.apellido ? dato.nombre + dato.apellido : ""},
+                                                        {dato: dato?.nombre && dato.apellido ? dato.nombre + " " + dato.apellido : ""},
                                                         {dato: dato?.nacimiento ? parseToDate(new Date(dato.nacimiento)) : ""},
                                                         {dato: dato?.direccion ? dato.direccion : ""},
                                                         {dato: dato?.telefono ? dato.telefono : ""}]}})
@@ -101,6 +101,9 @@ const ListAdministrador = () => {
                     { showAdmin && 
                         <LAEditPanel onUpdate={()=>{setCurrentPage(0);doFetch(true)}}/>
                     }
+
+                    {/*
+                    Asi se hacia una tabla antes, con el codigo nuevo se reduce a una linea 
                     <Table 
                         headers={["CI", "Nombre", "Fecha de Nacimiento", "Direccion", "Telefono"]}
                         datas={admins}
@@ -115,7 +118,9 @@ const ListAdministrador = () => {
                                 </tr>
                             )
                         }}
-                    />
+                        />
+                    */}
+                    
                     <Tabla datosTabla = {datosTabla} selected = {selectedAdmin?.id}/>
 
                     
