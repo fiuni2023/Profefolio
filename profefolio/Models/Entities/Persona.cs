@@ -2,7 +2,7 @@
 
 namespace profefolio.Models.Entities;
 
-public class Persona :  IdentityUser
+public class Persona : IdentityUser
 {
     public bool Deleted
     {
@@ -75,5 +75,6 @@ public class Persona :  IdentityUser
     }
 
     //Para la relacion muchos a muchos
+    public IEnumerable<ColegioProfesor> ColegiosProfesor { get; set; }
     public IEnumerable<ColegiosAlumnos> ColegiosAlumnos { get; set; }
 }
