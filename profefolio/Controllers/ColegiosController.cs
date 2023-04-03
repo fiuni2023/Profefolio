@@ -56,10 +56,10 @@ namespace profefolio.Controllers
         public async Task<ActionResult<ColegioResultDTO>> GetColegio(int id)
         {
             var colegio = await _colegioService.FindById(id);
-           
+
             if (colegio == null)
             {
-                
+
                 return NotFound();
             }
 
@@ -99,7 +99,7 @@ namespace profefolio.Controllers
             }
             //verificar que no se repita PersonaId
             var persona = await _colegioService.FindByPerson(colegio.PersonaId);
-             if (persona == null)
+            if (persona == null)
             {
                 return BadRequest($"No existe el administrador.");
             }
@@ -115,7 +115,7 @@ namespace profefolio.Controllers
 
             p.Nombre = colegio.Nombre;
             p.PersonaId = colegio.PersonaId;
-            var query =  _colegioService.Edit(p);
+            var query = _colegioService.Edit(p);
             await _colegioService.Save();
 
             //return Ok("Colegio: " + p.Nombre + ",PersonaId: " + p.PersonaId );
@@ -125,7 +125,7 @@ namespace profefolio.Controllers
         // POST: api/Colegios
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<ColegioResultDTO>> PostColegio([FromBody] ColegioDTO colegio)
+        public async Task<ActionResult<ColegioWithAdminDataDTO>> PostColegio([FromBody] ColegioDTO colegio)
         {
 
             if (!ModelState.IsValid)
@@ -137,7 +137,7 @@ namespace profefolio.Controllers
                 return BadRequest("Colegio No valido");
             }
             var rol = await _colegioService.FindByPersonRol(colegio.PersonaId);
-             if (rol == 0)
+            if (rol == 0)
             {
                 return BadRequest("Persona No valido");
             }
@@ -148,7 +148,7 @@ namespace profefolio.Controllers
                 return BadRequest($"Ya existe el colegio y el id persona ingresado.");
             }
 
-             //VERIFICAR REPETIDOS con nombre de colegio igual
+            //VERIFICAR REPETIDOS con nombre de colegio igual
             var verificarNombreColegio = await _colegioService.FindByNameColegio(colegio.Nombre);
             if (verificarNombreColegio != null)
             {
@@ -156,7 +156,7 @@ namespace profefolio.Controllers
             }
             //VERIFICAR ID
             var persona = await _colegioService.FindByPerson(colegio.PersonaId);
-             if (persona == null)
+            if (persona == null)
             {
                 return BadRequest($"No existe el administrador.");
             }
@@ -170,11 +170,11 @@ namespace profefolio.Controllers
                 var saved = await _colegioService.Add(p);
                 await _colegioService.Save();
                 //return Ok("Colegio: " + p.Nombre + ", Id: " + p.Id + ", PersonaId: " + p.PersonaId);
-                return Ok(_mapper.Map<ColegioResultDTO>(saved));
+                return Ok(_mapper.Map<ColegioWithAdminDataDTO>(saved));
             }
             catch (BadHttpRequestException e)
             {
-                
+
                 return BadRequest($"Error al crear el colegio ${colegio.Nombre}");
             }
 
@@ -192,7 +192,7 @@ namespace profefolio.Controllers
             {
                 return NotFound();
             }
-            
+
             data.Modified = DateTime.Now;
             data.Deleted = true;
             data.ModifiedBy = "Anonimous";
