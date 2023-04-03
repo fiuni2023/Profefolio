@@ -103,7 +103,7 @@ namespace profefolio.Controllers
                     return NotFound("El Colegio no fue encontrado");
                 }
                 
-                var result = _mapper.Map<List<ColegioProfesorSimpleDTO>>(colegioProfesores);
+                var result = _mapper.Map<List<ColegioProfesorSimpleDTO>>(colegioProfesores.ToList());
 
                 return Ok(result);
             }
