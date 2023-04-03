@@ -18,8 +18,8 @@ namespace profefolio.Services
         }
         public async Task<ColegioProfesor> Add(ColegioProfesor t)
         {
-            var result = await _context.ColegiosProfesors.AddAsync(t);
-            return result.Entity;
+            _context.Entry(t).State = EntityState.Added;
+            return await Task.FromResult(t);
         }
 
         public int Count()
@@ -62,9 +62,11 @@ namespace profefolio.Services
             throw new NotImplementedException();
         }
 
-        public Task<ColegioProfesor> FindById(int id)
+        public async Task<ColegioProfesor> FindById(int id)
         {
-            throw new NotImplementedException();
+            return await _context
+                .ColegiosProfesors
+                .FirstOrDefaultAsync(cp => cp != null && !cp.Deleted && cp.Id == id);
         }
 
         public IEnumerable<ColegioProfesor> GetAll(int page, int cantPorPag)

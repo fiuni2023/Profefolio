@@ -119,6 +119,8 @@ public class ApplicationDbContext : IdentityDbContext<Persona>
         .HasOne<Persona>(p => p.Profesor)
         .WithMany(p => p.ColegiosProfesor)
         .HasForeignKey(p => p.PersonaId);
+        
+        
         // definicio de primary key de la tabla ColegiosAlumnos
         modelBuilder.Entity<ColegiosAlumnos>().HasKey(ca => new { ca.Id });
 

@@ -71,24 +71,26 @@ namespace profefolio.Controllers
 
 
 
-
                 var roles = await _personaService.GetRolesPersona(persona);
                 
                 //se verifica que el id recibido sea de un profesor
                 if(!roles.Contains("Profesor")){
                     return BadRequest("No se pueden asignar usuarios no asignados como profesor a los colegios");
                 }
+                
 
                 var colProf = _mapper.Map<ColegioProfesor>(dto);
 
                 colProf.CreatedBy = nameUser;
                 colProf.Created = DateTime.Now;
                 colProf.Deleted = false;
-
+                
+                
                 await _cProfService.Add(colProf);
                 await _cProfService.Save();
 
-                return Ok(_mapper.Map<ColegioProfesorResultDTO>(colProf));
+                var colProfNew = await _cProfService.FindById(colProf.Id);
+                return Ok(_mapper.Map<ColegioProfesorResultDTO>(colProfNew));
             }
             catch(FileNotFoundException e){
                 Console.WriteLine(e);
