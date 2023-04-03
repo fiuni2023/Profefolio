@@ -10,7 +10,8 @@ import { useGeneralContext } from "../../context/GeneralContext";
 import APILINK from "../../components/link";
 import ModalVerColegios from './ModalVerColegios'
 import { AiOutlineEye } from "react-icons/ai";
-const ListarColegios = (triggerState = () => { }) => {
+import { PanelContainerBG } from "../../components/Layout";
+function ListarColegios() {
 
   const { getToken, verifyToken, cancan } = useGeneralContext()
 
@@ -21,35 +22,57 @@ const ListarColegios = (triggerState = () => { }) => {
   const [currentPage, setCurrentPage] = useState(0);
   const [colegios, setColegios] = useState([]);
   const [datoIdColegio, setDatoIdColegio] = useState('');
+  const [nombreAdminActual, setNombreAdmin] = useState([]);
   useEffect(() => {
 
     verifyToken()
     if (!cancan("Master")) {
       nav("/")
     } else {
-      let config = {
-        method: 'get',
-        url: `${APILINK}/api/ColegiosFull/page/${currentPage}`,
+      axios.get(`${APILINK}/api/ColegiosFull/page/${currentPage}`, {
         headers: {
-          'Authorization': `Bearer ${getToken()}`
+          Authorization: `Bearer ${getToken()}`,
         }
-      };
-      axios(config)
-        .then(function (response) {
+      })
+
+        .then(response => {
           setColegios(response.data.dataList); //Guarda los datos
           setTotalPage(response.data.totalPage);//Total de Paginas
-          setCurrentPage(response.data.currentPage)//Actualiza la pagina en donde estan los datos
-
+          setCurrentPage(response.data.currentPage);//Actualiza la pagina en donde estan los datos
+          console.log(colegios);
         })
-        .catch(function (error) {
-          console.log(error);
+        .catch(error => {
+          console.error(error);
         });
     }
-  }, [cancan, verifyToken, nav, currentPage, getToken])
+  }, [cancan, verifyToken, nav, currentPage, getToken]);
+
+  /*const nombreAdmin=(id)=>{
+    verifyToken()
+      if (!cancan("Master")) {
+        nav("/")
+      } else {
+        let config = {
+          method: 'get',
+          url: `${APILINK}/api/administrador/id/${id}`,
+          headers: {
+            'Authorization': `Bearer ${getToken()}`
+          }
+        };
+        axios(config)
+          .then(function (response) {
+            setNombreAdmin(response.data);
   
-  const doFetch =(colegio) =>{
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+        }
+  }
+    */
+  const doFetch = (colegio) => {
     setColegios([...colegios, colegio])
-}
+  }
   let items = [];
 
   for (let number = 0; number < totalPage; number++) {
@@ -66,18 +89,18 @@ const ListarColegios = (triggerState = () => { }) => {
 
   }
   const [show, setShow] = useState(false);
-  const [disabled, setDisabled]=useState(true);
-  const handleShow = (id) =>{
+  const [disabled, setDisabled] = useState(true);
+  const handleShow = (id) => {
     setDatoIdColegio(id);
     console.log(datoIdColegio);
     setShow(true);
-  } 
-  
+  }
+
 
   return (
     <>
       <div>
-     
+
         <div className={styles.nombrePagina}>
           <div className={styles.divNombrePagina}>
             <button className={styles.buttonBack} onClick={() => { navigate('/') }}><BiArrowBack className={styles.arrowButton} /></button>
@@ -94,8 +117,8 @@ const ListarColegios = (triggerState = () => { }) => {
                   <td>{index + 1}</td>
                   <td>{col?.nombre}</td>
                   <td>{col?.nombreAdministrador} {col?.apellido}</td>
-                  <td><button className={styles.iconButton} onClick={()=>handleShow(col?.id)}><AiOutlineEye /></button></td>
-                  
+                  <td><button className={styles.iconButton} onClick={() => handleShow(col?.id)}><AiOutlineEye /></button></td>
+
                 </tr>
               )
             }}
@@ -105,7 +128,7 @@ const ListarColegios = (triggerState = () => { }) => {
 
         <ModalVerColegios idColegio={datoIdColegio} show={show} setShow={setShow} disabled={disabled} setDisabled={setDisabled}></ModalVerColegios>
 
-        <ModalAgregarColegios triggerState={(colegio)=>{doFetch(colegio)}}></ModalAgregarColegios>
+        <ModalAgregarColegios triggerState={(colegio) => { doFetch(colegio) }}></ModalAgregarColegios>
       </div>
     </>)
 }
