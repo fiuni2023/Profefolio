@@ -22,7 +22,7 @@ public class ColegiosService : IColegio
     public async Task<Colegio> FindById(int id)
     {
         return await _dbContext.Colegios
-            .Where(p => !p.Deleted && p.Id == id)
+            .Where(p => !p.Deleted && p.Id == id).Include(c => c.personas)
             .FirstOrDefaultAsync();
     }
 

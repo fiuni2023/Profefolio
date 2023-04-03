@@ -1,4 +1,5 @@
-﻿using profefolio.Models.Entities;
+﻿using profefolio.Models.DTOs.Auth;
+using profefolio.Models.Entities;
 
 namespace profefolio.Repository;
 
@@ -16,6 +17,6 @@ public interface IPersona : IRepository<Persona>
     Task<IEnumerable<Persona>> GetAllByRol(string roleName);
     Task<bool> ExistDoc(Persona persona);
     Task<Persona> FindByEmail(string email);
-
+    Task<IList<string>> GetRolesPersona(Persona user);
 
 }

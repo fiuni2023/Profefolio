@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using profefolio.Models.Entities;
 using profefolio.Repository;
@@ -158,7 +158,7 @@ public class PersonasService : IPersona
     public async Task<IEnumerable<Persona>> GetAllByRol(string roleName, int page, int cantPorPag)
     {
 
-        return  _userManager.GetUsersInRoleAsync(roleName).Result
+        return _userManager.GetUsersInRoleAsync(roleName).Result
             .Where(p => !p.Deleted)
             .Skip(page * cantPorPag)
             .Take(cantPorPag).ToList();
@@ -184,13 +184,19 @@ public class PersonasService : IPersona
         return await _userManager.Users
             .Where(p => !p.Deleted)
             .AnyAsync(p => p.DocumentoTipo != null
-                           && persona.Documento != null 
-                           && persona.Documento.Equals(p.Documento) 
+                           && persona.Documento != null
+                           && persona.Documento.Equals(p.Documento)
                            && p.DocumentoTipo.Equals(p.DocumentoTipo));
     }
 
     public async Task<Persona> FindByEmail(string email = "")
     {
         return await _userManager.Users.FirstOrDefaultAsync(u => !u.Deleted && email.Equals(u.Email));
+    }
+
+
+    public async Task<IList<string>> GetRolesPersona(Persona user)
+    {
+        return await _userManager.GetRolesAsync(user);
     }
 }

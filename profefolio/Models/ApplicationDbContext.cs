@@ -1,21 +1,18 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using profefolio.Models.Entities;
-using profefolio.Models;
 
 namespace profefolio.Models;
 
-public class ApplicationDbContext : DbContext
+public class ApplicationDbContext : IdentityDbContext<Persona>
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
         AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
     }
 
-<<<<<<< HEAD
     protected override void OnModelCreating(ModelBuilder modelBuilder)
-=======
-    public DbSet<Persona> Personas
->>>>>>> main
     {
         base.OnModelCreating(modelBuilder);
 
@@ -104,10 +101,45 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<IdentityUserRole<string>>()
             .HasData(identityUserRole, administradorRol);
 
+
+
+        // definicio de primary key de la tabla ColegiosProfesores
+        modelBuilder.Entity<ColegioProfesor>().HasKey(cp => new { cp.Id });
+
+        //definimos el foreign key de Colegio
+        modelBuilder.Entity<ColegioProfesor>()
+        .HasOne<Colegio>(cp => cp.Colegio)
+        .WithMany(c => c.ColegioProfesores)
+        .HasForeignKey(c => c.ColegioId);
+
+
+
+        //definimos el foreign key de Persona (Profesor)
+        modelBuilder.Entity<ColegioProfesor>()
+        .HasOne<Persona>(p => p.Persona)
+        .WithMany(p => p.ColegiosProfesor)
+        .HasForeignKey(p => p.PersonaId);
+        
+        
+        // definicio de primary key de la tabla ColegiosAlumnos
+        modelBuilder.Entity<ColegiosAlumnos>().HasKey(ca => new { ca.Id });
+
+        //definimos el foreign key de Colegio
+        modelBuilder.Entity<ColegiosAlumnos>()
+        .HasOne<Colegio>(ca => ca.Colegio)
+        .WithMany(c => c.ColegiosAlumnos)
+        .HasForeignKey(c => c.ColegioId);
+
+        //definimos el foreign key de Persona (Alumno)
+        modelBuilder.Entity<ColegiosAlumnos>()
+        .HasOne<Persona>(p => p.Persona)
+        .WithMany(p => p.ColegiosAlumnos)
+        .HasForeignKey(p => p.PersonaId);
+
     }
 
-   
-     public DbSet<Materia> Materias{get;set;}
+
+    public DbSet<Materia> Materias { get; set; }
     public DbSet<Colegio> Colegios
     {
         get;
@@ -116,4 +148,6 @@ public class ApplicationDbContext : DbContext
 
     public DbSet<Ciclo> Ciclos { get; set; }
     public DbSet<Clase> Clases { get; set; }
+    public DbSet<ColegioProfesor> ColegiosProfesors { get; set; }
+    public DbSet<ColegiosAlumnos> ColegiosAlumnos { get; set; }
 }
