@@ -98,12 +98,12 @@ namespace profefolio.Controllers
         {
             try
             {
-                var colegio = await _colegioService.FindById(idColegio);
-                if(colegio == null){
+                var colegioProfesores = await _cProfService.FindAllByIdColegio(idColegio);
+                if(colegioProfesores == null){
                     return NotFound("El Colegio no fue encontrado");
                 }
                 
-                var result = _mapper.Map<List<ColegioProfesorSimpleDTO>>(colegio.ColegioProfesores.OrderByDescending(cp => cp.Id));
+                var result = _mapper.Map<List<ColegioProfesorSimpleDTO>>(colegioProfesores);
 
                 return Ok(result);
             }

@@ -69,6 +69,14 @@ namespace profefolio.Services
                     .ToListAsync();
         }
 
+        public async Task<IEnumerable<ColegioProfesor>> FindAllByIdColegio(int idColegio)
+        {
+            return await _context.ColegiosProfesors
+                    .Where(cp => !cp.Deleted && cp.ColegioId == idColegio)
+                    .Include(cp => cp.Persona)
+                    .ToListAsync();
+        }
+
         public async Task<ColegioProfesor> FindById(int id)
         {
             return await _context
