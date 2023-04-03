@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using profefolio.Models.DTOs;
 using profefolio.Models.DTOs.ColegioProfesor;
 using profefolio.Models.Entities;
 using profefolio.Repository;
@@ -21,33 +22,75 @@ namespace profefolio.Controllers
         private IColegio _colegioService;
         private IMapper _mapper;
 
+        private const int CantPorPage = 20;
+
+
         public ColegioProfesorController(IPersona personaService, IColegioProfesor colegioProfesorService, IColegio colegioService, IMapper mapper)
         {
             _personaService = personaService;
             _cProfService = colegioProfesorService;
             _colegioService = colegioService;
-            _mapper = mapper;    
+            _mapper = mapper;
         }
 
 
         //Get by Id {Id, Datos Persona, Datos Colegio} 
         [HttpGet("{id:int}")]
-        [Authorize(Roles = "Administrador de Colegio, Profesor")]
-        public async Task<ActionResult<ColegioProfesorByIdResult>> GetById(int id){
-            try{
+        [Authorize(Roles = "Administrador de Colegio,Profesor")]
+        public async Task<ActionResult<ColegioProfesorByIdResult>> GetById(int id)
+        {
+            try
+            {
                 var colProf = await _cProfService.FindById(id);
-                if(colProf == null){
+                if (colProf == null)
+                {
                     return NotFound();
                 }
 
                 return Ok(_mapper.Map<ColegioProfesorByIdResult>(colProf));
-            }catch(Exception e){
+            }
+            catch (Exception e)
+            {
                 Console.WriteLine($"{e}");
-                
+
                 return BadRequest("Error durante la busqueda");
             }
         }
         // Get All Page By Id Colegio
+        [HttpGet("page/{idColegio:int}/{page:int}")]
+        public async Task<ActionResult<DataListDTO<ColegioProfesorByIdResult>>> GetPageByIdColegio(int idColegio, int page)
+        {
+            try
+            {
+                var colProf = await _cProfService.FindAllByIdColegio(page, CantPorPage, idColegio);
+
+                var cantItmed = await _cProfService.Count(idColegio); 
+
+                int cantPages = (int)Math.Ceiling((double)cantItmed / (double)CantPorPage);
+
+
+                var result = new DataListDTO<ColegioProfesorByIdResult>();
+
+                if (page >= cantPages)
+                {
+                    return BadRequest($"No existe la pagina: {page} ");
+                }
+
+                result.CantItems = cantItmed;
+                result.CurrentPage = page;
+                result.Next = result.CurrentPage + 1 < cantPages;
+                result.DataList = _mapper.Map<List<ColegioProfesorByIdResult>>(colProf.ToList());
+                result.TotalPage = cantPages;
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"{e}");
+
+                return BadRequest("Error durante la busqueda");
+            }
+        }
 
         //Get All Profesores By Id Colegio {IdRelacion, nombre y apellido, CI}
 
@@ -82,7 +125,8 @@ namespace profefolio.Controllers
                 }
 
                 //se verifica que el administrador tenga el mismo email que el del administrador que hizo la peticion
-                if(!colegio.personas.Email.Equals(nameUser)){
+                if (!colegio.personas.Email.Equals(nameUser))
+                {
                     return Unauthorized("No puede agregar Profesores en otros colegios");
                 }
 
@@ -95,26 +139,28 @@ namespace profefolio.Controllers
 
 
                 var roles = await _personaService.GetRolesPersona(persona);
-                
+
                 //se verifica que el id recibido sea de un profesor
-                if(!roles.Contains("Profesor")){
+                if (!roles.Contains("Profesor"))
+                {
                     return BadRequest("No se pueden asignar usuarios no asignados como profesor a los colegios");
                 }
-                
+
 
                 var colProf = _mapper.Map<ColegioProfesor>(dto);
 
                 colProf.CreatedBy = nameUser;
                 colProf.Created = DateTime.Now;
                 colProf.Deleted = false;
-                
-                
+
+
                 await _cProfService.Add(colProf);
                 await _cProfService.Save();
 
                 return Ok(_mapper.Map<ColegioProfesorResultDTO>(colProf));
             }
-            catch(FileNotFoundException e){
+            catch (FileNotFoundException e)
+            {
                 Console.WriteLine(e);
                 return NotFound("El Profesor no esta disponible");
             }
