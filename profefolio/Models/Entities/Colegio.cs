@@ -14,7 +14,7 @@ public class Colegio : Data
     }
     public Persona personas { get; set; }
 
-
-
-    public IEnumerable<ColegioProfesor>? ColegioProfesores { get; set; }
+    //Para la relacion muchos a muchos
+    public IEnumerable<ColegioProfesor> ColegioProfesores { get; set; } = null!;
+    public IEnumerable<ColegiosAlumnos> ColegiosAlumnos { get; set; } = null!;
 }

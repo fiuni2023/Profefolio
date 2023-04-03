@@ -74,8 +74,7 @@ public class Persona : IdentityUser
         set;
     }
 
-
-
-
-    public IEnumerable<ColegioProfesor>? ColegiosProfesor { get; set; }
+    //Para la relacion muchos a muchos
+    public IEnumerable<ColegioProfesor> ColegiosProfesor { get; set; } = null!;
+    public IEnumerable<ColegiosAlumnos> ColegiosAlumnos { get; set; } = null!;
 }
