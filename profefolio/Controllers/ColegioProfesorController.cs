@@ -89,8 +89,7 @@ namespace profefolio.Controllers
                 await _cProfService.Add(colProf);
                 await _cProfService.Save();
 
-                var colProfNew = await _cProfService.FindById(colProf.Id);
-                return Ok(_mapper.Map<ColegioProfesorResultDTO>(colProfNew));
+                return Ok(_mapper.Map<ColegioProfesorResultDTO>(colProf));
             }
             catch(FileNotFoundException e){
                 Console.WriteLine(e);
