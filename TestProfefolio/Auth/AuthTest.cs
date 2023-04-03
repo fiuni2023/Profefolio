@@ -21,7 +21,7 @@ public class AuthTest : BaseTest
     }
     
     [Fact]
-    public async Task LoginServiceOkTest()
+    public async Task LoginServiceTestOk()
     {
         MockSetUpOk();
         var response = await AuthService.Login(new Login()
@@ -35,18 +35,18 @@ public class AuthTest : BaseTest
     }
 
     [Fact]
-    public async Task LoginServiceIncorrectPasswordTest()
+    public async Task LoginServicePasswordIncorrect()
     {
         MockSetUpIncorrectPassword();
+
         var ex = await Assert.ThrowsAsync<BadHttpRequestException>(() =>
 
-          AuthService.Login(new Login()
-          {
-              Email = "Carlos.Torres123@mail.com",
-              Password = "Carlos.Torres@mail.com"
-          }));
+            AuthService.Login(new Login()
+            {
+                Email = "Carlos.Torres123@mail.com",
+                Password = "Carlos.Torres@mail.com"
+            }));
         Assert.Equal("Credenciales no validas", ex.Message);
-
     }
 
     [Fact]
@@ -121,8 +121,9 @@ public class AuthTest : BaseTest
 
     private void MockSetUpOk()
     {
-        UserManagerMock.Setup(x => x.FindByEmailAsync("Carlos.Torres123@mail.com")).ReturnsAsync(P);
-
+        UserManagerMock.Setup(x => x.FindByEmailAsync(It.IsAny<string>()))
+            .ReturnsAsync(P);
+            
         UserManagerMock.Setup(x => x
                 .CheckPasswordAsync(It.IsAny<Persona>(), It.IsAny<string>()))
             .ReturnsAsync(true);
@@ -137,13 +138,13 @@ public class AuthTest : BaseTest
 
     private void MockSetUpIncorrectPassword()
     {
-        UserManagerMock.Setup(x => x.FindByEmailAsync("Carlos.Torres123@mail.com"))
-        .ReturnsAsync(P);
-
+       
+        UserManagerMock.Setup(x => x.FindByEmailAsync(It.IsAny<string>()))
+            .ReturnsAsync(P);
+            
         UserManagerMock.Setup(x => x
                 .CheckPasswordAsync(It.IsAny<Persona>(), It.IsAny<string>()))
             .ReturnsAsync(false);
-        
     }
     private void MockSetUpNotFoundUser()
     {
@@ -151,5 +152,4 @@ public class AuthTest : BaseTest
             .ReturnsAsync((Persona)null);
 
     }
-  
 }
