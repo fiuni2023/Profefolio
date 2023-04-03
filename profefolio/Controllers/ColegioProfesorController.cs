@@ -30,6 +30,29 @@ namespace profefolio.Controllers
         }
 
 
+        //Get by Id {Id, Datos Persona, Datos Colegio} 
+        [HttpGet("{id:int}")]
+        [Authorize(Roles = "Administrador de Colegio, Profesor")]
+        public async Task<ActionResult<ColegioProfesorByIdResult>> GetById(int id){
+            try{
+                var colProf = await _cProfService.FindById(id);
+                if(colProf == null){
+                    return NotFound();
+                }
+
+                return Ok(_mapper.Map<ColegioProfesorByIdResult>(colProf));
+            }catch(Exception e){
+                Console.WriteLine($"{e}");
+                
+                return BadRequest("Error durante la busqueda");
+            }
+        }
+        // Get All Page By Id Colegio
+
+        //Get All Profesores By Id Colegio {IdRelacion, nombre y apellido, CI}
+
+
+
         [HttpPost]
         [Authorize(Roles = "Administrador de Colegio")]
         public async Task<ActionResult<ColegioProfesorResultDTO>> Post([FromBody] ColegioProfesorDTO dto)
