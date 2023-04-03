@@ -57,6 +57,17 @@ namespace profefolio.Helpers.Mappers
                     opt => opt.MapFrom(v => v.Persona.PhoneNumber))
                 .ForMember(dest => dest.Genero,
                     opt => opt.MapFrom(src => src.Persona.EsM ? "Masculino" : "Femenino"));
+
+
+            CreateMap<ColegioProfesor, ColegioProfesorSimpleDTO>()
+                .ForMember(dest => dest.Id,
+                    opt => opt.MapFrom(v => v.Id))
+                .ForMember(dest => dest.Nombre,
+                    opt => opt.MapFrom(v => $"{v.Persona.Nombre} {v.Persona.Apellido}"))
+                .ForMember(dest => dest.Documento,
+                    opt => opt.MapFrom(v => v.Persona.Documento))
+                .ForMember(dest => dest.ProfesorId,
+                    opt => opt.MapFrom(v => v.PersonaId));
         }
     }
 }
