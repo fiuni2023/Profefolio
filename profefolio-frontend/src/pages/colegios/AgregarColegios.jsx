@@ -70,6 +70,7 @@ function ModalAgregarColegios({ onSubmit = () => { }, triggerState = () => { } }
                     else if (response.status >= 200) {
                         triggerState(response.data)
                         onSubmit(response.data)
+                        console.log(response.data);
                         toast.success("Guardado correctamente");
                     }
                 })
