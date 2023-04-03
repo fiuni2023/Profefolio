@@ -106,7 +106,7 @@ namespace profefolio.Controllers
 
 
 
-        [HttpPost("{id:int}")]
+        [HttpDelete("{id:int}")]
         [Authorize(Roles = "Administrador de Colegio")]
         public async Task<ActionResult> Delete(int id)
         {
