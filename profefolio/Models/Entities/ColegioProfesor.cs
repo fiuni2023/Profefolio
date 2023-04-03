@@ -16,6 +16,6 @@ namespace profefolio.Models.Entities
 
 
         public Colegio? Colegio { get; set; }
-        public Persona? Profesor { get; set; }
+        public Persona? Persona { get; set; }
     }
 }

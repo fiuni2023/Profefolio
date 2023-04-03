@@ -116,7 +116,7 @@ public class ApplicationDbContext : IdentityDbContext<Persona>
 
         //definimos el foreign key de Persona (Profesor)
         modelBuilder.Entity<ColegioProfesor>()
-        .HasOne<Persona>(p => p.Profesor)
+        .HasOne<Persona>(p => p.Persona)
         .WithMany(p => p.ColegiosProfesor)
         .HasForeignKey(p => p.PersonaId);
         

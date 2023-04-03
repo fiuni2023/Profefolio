@@ -66,7 +66,10 @@ namespace profefolio.Services
         {
             return await _context
                 .ColegiosProfesors
-                .FirstOrDefaultAsync(cp => cp != null && !cp.Deleted && cp.Id == id);
+                .Where(cp => cp != null && !cp.Deleted && cp.Id == id)
+                .Include(cp => cp.Persona)
+                .Include(cp => cp.Colegio)
+                .FirstOrDefaultAsync();
         }
 
         public IEnumerable<ColegioProfesor> GetAll(int page, int cantPorPag)
