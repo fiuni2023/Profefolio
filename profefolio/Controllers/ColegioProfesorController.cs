@@ -34,7 +34,8 @@ namespace profefolio.Controllers
         }
 
 
-        //Get by Id {Id, Datos Persona, Datos Colegio} 
+
+
         [HttpGet("{id:int}")]
         [Authorize(Roles = "Administrador de Colegio,Profesor")]
         public async Task<ActionResult<ColegioProfesorByIdResult>> GetById(int id)
@@ -56,8 +57,10 @@ namespace profefolio.Controllers
                 return BadRequest("Error durante la busqueda");
             }
         }
-        // Get All Page By Id Colegio
+
+
         [HttpGet("page/{idColegio:int}/{page:int}")]
+        [Authorize(Roles = "Administrador de Colegio,Profesor")]
         public async Task<ActionResult<DataListDTO<ColegioProfesorByIdResult>>> GetPageByIdColegio(int idColegio, int page)
         {
             try
@@ -92,8 +95,9 @@ namespace profefolio.Controllers
             }
         }
 
-        //Get All Profesores By Id Colegio {IdRelacion, nombre y apellido, CI}
+
         [HttpGet("ByColegio/{idColegio:int}")]
+        [Authorize(Roles = "Administrador de Colegio,Profesor")]
         public async Task<ActionResult<List<ColegioProfesorSimpleDTO>>> GetByIdColegio(int idColegio)
         {
             try
@@ -188,6 +192,54 @@ namespace profefolio.Controllers
             {
                 Console.WriteLine(e);
                 return BadRequest("Error durante el guardado.");
+            }
+        }
+
+        
+        [HttpDelete("{id:int}")]
+        [Authorize(Roles = "Administrador de Colegio")]
+        public async Task<ActionResult> Delete(int id){
+            try{
+                //Obtenemos la relacion Colegio-Profesor
+                var colProf = await _cProfService.FindById(id);
+                if(colProf == null){
+                    return NotFound("No se puede eliminar porque no fue encontrado");
+                }
+
+
+                var nameUser = User.FindFirstValue(ClaimTypes.Name);
+
+                var admin = await _personaService.FindByEmail(nameUser);
+                if(admin == null){
+                    return BadRequest("Error. El administradir no existe");
+                }
+                
+                
+                //se verifica que exista un colegio en donde este asignado el administrador 
+                Colegio colegio = await _colegioService.FindByIdAdmin(admin.Id);
+                if (colegio == null)
+                {
+                    return NotFound("El colegio no esta disponible");
+                }
+
+                //se verifica que el administrador tenga el mismo email que el del administrador que hizo la peticion
+                if (!colegio.personas.Email.Equals(nameUser))
+                {
+                    return Unauthorized("No puede eliminar Profesores en otros colegios");
+                }
+
+                colProf.Deleted = true;
+                colProf.Modified = DateTime.Now;
+                colProf.ModifiedBy = nameUser;
+
+                _cProfService.Edit(colProf);
+                await _cProfService.Save();
+
+                return Ok();
+
+            }catch(Exception e){
+                Console.WriteLine($"{e}");
+                return BadRequest("Error de servidor mientras se intentaba eliminar");
             }
         }
     }
