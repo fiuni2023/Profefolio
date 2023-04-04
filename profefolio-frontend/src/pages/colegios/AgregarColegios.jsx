@@ -11,7 +11,7 @@ function ModalAgregarColegios({ onSubmit = () => { }, triggerState = () => { } }
     const [nombreColegio, setNombreColegio] = useState("");
     const [idAdmin, setIdAdmin] = useState(0);
     const [administradores, setAdministradores] = useState([]);
-    const [mensajeError, setMensajeError] = useState(null);
+   
     //Get administadores
 
     useEffect(() => {
@@ -70,6 +70,9 @@ function ModalAgregarColegios({ onSubmit = () => { }, triggerState = () => { } }
                     else if (response.status >= 200) {
                         triggerState(response.data)
                         onSubmit(response.data)
+                        setNombreColegio("");
+                        setIdAdmin("");
+
                         toast.success("Guardado correctamente");
                     }
                 })
@@ -84,13 +87,12 @@ function ModalAgregarColegios({ onSubmit = () => { }, triggerState = () => { } }
 
     }
     const handleNombreColegio = (event) => {
-        setMensajeError("");
-        setNombreColegio(event.target.value)
 
+        setNombreColegio(event.target.value)
 
     }
     const handleIDAdmin = (event) => {
-        setMensajeError("")
+
         handleAdmin(event.target.value)
     }
     const [show, setShow] = useState(false);
@@ -110,16 +112,16 @@ function ModalAgregarColegios({ onSubmit = () => { }, triggerState = () => { } }
                         <form>
                             <label htmlFor="colegio-nombre" className={styles.labelForm}>Nombre</label><br />
                             <input required type="text" id={styles.inputColegio} name="colegio-nombre" onChange={event => handleNombreColegio(event)}></input><br />
-                            <p className={styles.mensajeError}>{mensajeError}</p>
+                            
                             <label htmlFor="administrador"><strong> Administrador</strong></label><br />
 
                             <select required name="admin" value={idAdmin || ''} onChange={event => handleIDAdmin(event)} className={styles.selectAdmin}>
-                                <option disabled value={0|| '' }>Seleccione Administrador</option>
+                                <option disabled value={0 || ''}>Seleccione Administrador</option>
                                 {administradores.map((administrador) =>
                                     <option key={administrador.id} value={administrador.id || ''}>{administrador.nombre} {administrador.apellido}</option>
                                 )}
                             </select>
-                            <p className={styles.mensajeError}>{mensajeError}</p>
+                            
 
 
                         </form>
