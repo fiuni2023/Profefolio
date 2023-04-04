@@ -1,4 +1,4 @@
-import StyledTextButton from './StyledTextButton';
+import StyledTextButton from './componentsStyles/StyledTextButton';
 
 /*Este componente define el funcionamiento de los botones con iconos.
   Importa los estilos desde StyledIconButton.

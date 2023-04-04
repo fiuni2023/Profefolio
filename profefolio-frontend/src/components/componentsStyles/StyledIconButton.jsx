@@ -40,9 +40,8 @@ const StyledIconButton = styled.button`
                         : '#fff'};
   }
   &:active {
-    /*background-color:#fff;
-    box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.5);*/
-    transform: scale(0.95);
+    background-color:#fff;
+    box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.5);
   }
   img {
     width: 24px;

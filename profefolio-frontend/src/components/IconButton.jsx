@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import StyledIconButton from './StyledIconButton';
+import StyledIconButton from './componentsStyles/StyledIconButton';
 import TextButton from './TextButton';
+import { HiOutlinePencil, HiOutlineTrash } from 'react-icons/hi';
+import { IoIosArrowBack, IoIosArrowForward, IoIosClose } from 'react-icons/io';
 
 /*Este componente define el funcionamiento de los botones con iconos.
   Importa los estilos desde StyledIconButton.
@@ -15,26 +17,35 @@ import TextButton from './TextButton';
         <IconButton enabled={true} buttonType='close' onClick={()=>console.log("Saliendo")}/>
 */
 function IconButton({ buttonType, onClick, enabled }) {
+  const [pressed, setPressed] = useState(false);
   const [confirmation, setConfirmation] = useState(false);
   let onConfirm;
+  let iconMainColor= 'white';
+  let iconColor= 'white';
   let icon;
   switch (buttonType) {
     case 'delete':
-      icon = '/icons/trash.svg';
       onConfirm = onClick;
       onClick = () => setConfirmation(true);
+      iconColor= '#D93D79';
+      icon = <HiOutlineTrash  size={24} color={iconColor}/>;
       break;
     case 'edit':
-      icon = '/icons/pen.svg';
+      iconColor= '#5181D1';
+      icon = <HiOutlinePencil size={24} color={iconColor}/>;
       break;
     case 'close':
-      icon = '/icons/cross.svg';
+      iconColor= 'black';
+      icon = <IoIosClose size={26} color={iconColor}/>;
+      iconMainColor= 'black';
       break;
     case 'arrowL':
-      icon = '/icons/arrowL.svg';
+      iconColor= '#A32A26';
+      icon = <IoIosArrowBack size={26} color={iconColor}/>;
       break;
     case 'arrowR':
-      icon = '/icons/arrowR.svg';
+      iconColor= '#A32A26';
+      icon = <IoIosArrowForward size={26} color={iconColor}/>;
       break;
     default:
       icon = null;
@@ -48,8 +59,14 @@ function IconButton({ buttonType, onClick, enabled }) {
           <TextButton buttonType='confirm' enabled={true} onClick={onConfirm} />
           <p style={{ color: '#A32A26', margin: 0 }}>ESTA ACCIÓN ES IRREVERSIBLE POR LO QUE NECESITA CONFIRMAR.</p>
         </div> :
-        <StyledIconButton buttonType={buttonType} enabled={enabled} onClick={onClick}>
-          {icon && <img src={icon} alt={`${buttonType} icon`} />}
+        <StyledIconButton
+          buttonType={buttonType}
+          enabled={enabled}
+          onClick={onClick}
+          onMouseDown={() => setPressed(true)}
+          onMouseUp={() => setPressed(false)}
+        >
+          {icon && React.cloneElement(icon, { color: pressed ? iconColor : iconMainColor })}
         </StyledIconButton>
       }
     </div>

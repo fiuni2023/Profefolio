@@ -17,7 +17,7 @@ const StyledTextButton = styled.button`
   pointer-events: ${props => props.enabled ? 'auto' : 'none'};
 
   &:active {
-    transform: scale(0.98);
+    transform: scale(0.95);
   }
   ${props => {
     switch (props.buttonType) {
