@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using profefolio.Controllers;
 using profefolio.Models.DTOs.Auth;
 using profefolio.Repository;
-
+using System.Security.Claims;
 
 namespace TestProfefolio.Auth
 {
@@ -16,6 +16,7 @@ namespace TestProfefolio.Auth
         public AuthControllerTest()
         {
             _authController = new AuthController(_authServiceMock.Object);
+
         }
 
         [Fact]
