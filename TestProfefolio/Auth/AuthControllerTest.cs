@@ -1,6 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using profefolio.Controllers;
 using profefolio.Models.DTOs.Auth;
 using profefolio.Repository;
@@ -20,7 +19,6 @@ namespace TestProfefolio.Auth
         }
 
         [Fact]
-
         public async Task LoginControllerOkTest()
         {
             var login = new Login()
@@ -100,6 +98,41 @@ namespace TestProfefolio.Auth
             var login = new Login();
 
             _authController.ModelState.AddModelError("", "");
+
+            var result = await _authController.Login(login);
+
+            Assert.IsType<BadRequestObjectResult>(result.Result);
+        }
+
+        [Fact]
+        public async Task LoginNoAuthorizedTest()
+        {
+            var login = new Login()
+            {
+                Email = "Carlos.Torres123@mail.com",
+                Password = "Carlos.Torres123"
+            };
+
+            _authServiceMock.Setup(x => x.Login(It.IsAny<Login>()))
+                .ThrowsAsync(new UnauthorizedAccessException());
+
+            var result = await _authController.Login(login);
+
+            Assert.IsType<UnauthorizedResult>(result.Result);
+
+        }
+
+        [Fact]
+        public async Task BadRequestException()
+        {
+            var login = new Login()
+            {
+                Email = "Carlos.Torres123@mail.com",
+                Password = "Carlos.Torres123"
+            };
+
+            _authServiceMock.Setup(x => x.Login(It.IsAny<Login>()))
+                .ThrowsAsync(new BadHttpRequestException("Credenciales no validas"));
 
             var result = await _authController.Login(login);
 
