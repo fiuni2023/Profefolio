@@ -8,7 +8,7 @@ using profefolio.Services;
 
 namespace TestProfefolio;
 
-public class BaseTest
+public class BaseTestService
 {
     protected readonly Mock<UserManager<profefolio.Models.Entities.Persona>> UserManagerMock = new Mock<UserManager<profefolio.Models.Entities.Persona>>(new Mock<IUserStore<profefolio.Models.Entities.Persona>>().Object, null, null, null, null, null, null, null, null);
     protected readonly Mock<IConfiguration> ConfigurationMock = new Mock<IConfiguration>();
@@ -29,7 +29,7 @@ public class BaseTest
     public AuthService AuthService { get; set; }
 
 
-    protected BaseTest()
+    protected BaseTestService()
     {
         var contextOptions = new DbContextOptionsBuilder<ApplicationDbContext>()
             .UseInMemoryDatabase("profefolio")
@@ -38,7 +38,7 @@ public class BaseTest
         P.PasswordHash = hasher.HashPassword(P, "Carlos.Torres123");
         Db = new ApplicationDbContext(contextOptions);
 
-        AuthService = new AuthService(UserManagerMock.Object, ConfigurationMock.Object, IColegioMock.Object);
+        AuthService = new AuthService(UserManagerMock.Object, ConfigurationMock.Object);
         
         ConfigurationMock.Setup(x => x["JWT:Secret"])
             .Returns("JWTAuthenticationHIGHsecuredPasswordVVVp1OH7Xzyr");
