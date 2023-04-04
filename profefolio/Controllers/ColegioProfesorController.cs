@@ -194,7 +194,7 @@ namespace profefolio.Controllers
 
 
 
-        [HttpPost("{id:int}")]
+        [HttpPut("{id:int}")]
         [Authorize(Roles = "Administrador de Colegio")]
         public async Task<ActionResult> Put(int id, [FromBody] ColegioProfesorEditDTO dto)
         {
@@ -253,6 +253,8 @@ namespace profefolio.Controllers
 
                 colProf.ModifiedBy = nameUser;
                 colProf.Modified = DateTime.Now;
+                colProf.PersonaId = dto.ProfesorId;
+                colProf.ColegioId = dto.ColegioId;
 
 
                 _cProfService.Edit(colProf);
@@ -267,8 +269,8 @@ namespace profefolio.Controllers
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-                return BadRequest("Error durante el guardado.");
+                Console.WriteLine($"{e}");
+                return BadRequest("Error durante la edicion.");
             }
         }
     }
