@@ -112,6 +112,7 @@ public class PersonasService : IPersona
         }
 
         query.UserName = $"deleted.{query.Id}.{query.UserName}";
+        query.Email = query.UserName;
         query.NormalizedUserName = query.UserName.ToUpper();
         query.Deleted = true;
 
