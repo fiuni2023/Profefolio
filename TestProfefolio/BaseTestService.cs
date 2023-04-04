@@ -13,6 +13,7 @@ public class BaseTestService
     protected readonly Mock<UserManager<profefolio.Models.Entities.Persona>> UserManagerMock = new Mock<UserManager<profefolio.Models.Entities.Persona>>(new Mock<IUserStore<profefolio.Models.Entities.Persona>>().Object, null, null, null, null, null, null, null, null);
     protected readonly Mock<IConfiguration> ConfigurationMock = new Mock<IConfiguration>();
     protected readonly Mock<IColegio> IColegioMock = new Mock<IColegio>();
+    
 
     protected readonly profefolio.Models.Entities.Persona P = new profefolio.Models.Entities.Persona()
     {
@@ -38,7 +39,7 @@ public class BaseTestService
         P.PasswordHash = hasher.HashPassword(P, "Carlos.Torres123");
         Db = new ApplicationDbContext(contextOptions);
 
-        AuthService = new AuthService(UserManagerMock.Object, ConfigurationMock.Object);
+        AuthService = new AuthService(UserManagerMock.Object, ConfigurationMock.Object, IColegioMock.Object);
         
         ConfigurationMock.Setup(x => x["JWT:Secret"])
             .Returns("JWTAuthenticationHIGHsecuredPasswordVVVp1OH7Xzyr");
