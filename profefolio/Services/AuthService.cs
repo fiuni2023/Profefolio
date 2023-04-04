@@ -14,15 +14,15 @@ public class AuthService : IAuth
 {
     private readonly UserManager<Persona> _userManager;
 
-    private readonly IColegio _colegioService;
+    //private readonly IColegio _colegioService;
 
     private readonly IConfiguration _configuration;
 
-    public AuthService(UserManager<Persona> userManager, IConfiguration configuration, IColegio colegioService)
+    public AuthService(UserManager<Persona> userManager, IConfiguration configuration/* , IColegio colegioService */)
     {
         _userManager = userManager;
         _configuration = configuration;
-        _colegioService = colegioService;
+       /*  _colegioService = colegioService; */
     }
     public void Dispose()
     {
@@ -42,14 +42,14 @@ public class AuthService : IAuth
             throw new BadHttpRequestException("Credenciales no validas");
         var roles = await _userManager.GetRolesAsync(user);
 
-        if (roles.Contains("Administrador de Colegio"))
+        /* if (roles.Contains("Administrador de Colegio"))
         {
             var colegio = await _colegioService.FindByIdAdmin(user.Id);
             if (colegio == null)
             {
                 throw new BadHttpRequestException("El administrador no fue asignado a un colegio todavia");
             }
-        }
+        } */
 
         if (roles.Contains("Alumno"))
         {
