@@ -120,9 +120,7 @@ function ModalVerColegios({ idColegio, setShow, show, disabled, setDisabled }) {
 
   //Guardar el id del admin
   // eslint-disable-next-line no-unused-vars
-  const handleAdmin = (idAdmin) => {
-    setIdAdmin(idAdmin);
-  }
+
   const handleIDAdmin = (event) => {
     setIdAdmin(event.target.value)
   }
