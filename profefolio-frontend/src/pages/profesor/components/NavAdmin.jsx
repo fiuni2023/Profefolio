@@ -7,10 +7,7 @@ import {Link } from "react-router-dom";
 
 
 const NavAdmin = () => {
-    //const { showSB ,setShowSB} = useGeneralContext()
-
-    
-
+   
     return(
         <>
 
