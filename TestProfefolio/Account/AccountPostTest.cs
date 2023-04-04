@@ -112,8 +112,27 @@ namespace TestProfefolio.Account
             var value = Assert.IsType<PersonaResultDTO>(okResult.Value);
 
             Assert.Equal(value, personaResultDTO);
-
-
         }
+
+        [Fact]
+        public async Task Post_With_ModelState_No_Valid()
+        {
+            var personaDto = new PersonaDTO
+            {
+                Nombre = "John",
+                Apellido = "Due",
+                Email = "John.Due123@mail.com",
+                Password = "John.Due123",
+                Genero = "M"
+            };
+
+            _accountController.ModelState.AddModelError("", "");
+
+            var result = await _accountController.Post(personaDto);
+
+            Assert.IsType<BadRequestObjectResult>(result.Result);
+        }
+
+
     }
 }
