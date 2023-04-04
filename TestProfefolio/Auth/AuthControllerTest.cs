@@ -21,7 +21,7 @@ namespace TestProfefolio.Auth
 
         [Fact]
 
-        public async Task LoginControllerOk()
+        public async Task LoginControllerOkTest()
         {
             var login = new Login()
             {
@@ -47,6 +47,63 @@ namespace TestProfefolio.Auth
             var loginResult = Assert.IsType<AuthPersonaDTO>(okResult.Value);
 
             Assert.Equal(login.Email, loginResult.Email);
+        }
+
+        [Fact]
+        public async Task LoginModelStateNoValidEmailRequiredTest()
+        {
+            var login = new Login
+            {
+                Password = "1233456"
+            };
+
+            _authController.ModelState.AddModelError("email", "El email es requerido");
+
+            var result = await _authController.Login(login);
+
+            Assert.IsType<BadRequestObjectResult>(result.Result);
+        }
+
+        [Fact]
+        public async Task LoginModelStateNoValidEmailFormatTest()
+        {
+            var login = new Login
+            {
+                Email = "carlos1223",
+                Password = "1233456"
+            };
+
+            _authController.ModelState.AddModelError("email", "Debe ser de formato mail");
+
+            var result = await _authController.Login(login);
+
+            Assert.IsType<BadRequestObjectResult>(result.Result);
+        }
+
+        [Fact]
+        public async Task LoginModelStateNoValidPasswordRequiredTest()
+        {
+            var login = new Login
+            {
+                Email = "Carlos.Torres123@mail.com"
+            };
+
+            _authController.ModelState.AddModelError("password", "El password es requerido");
+
+            var result = await _authController.Login(login);
+
+            Assert.IsType<BadRequestObjectResult>(result.Result);
+        }
+        [Fact]
+        public async Task LoginModelRequiredNoValidTest()
+        {
+            var login = new Login();
+
+            _authController.ModelState.AddModelError("", "");
+
+            var result = await _authController.Login(login);
+
+            Assert.IsType<BadRequestObjectResult>(result.Result);
         }
 
     }

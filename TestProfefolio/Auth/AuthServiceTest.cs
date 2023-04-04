@@ -49,7 +49,7 @@ public class AuthServiceTest : BaseTestService
     }
 
     [Fact]
-    public async Task LoginServiceNotFoundUser()
+    public async Task LoginServiceNotFoundUserTest()
     {
         MockSetUpNotFoundUser();
 
@@ -65,7 +65,7 @@ public class AuthServiceTest : BaseTestService
     }
 
     [Fact]
-    public async Task LoginServiceUnAuthorizedUser()
+    public async Task LoginServiceUnAuthorizedUserTest()
     {
         MockSetUpUnauthorized();
 
@@ -90,10 +90,7 @@ public class AuthServiceTest : BaseTestService
         personaEstudiante.Email = "John.Due123@mail.com";
         personaEstudiante.UserName = personaEstudiante.Email;
         personaEstudiante.PasswordHash = hasher.HashPassword(personaEstudiante, "John.Due123");
-
-
         personaEstudiante = Db.Users.Add(personaEstudiante).Entity;
-
 
         var personaAdministrador = new Persona();
         personaAdministrador.Nombre = "Edgar";
@@ -188,5 +185,7 @@ public class AuthServiceTest : BaseTestService
                 "Alumno"
             });
     }
+
+
   
 }
