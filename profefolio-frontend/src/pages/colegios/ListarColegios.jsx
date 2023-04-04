@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from "react";
-import Table from 'react-bootstrap/Table';
 import styles from './ListarColegios.module.css'
 import { useNavigate } from "react-router-dom";
 import { BiArrowBack } from "react-icons/bi"
-import { BiPencil } from "react-icons/bi"
-import { BiTrash } from "react-icons/bi"
-import { BiInfoCircle } from "react-icons/bi"
+import { Table } from "../../components/Table";
 import ModalAgregarColegios from './AgregarColegios'
 import axios from "axios";
 import Pagination from 'react-bootstrap/Pagination';
 import { useGeneralContext } from "../../context/GeneralContext";
 import APILINK from "../../components/link";
-const ListarColegios = () => {
+import ModalVerColegios from './ModalVerColegios'
+import { AiOutlineEye } from "react-icons/ai";
+import { PanelContainerBG } from "../../components/Layout";
+function ListarColegios() {
 
-  const { getToken, verifyToken, cancan} = useGeneralContext()
+  const { getToken, verifyToken, cancan } = useGeneralContext()
 
   const nav = useNavigate()
 
@@ -21,57 +21,61 @@ const ListarColegios = () => {
   const [totalPage, setTotalPage] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
   const [colegios, setColegios] = useState([]);
-  
+  const [datoIdColegio, setDatoIdColegio] = useState('');
+  const [nombreAdminActual, setNombreAdmin] = useState([]);
   useEffect(() => {
 
-      verifyToken()
-      if(!cancan("Master")){
+    verifyToken()
+    if (!cancan("Master")) {
+      nav("/")
+    } else {
+      axios.get(`${APILINK}/api/ColegiosFull/page/${currentPage}`, {
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+        }
+      })
+
+        .then(response => {
+          setColegios(response.data.dataList); //Guarda los datos
+          setTotalPage(response.data.totalPage);//Total de Paginas
+          setCurrentPage(response.data.currentPage);//Actualiza la pagina en donde estan los datos
+          console.log(colegios);
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    }
+  }, [cancan, verifyToken, nav, currentPage, getToken]);
+
+  /*const nombreAdmin=(id)=>{
+    verifyToken()
+      if (!cancan("Master")) {
         nav("/")
-      }else{
-        var config = {
+      } else {
+        let config = {
           method: 'get',
-          url: `${APILINK}/api/ColegiosFull/page/${currentPage}`,
+          url: `${APILINK}/api/administrador/id/${id}`,
           headers: {
             'Authorization': `Bearer ${getToken()}`
           }
         };
-      axios(config)
-      .then(function (response) {
-        setColegios(response.data.dataList); //Guarda los datos
-        setTotalPage(response.data.totalPage);//Total de Paginas
-        setCurrentPage(response.data.currentPage)//Actualiza la pagina en donde estan los datos
-
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-    }
-  }, [cancan, verifyToken, nav, currentPage, getToken])
-
-const recargaDatos=(id)=>{
- var config = {
-    method: 'get',
-    url: `${APILINK}/api/ColegiosFull/page/${id}`,
-    headers: {
-      'Authorization': `Bearer ${getToken()}`
-    }
-  };
-    axios(config)
-      .then(function (response) {
-       
-        setColegios(response.data.dataList); //Guarda los datos
-        setTotalPage(response.data.totalPage);//Total de Paginas
-        setCurrentPage(response.data.currentPage)//Actualiza la pagina en donde estan los datos
-
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-     
-}
+        axios(config)
+          .then(function (response) {
+            setNombreAdmin(response.data);
+  
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+        }
+  }
+    */
+  const doFetch = (colegio) => {
+    setColegios([...colegios, colegio])
+  }
   let items = [];
 
-   for (let number = 0; number < totalPage; number++) {
+  for (let number = 0; number < totalPage; number++) {
     items.push(
       <Pagination.Item key={number} >
         {number}
@@ -79,52 +83,52 @@ const recargaDatos=(id)=>{
     );
   }
 
-  const handleCurrentPage=(idPage)=>{
+  const handleCurrentPage = (idPage) => {
     setCurrentPage(idPage);
-    recargaDatos(idPage);
-    
-}
-  //hola
-  
+
+
+  }
+  const [show, setShow] = useState(false);
+  const [disabled, setDisabled] = useState(true);
+  const handleShow = (id) => {
+    setDatoIdColegio(id);
+    console.log(datoIdColegio);
+    setShow(true);
+  }
+
+
   return (
     <>
       <div>
+
         <div className={styles.nombrePagina}>
-          <button className={styles.buttonBack} onClick={() => { navigate('/') }}><BiArrowBack /></button>
-          <span>Colegios</span>
+          <div className={styles.divNombrePagina}>
+            <button className={styles.buttonBack} onClick={() => { navigate('/') }}><BiArrowBack className={styles.arrowButton} /></button>
+            <span className={styles.tituloPagina}>Colegios</span>
+          </div>
         </div>
         <div className={styles.tablePrincipal} >
-          <Table bordered >
-            <thead>
-              <tr>
-              <th id={styles.tableBorder}>Numero</th>
-                <th id={styles.tableBorder}>Nombre</th>
-                <th id={styles.tableBorder}>Administrador</th>
-                
-                <th className={styles.actionsTh} id={styles.tableBorder}>Acciones</th>
-              </tr>
-            </thead>
-            <tbody >
-              {colegios.map((colegio, index) => (
-                <tr key={colegio.id}>
-                  <td id={styles.tableBorder} className="numero-td" >{index+1}</td>
-                  <td id={styles.tableBorder} >{colegio.nombre}</td>
-                  <td id={styles.tableBorder}>{colegio.nombreAdministrador} {colegio.apellido}</td>
-                  <td className={styles.actionsTd} id={styles.tableBorder}><button className={styles.informationButtons}><BiTrash /></button> <button className={styles.informationButtons}><BiPencil /> </button> <button className={styles.informationButtons}><BiInfoCircle /></button></td>
+          <Table
+            headers={["Numero", "Nombre", "Administrador", "Acciones"]}
+            datas={colegios}
+            parseToRow={(col, index) => {
+              return (
+                <tr key={index} >
+                  <td>{index + 1}</td>
+                  <td>{col?.nombre}</td>
+                  <td>{col?.nombreAdministrador} {col?.apellido}</td>
+                  <td><button className={styles.iconButton} onClick={() => handleShow(col?.id)}><AiOutlineEye /></button></td>
+
                 </tr>
-                
-              ))}
-              
-               
-            </tbody>
-          </Table>
+              )
+            }}
+          />
+          <Pagination onClick={e => handleCurrentPage(e.target.text)} size="sm">{items} </Pagination>
         </div>
-        <div className={styles.paginacion}>
-          
-            <Pagination onClick={e => handleCurrentPage(e.target.text)}  size="sm">{items} </Pagination>
-          
-        </div>
-        <ModalAgregarColegios setColegios={()=>{recargaDatos(currentPage)}}></ModalAgregarColegios>
+
+        <ModalVerColegios idColegio={datoIdColegio} show={show} setShow={setShow} disabled={disabled} setDisabled={setDisabled}></ModalVerColegios>
+
+        <ModalAgregarColegios triggerState={(colegio) => { doFetch(colegio) }}></ModalAgregarColegios>
       </div>
     </>)
 }

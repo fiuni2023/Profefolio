@@ -17,37 +17,35 @@
 }
 .btnGuardar{
     color: white !important;
-    font-size: x-small !important;
+    font-size: 13px !important;
     background-color: #331832 !important;
     width: 100px !important;
     border: none !important;
+    height: 30px;
 }
 .btnCancelar{
-    background-color: gainsboro !important;
-    color: black !important;
-    font-size: x-small !important;
+    background-color: #948e8e !important;
+    color: white!important;
+    font-size: 13px!important;
     width: 100px !important;
+    height: 30px;
     border: none !important;
 }
 #inputColegio{
     border: none;
-    width: 100%;
+    height:40px;
+    width:100%;
+    border-radius: 10px;
 }
 .paginacion{
     color: #F0544F;
 }
-#inputAdmin{
-    border: none;
-    width: 221px;
-}
-#inputApellido{
-    margin-left: 5%;
-    border: none;
-    width: 221px;
-}
+
 .selectAdmin{
     border: none;
     width: 100%;
+    height:40px;
+    border-radius: 10px;
 }
 .mensajeError{
     color: red;
@@ -56,4 +54,11 @@
     align-items: center;
     text-align: center;
     
+}
+.labelForm{
+    font-size: 12px !important;
+    font-weight: 600 !important;
+}
+.tituloForm{
+    margin-left: 32%;
 }

@@ -57,10 +57,10 @@ namespace profefolio.Controllers
         {
             //var colegio = await _colegioService.FindById(id);
             var colegio = await _colegioService.FindById(id);
-            Console.Write("Colegio: ", colegio);
+            
             if (colegio == null)
             {
-                Console.Write("Colegio == null");
+               
                 return NotFound();
             }
             var dtos = _mapper.Map<ColegioFullDTO>(colegio);
