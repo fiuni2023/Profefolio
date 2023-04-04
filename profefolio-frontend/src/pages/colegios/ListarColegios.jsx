@@ -10,7 +10,7 @@ import { useGeneralContext } from "../../context/GeneralContext";
 import APILINK from "../../components/link";
 import ModalVerColegios from './ModalVerColegios'
 import { AiOutlineEye } from "react-icons/ai";
-import { PanelContainerBG } from "../../components/Layout";
+
 function ListarColegios() {
 
   const { getToken, verifyToken, cancan } = useGeneralContext()
@@ -22,7 +22,7 @@ function ListarColegios() {
   const [currentPage, setCurrentPage] = useState(0);
   const [colegios, setColegios] = useState([]);
   const [datoIdColegio, setDatoIdColegio] = useState('');
-  const [nombreAdminActual, setNombreAdmin] = useState([]);
+
   useEffect(() => {
 
     verifyToken()
