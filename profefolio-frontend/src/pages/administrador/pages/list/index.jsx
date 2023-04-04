@@ -2,12 +2,11 @@ import React, { useEffect, useState } from "react";
 import styles from "./index.module.css"
 import { HiArrowLeft } from 'react-icons/hi'
 import { AiOutlinePlus } from 'react-icons/ai'
-import { Table } from "../../../../components/Table";
+// import { Table } from "../../../../components/Table";
 import  Tabla  from "../../../../components/Tabla";
 import LACreateModal from "../../components/CreateModal";
 import { useGeneralContext } from "../../../../context/GeneralContext";
 import { Pagination } from "react-bootstrap";
-
 import { toast } from "react-hot-toast";
 import { useFetchEffect } from "../../../../components/utils/useFetchEffect";
 import { useNavigate } from "react-router-dom";
@@ -20,7 +19,7 @@ const ListAdministrador = () => {
     const {selectedAdmin, setSelectedAdmin, showAdmin, setShowAdmin } = useAdminContext()
 
     const [showCreateModal, setShowCreateModal] = useState(false)
-    const [admins, setAdmins] = useState([])
+    //const [admins, setAdmins] = useState([])
     const [currentPage, setCurrentPage] = useState(0)
     const [next, setNext] = useState(true)
     const [condFetch, setCondFetch] = useState(false)
@@ -56,7 +55,7 @@ const ListAdministrador = () => {
         {
             condition: condFetch,
             handleSuccess: (r)=>{
-                setAdmins(r.data.dataList)
+                //setAdmins(r.data.dataList)
                 setNext(r.data.next)
                 setDatosTabla({...datosTabla,   clickable: {action: doChangeAdmin},
                                                 filas: r.data.dataList.map((dato)=> {return {fila: dato, 
