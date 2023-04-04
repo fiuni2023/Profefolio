@@ -38,7 +38,7 @@ public class BaseTestService
         P.PasswordHash = hasher.HashPassword(P, "Carlos.Torres123");
         Db = new ApplicationDbContext(contextOptions);
 
-        AuthService = new AuthService(UserManagerMock.Object, ConfigurationMock.Object, IColegioMock.Object);
+        AuthService = new AuthService(UserManagerMock.Object, ConfigurationMock.Object);
         
         ConfigurationMock.Setup(x => x["JWT:Secret"])
             .Returns("JWTAuthenticationHIGHsecuredPasswordVVVp1OH7Xzyr");
