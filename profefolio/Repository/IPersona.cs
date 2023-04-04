@@ -17,6 +17,6 @@ public interface IPersona : IRepository<Persona>
     Task<IEnumerable<Persona>> GetAllByRol(string roleName);
     Task<bool> ExistDoc(Persona persona);
     Task<Persona> FindByEmail(string email);
-
+    Task<IList<string>> GetRolesPersona(Persona user);
 
 }

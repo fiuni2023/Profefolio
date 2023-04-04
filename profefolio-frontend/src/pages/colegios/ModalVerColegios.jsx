@@ -156,7 +156,7 @@ function ModalVerColegios({ idColegio, setShow, show, disabled, setDisabled }) {
                   ? <div> <input type="text" id={styles.inputColegio} defaultValue={colegio.nombre || ''} disabled></input><br />
                     <br /></div>
 
-                  : <div> <input type="text" id={styles.inputColegio} defaultValue={colegio.nombre || ''} name="colegio-nombre" onChange={event => handleInputColegio(event)}></input><br />
+                  : <div> <input type="text" id={styles.inputColegio} defaultValue={colegio.nombre || colegio.nombre} name="colegio-nombre" onChange={event => handleInputColegio(event)}></input><br />
                     <br /></div>
                 }
 
@@ -167,10 +167,10 @@ function ModalVerColegios({ idColegio, setShow, show, disabled, setDisabled }) {
                   </input>
                     <br /></div>
 
-                  : <div>  <select required name="admin" defaultValue={idAdmin || ''} onChange={event => handleIDAdmin(event)} className={styles.selectAdmin}>
+                  : <div>  <select required name="admin" defaultValue={idAdmin || idAdmin} onChange={event => handleIDAdmin(event)} className={styles.selectAdmin}>
                     <option disabled value={0 || ''}>Seleccione Administrador</option>
                     {administradores.map((administrador) =>
-                      <option key={administrador.id} value={administrador.id || ''}>{administrador.nombre} {administrador.apellido}</option>
+                      <option key={administrador.id} value={administrador.id || administrador.id}>{administrador.nombre} {administrador.apellido}</option>
                     )}
                   </select>
                   </div>
