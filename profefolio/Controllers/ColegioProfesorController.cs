@@ -203,7 +203,7 @@ namespace profefolio.Controllers
                 //Obtenemos la relacion Colegio-Profesor
                 var colProf = await _cProfService.FindById(id);
                 if(colProf == null){
-                    return NotFound("No se puede eliminar porque no fue encontrado");
+                    return NotFound("No se puede eliminar no esta disponible");
                 }
 
 
