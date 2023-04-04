@@ -40,7 +40,8 @@ namespace profefolio.Services
 
         public ColegioProfesor Edit(ColegioProfesor t)
         {
-            throw new NotImplementedException();
+            _context.Entry(t).State = EntityState.Modified;
+            return t;
         }
 
         public bool Exist()
