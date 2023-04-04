@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using profefolio.Controllers;
 using profefolio.Models.DTOs.Auth;
 using profefolio.Repository;
+using System.Security.Claims;
 
 namespace TestProfefolio.Auth
 {
