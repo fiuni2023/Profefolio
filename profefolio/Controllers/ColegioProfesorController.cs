@@ -64,7 +64,7 @@ namespace profefolio.Controllers
             {
                 var colProf = await _cProfService.FindAllByIdColegio(page, CantPorPage, idColegio);
 
-                var cantItmed = await _cProfService.Count(idColegio); 
+                var cantItmed = await _cProfService.Count(idColegio);
 
                 int cantPages = (int)Math.Ceiling((double)cantItmed / (double)CantPorPage);
 
@@ -99,10 +99,11 @@ namespace profefolio.Controllers
             try
             {
                 var colegioProfesores = await _cProfService.FindAllByIdColegio(idColegio);
-                if(colegioProfesores == null){
+                if (colegioProfesores == null)
+                {
                     return NotFound("El Colegio no fue encontrado");
                 }
-                
+
                 var result = _mapper.Map<List<ColegioProfesorSimpleDTO>>(colegioProfesores.ToList());
 
                 return Ok(result);
@@ -192,7 +193,7 @@ namespace profefolio.Controllers
         }
 
 
-        
+
         [HttpPost("{id:int}")]
         [Authorize(Roles = "Administrador de Colegio")]
         public async Task<ActionResult> Put(int id, [FromBody] ColegioProfesorEditDTO dto)
@@ -204,6 +205,12 @@ namespace profefolio.Controllers
 
             try
             {
+                var colProf = await _cProfService.FindById(id);
+                if (colProf == null)
+                {
+                    return NotFound("No se puede editar, no esta disponible");
+                }
+
 
                 if (await _cProfService.Exist(dto.ProfesorId, dto.ColegioId))
                 {
@@ -244,17 +251,14 @@ namespace profefolio.Controllers
                 }
 
 
-                var colProf = _mapper.Map<ColegioProfesor>(dto);
-
-                colProf.CreatedBy = nameUser;
-                colProf.Created = DateTime.Now;
-                colProf.Deleted = false;
+                colProf.ModifiedBy = nameUser;
+                colProf.Modified = DateTime.Now;
 
 
-                await _cProfService.Add(colProf);
+                _cProfService.Edit(colProf);
                 await _cProfService.Save();
 
-                return Ok(_mapper.Map<ColegioProfesorResultDTO>(colProf));
+                return NoContent();
             }
             catch (FileNotFoundException e)
             {
