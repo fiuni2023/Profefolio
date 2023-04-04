@@ -65,6 +65,8 @@ builder.Services.AddAuthentication(options =>
 //Servicios
 builder.Services.AddScoped<IPersona, PersonasService>();
 builder.Services.AddScoped<IColegio, ColegiosService>();
+builder.Services.AddScoped<IColegioProfesor, ColegioProfesorService>();
+builder.Services.AddScoped<IColegiosAlumnos, ColegiosAlumnosServices>();
 builder.Services.AddScoped<IMateria, MateriaService>();
 builder.Services.AddScoped<ICiclo, CicloService>();
 builder.Services.AddScoped<IClase, ClaseService>();
