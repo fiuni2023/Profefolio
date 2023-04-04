@@ -52,7 +52,13 @@ public class AccountController : ControllerBase
             return BadRequest("Solo se aceptan valores F para femenino y M para masculino");
         }
 
-        var userId = User.Identity.GetUserId();
+
+        if (User.Identity == null) return Unauthorized();
+
+        var userId = User.Identity.Name;
+
+        
+
         var entity = _mapper.Map<Persona>(dto);
         entity.Deleted = false;
         entity.CreatedBy = userId;
