@@ -12,6 +12,8 @@ import APILINK from '../../components/link.js';
 import { useNavigate } from 'react-router';
 import ListDetallesProfesor from './list/ListDetallesProfesor.jsx';
 
+import StyleComponentBreadcrumb from '../../components/StyleComponentBreadcrumb.jsx';
+
 
 
 
@@ -97,7 +99,7 @@ const handleCloseModal = () => {
     <>
 
       <div className="page">
-        <NavAdmin />
+      <StyleComponentBreadcrumb nombre="Profesor" />
 
         <PanelContainerBG>
 
