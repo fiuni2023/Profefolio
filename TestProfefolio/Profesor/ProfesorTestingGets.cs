@@ -17,7 +17,7 @@ namespace TestProfefolio.Profesor;
 
 public class ProfesorTestingGets
 {
-    /*private static readonly DateTime nacimiento = DateTime.Now;
+    private static readonly DateTime nacimiento = DateTime.Now;
 
     private IEnumerable<profefolio.Models.Entities.Persona> profesores = new List<profefolio.Models.Entities.Persona>()
     {
@@ -74,17 +74,7 @@ public class ProfesorTestingGets
         }
     };
 
-    [Theory]
-    [InlineData(0)]
-    [InlineData(1)]
-    public async void Get_Page_Ok(int page)
-    {
-        Mock<IMapper> mapper = new Mock<IMapper>();
-        Mock<IPersona> service = new Mock<IPersona>();
-        Mock<IRol> rol = new Mock<IRol>();
-        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
-
-        List<PersonaResultDTO> profesoresDtos = new List<PersonaResultDTO>()
+    private List<PersonaResultDTO> profesoresDtos = new List<PersonaResultDTO>()
         {
             new PersonaResultDTO()
             {
@@ -124,33 +114,125 @@ public class ProfesorTestingGets
             }
         };
 
-        int cantPages = (int)Math.Ceiling((page == 0 ? (double)profesores.Count() : 0) / 20);
+    [Theory]
+    [InlineData(0)]
+    public async void Get_Page_Ok(int page)
+    {
+        Mock<IMapper> mapper = new Mock<IMapper>();
+        Mock<IPersona> service = new Mock<IPersona>();
+        Mock<IRol> rol = new Mock<IRol>();
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
+
+
+        int cantPages = (int)Math.Ceiling((double)profesores.Count() / 20);
         var dataList = new DataListDTO<PersonaResultDTO>()
         {
             DataList = profesoresDtos,
             TotalPage = cantPages,
             Next = false,
             CurrentPage = page > cantPages ? cantPages : page,
-            CantItems = page == 0 ? profesoresDtos.Count() : 0
+            CantItems = profesoresDtos.ToList().Count
         };
 
 
-        service.Setup(p => p.GetAllByRol("Profesor", page, 20))
-            .ReturnsAsync(page == 0 ? profesores : new List<profefolio.Models.Entities.Persona>());
+        service.Setup(a => a.FilterByRol(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>())).ReturnsAsync(profesores.AsEnumerable());
 
-        mapper.Setup(a => a.Map<List<PersonaResultDTO>>(profesores.ToList())).Returns(profesoresDtos);
+        service.Setup(a => a.CountByRol(It.IsAny<string>())).ReturnsAsync(profesores.Count());
 
-        ActionResult<DataListDTO<PersonaResultDTO>> result = await controller.Get(page);
+        service.Setup(p => p.GetAllByRol(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>()))
+            .ReturnsAsync(profesores);
 
-        //Assert.IsType<OkObjectResult>(result.Result);
-        DataListDTO<PersonaResultDTO> rdto = (DataListDTO<PersonaResultDTO>)(((OkObjectResult)result.Result).Value);
 
-        Assert.Equal<PersonaResultDTO>(page == 0 ? dataList.DataList : null, rdto.DataList);
-        Assert.Equal<int>(page == 0 ? dataList.CantItems : 0, rdto.CantItems);
-        Assert.Equal<int>(dataList.CurrentPage, rdto.CurrentPage);
-        Assert.Equal<int>(dataList.TotalPage, rdto.TotalPage);
-        Assert.Equal<bool>(dataList.Next, rdto.Next);
+        mapper.Setup(a => a.Map<List<PersonaResultDTO>>(It.IsAny<List<Persona>>())).Returns(profesoresDtos);
+
+
+        var result = await controller.Get(page);
+
+
+
+        var jsonResult = Assert.IsType<OkObjectResult>(result.Result);
+
+        var datalistResult = Assert.IsType<DataListDTO<PersonaResultDTO>>(jsonResult.Value);
+
+        Assert.Equal<PersonaResultDTO>(dataList.DataList, datalistResult.DataList);
+        Assert.Equal<int>(dataList.CantItems, datalistResult.CantItems);
+        Assert.Equal<int>(dataList.CurrentPage, datalistResult.CurrentPage);
+        Assert.Equal<int>(dataList.TotalPage, datalistResult.TotalPage);
+        Assert.Equal<bool>(dataList.Next, datalistResult.Next);
     }
+
+
+
+    [Theory]
+    [InlineData(-1)]
+    public async void GetPage_PageLessThatZero_BadRequest(int page)
+    {
+        Mock<IMapper> mapper = new Mock<IMapper>();
+        Mock<IPersona> service = new Mock<IPersona>();
+        Mock<IRol> rol = new Mock<IRol>();
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
+
+
+
+
+        var result = await controller.Get(page);
+
+
+
+        var jsonResult = Assert.IsType<BadRequestObjectResult>(result.Result);
+        Assert.Equal("El numero de pagina debe ser mayor o igual que cero", jsonResult.Value);
+
+    }
+
+
+
+    [Theory]
+    [InlineData(1)]
+    public async void GetPage_PageNoExist_BadRequest(int page)
+    {
+        Mock<IMapper> mapper = new Mock<IMapper>();
+        Mock<IPersona> service = new Mock<IPersona>();
+        Mock<IRol> rol = new Mock<IRol>();
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
+
+
+        int cantPages = (int)Math.Ceiling((double)profesores.Count() / 20);
+        var dataList = new DataListDTO<PersonaResultDTO>()
+        {
+            DataList = profesoresDtos,
+            TotalPage = cantPages,
+            Next = false,
+            CurrentPage = page > cantPages ? cantPages : page,
+            CantItems = profesoresDtos.ToList().Count
+        };
+
+
+        service.Setup(a => a.FilterByRol(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>())).ReturnsAsync(profesores.AsEnumerable());
+
+        service.Setup(a => a.CountByRol(It.IsAny<string>())).ReturnsAsync(profesores.Count());
+
+        service.Setup(p => p.GetAllByRol(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>()))
+            .ReturnsAsync(profesores);
+
+
+
+        var result = await controller.Get(page);
+
+
+
+        var jsonResult = Assert.IsType<BadRequestObjectResult>(result.Result);
+        Assert.Equal($"No existe la pagina: {page}", jsonResult.Value);
+    }
+
+
+
+
+
+
+
+
+
+
 
 
     [Theory]
@@ -193,43 +275,33 @@ public class ProfesorTestingGets
             Telefono = "0985123456"
         };
 
-        service.Setup(a => a.FindById(id)).ReturnsAsync(persona);
+        service.Setup(a => a.FindById(It.IsAny<string>())).ReturnsAsync(persona);
 
-        mapper.Setup(m => m.Map<PersonaResultDTO>(persona)).Returns(dto);
+        mapper.Setup(m => m.Map<PersonaResultDTO>(It.IsAny<Persona>())).Returns(dto);
 
         var result = await controller.Get(id);
 
-        Assert.IsType<OkObjectResult>(result.Result);
+        var jsonResult = Assert.IsType<OkObjectResult>(result.Result);
+        var profResult = Assert.IsType<PersonaResultDTO>(jsonResult.Value);
+        Assert.Equal(dto.Id, profResult.Id);
+        Assert.Equal(dto.Nombre, profResult.Nombre);
+        Assert.Equal(dto.Apellido, profResult.Apellido);
+        Assert.Equal(dto.Direccion, profResult.Direccion);
+        Assert.Equal(dto.Documento, profResult.Documento);
+        Assert.Equal(dto.DocumentoTipo, profResult.DocumentoTipo);
+        Assert.Equal(dto.Email, profResult.Email);
+        Assert.Equal(dto.Genero, profResult.Genero);
+        Assert.Equal(dto.Nacimiento, profResult.Nacimiento);
     }
 
-    //Contrasenha: Carlos.Torres123
+
     [Theory]
-    [InlineData("Tasdasds")]
-    public async void GetById_NotFound(string id)
+    [InlineData("sd65sd6asd46asd4a6s5da6sd4a6s5da6")]
+    public async void GetByID_Failed_BadRequest(string id)
     {
         Mock<IMapper> mapper = new Mock<IMapper>();
         Mock<IPersona> service = new Mock<IPersona>();
         Mock<IRol> rol = new Mock<IRol>();
-
-        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
-        
-
-        service.Setup(a => a.FindById(id)).Throws(new FileNotFoundException());
-        
-        var result = await controller.Get(id);
-
-        Assert.IsType<NotFoundObjectResult>(result.Result);
-        
-    }
-    
-    [Theory]
-    [InlineData("")]
-    public async void GetById_LengthCero(string id)
-    {
-        Mock<IMapper> mapper = new Mock<IMapper>();
-        Mock<IPersona> service = new Mock<IPersona>();
-        Mock<IRol> rol = new Mock<IRol>();
-
         ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
 
         profefolio.Models.Entities.Persona persona = new profefolio.Models.Entities.Persona()
@@ -250,11 +322,52 @@ public class ProfesorTestingGets
             PhoneNumber = "0985123456"
         };
 
-        //service.Setup(a => a.FindById(id)).Throws(new FileNotFoundException());
-        
+        service.Setup(a => a.FindById(It.IsAny<string>())).ReturnsAsync(persona);
+
+        mapper.Setup(m => m.Map<PersonaResultDTO>(It.IsAny<Persona>())).Throws(new Exception("Error inesperado"));
+
         var result = await controller.Get(id);
 
-        Assert.IsType<BadRequestObjectResult>(result.Result);
+        var jsonResult = Assert.IsType<BadRequestObjectResult>(result.Result);
+        Assert.Equal("Error inesperado", jsonResult.Value);
         
-    }*/
+    }
+
+
+
+    [Theory]
+    [InlineData("Tasdasds")]
+    public async void GetById_NotFound(string id)
+    {
+        Mock<IMapper> mapper = new Mock<IMapper>();
+        Mock<IPersona> service = new Mock<IPersona>();
+        Mock<IRol> rol = new Mock<IRol>();
+
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
+
+
+        service.Setup(a => a.FindById(It.IsAny<string>())).Throws(new FileNotFoundException());
+
+        var result = await controller.Get(id);
+
+        var msg = Assert.IsType<NotFoundObjectResult>(result.Result);
+        Assert.Equal("No se encontro al profesor", msg.Value);
+    }
+
+    [Theory]
+    [InlineData("")]
+    public async void GetById_LengthCero(string id)
+    {
+        Mock<IMapper> mapper = new Mock<IMapper>();
+        Mock<IPersona> service = new Mock<IPersona>();
+        Mock<IRol> rol = new Mock<IRol>();
+
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
+
+        var result = await controller.Get(id);
+
+        var msg = Assert.IsType<BadRequestObjectResult>(result.Result);
+        Assert.Equal("ID invalido", msg.Value);
+
+    }
 }
