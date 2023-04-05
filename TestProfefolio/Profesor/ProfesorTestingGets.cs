@@ -123,7 +123,7 @@ public class ProfesorTestingGets
         Mock<IRol> rol = new Mock<IRol>();
         ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
 
-        
+
         int cantPages = (int)Math.Ceiling((double)profesores.Count() / 20);
         var dataList = new DataListDTO<PersonaResultDTO>()
         {
@@ -148,7 +148,7 @@ public class ProfesorTestingGets
 
         var result = await controller.Get(page);
 
-        
+
 
         var jsonResult = Assert.IsType<OkObjectResult>(result.Result);
 
@@ -172,17 +172,67 @@ public class ProfesorTestingGets
         Mock<IRol> rol = new Mock<IRol>();
         ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
 
-        
-        
+
+
 
         var result = await controller.Get(page);
 
-        
+
 
         var jsonResult = Assert.IsType<BadRequestObjectResult>(result.Result);
         Assert.Equal("El numero de pagina debe ser mayor o igual que cero", jsonResult.Value);
 
     }
+
+
+
+    [Theory]
+    [InlineData(1)]
+    public async void GetPage_PageNoExist_BadRequest(int page)
+    {
+        Mock<IMapper> mapper = new Mock<IMapper>();
+        Mock<IPersona> service = new Mock<IPersona>();
+        Mock<IRol> rol = new Mock<IRol>();
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
+
+
+        int cantPages = (int)Math.Ceiling((double)profesores.Count() / 20);
+        var dataList = new DataListDTO<PersonaResultDTO>()
+        {
+            DataList = profesoresDtos,
+            TotalPage = cantPages,
+            Next = false,
+            CurrentPage = page > cantPages ? cantPages : page,
+            CantItems = profesoresDtos.ToList().Count
+        };
+
+
+        service.Setup(a => a.FilterByRol(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>())).ReturnsAsync(profesores.AsEnumerable());
+
+        service.Setup(a => a.CountByRol(It.IsAny<string>())).ReturnsAsync(profesores.Count());
+
+        service.Setup(p => p.GetAllByRol(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>()))
+            .ReturnsAsync(profesores);
+
+
+
+        var result = await controller.Get(page);
+
+
+
+        var jsonResult = Assert.IsType<BadRequestObjectResult>(result.Result);
+        Assert.Equal($"No existe la pagina: {page}", jsonResult.Value);
+    }
+
+
+
+
+
+
+
+
+
+
 
 
     [Theory]
@@ -254,16 +304,16 @@ public class ProfesorTestingGets
         Mock<IRol> rol = new Mock<IRol>();
 
         ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
-        
+
 
         service.Setup(a => a.FindById(It.IsAny<string>())).Throws(new FileNotFoundException());
-        
+
         var result = await controller.Get(id);
 
         var msg = Assert.IsType<NotFoundObjectResult>(result.Result);
         Assert.Equal("No se encontro al profesor", msg.Value);
     }
-    
+
     [Theory]
     [InlineData("")]
     public async void GetById_LengthCero(string id)
@@ -273,11 +323,11 @@ public class ProfesorTestingGets
         Mock<IRol> rol = new Mock<IRol>();
 
         ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
-        
+
         var result = await controller.Get(id);
 
         var msg = Assert.IsType<BadRequestObjectResult>(result.Result);
         Assert.Equal("ID invalido", msg.Value);
-        
+
     }
 }
