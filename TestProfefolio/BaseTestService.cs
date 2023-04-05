@@ -8,11 +8,12 @@ using profefolio.Services;
 
 namespace TestProfefolio;
 
-public class BaseTest
+public class BaseTestService
 {
     protected readonly Mock<UserManager<profefolio.Models.Entities.Persona>> UserManagerMock = new Mock<UserManager<profefolio.Models.Entities.Persona>>(new Mock<IUserStore<profefolio.Models.Entities.Persona>>().Object, null, null, null, null, null, null, null, null);
     protected readonly Mock<IConfiguration> ConfigurationMock = new Mock<IConfiguration>();
     protected readonly Mock<IColegio> IColegioMock = new Mock<IColegio>();
+    
 
     protected readonly profefolio.Models.Entities.Persona P = new profefolio.Models.Entities.Persona()
     {
@@ -29,7 +30,7 @@ public class BaseTest
     public AuthService AuthService { get; set; }
 
 
-    protected BaseTest()
+    protected BaseTestService()
     {
         var contextOptions = new DbContextOptionsBuilder<ApplicationDbContext>()
             .UseInMemoryDatabase("profefolio")

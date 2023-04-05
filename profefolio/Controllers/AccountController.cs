@@ -47,18 +47,18 @@ public class AccountController : ControllerBase
             return BadRequest("El nacimiento no puede ser mayor a la fecha de hoy");
         }
 
-        if (dto.Genero == null)
-        {
-            return BadRequest();
-        }
-
         if (!(dto.Genero.Equals("M") || dto.Genero.Equals("F")))
         {
             return BadRequest("Solo se aceptan valores F para femenino y M para masculino");
         }
 
-        if (dto.Password == null) return BadRequest("Password es requerido");
-        var userId = User.Identity.GetUserId();
+
+        if (User.Identity == null) return Unauthorized();
+
+        var userId = User.Identity.Name;
+
+        
+
         var entity = _mapper.Map<Persona>(dto);
         entity.Deleted = false;
         entity.CreatedBy = userId;

@@ -9,25 +9,24 @@ using profefolio.Services;
 
 namespace TestProfefolio.Auth;
 
-public class AuthTest : BaseTest
+public class AuthServiceTest : BaseTestService
 {
     
-    private readonly AuthController authController;
-    private readonly Mock<IAuth> iAuthMock = new Mock<IAuth>();
-    public AuthTest()
+    public AuthServiceTest()
     {
         LoadData();
-        authController = new AuthController(iAuthMock.Object);
     }
+
+
     
     [Fact]
-    public async Task LoginServiceTestOk()
+    public async Task LoginServiceOkTest()
     {
         MockSetUpOk();
         var response = await AuthService.Login(new Login()
         {
             Email = "Carlos.Torres123@mail.com",
-            Password = "Carlos.Torres123@mail.com"
+            Password = "Carlos.Torres123"
         });
         
         Assert.NotNull(response);
@@ -35,22 +34,22 @@ public class AuthTest : BaseTest
     }
 
     [Fact]
-    public async Task LoginServicePasswordIncorrect()
+    public async Task LoginServiceIncorrectPasswordTest()
     {
         MockSetUpIncorrectPassword();
-
         var ex = await Assert.ThrowsAsync<BadHttpRequestException>(() =>
 
-            AuthService.Login(new Login()
-            {
-                Email = "Carlos.Torres123@mail.com",
-                Password = "Carlos.Torres@mail.com"
-            }));
+          AuthService.Login(new Login()
+          {
+              Email = "Carlos.Torres123@mail.com",
+              Password = "Carlos.Torres@mail.com"
+          }));
         Assert.Equal("Credenciales no validas", ex.Message);
+
     }
 
     [Fact]
-    public async Task LoginServiceNotFoundUser()
+    public async Task LoginServiceNotFoundUserTest()
     {
         MockSetUpNotFoundUser();
 
@@ -66,23 +65,32 @@ public class AuthTest : BaseTest
     }
 
     [Fact]
-    public async Task LoginControllerOk()
+    public async Task LoginServiceUnAuthorizedUserTest()
     {
-        MockSetUpOk();
-        var response = await authController.Login(new Login()
-        {
-            Email = "Carlos.Torres123@mail.com",
-            Password = "Carlos.Torres123"
-        });
+        MockSetUpUnauthorized();
 
-        Assert.NotNull(response);
-        Assert.IsType<OkObjectResult>(response.Result);
-        
+        await Assert.ThrowsAsync<UnauthorizedAccessException>(() => AuthService.Login(new Login()
+        {
+            Email = "John.Due123@mail.com",
+            Password = "John.Due123"
+        }));
     }
+    
 
     internal void LoadData()
     {
+        var hasher = new PasswordHasher<Persona>();
+
         var personaMaster= Db.Users.Add(P).Entity;
+
+        var personaEstudiante = new Persona();
+
+        personaEstudiante.Nombre = "John";
+        personaEstudiante.Apellido = "Due";
+        personaEstudiante.Email = "John.Due123@mail.com";
+        personaEstudiante.UserName = personaEstudiante.Email;
+        personaEstudiante.PasswordHash = hasher.HashPassword(personaEstudiante, "John.Due123");
+        personaEstudiante = Db.Users.Add(personaEstudiante).Entity;
 
         var personaAdministrador = new Persona();
         personaAdministrador.Nombre = "Edgar";
@@ -92,7 +100,7 @@ public class AuthTest : BaseTest
         personaAdministrador.Email = "Edgar.Allan123@mail.com";
         personaAdministrador.Direccion = "avda123";
         personaAdministrador.CreatedBy = "me";
-        var hasher = new PasswordHasher<Persona>();
+        
         personaAdministrador.PasswordHash = hasher.HashPassword(personaAdministrador, "Edgar.Allan123");
 
         var personaAdministradorEnt = Db.Users.Add(personaAdministrador).Entity;
@@ -101,6 +109,17 @@ public class AuthTest : BaseTest
         {
             Name = "Master"
         }).Entity;
+
+        var rolEstudiante = Db.Roles.Add(new IdentityRole()
+        {
+            Name = "Alumno"
+        }).Entity;
+
+        Db.UserRoles.Add(new IdentityUserRole<string>()
+        {
+            UserId = personaEstudiante.Id,
+            RoleId = rolEstudiante.Id
+        });
 
         Db.UserRoles.Add(new IdentityUserRole<string>()
         {
@@ -121,9 +140,8 @@ public class AuthTest : BaseTest
 
     private void MockSetUpOk()
     {
-        UserManagerMock.Setup(x => x.FindByEmailAsync(It.IsAny<string>()))
-            .ReturnsAsync(P);
-            
+        UserManagerMock.Setup(x => x.FindByEmailAsync("Carlos.Torres123@mail.com")).ReturnsAsync(P);
+
         UserManagerMock.Setup(x => x
                 .CheckPasswordAsync(It.IsAny<Persona>(), It.IsAny<string>()))
             .ReturnsAsync(true);
@@ -132,19 +150,18 @@ public class AuthTest : BaseTest
             {
                 "Master"
             });
-        iAuthMock.Setup(x => x.Login(It.IsAny<Login>()))
-            .ReturnsAsync(new AuthPersonaDTO());
+        
     }
 
     private void MockSetUpIncorrectPassword()
     {
-       
-        UserManagerMock.Setup(x => x.FindByEmailAsync(It.IsAny<string>()))
-            .ReturnsAsync(P);
-            
+        UserManagerMock.Setup(x => x.FindByEmailAsync("Carlos.Torres123@mail.com"))
+        .ReturnsAsync(P);
+
         UserManagerMock.Setup(x => x
                 .CheckPasswordAsync(It.IsAny<Persona>(), It.IsAny<string>()))
             .ReturnsAsync(false);
+        
     }
     private void MockSetUpNotFoundUser()
     {
@@ -152,4 +169,23 @@ public class AuthTest : BaseTest
             .ReturnsAsync((Persona)null);
 
     }
+
+    private void MockSetUpUnauthorized()
+    {
+        UserManagerMock.Setup(x => x.FindByEmailAsync("John.Due123@mail.com"))
+        .ReturnsAsync(P);
+
+        UserManagerMock.Setup(x => x
+                .CheckPasswordAsync(It.IsAny<Persona>(), It.IsAny<string>()))
+            .ReturnsAsync(true);
+
+        UserManagerMock.Setup(x => x.GetRolesAsync(It.IsAny<Persona>()))
+            .ReturnsAsync(new List<string>
+            {
+                "Alumno"
+            });
+    }
+
+
+  
 }

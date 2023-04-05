@@ -10,7 +10,7 @@ import { useGeneralContext } from "../../context/GeneralContext";
 import APILINK from "../../components/link";
 import ModalVerColegios from './ModalVerColegios'
 import { AiOutlineEye } from "react-icons/ai";
-import { PanelContainerBG } from "../../components/Layout";
+
 function ListarColegios() {
 
   const { getToken, verifyToken, cancan } = useGeneralContext()
@@ -22,7 +22,7 @@ function ListarColegios() {
   const [currentPage, setCurrentPage] = useState(0);
   const [colegios, setColegios] = useState([]);
   const [datoIdColegio, setDatoIdColegio] = useState('');
-  const [nombreAdminActual, setNombreAdmin] = useState([]);
+
   useEffect(() => {
 
     verifyToken()
@@ -39,37 +39,16 @@ function ListarColegios() {
           setColegios(response.data.dataList); //Guarda los datos
           setTotalPage(response.data.totalPage);//Total de Paginas
           setCurrentPage(response.data.currentPage);//Actualiza la pagina en donde estan los datos
-          console.log(colegios);
+          
         })
         .catch(error => {
           console.error(error);
         });
     }
+     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cancan, verifyToken, nav, currentPage, getToken]);
 
-  /*const nombreAdmin=(id)=>{
-    verifyToken()
-      if (!cancan("Master")) {
-        nav("/")
-      } else {
-        let config = {
-          method: 'get',
-          url: `${APILINK}/api/administrador/id/${id}`,
-          headers: {
-            'Authorization': `Bearer ${getToken()}`
-          }
-        };
-        axios(config)
-          .then(function (response) {
-            setNombreAdmin(response.data);
-  
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-        }
-  }
-    */
+ 
   const doFetch = (colegio) => {
     setColegios([...colegios, colegio])
   }
