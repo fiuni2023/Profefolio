@@ -74,16 +74,7 @@ public class ProfesorTestingGets
         }
     };
 
-    [Theory]
-    [InlineData(0)]
-    public async void Get_Page_Ok(int page)
-    {
-        Mock<IMapper> mapper = new Mock<IMapper>();
-        Mock<IPersona> service = new Mock<IPersona>();
-        Mock<IRol> rol = new Mock<IRol>();
-        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
-
-        List<PersonaResultDTO> profesoresDtos = new List<PersonaResultDTO>()
+    private List<PersonaResultDTO> profesoresDtos = new List<PersonaResultDTO>()
         {
             new PersonaResultDTO()
             {
@@ -123,8 +114,16 @@ public class ProfesorTestingGets
             }
         };
 
+    [Theory]
+    [InlineData(0)]
+    public async void Get_Page_Ok(int page)
+    {
+        Mock<IMapper> mapper = new Mock<IMapper>();
+        Mock<IPersona> service = new Mock<IPersona>();
+        Mock<IRol> rol = new Mock<IRol>();
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
 
-
+        
         int cantPages = (int)Math.Ceiling((double)profesores.Count() / 20);
         var dataList = new DataListDTO<PersonaResultDTO>()
         {
@@ -160,6 +159,29 @@ public class ProfesorTestingGets
         Assert.Equal<int>(dataList.CurrentPage, datalistResult.CurrentPage);
         Assert.Equal<int>(dataList.TotalPage, datalistResult.TotalPage);
         Assert.Equal<bool>(dataList.Next, datalistResult.Next);
+    }
+
+
+
+    [Theory]
+    [InlineData(-1)]
+    public async void GetPage_PageLessThatZero_BadRequest(int page)
+    {
+        Mock<IMapper> mapper = new Mock<IMapper>();
+        Mock<IPersona> service = new Mock<IPersona>();
+        Mock<IRol> rol = new Mock<IRol>();
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
+
+        
+        
+
+        var result = await controller.Get(page);
+
+        
+
+        var jsonResult = Assert.IsType<BadRequestObjectResult>(result.Result);
+        Assert.Equal("El numero de pagina debe ser mayor o igual que cero", jsonResult.Value);
+
     }
 
 
