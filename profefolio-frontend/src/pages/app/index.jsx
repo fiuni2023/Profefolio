@@ -20,6 +20,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Profesor from "../profesor/index.jsx";
 import Clases from "../clases/index.jsx";
 import Home from "../home/index.jsx";
+import TestPage from "../../components/TestPage.jsx";
 
 const App = () => {
 
@@ -34,7 +35,7 @@ const App = () => {
                             <Routes>
 
                                 <Route path="/" element={<Home />} />
-
+                                <Route path="/test" element={<TestPage />}/>
                                 <Route path="/pagina1" element={<Partidos />}>
                                     <Route path="list" element={<PartidosList />} />
                                     <Route path='create' element={<CreatePartidos />} />
