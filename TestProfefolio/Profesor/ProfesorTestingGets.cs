@@ -296,6 +296,46 @@ public class ProfesorTestingGets
 
 
     [Theory]
+    [InlineData("sd65sd6asd46asd4a6s5da6sd4a6s5da6")]
+    public async void GetByID_Failed_BadRequest(string id)
+    {
+        Mock<IMapper> mapper = new Mock<IMapper>();
+        Mock<IPersona> service = new Mock<IPersona>();
+        Mock<IRol> rol = new Mock<IRol>();
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
+
+        profefolio.Models.Entities.Persona persona = new profefolio.Models.Entities.Persona()
+        {
+            Id = "sd65sd6asd46asd4a6s5da6sd4a6s5da6",
+            UserName = "RamonRamirez",
+            Nombre = "Ramon",
+            Apellido = "Ramirez",
+            Documento = "7894689",
+            DocumentoTipo = "CI",
+            Email = "ramonramirez@gmail.com",
+            EmailConfirmed = true,
+            Direccion = "Encarnacion",
+            EsM = true,
+            Nacimiento = nacimiento,
+            Created = nacimiento,
+            CreatedBy = "ramonramirez@gmail.com",
+            PhoneNumber = "0985123456"
+        };
+
+        service.Setup(a => a.FindById(It.IsAny<string>())).ReturnsAsync(persona);
+
+        mapper.Setup(m => m.Map<PersonaResultDTO>(It.IsAny<Persona>())).Throws(new Exception("Error inesperado"));
+
+        var result = await controller.Get(id);
+
+        var jsonResult = Assert.IsType<BadRequestObjectResult>(result.Result);
+        Assert.Equal("Error inesperado", jsonResult.Value);
+        
+    }
+
+
+
+    [Theory]
     [InlineData("Tasdasds")]
     public async void GetById_NotFound(string id)
     {
