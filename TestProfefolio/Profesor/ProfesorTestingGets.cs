@@ -152,7 +152,7 @@ public class ProfesorTestingGets
         Assert.Equal<bool>(dataList.Next, rdto.Next);
     }
 
-
+*/
     [Theory]
     [InlineData("sd65sd6asd46asd4a6s5da6sd4a6s5da6")]
     public async void GetByID_Ok(string id)
@@ -193,15 +193,25 @@ public class ProfesorTestingGets
             Telefono = "0985123456"
         };
 
-        service.Setup(a => a.FindById(id)).ReturnsAsync(persona);
+        service.Setup(a => a.FindById(It.IsAny<string>())).ReturnsAsync(persona);
 
-        mapper.Setup(m => m.Map<PersonaResultDTO>(persona)).Returns(dto);
+        mapper.Setup(m => m.Map<PersonaResultDTO>(It.IsAny<Persona>())).Returns(dto);
 
         var result = await controller.Get(id);
 
-        Assert.IsType<OkObjectResult>(result.Result);
+        var jsonResult = Assert.IsType<OkObjectResult>(result.Result);
+        var profResult = Assert.IsType<PersonaResultDTO>(jsonResult.Value);
+        Assert.Equal(dto.Id, profResult.Id);
+        Assert.Equal(dto.Nombre, profResult.Nombre);
+        Assert.Equal(dto.Apellido, profResult.Apellido);
+        Assert.Equal(dto.Direccion, profResult.Direccion);
+        Assert.Equal(dto.Documento, profResult.Documento);
+        Assert.Equal(dto.DocumentoTipo, profResult.DocumentoTipo);
+        Assert.Equal(dto.Email, profResult.Email);
+        Assert.Equal(dto.Genero, profResult.Genero);
+        Assert.Equal(dto.Nacimiento, profResult.Nacimiento);
     }
-*/
+
 
     [Theory]
     [InlineData("Tasdasds")]
@@ -214,7 +224,7 @@ public class ProfesorTestingGets
         ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
         
 
-        service.Setup(a => a.FindById(id)).Throws(new FileNotFoundException());
+        service.Setup(a => a.FindById(It.IsAny<string>())).Throws(new FileNotFoundException());
         
         var result = await controller.Get(id);
 
