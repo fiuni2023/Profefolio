@@ -19,7 +19,7 @@ public class ProfesorTestingGets
 {
     private static readonly DateTime nacimiento = DateTime.Now;
 
-/*    private IEnumerable<profefolio.Models.Entities.Persona> profesores = new List<profefolio.Models.Entities.Persona>()
+    private IEnumerable<profefolio.Models.Entities.Persona> profesores = new List<profefolio.Models.Entities.Persona>()
     {
         new profefolio.Models.Entities.Persona()
         {
@@ -76,7 +76,6 @@ public class ProfesorTestingGets
 
     [Theory]
     [InlineData(0)]
-    [InlineData(1)]
     public async void Get_Page_Ok(int page)
     {
         Mock<IMapper> mapper = new Mock<IMapper>();
@@ -124,35 +123,46 @@ public class ProfesorTestingGets
             }
         };
 
-        int cantPages = (int)Math.Ceiling((page == 0 ? (double)profesores.Count() : 0) / 20);
+
+
+        int cantPages = (int)Math.Ceiling((double)profesores.Count() / 20);
         var dataList = new DataListDTO<PersonaResultDTO>()
         {
             DataList = profesoresDtos,
             TotalPage = cantPages,
             Next = false,
             CurrentPage = page > cantPages ? cantPages : page,
-            CantItems = page == 0 ? profesoresDtos.Count() : 0
+            CantItems = profesoresDtos.ToList().Count
         };
 
 
-        service.Setup(p => p.GetAllByRol("Profesor", page, 20))
-            .ReturnsAsync(page == 0 ? profesores : new List<profefolio.Models.Entities.Persona>());
+        service.Setup(a => a.FilterByRol(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>())).ReturnsAsync(profesores.AsEnumerable());
 
-        mapper.Setup(a => a.Map<List<PersonaResultDTO>>(profesores.ToList())).Returns(profesoresDtos);
+        service.Setup(a => a.CountByRol(It.IsAny<string>())).ReturnsAsync(profesores.Count());
 
-        ActionResult<DataListDTO<PersonaResultDTO>> result = await controller.Get(page);
+        service.Setup(p => p.GetAllByRol(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>()))
+            .ReturnsAsync(profesores);
 
-        //Assert.IsType<OkObjectResult>(result.Result);
-        DataListDTO<PersonaResultDTO> rdto = (DataListDTO<PersonaResultDTO>)(((OkObjectResult)result.Result).Value);
 
-        Assert.Equal<PersonaResultDTO>(page == 0 ? dataList.DataList : null, rdto.DataList);
-        Assert.Equal<int>(page == 0 ? dataList.CantItems : 0, rdto.CantItems);
-        Assert.Equal<int>(dataList.CurrentPage, rdto.CurrentPage);
-        Assert.Equal<int>(dataList.TotalPage, rdto.TotalPage);
-        Assert.Equal<bool>(dataList.Next, rdto.Next);
+        mapper.Setup(a => a.Map<List<PersonaResultDTO>>(It.IsAny<List<Persona>>())).Returns(profesoresDtos);
+
+
+        var result = await controller.Get(page);
+
+        
+
+        var jsonResult = Assert.IsType<OkObjectResult>(result.Result);
+
+        var datalistResult = Assert.IsType<DataListDTO<PersonaResultDTO>>(jsonResult.Value);
+
+        Assert.Equal<PersonaResultDTO>(dataList.DataList, datalistResult.DataList);
+        Assert.Equal<int>(dataList.CantItems, datalistResult.CantItems);
+        Assert.Equal<int>(dataList.CurrentPage, datalistResult.CurrentPage);
+        Assert.Equal<int>(dataList.TotalPage, datalistResult.TotalPage);
+        Assert.Equal<bool>(dataList.Next, datalistResult.Next);
     }
 
-*/
+
     [Theory]
     [InlineData("sd65sd6asd46asd4a6s5da6sd4a6s5da6")]
     public async void GetByID_Ok(string id)
