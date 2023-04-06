@@ -213,7 +213,7 @@ public class ProfesorTestingPosts
         Mock<IRol> rol = new Mock<IRol>();
 
         ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
-        
+
         PersonaDTO personaDto = new PersonaDTO()
         {
             Nombre = "Ramon",
@@ -244,7 +244,7 @@ public class ProfesorTestingPosts
         Mock<IRol> rol = new Mock<IRol>();
 
         ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
-        
+
         PersonaDTO personaDto = new PersonaDTO()
         {
             Nombre = "Ramon",
@@ -267,7 +267,37 @@ public class ProfesorTestingPosts
     }
 
 
-    // Invalid gender
+
+    [Fact]
+    public async void Post_InvalidGender_BadRequest()
+    {
+        Mock<IMapper> mapper = new Mock<IMapper>();
+        Mock<IPersona> service = new Mock<IPersona>();
+        Mock<IRol> rol = new Mock<IRol>();
+
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
+
+        PersonaDTO personaDto = new PersonaDTO()
+        {
+            Nombre = "Ramon",
+            Apellido = "Ramirez",
+            Direccion = "Encarnacion",
+            Documento = "7894689",
+            DocumentoTipo = "CI",
+            Email = "ramonramirez@gmail.com",
+            Genero = "X",
+            Nacimiento = nacimiento,
+            Telefono = "0985123456",
+            Password = "12345678",
+            ConfirmPassword = "123456789"
+        };
+
+        var result = await controller.Post(personaDto);
+
+        var jsonResult = Assert.IsType<BadRequestObjectResult>(result.Result);
+        Assert.Equal("Solo se aceptan valores F para femenino y M para masculino", jsonResult.Value);
+    }
+
 
     // Exist email during Create User <BadHttpRequestException>
 
