@@ -140,7 +140,7 @@ public class ProfesorTestingPosts
         Assert.Equal("Falta el Password", jsonResult.Value);
     }
 
-    /*
+    
     [Fact]
     public async void Post_BadRequest_ConfirmPasswordNull()
     {
@@ -150,7 +150,6 @@ public class ProfesorTestingPosts
 
         ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
 
-        
         PersonaDTO personaDto = new PersonaDTO()
         {
             Nombre = "Ramon",
@@ -167,10 +166,11 @@ public class ProfesorTestingPosts
         };
         
         var result = await controller.Post(personaDto);
-        BadRequestObjectResult r = (BadRequestObjectResult)result.Result;
         
-        Assert.Equal("Falta confirmacion de Password", r.Value.ToString());
-    }*/
+        var jsonResult = Assert.IsType<BadRequestObjectResult>(result.Result);
+        
+        Assert.Equal("Falta confirmacion de Password", jsonResult.Value);
+    }
 
     //[Fact]
     //public async void Post_BadRequest_EmailExisting()
