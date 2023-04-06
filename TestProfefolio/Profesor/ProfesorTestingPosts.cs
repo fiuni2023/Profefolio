@@ -376,7 +376,84 @@ public class ProfesorTestingPosts
         Assert.Equal("El email al cual quiere registrarse ya existe", jsonResult.Value);
 
     }
-    // Exist number document during Create User <BadHttpRequestException>
+
+
+    [Fact]
+    public async void Post_DocumentNumberExist_BadRequest()
+    {
+        Mock<IMapper> mapper = new Mock<IMapper>();
+        Mock<IPersona> service = new Mock<IPersona>();
+        Mock<IRol> rol = new Mock<IRol>();
+
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
+
+        profefolio.Models.Entities.Persona persona = new profefolio.Models.Entities.Persona()
+        {
+            Id = "sd65sd6asd46asd4a6s5da6sd4a6s5da6",
+            UserName = "RamonRamirez",
+            Nombre = "Ramon",
+            Apellido = "Ramirez",
+            Documento = "7894689",
+            DocumentoTipo = "CI",
+            Email = "ramonramirez@gmail.com",
+            EmailConfirmed = true,
+            Direccion = "Encarnacion",
+            EsM = true,
+            Nacimiento = nacimiento,
+            Created = nacimiento,
+            PhoneNumber = "0985123456"
+        };
+
+        PersonaDTO personaDto = new PersonaDTO()
+        {
+            Nombre = "Ramon",
+            Apellido = "Ramirez",
+            Direccion = "Encarnacion",
+            Documento = "7894689",
+            DocumentoTipo = "CI",
+            Email = "ramonramirez@gmail.com",
+            Genero = "M",
+            Nacimiento = nacimiento,
+            Telefono = "0985123456",
+            Password = "12345678",
+            ConfirmPassword = "12345678"
+        };
+
+        PersonaResultDTO dtoResult = new PersonaResultDTO()
+        {
+            Id = "sd65sd6asd46asd4a6s5da6sd4a6s5da6",
+            Nombre = "Ramon",
+            Apellido = "Ramirez",
+            Direccion = "Encarnacion",
+            Documento = "7894689",
+            DocumentoTipo = "CI",
+            Genero = "M",
+            Nacimiento = nacimiento,
+            Telefono = "0985123456"
+        };
+
+        var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+            {
+                new Claim(ClaimTypes.Name, "user@gmail.com")
+            }, "role"));
+
+        controller.ControllerContext = new ControllerContext()
+        {
+            HttpContext = new DefaultHttpContext() { User = user }
+        };
+
+        mapper.Setup(m => m.Map<profefolio.Models.Entities.Persona>(It.IsAny<PersonaDTO>())).Returns(persona);
+
+
+        service.Setup(b => b.CreateUser(It.IsAny<Persona>(), It.IsAny<string>())).ThrowsAsync(new BadHttpRequestException($"El usuario con doc {persona.Documento} ya existe"));
+
+        var result = await controller.Post(personaDto);
+
+        var jsonResult = Assert.IsType<BadRequestObjectResult>(result.Result);
+
+        Assert.Equal($"El usuario con doc {persona.Documento} ya existe", jsonResult.Value);
+
+    }
 
     // Password format invalid during Create user <InvalidOperationException>
 
