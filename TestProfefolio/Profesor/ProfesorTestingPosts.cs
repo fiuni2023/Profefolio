@@ -56,7 +56,7 @@ public class ProfesorTestingPosts
             Password = "12345678",
             ConfirmPassword = "12345678"
         };
-        
+
         PersonaResultDTO dtoResult = new PersonaResultDTO()
         {
             Id = "sd65sd6asd46asd4a6s5da6sd4a6s5da6",
@@ -69,7 +69,7 @@ public class ProfesorTestingPosts
             Nacimiento = nacimiento,
             Telefono = "0985123456"
         };
-        
+
         var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
             {
                 new Claim(ClaimTypes.Name, "user@gmail.com")
@@ -79,7 +79,7 @@ public class ProfesorTestingPosts
         {
             HttpContext = new DefaultHttpContext() { User = user }
         };
-        
+
         mapper.Setup(m => m.Map<profefolio.Models.Entities.Persona>(It.IsAny<PersonaDTO>())).Returns(persona);
 
 
@@ -92,7 +92,7 @@ public class ProfesorTestingPosts
         var result = await controller.Post(personaDto);
 
         var jsonResult = Assert.IsType<OkObjectResult>(result.Result);
-        
+
         var objResult = Assert.IsType<PersonaResultDTO>(jsonResult.Value);
 
         Assert.Equal(dtoResult.Id, objResult.Id);
@@ -133,14 +133,14 @@ public class ProfesorTestingPosts
             Password = null,
             ConfirmPassword = "12345678"
         };
-        
+
         var result = await controller.Post(personaDto);
 
         var jsonResult = Assert.IsType<BadRequestObjectResult>(result.Result);
         Assert.Equal("Falta el Password", jsonResult.Value);
     }
 
-    
+
     [Fact]
     public async void Post_BadRequest_ConfirmPasswordNull()
     {
@@ -164,23 +164,61 @@ public class ProfesorTestingPosts
             Password = "12345678",
             ConfirmPassword = null
         };
-        
+
         var result = await controller.Post(personaDto);
-        
+
         var jsonResult = Assert.IsType<BadRequestObjectResult>(result.Result);
-        
+
         Assert.Equal("Falta confirmacion de Password", jsonResult.Value);
     }
 
-    //[Fact]
-    //public async void Post_BadRequest_EmailExisting()
-    //{
-    /*/Para el caso de que el email ya exista*/
-    //}
 
-    //[Fact]
-    //public async void Post_BadRequest_ErrorCreate()
-    //{
-    /*Error al crear el Profesor*/
-    //}
+    //Model Invalid 
+    [Fact]
+    public async void Post_ModelInvalid_BadRequest()
+    {
+        Mock<IMapper> mapper = new Mock<IMapper>();
+        Mock<IPersona> service = new Mock<IPersona>();
+        Mock<IRol> rol = new Mock<IRol>();
+
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
+        controller.ModelState.AddModelError("model_error", "El modelo es erroneo");
+        PersonaDTO personaDto = new PersonaDTO()
+        {
+            Nombre = "Ramon",
+            Apellido = "Ramirez",
+            Direccion = "Encarnacion",
+            Documento = "7894689",
+            DocumentoTipo = "CI",
+            Email = "ramonramirez@gmail.com",
+            Genero = "M",
+            Nacimiento = nacimiento,
+            Telefono = "0985123456",
+            Password = "12345678",
+            ConfirmPassword = null
+        };
+
+        var result = await controller.Post(personaDto);
+
+        var jsonResult = Assert.IsType<BadRequestObjectResult>(result.Result);
+
+    }
+
+    // Invalid date of birth
+
+    // Null Genere
+
+    // Invalid Genere
+
+    // Exist email fduring Create User <BadHttpRequestException>
+
+    // Exist number document during Create User <BadHttpRequestException>
+
+    // Password format invalid during Create user <InvalidOperationException>
+
+    // Exception during Create User
+
+    // Error during user creation (AsignRole return false) 
+
+
 }
