@@ -163,6 +163,8 @@ function ListDetallesProfesor(props) {
 
  
   useEffect(() => {
+
+    if(showModal){
       
     axios.get(`${APILINK}/api/profesor/${id}`, {
       headers: {
@@ -199,6 +201,7 @@ function ListDetallesProfesor(props) {
       });
 
 
+}
 }, [ id, getToken ]);
 
 const [nombre, setNombre] = useState(profesor.nombre || '');
