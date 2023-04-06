@@ -204,7 +204,38 @@ public class ProfesorTestingPosts
 
     }
 
+
     // Invalid date of birth
+    [Fact]
+    public async void Post_InvalidDateOfBirth_BadRequest()
+    {
+        Mock<IMapper> mapper = new Mock<IMapper>();
+        Mock<IPersona> service = new Mock<IPersona>();
+        Mock<IRol> rol = new Mock<IRol>();
+
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
+        
+        PersonaDTO personaDto = new PersonaDTO()
+        {
+            Nombre = "Ramon",
+            Apellido = "Ramirez",
+            Direccion = "Encarnacion",
+            Documento = "7894689",
+            DocumentoTipo = "CI",
+            Email = "ramonramirez@gmail.com",
+            Genero = "M",
+            Nacimiento = nacimiento.AddDays(3),
+            Telefono = "0985123456",
+            Password = "12345678",
+            ConfirmPassword = "123456789"
+        };
+
+        var result = await controller.Post(personaDto);
+
+        var jsonResult = Assert.IsType<BadRequestObjectResult>(result.Result);
+        Assert.Equal("El nacimiento no puede ser mayor a la fecha de hoy", jsonResult.Value);
+    }
+
 
     // Null Genere
 
