@@ -109,7 +109,7 @@ public class ProfesorTestingPosts
     }
 
 
-    /*[Fact]
+    [Fact]
     public async void Post_BadRequest_PasswordNull()
     {
         Mock<IMapper> mapper = new Mock<IMapper>();
@@ -134,12 +134,13 @@ public class ProfesorTestingPosts
             ConfirmPassword = "12345678"
         };
         
-        ActionResult<PersonaResultDTO> result = (await controller.Post(personaDto));
+        var result = await controller.Post(personaDto);
 
-        BadRequestObjectResult badRequestObjectResult = (BadRequestObjectResult)result.Result;
-        Assert.Equal("Falta el Password", badRequestObjectResult.Value.ToString());
+        var jsonResult = Assert.IsType<BadRequestObjectResult>(result.Result);
+        Assert.Equal("Falta el Password", jsonResult.Value);
     }
-    
+
+    /*
     [Fact]
     public async void Post_BadRequest_ConfirmPasswordNull()
     {
