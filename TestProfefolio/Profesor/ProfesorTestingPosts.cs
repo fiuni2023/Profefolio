@@ -173,7 +173,7 @@ public class ProfesorTestingPosts
     }
 
 
-    //Model Invalid 
+
     [Fact]
     public async void Post_ModelInvalid_BadRequest()
     {
@@ -205,7 +205,6 @@ public class ProfesorTestingPosts
     }
 
 
-    // Invalid date of birth
     [Fact]
     public async void Post_InvalidDateOfBirth_BadRequest()
     {
@@ -237,11 +236,40 @@ public class ProfesorTestingPosts
     }
 
 
-    // Null Genere
+    [Fact]
+    public async void Post_GenderNull_BadRequest()
+    {
+        Mock<IMapper> mapper = new Mock<IMapper>();
+        Mock<IPersona> service = new Mock<IPersona>();
+        Mock<IRol> rol = new Mock<IRol>();
 
-    // Invalid Genere
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
+        
+        PersonaDTO personaDto = new PersonaDTO()
+        {
+            Nombre = "Ramon",
+            Apellido = "Ramirez",
+            Direccion = "Encarnacion",
+            Documento = "7894689",
+            DocumentoTipo = "CI",
+            Email = "ramonramirez@gmail.com",
+            Genero = null,
+            Nacimiento = nacimiento,
+            Telefono = "0985123456",
+            Password = "12345678",
+            ConfirmPassword = "123456789"
+        };
 
-    // Exist email fduring Create User <BadHttpRequestException>
+        var result = await controller.Post(personaDto);
+
+        var jsonResult = Assert.IsType<BadRequestObjectResult>(result.Result);
+        Assert.Equal("El genero no puede ser nulo", jsonResult.Value);
+    }
+
+
+    // Invalid gender
+
+    // Exist email during Create User <BadHttpRequestException>
 
     // Exist number document during Create User <BadHttpRequestException>
 
