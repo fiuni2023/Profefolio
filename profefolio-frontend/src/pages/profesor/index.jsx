@@ -1,7 +1,6 @@
 /* eslint-disable */
 import React, { useState, useEffect } from 'react';
 import { PanelContainerBG } from "./components/LayoutAdmin.jsx";
-import NavAdmin from "./components/NavAdmin.jsx";
 import CreateModal from "./components/create/CreateModal.jsx";
 import { useGeneralContext } from "../../context/GeneralContext";
 import axios from 'axios';
@@ -11,6 +10,8 @@ import styles from  "./components/create/Index.module.css";
 import APILINK from '../../components/link.js';
 import { useNavigate } from 'react-router';
 import ListDetallesProfesor from './list/ListDetallesProfesor.jsx';
+
+import StyleComponentBreadcrumb from '../../components/StyleComponentBreadcrumb.jsx';
 
 
 
@@ -97,7 +98,7 @@ const handleCloseModal = () => {
     <>
 
       <div className="page">
-        <NavAdmin />
+      <StyleComponentBreadcrumb nombre="Profesor" />
 
         <PanelContainerBG>
 
