@@ -139,7 +139,7 @@ namespace profefolio.Controllers
             catch (BadHttpRequestException e)
             {
                 Console.WriteLine(e.Message);
-                return BadRequest($"El email {dto.Email} ya existe");
+                return BadRequest(e.Message);
             }
             catch (InvalidOperationException e)
             {
