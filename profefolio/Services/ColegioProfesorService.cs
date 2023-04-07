@@ -27,10 +27,15 @@ namespace profefolio.Services
             throw new NotImplementedException();
         }
 
-        public async Task<int> Count(int idColegio)
+        public async Task<int> Count(int idColegio, string userEmail)
         {
             return await _context.ColegiosProfesors
-                            .CountAsync(ca => !ca.Deleted && ca.ColegioId == idColegio);
+                            .CountAsync(cp => !cp.Deleted 
+                                && cp.ColegioId == idColegio
+                                && cp.Persona != null 
+                                && cp.Colegio != null 
+                                && (userEmail.Equals(cp.Colegio.personas.Email) 
+                                    || userEmail.Equals(cp.Persona.Email)));
         }
 
         public void Dispose()
@@ -58,10 +63,15 @@ namespace profefolio.Services
                         && ca.PersonaId.Equals(idProf));
         }
 
-        public async Task<IEnumerable<ColegioProfesor>> FindAllByIdColegio(int page, int cantPorPag, int idColegio)
+        public async Task<IEnumerable<ColegioProfesor>> FindAllByIdColegio(int page, int cantPorPag, int idColegio, string userEmail)
         {
             return await _context.ColegiosProfesors
-                    .Where(cp => !cp.Deleted && cp.ColegioId == idColegio)
+                    .Where(cp => !cp.Deleted 
+                        && cp.ColegioId == idColegio
+                        && cp.Colegio != null
+                        && cp.Persona != null
+                        && (userEmail.Equals(cp.Colegio.personas.Email) 
+                            || userEmail.Equals(cp.Persona.Email)))
                     .OrderByDescending(cp => cp.Id)
                     .Skip(page * cantPorPag)
                     .Take(cantPorPag)

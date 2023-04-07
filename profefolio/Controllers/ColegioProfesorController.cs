@@ -42,9 +42,6 @@ namespace profefolio.Controllers
         {
             try
             {
-                //validacion de que sea un administrador o profesor dado su name en el token
-                var userMail = User.FindFirstValue(ClaimTypes.Name);
-                
 
                 var colProf = await _cProfService.FindById(id);
 
@@ -53,7 +50,9 @@ namespace profefolio.Controllers
                     return NotFound();
                 }
 
-                //se valida que sea el administrador del colegio o el profesor de la relacion
+                //validacion de que sea un administrador o profesor dado su name en el token
+                var userMail = User.FindFirstValue(ClaimTypes.Name);
+                
                 if(!userMail.Equals(colProf.Colegio.personas.Email) && !userMail.Equals(colProf.Persona.Email)){
                     return Unauthorized("No tiene permiso de acceso a los datos");
                 }
@@ -75,9 +74,12 @@ namespace profefolio.Controllers
         {
             try
             {
-                var colProf = await _cProfService.FindAllByIdColegio(page, CantPorPage, idColegio);
 
-                var cantItmed = await _cProfService.Count(idColegio);
+                var userEmail = User.FindFirstValue(ClaimTypes.Name);
+
+                //en el service se valida que el usuario sea el administrador del colegio o el profesor de la relacion
+                var colProf = await _cProfService.FindAllByIdColegio(page, CantPorPage, idColegio, userEmail);
+                var cantItmed = await _cProfService.Count(idColegio, userEmail);
 
                 int cantPages = (int)Math.Ceiling((double)cantItmed / (double)CantPorPage);
 
