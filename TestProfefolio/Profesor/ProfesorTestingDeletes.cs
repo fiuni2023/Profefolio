@@ -19,11 +19,11 @@ public class ProfesorTestingDeletes
         ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
 
         service.Setup(s => s.DeleteUser(It.IsAny<string>())).ReturnsAsync(true);
-        
+
         var result = await controller.Delete(id);
         Assert.IsType<OkResult>(result);
     }
-    
+
     [Fact]
     public async void Delete_IdNotFound()
     {
@@ -35,7 +35,7 @@ public class ProfesorTestingDeletes
         ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
 
         service.Setup(s => s.DeleteUser(It.IsAny<string>())).ReturnsAsync(false);
-        
+
         var result = await controller.Delete(id);
         Assert.IsType<NotFoundResult>(result);
     }
@@ -51,7 +51,7 @@ public class ProfesorTestingDeletes
         ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
 
         service.Setup(s => s.DeleteUser(It.IsAny<string>())).ThrowsAsync(new Exception());
-        
+
         var result = await controller.Delete(id);
         Assert.IsType<NotFoundResult>(result);
     }
