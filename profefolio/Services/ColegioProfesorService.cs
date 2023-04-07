@@ -63,6 +63,14 @@ namespace profefolio.Services
                         && ca.PersonaId.Equals(idProf));
         }
 
+        public async Task<bool> Exist(int idColegio)
+        {
+            return await _context.ColegiosProfesors
+                    .AnyAsync(ca => !ca.Deleted
+                        && ca.PersonaId != null
+                        && ca.ColegioId == idColegio);
+        }
+
         public async Task<IEnumerable<ColegioProfesor>> FindAllByIdColegio(int page, int cantPorPag, int idColegio, string userEmail)
         {
             return await _context.ColegiosProfesors
