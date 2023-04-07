@@ -42,10 +42,20 @@ namespace profefolio.Controllers
         {
             try
             {
+                //validacion de que sea un administrador o profesor dado su name en el token
+                var userMail = User.FindFirstValue(ClaimTypes.Name);
+                
+
                 var colProf = await _cProfService.FindById(id);
+
                 if (colProf == null)
                 {
                     return NotFound();
+                }
+
+                //se valida que sea el administrador del colegio o el profesor de la relacion
+                if(!userMail.Equals(colProf.Colegio.personas.Email) && !userMail.Equals(colProf.Persona.Email)){
+                    return Unauthorized("No tiene permiso de acceso a los datos");
                 }
 
                 return Ok(_mapper.Map<ColegioProfesorByIdResult>(colProf));

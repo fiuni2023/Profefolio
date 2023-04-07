@@ -85,6 +85,7 @@ namespace profefolio.Services
                 .Where(cp => cp != null && !cp.Deleted && cp.Id == id)
                 .Include(cp => cp.Persona)
                 .Include(cp => cp.Colegio)
+                .Include(cp => cp.Colegio.personas)
                 .FirstOrDefaultAsync();
         }
 
