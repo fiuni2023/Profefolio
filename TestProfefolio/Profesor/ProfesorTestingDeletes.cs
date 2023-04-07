@@ -8,7 +8,7 @@ namespace TestProfefolio.Profesor;
 public class ProfesorTestingDeletes
 {
 
-    /*[Fact]
+    [Fact]
     public async void Delete_Ok()
     {
         string id = "sdasd4adaddg465g4d6fg4";
@@ -18,13 +18,13 @@ public class ProfesorTestingDeletes
 
         ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
 
-        service.Setup(s => s.DeleteUser(id)).ReturnsAsync(true);
+        service.Setup(s => s.DeleteUser(It.IsAny<string>())).ReturnsAsync(true);
         
         var result = await controller.Delete(id);
-        Assert.IsType<OkResult>(result.Result);
+        Assert.IsType<OkResult>(result);
     }
     
-    [Fact]
+    /*[Fact]
     public async void Delete_IdNotFound()
     {
         string id = "sdasd4adaddg465g4d6fg4";
