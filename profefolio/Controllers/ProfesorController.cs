@@ -6,6 +6,7 @@ using profefolio.Models.DTOs.Persona;
 using profefolio.Models.Entities;
 using profefolio.Repository;
 using Microsoft.AspNet.Identity;
+using System.Security.Claims;
 
 namespace profefolio.Controllers
 {
@@ -121,11 +122,11 @@ namespace profefolio.Controllers
             }
 
 
-            var userId = User.Identity.GetUserId();
+            var name = User.FindFirstValue(ClaimTypes.Name);
             var entity = _mapper.Map<Persona>(dto);
 
             entity.Deleted = false;
-            entity.CreatedBy = userId;
+            entity.CreatedBy = name;
 
             try
             {
@@ -183,16 +184,17 @@ namespace profefolio.Controllers
 
                     var persona = await _personasService.FindById(id);
 
-                    var userId = User.Identity.GetUserId();
-
-                    MapOldToNew(persona, dto, userId);
-                    //var personaNew = _mapper.Map<Persona>(dto);
-
+                    var name = User.FindFirstValue(ClaimTypes.Name);
 
                     if ((!persona.Email.Equals(dto.Email)) && await _personasService.ExistMail(dto.Email))
                     {
                         return BadRequest("El email nuevo que queres actualizar ya existe");
                     }
+                    
+                    MapOldToNew(persona, dto, name);
+                    //var personaNew = _mapper.Map<Persona>(dto);
+
+
                     var query = await _personasService.EditProfile(persona);
 
                     return query != null ? Ok(_mapper.Map<PersonaResultDTO>(query)) : BadRequest("Error al actualizar!!!");
