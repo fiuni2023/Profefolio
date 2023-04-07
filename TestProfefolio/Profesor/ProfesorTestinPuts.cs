@@ -368,7 +368,7 @@ public class ProfesorTestinPuts
 
     // Exception FileNotFoundException 
     [Fact]
-    public async void Put_FileNotFoundException_BadRequestk()
+    public async void Put_FileNotFoundException_NotFound()
     {
         Mock<IMapper> mapper = new Mock<IMapper>();
         Mock<IPersona> service = new Mock<IPersona>();
@@ -437,6 +437,73 @@ public class ProfesorTestinPuts
 
 
     // Exception BadHtttpRequestException
+    [Fact]
+    public async void Put_BadHtttpRequestExceptionForEmailExisting_BadRequestk()
+    {
+        Mock<IMapper> mapper = new Mock<IMapper>();
+        Mock<IPersona> service = new Mock<IPersona>();
+        Mock<IRol> rol = new Mock<IRol>();
+
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
+
+        string id = "sd65sd6asd46asd4a6s5da6sd4a6s5da6";
+
+        profefolio.Models.Entities.Persona personaOld = new profefolio.Models.Entities.Persona()
+        {
+            Id = "sd65sd6asd46asd4a6s5da6sd4a6s5da6",
+            UserName = "RamonRamirez",
+            Nombre = "Ramon",
+            Apellido = "Ramirez",
+            Documento = "7894689",
+            DocumentoTipo = "CI",
+            Email = "ramon.ramirez@gmail.com",
+            EmailConfirmed = true,
+            Direccion = "Encarnacion",
+            EsM = true,
+            Nacimiento = nacimiento,
+            Created = nacimiento,
+            PhoneNumber = "0985123456"
+        };
+
+
+        PersonaEditDTO personaDtoNew = new PersonaEditDTO()
+        {
+            Nombre = "Ramon",
+            Apellido = "Ramirez",
+            Direccion = "Encarnacion",
+            Documento = "7894689",
+            DocumentoTipo = "CI",
+            Email = "ramon.ramirez@gmail.com",
+            Genero = "M",
+            Nacimiento = nacimiento,
+            Telefono = "0985123450"
+        };
+
+
+        var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+            {
+                new Claim(ClaimTypes.Name, "user@gmail.com")
+            }, "role"));
+
+        controller.ControllerContext = new ControllerContext()
+        {
+            HttpContext = new DefaultHttpContext() { User = user }
+        };
+
+        service.Setup(p => p.FindById(It.IsAny<string>())).ReturnsAsync(personaOld);
+
+        service.Setup(p => p.ExistMail(It.IsAny<string>())).ReturnsAsync(true);
+
+        service.Setup(p => p.EditProfile(It.IsAny<Persona>())).ThrowsAsync(new BadHttpRequestException(""));
+
+        var result = await controller.Put(id, personaDtoNew);
+
+
+        var jsonResult = Assert.IsType<BadRequestObjectResult>(result.Result);
+        Assert.Equal("El email que desea actualizar ya existe", jsonResult.Value);
+
+    }
+
 
     // Generic exception
 
