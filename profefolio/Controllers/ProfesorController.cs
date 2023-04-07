@@ -267,7 +267,7 @@ namespace profefolio.Controllers
             }
         }
         [HttpDelete("{id}")]
-        public async Task<ActionResult<PersonaResultDTO>> Delete(string id)
+        public async Task<ActionResult> Delete(string id)
         {
             try
             {
