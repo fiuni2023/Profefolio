@@ -11,6 +11,6 @@ namespace profefolio.Repository
         Task<int> Count(int idColegio, string userEmail);
         Task<bool> Exist(string idProf, int idColegio);
         Task<IEnumerable<ColegioProfesor>> FindAllByIdColegio(int page, int cantPorPag, int idColegio, string userEmail);
-        Task<IEnumerable<ColegioProfesor>> FindAllByIdColegio(int idColegio);
+        Task<IEnumerable<ColegioProfesor>> FindAllByIdColegio(int idColegio, string userEmail);
     }
 }

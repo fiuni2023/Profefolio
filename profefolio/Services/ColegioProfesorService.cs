@@ -80,10 +80,15 @@ namespace profefolio.Services
                     .ToListAsync();
         }
 
-        public async Task<IEnumerable<ColegioProfesor>> FindAllByIdColegio(int idColegio)
+        public async Task<IEnumerable<ColegioProfesor>> FindAllByIdColegio(int idColegio, string userEmail)
         {
             return await _context.ColegiosProfesors
-                    .Where(cp => !cp.Deleted && cp.ColegioId == idColegio)
+                    .Where(cp => !cp.Deleted 
+                        && cp.ColegioId == idColegio
+                        && cp.Colegio != null
+                        && cp.Persona != null
+                        && (userEmail.Equals(cp.Colegio.personas.Email) 
+                            || userEmail.Equals(cp.Persona.Email)))
                     .Include(cp => cp.Persona)
                     .ToListAsync();
         }

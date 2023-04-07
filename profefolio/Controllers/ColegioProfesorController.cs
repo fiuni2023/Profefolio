@@ -114,10 +114,17 @@ namespace profefolio.Controllers
         {
             try
             {
-                var colegioProfesores = await _cProfService.FindAllByIdColegio(idColegio);
-                if (colegioProfesores == null)
+                var userEmail = User.FindFirstValue(ClaimTypes.Name);
+                //se obtiene la lista de ColegioProfesores en la cual este asociado el administrador o profesor
+                var colegioProfesores = await _cProfService.FindAllByIdColegio(idColegio, userEmail);
+                //se valida que la lista tenga algun valor 
+                if (colegioProfesores == null || (!colegioProfesores.Any()))
                 {
-                    return NotFound("El Colegio no fue encontrado");
+                    var userRole = User.FindFirstValue(ClaimTypes.Role);
+                    if("Profesor".Equals(userRole)){
+                        return BadRequest("Como profesor no fue asignado a este colegio todavia");
+                    } 
+                    return NotFound("El Colegio no tiene datos, verifique que sea su colegio o que tenga profesores en su colegio");
                 }
 
                 var result = _mapper.Map<List<ColegioProfesorSimpleDTO>>(colegioProfesores.ToList());
