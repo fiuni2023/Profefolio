@@ -48,7 +48,7 @@ namespace profefolio.Controllers
 
             if (page >= cantPages)
             {
-                return BadRequest($"No existe la pagina: {page} ");
+                return BadRequest($"No existe la pagina: {page}");
             }
             var enumerable = profesores as Persona[] ?? profesores.ToArray();
             result.CantItems = enumerable.Length;
