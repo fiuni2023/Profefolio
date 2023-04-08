@@ -12,11 +12,13 @@ function ModalVerColegios(props) {
 
   const { datoIdColegio, setShow, show, disabled, setDisabled, triggerState } = props;
 
-  const handleClose = () =>{
+  const handleClose = () => {
     setNombre("");
+    setNombreAdministrador("");
+    setApellidoAdministrador("");
     setShow(false);
 
-  } 
+  }
   const [colegio, setColegio] = useState([""]);
   const { getToken, verifyToken, cancan } = useGeneralContext();
   const nav = useNavigate();
@@ -101,7 +103,7 @@ function ModalVerColegios(props) {
     // eslint-disable-next-line no-mixed-operators, eqeqeq
 
     let data = JSON.stringify({
-      "nombre": nombreNuevoCol,
+      "nombre": nombre,
       "personaId": idAdmin
     });
     console.log(data);
@@ -168,16 +170,16 @@ function ModalVerColegios(props) {
                 {disabled
                   ? <Form.Control
                     type="text"
-                    defaultValue={colegio.nombre || ''}
+                    defaultValue={nombre}
                     disabled
                   />
                   : <Form.Control
-                  
-                  type="text"
-                  defaultValue={nombre}
-                  onChange={event => setNombre(event.target.value)}
+
+                    type="text"
+                    defaultValue={nombre}
+                    onChange={event => setNombre(event.target.value)}
                   //placeholder={profesor.nombre} 
-                />
+                  />
                 }
 
 
@@ -189,12 +191,15 @@ function ModalVerColegios(props) {
                     disabled
                   />
 
-                  : <div>  <select required name="admin" defaultValue={idAdmin} onChange={event => handleIDAdmin(event)} className={styles.selectAdmin}>
-                    <option disabled value={0}>Seleccione Administrador</option>
-                    {administradores.map((administrador) =>
-                      <option key={administrador.id} value={administrador.id}>{administrador.nombre} {administrador.apellido}</option>
-                    )}
-                  </select>
+                  : <div>
+                    <Form.Select aria-label="Default select example" defaultValue={idAdmin} onChange={event => handleIDAdmin(event)}>
+                      <option >{nombreAdministrador} {apellido}</option>
+                      {administradores.map((administrador) =>
+                        <option key={administrador.id} value={administrador.id}>{administrador.nombre} {administrador.apellido}</option>
+                      )}
+                    </Form.Select>
+
+
                   </div>
                 }
               </form>

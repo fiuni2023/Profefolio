@@ -70,10 +70,17 @@ function ListarColegios() {
   const [show, setShow] = useState(false);
   const [disabled, setDisabled] = useState(true);
   const handleShow = (id) => {
+   
     setShow(true);
     setDatoIdColegio(id); 
   }
+  //Guarda el ID del admin que recien se creo, aun no se como utilizar esto 
+const [idAdminElegido, setIdAdmin]=useState(0);
+const idModalAgregar=(idAd)=>{
+setIdAdmin(idAd);
 
+
+}
 
   return (
     <>
@@ -105,7 +112,7 @@ function ListarColegios() {
 
         <ModalVerColegios datoIdColegio={datoIdColegio} show={show} setShow={setShow} disabled={disabled} setDisabled={setDisabled} triggerState={(colegio)=>{setColegios(colegio)}}></ModalVerColegios>
 
-        <ModalAgregarColegios triggerState={(colegio) => { doFetch(colegio) }}></ModalAgregarColegios>
+        <ModalAgregarColegios triggerState={(colegio) => { doFetch(colegio) }} idModalAgregar={idModalAgregar} ></ModalAgregarColegios>
       </div>
     </>)
 }

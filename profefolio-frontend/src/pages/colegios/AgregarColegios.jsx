@@ -6,7 +6,7 @@ import axios from "axios";
 import { useGeneralContext } from "../../context/GeneralContext";
 import { toast } from 'react-hot-toast';
 import APILINK from '../../components/link';
-function ModalAgregarColegios({ onSubmit = () => { }, triggerState = () => { } }) {
+function ModalAgregarColegios({ onSubmit = () => { }, triggerState = () => { }, idModalAgregar }) {
     const { getToken } = useGeneralContext()
     const [nombreColegio, setNombreColegio] = useState("");
     const [idAdmin, setIdAdmin] = useState(0);
@@ -68,6 +68,7 @@ function ModalAgregarColegios({ onSubmit = () => { }, triggerState = () => { } }
                         toast.error("Hubo un error")
                     }
                     else if (response.status >= 200) {
+                        idModalAgregar(idAdmin);
                         triggerState(response.data)
                         onSubmit(response.data)
                         setNombreColegio("");
