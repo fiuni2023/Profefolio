@@ -139,7 +139,7 @@ namespace profefolio.Controllers
             catch (BadHttpRequestException e)
             {
                 Console.WriteLine(e.Message);
-                return BadRequest($"El email {dto.Email} ya existe");
+                return BadRequest(e.Message);
             }
             catch (InvalidOperationException e)
             {
@@ -149,7 +149,7 @@ namespace profefolio.Controllers
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return BadRequest(e.Message);
+                return BadRequest("Error durante el guardado");
             }
 
             return BadRequest($"Error al crear al Usuario ${dto.Email}");
