@@ -9,7 +9,7 @@ import Pagination from 'react-bootstrap/Pagination';
 import { useGeneralContext } from "../../context/GeneralContext";
 import APILINK from "../../components/link";
 import ModalVerColegios from './ModalVerColegios'
-import { AiOutlineEye } from "react-icons/ai";
+
 
 function ListarColegios() {
 
@@ -21,7 +21,7 @@ function ListarColegios() {
   const [totalPage, setTotalPage] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
   const [colegios, setColegios] = useState([]);
-  const [datoIdColegio, setDatoIdColegio] = useState('');
+  const [datoIdColegio, setDatoIdColegio] = useState(null);
 
   useEffect(() => {
 
@@ -70,9 +70,8 @@ function ListarColegios() {
   const [show, setShow] = useState(false);
   const [disabled, setDisabled] = useState(true);
   const handleShow = (id) => {
-    setDatoIdColegio(id);
-    console.log(datoIdColegio);
     setShow(true);
+    setDatoIdColegio(id); 
   }
 
 
@@ -88,16 +87,15 @@ function ListarColegios() {
         </div>
         <div className={styles.tablePrincipal} >
           <Table
-            headers={["Numero", "Nombre", "Administrador", "Acciones"]}
+            headers={["Numero", "Nombre", "Administrador"]}
             datas={colegios}
             parseToRow={(col, index) => {
               return (
-                <tr key={index} >
+                <tr key={index} onClick={() => handleShow(col.id)}>
                   <td>{index + 1}</td>
                   <td>{col?.nombre}</td>
                   <td>{col?.nombreAdministrador} {col?.apellido}</td>
-                  <td><button className={styles.iconButton} onClick={() => handleShow(col?.id)}><AiOutlineEye /></button></td>
-
+                 
                 </tr>
               )
             }}
@@ -105,7 +103,7 @@ function ListarColegios() {
           <Pagination onClick={e => handleCurrentPage(e.target.text)} size="sm">{items} </Pagination>
         </div>
 
-        <ModalVerColegios idColegio={datoIdColegio} show={show} setShow={setShow} disabled={disabled} setDisabled={setDisabled}></ModalVerColegios>
+        <ModalVerColegios datoIdColegio={datoIdColegio} show={show} setShow={setShow} disabled={disabled} setDisabled={setDisabled} triggerState={(colegio)=>{setColegios(colegio)}}></ModalVerColegios>
 
         <ModalAgregarColegios triggerState={(colegio) => { doFetch(colegio) }}></ModalAgregarColegios>
       </div>

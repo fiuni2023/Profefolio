@@ -8,29 +8,33 @@ import APILINK from '../../components/link';
 import { useNavigate } from "react-router-dom";
 import { toast } from 'react-hot-toast';
 
-function ModalVerColegios({ idColegio, setShow, show, disabled, setDisabled }) {
+function ModalVerColegios(props) {
+
+  const { datoIdColegio, setShow, show, disabled, setDisabled, triggerState } = props;
+
   const handleClose = () => setShow(false);
   const [colegio, setColegio] = useState([""]);
   const { getToken, verifyToken, cancan } = useGeneralContext();
   const nav = useNavigate();
   const [administradores, setAdministradores] = useState([]);
   // eslint-disable-next-line no-unused-vars
-  const [nombreColegio, setNombreColegio] = useState("");
-  const [nombreNuevoCol, setNombreNuevoCol] = useState("")
+  const [nombreColegio, setNombreColegio] = useState(colegio.nombre || "");
   const [idAdmin, setIdAdmin] = useState(0);
+  const [nombreNuevoCol, setNombreNuevoCol] = useState("")
 
   //Lamada de los datos del colegio
 
 
   useEffect(() => {
     if (show) {
+      
       verifyToken()
       if (!cancan("Master")) {
         nav("/")
       } else {
         let config = {
           method: 'get',
-          url: `${APILINK}/api/ColegiosFull/${idColegio}`,
+          url: `${APILINK}/api/ColegiosFull/${datoIdColegio}`,
           headers: {
             'Authorization': `Bearer ${getToken()}`
           }
@@ -39,7 +43,7 @@ function ModalVerColegios({ idColegio, setShow, show, disabled, setDisabled }) {
           .then(function (response) {
             setColegio(response.data); //Guarda los datos
             setDisabled(true);
-            
+           
 
           })
           .catch(function (error) {
@@ -48,9 +52,9 @@ function ModalVerColegios({ idColegio, setShow, show, disabled, setDisabled }) {
       }
       handleEdit();
     }
-    
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cancan, verifyToken, nav, getToken, idColegio])
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cancan, verifyToken, nav, getToken, datoIdColegio])
   //Llamada para obtener los datos de admninistradores
   const handleGetAdmin = () => {
     verifyToken()
@@ -84,37 +88,39 @@ function ModalVerColegios({ idColegio, setShow, show, disabled, setDisabled }) {
   const handleSubmit = () => {
     console.log(idAdmin);
     // eslint-disable-next-line no-mixed-operators, eqeqeq
-    if (nombreNuevoCol == nombreColegio && idAdmin != 0 || nombreNuevoCol != "" && idAdmin != 0) {
-      let data = JSON.stringify({
-        "nombre": nombreNuevoCol,
-        "personaId": idAdmin
+
+    let data = JSON.stringify({
+      "nombre": nombreNuevoCol,
+      "personaId": idAdmin
+    });
+    console.log(data);
+    verifyToken()
+    let config = {
+      method: 'put',
+      url: `${APILINK}/api/Colegios/${datoIdColegio}`,
+      headers: {
+        'Authorization': `Bearer ${getToken()}`
+      },
+      data: data
+    };
+    axios.request(config)
+      .then((response) => {
+        console.log(JSON.stringify(response.data));
+        setColegio([]);
+        
+        setNombreColegio("");
+        
+
+        toast.success("Cambios Guardados");
+        handleClose(true);
+      })
+      .catch((error) => {
+        console.log(error);
+        toast.error("Hubo un error al guardar los cambios", error);
       });
-      console.log(data);
-      verifyToken()
-      let config = {
-          method: 'put',
-          url: `${APILINK}/api/Colegios/${idColegio}`,
-          headers: {
-            'Authorization': `Bearer ${getToken()}`
-          },
-          data: data
-        };
-        axios.request(config)
-          .then((response) => {
-            console.log(JSON.stringify(response.data));
-            toast.success("Cambios Guardados");
-          })
-          .catch((error) => {
-            console.log(error);
-            toast.error("Hubo un error al guardar los cambios", error);
-          });
 
-      
-    }
-    else {
-      toast.error("Rellene todos los campos");
 
-    }
+
   }
 
 
@@ -151,10 +157,10 @@ function ModalVerColegios({ idColegio, setShow, show, disabled, setDisabled }) {
               <form>
                 <label htmlFor="colegio-nombre" className={styles.labelForm}>Nombre Colegio</label><br />
                 {disabled
-                  ? <div> <input type="text" id={styles.inputColegio} defaultValue={colegio.nombre || ''} disabled></input><br />
+                  ? <div> <input type="text" id={styles.inputColegio} defaultValue={colegio.nombre || ""} disabled></input><br />
                     <br /></div>
 
-                  : <div> <input type="text" id={styles.inputColegio} defaultValue={colegio.nombre || colegio.nombre} name="colegio-nombre" onChange={event => handleInputColegio(event)}></input><br />
+                  : <div> <input type="text" id={styles.inputColegio} defaultValue={nombreColegio} name="colegio-nombre" onChange={event => handleInputColegio(event)}></input><br />
                     <br /></div>
                 }
 
@@ -165,10 +171,10 @@ function ModalVerColegios({ idColegio, setShow, show, disabled, setDisabled }) {
                   </input>
                     <br /></div>
 
-                  : <div>  <select required name="admin" defaultValue={idAdmin || idAdmin} onChange={event => handleIDAdmin(event)} className={styles.selectAdmin}>
-                    <option disabled value={0 || ''}>Seleccione Administrador</option>
+                  : <div>  <select required name="admin" defaultValue={idAdmin} onChange={event => handleIDAdmin(event)} className={styles.selectAdmin}>
+                    <option disabled value={0}>Seleccione Administrador</option>
                     {administradores.map((administrador) =>
-                      <option key={administrador.id} value={administrador.id || administrador.id}>{administrador.nombre} {administrador.apellido}</option>
+                      <option key={administrador.id} value={administrador.id}>{administrador.nombre} {administrador.apellido}</option>
                     )}
                   </select>
                   </div>
