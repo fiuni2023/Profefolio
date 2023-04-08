@@ -209,10 +209,29 @@ namespace profefolio.Controllers
 
             try
             {
+
+                var userEmail = User.FindFirstValue(ClaimTypes.Name);
+                
+                //se verifica que exista un colegio en donde este asignado el administrador 
+                Colegio colegio = await _colegioService.FindById(dto.ColegioId);
+                if (colegio == null)
+                {
+                    return NotFound("El colegio no esta disponible");
+                }
+                
+                
+
+                //validar que el usuario sea administrador del colegio esto a traves del role
                 var colProf = await _cProfService.FindById(id);
                 if (colProf == null)
                 {
                     return NotFound("No se puede editar, no esta disponible");
+                }
+
+                //se verifica que el administrador tenga el mismo email que el del administrador que hizo la peticion
+                if (!colegio.personas.Email.Equals(userEmail) || !userEmail.Equals(colProf.Colegio.personas.Email))
+                {
+                    return Unauthorized("No puede modificar datos de otros colegios");
                 }
 
 
@@ -221,22 +240,6 @@ namespace profefolio.Controllers
                     return BadRequest("Ya se registro el Profesor en este colegio");
                 }
 
-
-                var nameUser = User.FindFirstValue(ClaimTypes.Name);
-
-
-                //se verifica que exista un colegio en donde este asignado el administrador 
-                Colegio colegio = await _colegioService.FindById(dto.ColegioId);
-                if (colegio == null)
-                {
-                    return NotFound("El colegio no esta disponible");
-                }
-
-                //se verifica que el administrador tenga el mismo email que el del administrador que hizo la peticion
-                if (!colegio.personas.Email.Equals(nameUser))
-                {
-                    return Unauthorized("No puede agregar Profesores en otros colegios");
-                }
 
                 /*
                     Se verifica que exista el profesor --- no se verifica que no sea nulo porque retorna una 
@@ -255,7 +258,7 @@ namespace profefolio.Controllers
                 }
 
 
-                colProf.ModifiedBy = nameUser;
+                colProf.ModifiedBy = userEmail;
                 colProf.Modified = DateTime.Now;
                 colProf.PersonaId = dto.ProfesorId;
                 colProf.ColegioId = dto.ColegioId;
