@@ -341,11 +341,11 @@ namespace profefolio.Controllers
                 {
                     return NotFound("El colegio no esta disponible");
                 }
-
-                //se verifica que el administrador tenga el mismo email que el del administrador que hizo la peticion
-                if (!colegio.personas.Email.Equals(nameUser))
+                
+                //se verifica que el Id del colegio de la relacion no sea igual al Id del colegio al que pertenece le administrador
+                if (colProf.ColegioId != colegio.Id)
                 {
-                    return Unauthorized("No puede eliminar Profesores en otros colegios");
+                    return Unauthorized("No puede eliminar datos de otros colegios");
                 }
 
                 colProf.Deleted = true;
