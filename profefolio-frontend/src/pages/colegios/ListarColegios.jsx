@@ -9,7 +9,7 @@ import Pagination from 'react-bootstrap/Pagination';
 import { useGeneralContext } from "../../context/GeneralContext";
 import APILINK from "../../components/link";
 import ModalVerColegios from './ModalVerColegios'
-
+import ModalPrueba from "./ModalPrueba";
 
 function ListarColegios() {
 

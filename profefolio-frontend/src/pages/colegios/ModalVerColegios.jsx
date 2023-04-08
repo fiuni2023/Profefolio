@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Modal, Button } from 'react-bootstrap'
+import { Modal, Button, Form } from 'react-bootstrap'
 import styles from "./ModalVerColegios.module.css"
 import axios from "axios";
 import { useGeneralContext } from "../../context/GeneralContext";
@@ -12,7 +12,11 @@ function ModalVerColegios(props) {
 
   const { datoIdColegio, setShow, show, disabled, setDisabled, triggerState } = props;
 
-  const handleClose = () => setShow(false);
+  const handleClose = () =>{
+    setNombre("");
+    setShow(false);
+
+  } 
   const [colegio, setColegio] = useState([""]);
   const { getToken, verifyToken, cancan } = useGeneralContext();
   const nav = useNavigate();
@@ -27,7 +31,7 @@ function ModalVerColegios(props) {
 
   useEffect(() => {
     if (show) {
-      
+
       verifyToken()
       if (!cancan("Master")) {
         nav("/")
@@ -42,8 +46,15 @@ function ModalVerColegios(props) {
         axios(config)
           .then(function (response) {
             setColegio(response.data); //Guarda los datos
+            console.log(colegio);
+            // eslint-disable-next-line no-unused-vars
+            const { apellido, direccion, documento, documentoTipo, genero, id, nacimiento, nombre, nombreAdministrador, telefono } = response.data;
+            setNombre(nombre);
+            setApellidoAdministrador(apellido);
+            setNombreAdministrador(nombreAdministrador);
             setDisabled(true);
-           
+
+
 
           })
           .catch(function (error) {
@@ -107,9 +118,9 @@ function ModalVerColegios(props) {
       .then((response) => {
         console.log(JSON.stringify(response.data));
         setColegio([]);
-        
+
         setNombreColegio("");
-        
+
 
         toast.success("Cambios Guardados");
         handleClose(true);
@@ -131,17 +142,15 @@ function ModalVerColegios(props) {
     setIdAdmin(event.target.value)
   }
 
-  const handleNombre = (nombre) => {
-    setNombreNuevoCol(nombre);
-  }
-  const handleInputColegio = (event) => {
-    handleNombre(event.target.value);
-  }
+
   //Eliminar colegio
   const handleDelete = (id) => {
     //https://localhost:7063/api/Colegios/5
 
   }
+  const [nombre, setNombre] = useState(colegio.nombre || "");
+  const [nombreAdministrador, setNombreAdministrador] = useState(colegio.nombreAdministrador || "");
+  const [apellido, setApellidoAdministrador] = useState(colegio.apellido || "");
 
   return (
 
@@ -157,19 +166,28 @@ function ModalVerColegios(props) {
               <form>
                 <label htmlFor="colegio-nombre" className={styles.labelForm}>Nombre Colegio</label><br />
                 {disabled
-                  ? <div> <input type="text" id={styles.inputColegio} defaultValue={colegio.nombre || ""} disabled></input><br />
-                    <br /></div>
-
-                  : <div> <input type="text" id={styles.inputColegio} defaultValue={nombreColegio} name="colegio-nombre" onChange={event => handleInputColegio(event)}></input><br />
-                    <br /></div>
+                  ? <Form.Control
+                    type="text"
+                    defaultValue={colegio.nombre || ''}
+                    disabled
+                  />
+                  : <Form.Control
+                  
+                  type="text"
+                  defaultValue={nombre}
+                  onChange={event => setNombre(event.target.value)}
+                  //placeholder={profesor.nombre} 
+                />
                 }
 
 
                 <label htmlFor="administrador"><strong> Administrador</strong></label><br />
                 {disabled
-                  ? <div> < input required type="text" id={styles.inputColegio} name="colegio-admin" defaultValue={colegio.nombreAdministrador + " " + colegio.apellido || ''} disabled>
-                  </input>
-                    <br /></div>
+                  ? <Form.Control
+                    type="text"
+                    defaultValue={colegio.nombreAdministrador + " " + colegio.apellido || ''}
+                    disabled
+                  />
 
                   : <div>  <select required name="admin" defaultValue={idAdmin} onChange={event => handleIDAdmin(event)} className={styles.selectAdmin}>
                     <option disabled value={0}>Seleccione Administrador</option>
