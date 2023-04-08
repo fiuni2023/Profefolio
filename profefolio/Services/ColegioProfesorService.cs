@@ -40,7 +40,8 @@ namespace profefolio.Services
 
         public ColegioProfesor Edit(ColegioProfesor t)
         {
-            throw new NotImplementedException();
+            _context.Entry(t).State = EntityState.Modified;
+            return t;
         }
 
         public bool Exist()
@@ -57,9 +58,24 @@ namespace profefolio.Services
                         && ca.PersonaId.Equals(idProf));
         }
 
-        public Task<IEnumerable<ColegioProfesor>> FindAllByIdColegio(int page, int cantPorPag, int idColegio)
+        public async Task<IEnumerable<ColegioProfesor>> FindAllByIdColegio(int page, int cantPorPag, int idColegio)
         {
-            throw new NotImplementedException();
+            return await _context.ColegiosProfesors
+                    .Where(cp => !cp.Deleted && cp.ColegioId == idColegio)
+                    .OrderByDescending(cp => cp.Id)
+                    .Skip(page * cantPorPag)
+                    .Take(cantPorPag)
+                    .Include(cp => cp.Persona)
+                    .Include(cp => cp.Colegio)
+                    .ToListAsync();
+        }
+
+        public async Task<IEnumerable<ColegioProfesor>> FindAllByIdColegio(int idColegio)
+        {
+            return await _context.ColegiosProfesors
+                    .Where(cp => !cp.Deleted && cp.ColegioId == idColegio)
+                    .Include(cp => cp.Persona)
+                    .ToListAsync();
         }
 
         public async Task<ColegioProfesor> FindById(int id)
