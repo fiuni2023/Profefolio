@@ -93,7 +93,7 @@ public class AccountController : ControllerBase
 
         var result = new DataListDTO<PersonaResultDTO>();
 
-        if (page >= cantPages)
+        if (page >= cantPages || page < 0)
         {
             return BadRequest($"No existe la pagina: {page} ");
         }
