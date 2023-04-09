@@ -233,7 +233,7 @@ const [nombre_Materia, setNombreMateria] = useState(materia.nombre_Materia || ''
      
         <Modal.Footer className={styles.footerModal}>
          
- 
+
        
         <button variant="primary" onClick={closeModal} className={styles.buttonClose}>Cerrar</button>
 
