@@ -70,5 +70,35 @@ namespace TestProfefolio.Account
             Assert.IsType<OkResult>(result);
                 
         }
+
+        [Fact]
+        public async Task Delete_Test_NotFound()
+        {
+            _personaServiceMock.Setup(x => x.DeleteByUserAndRole(It.IsAny<string>(), It.IsAny<string>()))
+                .Returns<string, string>((id, role) =>
+                {
+                    _personas = _personas.ToList()
+                        .ConvertAll(x =>
+                        {
+                            if (x.Id.Equals(id))
+                            {
+                                x.Deleted = true;
+                            }
+
+                            return x;
+
+                        });
+
+                    var deleted = _personas.FirstOrDefault(x => x.Id.Equals(id));
+
+                    return Task.FromResult(deleted == null ? false : deleted.Deleted);
+
+                });
+
+            var result = await _accountController.Delete("-5");
+
+            Assert.IsType<NotFoundResult>(result);
+
+        }
     }
 }
