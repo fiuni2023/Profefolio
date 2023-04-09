@@ -35,6 +35,7 @@ const StyledCustomSpan = styled.div`
     padding: 6px;
     margin:0 0 10px 10px;  
     font-size:15px;
+    font-weight: bold;
     
 `;
 
