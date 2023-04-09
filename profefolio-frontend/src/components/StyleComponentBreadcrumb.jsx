@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { BsArrowLeft } from 'react-icons/bs'
 import { HiArrowLeft } from 'react-icons/hi'
 import {Link } from "react-router-dom";
 
