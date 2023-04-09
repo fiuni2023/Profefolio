@@ -26,7 +26,7 @@ function ModalVerColegios(props) {
   // eslint-disable-next-line no-unused-vars
   const [nombreColegio, setNombreColegio] = useState(colegio.nombre || "");
   const [idAdmin, setIdAdmin] = useState(0);
-  const [nombreNuevoCol, setNombreNuevoCol] = useState("")
+  
 
   //Lamada de los datos del colegio
 
@@ -102,37 +102,42 @@ function ModalVerColegios(props) {
     console.log(idAdmin);
     // eslint-disable-next-line no-mixed-operators, eqeqeq
 
-    let data = JSON.stringify({
-      "nombre": nombre,
-      "personaId": idAdmin
-    });
-    console.log(data);
-    verifyToken()
-    let config = {
-      method: 'put',
-      url: `${APILINK}/api/Colegios/${datoIdColegio}`,
-      headers: {
-        'Authorization': `Bearer ${getToken()}`
-      },
-      data: data
-    };
-    axios.request(config)
-      .then((response) => {
-        console.log(JSON.stringify(response.data));
-        setColegio([]);
+    console.log(typeof(idAdmin) );
 
-        setNombreColegio("");
+    if (nombre === "" || idAdmin==="") 
+    toast.error("revisa los datos, los campos deben ser completados")
+    else {
+      axios.put(`${APILINK}/api/Colegios/${datoIdColegio}`, {
+        nombre,
+        idAdmin
 
-
-        toast.success("Cambios Guardados");
-        handleClose(true);
+      }, {
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+        }
       })
-      .catch((error) => {
-        console.log(error);
-        toast.error("Hubo un error al guardar los cambios", error);
-      });
+        .then(response => {
+          //triggerState(response.data)
+          
 
+          
+          setColegio("");
+          toast.success("Editado exitoso");
 
+          handleClose(false);
+          setNombre("");
+          setIdAdmin("");
+
+        })
+        .catch(error => {
+          if(typeof(error.response.data) === "string"? true:false){
+            toast.error(error.response.data)
+          }else{
+            toast.error(error.response.data?.errors.Email[0])
+          }
+        });
+
+    }
 
   }
 
@@ -193,7 +198,7 @@ function ModalVerColegios(props) {
 
                   : <div>
                     <Form.Select aria-label="Default select example" defaultValue={idAdmin} onChange={event => handleIDAdmin(event)}>
-                      <option >{nombreAdministrador} {apellido}</option>
+                      <option disabled >{nombreAdministrador} {apellido}</option>
                       {administradores.map((administrador) =>
                         <option key={administrador.id} value={administrador.id}>{administrador.nombre} {administrador.apellido}</option>
                       )}
