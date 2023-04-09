@@ -115,7 +115,7 @@ public class AccountController : ControllerBase
     {
         try
         {
-            var persona = await _personasService.FindById(id);
+            var persona = await _personasService.FindByIdAndRole(id, RolAdmin);
             return Ok(_mapper.Map<PersonaResultDTO>(persona));
         }
         catch (FileNotFoundException e)
