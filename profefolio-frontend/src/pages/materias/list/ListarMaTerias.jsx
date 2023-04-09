@@ -15,6 +15,10 @@ import Pagination from 'react-bootstrap/Pagination';
 
 import Tabla from '../../../components/Tabla';
 
+import CreateModalMaterias from '../create/CreateModalMaterias.jsx';
+
+import ListDetallesMateria from './ListDetallesMateria';
+
 
 
 
@@ -128,9 +132,12 @@ const handleCloseModal = () => {
               }}
 />
         
-  
+
            
             <div >
+
+
+            <ListDetallesMateria showModal={showModal} setShowModal={setShowModal} id={id}  triggerState={(profesor)=>{setProfesores(profesor)}} page={page} />
 
             <div>
   </div>
@@ -158,9 +165,9 @@ const handleCloseModal = () => {
         </PanelContainerBG>
          <footer>
           <div className={styles.NButtonForSideA}>
-            <CreateModal title="My Modal" onClose={() => setShow(false)}  show={show}
-             triggerState={(profesor)=>{doFetch(profesor)}}>
-            </CreateModal>
+            <CreateModalMaterias title="My Modal" onClose={() => setShow(false)}  show={show}
+             triggerState={(materia)=>{doFetch(materia)}}>
+            </CreateModalMaterias>
             
           </div>
 
