@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Newtonsoft.Json;
 using profefolio.Controllers;
+using profefolio.Models.DTOs;
 using profefolio.Models.DTOs.Persona;
 using profefolio.Models.Entities;
 using profefolio.Repository;
@@ -81,9 +82,9 @@ namespace TestProfefolio.Account
                     var result = datas.FirstOrDefault(y => y.Id == id);
 
                     return Task.FromResult(result);
-                  
+
                 });
-            
+
             _mapperMock.Setup(x => x.Map<PersonaResultDTO>(It.IsAny<Persona>()))
                 .Returns(personaResultDTO);
 
@@ -95,6 +96,63 @@ namespace TestProfefolio.Account
 
         }
 
+        [Fact]
+        public async Task Find_By_Id_Persona_Not_Found_Test()
+        {
+            _personaServiceMock.Setup(x => x.FindById(It.IsAny<string>()))
+             .Throws<FileNotFoundException>();
 
+            var result = await _accountController.Get("-1");
+
+            Assert.IsType<NotFoundResult>(result.Result);
+        }
+
+
+        [Fact]
+        public async Task Get_All_Ok_Test()
+        {
+            var personas = _entityParser.ToIEnumerable();
+
+
+            _personaServiceMock.Setup(x => x.GetAllByRol(It.IsAny<string>()))
+                .ReturnsAsync(personas);
+
+
+            var expected = personas.ToList()
+                .ConvertAll(x => new PersonaSimpleDTO
+                {
+                    Id = x.Id,
+                    Nombre = x.Nombre
+                });
+
+            _mapperMock.Setup(x => x.Map<List<PersonaSimpleDTO>>(It.IsAny<List<Persona>>()))
+                .Returns(expected);
+
+
+
+            var result = await _accountController.GetAll();
+
+            var okResult = Assert.IsType<OkObjectResult>(result.Result);
+
+            var value = Assert.IsType<List<PersonaSimpleDTO>>(okResult.Value);
+
+            Assert.Equal(expected, value);
+
+        }
+
+        [Fact]
+        public async Task Get_All_Not_Found()
+        {
+            _personaServiceMock.Setup(x => x.GetAllByRol(It.IsAny<string>()))
+                .Throws<FileNotFoundException>();
+
+
+            var result = await _accountController.GetAll();
+
+            Assert.IsType<NotFoundResult>(result.Result);
+            
+        }
     }
+
+    
 }
