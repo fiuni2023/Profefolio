@@ -13,6 +13,8 @@ import { useNavigate } from 'react-router';
 
 import Pagination from 'react-bootstrap/Pagination';
 
+import Tabla from '../../../components/Tabla';
+
 
 
 
@@ -106,28 +108,25 @@ const handleCloseModal = () => {
 
 
           <div className={styles.container}>
-            <table className={styles.CustomTable}>
-              <thead>
-                <tr>
-                  <th>Nombre de la Materia</th>
+          
+            <Tabla
+              datosTabla={{
+                tituloTabla: 'Lista de materias',
+                titulos: [
+                  { titulo: 'Nombre Materia' },
                  
-                </tr>
-              </thead>
-              <tbody > 
-
-          {materias && materias.length > 0 && materias.map(materia => (
-            <tr  className={styles.tableRow} key={materia.id}>
-                    <td>{materia.nombre_Materia}</td>
-                      </tr>
-
-                        ))}
-                  
-
-                
-                 
-              
-              </tbody>
-            </table>
+                ],
+                clickable: { action: btndetalles },
+                colorHeader: '',
+                tableWidth: '50%',
+                filas: materias.map((materia) => ({
+                  fila: materia.id,
+                  datos: [
+                    { dato: materia.nombre_Materia },
+                  ],
+                })),
+              }}
+/>
         
   
            
