@@ -200,4 +200,21 @@ public class PersonasService : IPersona
     {
         return await _userManager.GetRolesAsync(user);
     }
+
+    public async Task<Persona> FindByIdAndRole(string id, string role)
+    {
+        var query = await _userManager.Users
+            .Where(p => !p.Deleted && p.Id.Equals(id))
+            .FirstOrDefaultAsync();
+
+        if(null == query || !(await _userManager.IsInRoleAsync(query, role)))
+        {
+            throw new FileNotFoundException();
+        }
+
+        return query;
+
+        
+
+    }
 }

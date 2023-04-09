@@ -18,5 +18,6 @@ public interface IPersona : IRepository<Persona>
     Task<bool> ExistDoc(Persona persona);
     Task<Persona> FindByEmail(string email);
     Task<IList<string>> GetRolesPersona(Persona user);
+    Task<Persona> FindByIdAndRole(string id, string role);
 
 }

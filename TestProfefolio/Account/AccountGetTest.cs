@@ -74,11 +74,10 @@ namespace TestProfefolio.Account
                 Nacimiento = new DateTime(1999, 01, 01)
             };
 
-            _personaServiceMock.Setup(x => x.FindById(It.IsAny<string>()))
-                .Returns<string>((id) =>
+            _personaServiceMock.Setup(x => x.FindByIdAndRole(It.IsAny<string>(), It.IsAny<string>()))
+                .Returns<string, string>((id, role) =>
                 {
                     var datas = _entityParser.ToIEnumerable();
-
                     var result = datas.FirstOrDefault(y => y.Id == id);
 
                     return Task.FromResult(result);
@@ -99,7 +98,7 @@ namespace TestProfefolio.Account
         [Fact]
         public async Task Find_By_Id_Persona_Not_Found_Test()
         {
-            _personaServiceMock.Setup(x => x.FindById(It.IsAny<string>()))
+            _personaServiceMock.Setup(x => x.FindByIdAndRole(It.IsAny<string>(), It.IsAny<string>()))
              .Throws<FileNotFoundException>();
 
             var result = await _accountController.Get("-1");
