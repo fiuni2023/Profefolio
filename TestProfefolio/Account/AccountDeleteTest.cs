@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using profefolio.Controllers;
 using profefolio.Models.DTOs.Persona;
 using profefolio.Models.Entities;
@@ -20,11 +22,9 @@ namespace TestProfefolio.Account
         private readonly Mock<IColegio> _colegioServiceMock = new();
         private readonly Mock<IMapper> _mapperMock = new();
         private readonly AccountController _accountController;
-        private readonly string pathDtos = "../../../Account/Data/PersonasDTO.json";
         private readonly string pathEntities = "../../../Account/Data/PersonasEnt.json";
         private readonly JsonParser<Persona> _entityParser;
-        private readonly JsonParser<PersonaResultDTO> _dtoResultParser;
-        private readonly IEnumerable<PersonaResultDTO> _personasDto;
+        private IEnumerable<Persona> _personas; 
 
         public AccountDeleteTest()
         {
@@ -38,9 +38,37 @@ namespace TestProfefolio.Account
                 );
 
             _entityParser = new JsonParser<Persona>(pathEntities);
-            _dtoResultParser = new JsonParser<PersonaResultDTO>(pathDtos);
+            _personas = _entityParser.ToIEnumerable();
         }
 
+        [Fact]
+        public async Task Delete_Test_Ok()
+        {
+            _personaServiceMock.Setup(x => x.DeleteByUserAndRole(It.IsAny<string>(), It.IsAny<string>()))
+                .Returns<string, string>((id, role) =>
+                {
+                    _personas = _personas.ToList()
+                        .ConvertAll(x =>
+                        {
+                            if (x.Id.Equals(id))
+                            {
+                                x.Deleted = true;
+                            }
 
+                            return x;
+                            
+                        });
+
+                    var deleted = _personas.FirstOrDefault(x => x.Id == id);
+
+                    return Task.FromResult(deleted.Deleted);
+
+                });
+
+            var result = await _accountController.Delete("1");
+
+            Assert.IsType<OkResult>(result);
+                
+        }
     }
 }
