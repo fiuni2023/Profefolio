@@ -560,7 +560,7 @@ public class ProfesorTestinPuts
         var result = await controller.Put(id, personaDtoNew);
 
 
-        var jsonResult = Assert.IsType<ConflictResult>(result.Result);
+        var jsonResult = Assert.IsType<ConflictObjectResult>(result.Result);
 
     }
 
