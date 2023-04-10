@@ -73,6 +73,7 @@ builder.Services.AddScoped<IClase, ClaseService>();
 builder.Services.AddScoped<IFullColegio, ColegiosFullService>();
 builder.Services.AddScoped<IRol, RolService>();
 builder.Services.AddScoped<IAuth, AuthService>();
+builder.Services.AddScoped<IAdmin, AdminReportService>();
 
 var app = builder.Build();
 
