@@ -1,11 +1,9 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
+import React from 'react';
 import { Col, Container, Row, Form } from "react-bootstrap";
+import Info from "./componentsStyles/StyledForm";
 
 const types = ["text", "date", "password", "textarea"];
-const check = ["checkbox", "radio"];
-
-const Info = styled.div``;
+const check = ["checkbox", "radio", "switch"];
 
 function Form(inputs, buttons, info, onSubmit){
 
@@ -14,15 +12,15 @@ function Form(inputs, buttons, info, onSubmit){
 
     inputs = [
         {    
-            xs: valor del 1 al 12 que representa en ancho del input en una pantalla pequeñita en una base de 12
-            sm: valor del 1 al 12 que representa en ancho del input en una pantalla pequeña en una base de 12
-            md: valor del 1 al 12 que representa en ancho del input en una pantalla mediana en una base de 12
-            lg: valor del 1 al 12 que representa en ancho del input en una pantalla grande en una base de 12
+            xs: valor del 1 al 12 que representa en ancho del input en una pantalla pequeñita en una base de 12, por defecto es 12
+            sm: valor del 1 al 12 que representa en ancho del input en una pantalla pequeña en una base de 12, por defecto es 12
+            md: valor del 1 al 12 que representa en ancho del input en una pantalla mediana en una base de 12, por defecto es 12
+            lg: valor del 1 al 12 que representa en ancho del input en una pantalla grande en una base de 12, por defecto es 12
             key: valor unico
             label: label del input
-            type: tipo de input: text, date, password, textarea, checkbox, radio, select
+            type: tipo de input: text, date, password, textarea, checkbox, radio, select, switch
             placeholder: placeholder del input
-            disabled: boolean que indica si esta desactivado, o se puede editar
+            disabled: boolean que indica si esta desactivado, o se puede editar, por defecto es false
             onChange: si es necesario, se puede mandar un callback para cuando el input cambia
             select: {
                 default: valor por defecto, que se usa solo como placeholder
@@ -36,7 +34,7 @@ function Form(inputs, buttons, info, onSubmit){
             checks: [
                 {
                     id: id de la opcion
-                    disabled: cuando la opcion esta desactivada
+                    disabled: cuando la opcion esta desactivada, por defecto es false
                     label: label de la opcion
                 }
             ]
@@ -86,7 +84,9 @@ function Form(inputs, buttons, info, onSubmit){
                     </Form.Group>
                 </Col>
             })}</Row>}
-            {buttons && <div></div>}
+            {buttons && buttons.map((button) => {
+
+            })}
         </Container>
         </>
     )

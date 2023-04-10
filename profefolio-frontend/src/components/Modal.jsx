@@ -1,13 +1,6 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
-import { Modal as BModal } from 'react-bootstrap'
-
-const H1 = styled.h1`
-    font-family: 'Poppins';
-    font-style: normal;
-    font-weight: 600;
-    font-size: 1.8em;`;
-
+import {H1} from "./componentsStyles/StyledModal";
+import { Modal as BModal } from 'react-bootstrap';
 
 function Modal({datosModal, isOpen}){
     const [open, setOpen] = useState(isOpen ? isOpen : false);
