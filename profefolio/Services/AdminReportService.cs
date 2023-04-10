@@ -21,19 +21,24 @@ namespace profefolio.Services
 
         public IEnumerable<Persona> GetUsersAssignedOrNotWithRoles(bool band, string role)
         {
-            var queryBase = _db.Colegios
-                    .Include(c => c.personas);
+
+            var colegioQuery = _db.Colegios.Where(c => !c.Deleted).Include(c => c.personas);
+            var personaQuery = _db.Users.Where(p => !p.Deleted);
                     
             if (band)
             {
-                return queryBase
-                    .Where(c => !c.Deleted && c.personas != null)
+                return colegioQuery
+                    .Where(c => c.personas != null)
                     .Select(p => p.personas)
                     .Where(p => !p.Deleted)
                     .Where( p =>  _userManager.IsInRoleAsync(p, role).Result);    
             }
 
-            return queryBase;
+            return personaQuery
+                .Where(p => colegioQuery
+                    .Any(c => c.personas != null && c.personas.Id.Equals(p.Id))
+                 )
+                .Where(p => _userManager.IsInRoleAsync(p, role).Result);
 
         }
 
