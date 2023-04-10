@@ -93,7 +93,7 @@ public class AccountController : ControllerBase
 
         var result = new DataListDTO<PersonaResultDTO>();
 
-        if (page >= cantPages)
+        if (page >= cantPages || page < 0)
         {
             return BadRequest($"No existe la pagina: {page} ");
         }
@@ -149,7 +149,7 @@ public class AccountController : ControllerBase
     [Route("{id}")]
     public async Task<ActionResult> Delete(string id)
     {
-        return await _personasService.DeleteUser(id) ? Ok() : NotFound();
+        return await _personasService.DeleteByUserAndRole(id, RolAdmin) ? Ok() : NotFound();
     }
 
 
