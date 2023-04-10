@@ -112,6 +112,7 @@ public class PersonasService : IPersona
         }
 
         query.UserName = $"deleted.{query.Id}.{query.UserName}";
+        query.Email = query.UserName;
         query.NormalizedUserName = query.UserName.ToUpper();
         query.Deleted = true;
 
@@ -198,5 +199,44 @@ public class PersonasService : IPersona
     public async Task<IList<string>> GetRolesPersona(Persona user)
     {
         return await _userManager.GetRolesAsync(user);
+    }
+
+    public async Task<Persona> FindByIdAndRole(string id, string role)
+    {
+        var query = await _userManager.Users
+            .Where(p => !p.Deleted && p.Id.Equals(id))
+            .FirstOrDefaultAsync();
+
+        if(null == query || !(await _userManager.IsInRoleAsync(query, role)))
+        {
+            throw new FileNotFoundException();
+        }
+
+        return query;
+
+        
+
+    }
+
+    public async Task<bool> DeleteByUserAndRole(string id, string role)
+    {
+        var query = await _userManager.Users
+            .Where(p => !p.Deleted && p.Id.Equals(id))
+            .FirstOrDefaultAsync();
+
+
+        if(query == null || (!(await _userManager.IsInRoleAsync(query, role))))
+        {
+            return false;
+        }
+        query.Modified = DateTime.Now;
+        query.Deleted = true;
+        query.Email = $"deleted.{query.Id}.{query.Email}";
+        query.UserName = query.Email;
+
+        await _userManager.UpdateAsync(query);
+
+
+        return true;
     }
 }

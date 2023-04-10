@@ -1,16 +1,23 @@
 /* eslint-disable */
 import React, { useState, useEffect } from 'react';
 import { PanelContainerBG } from '../../profesor/components/LayoutAdmin';
-import NavMaterias from '../componentes/NavMaterias.jsx';
 import CreateModal from '../create/CreateModalMaterias.jsx';
 import { useGeneralContext } from "../../../context/GeneralContext.jsx";
 import axios from 'axios';
+
+import StyleComponentBreadcrumb from '../../../components/StyleComponentBreadcrumb';
 
 import styles from  '../create/Index.module.css';
 import APILINK from '../../../components/link.js';
 import { useNavigate } from 'react-router';
 
 import Pagination from 'react-bootstrap/Pagination';
+
+import Tabla from '../../../components/Tabla';
+
+import CreateModalMaterias from '../create/CreateModalMaterias.jsx';
+
+import ListDetallesMateria from './ListDetallesMateria';
 
 
 
@@ -98,38 +105,39 @@ const handleCloseModal = () => {
     <>
 
       <div className="page">
-        <NavMaterias />
+      <StyleComponentBreadcrumb nombre="Materias" />
+
 
         <PanelContainerBG>
 
 
           <div className={styles.container}>
-            <table className={styles.CustomTable}>
-              <thead>
-                <tr>
-                  <th>Nombre de la Materia</th>
+          
+            <Tabla
+              datosTabla={{
+                tituloTabla: 'Lista de materias',
+                titulos: [
+                  { titulo: 'Nombre Materia' },
                  
-                </tr>
-              </thead>
-              <tbody > 
-
-          {materias && materias.length > 0 && materias.map(materia => (
-            <tr  className={styles.tableRow} key={materia.id}>
-                    <td>{materia.nombre_Materia}</td>
-                      </tr>
-
-                        ))}
-                  
-
-                
-                 
-              
-              </tbody>
-            </table>
+                ],
+                clickable: { action: btndetalles },
+                colorHeader: '',
+                tableWidth: '50%',
+                filas: materias.map((materia) => ({
+                  fila: materia.id,
+                  datos: [
+                    { dato: materia.nombre_Materia },
+                  ],
+                })),
+              }}
+/>
         
-  
+
            
             <div >
+
+
+            <ListDetallesMateria showModal={showModal} setShowModal={setShowModal} id={id}  triggerState={(profesor)=>{setProfesores(profesor)}} page={page} />
 
             <div>
   </div>
@@ -157,9 +165,9 @@ const handleCloseModal = () => {
         </PanelContainerBG>
          <footer>
           <div className={styles.NButtonForSideA}>
-            <CreateModal title="My Modal" onClose={() => setShow(false)}  show={show}
-             triggerState={(profesor)=>{doFetch(profesor)}}>
-            </CreateModal>
+            <CreateModalMaterias title="My Modal" onClose={() => setShow(false)}  show={show}
+             triggerState={(materia)=>{doFetch(materia)}}>
+            </CreateModalMaterias>
             
           </div>
 

@@ -14,12 +14,14 @@ import PartidosList from "../partidos/components/list";
 import ListarColegios from "../colegios/ListarColegios";
 import CreateProfesor from "../profesor/components/create/CreateModal.jsx";
 import ListarMaterias from "../materias/list/ListarMaTerias.jsx"
+import Alumnos from "../alumnos/Alumnos.jsx";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 import Profesor from "../profesor/index.jsx";
 import Clases from "../clases/index.jsx";
 import Home from "../home/index.jsx";
+import TestPage from "../../components/TestPage.jsx";
 
 const App = () => {
 
@@ -34,7 +36,7 @@ const App = () => {
                             <Routes>
 
                                 <Route path="/" element={<Home />} />
-
+                                <Route path="/test" element={<TestPage />}/>
                                 <Route path="/pagina1" element={<Partidos />}>
                                     <Route path="list" element={<PartidosList />} />
                                     <Route path='create' element={<CreatePartidos />} />
@@ -63,6 +65,7 @@ const App = () => {
                                 <Route path="/materias" element={<ListarMaterias />}>
                                     <Route path="list" element={<ListarMaterias />} />
                                 </Route>
+                                <Route path="/alumnos" element={<Alumnos/>}/>
                             </Routes>
                         </div>
                     </div>

@@ -30,4 +30,8 @@
       <ProjectReference Include="..\profefolio\profefolio.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Account\Data\" />
+    </ItemGroup>
+
 </Project>

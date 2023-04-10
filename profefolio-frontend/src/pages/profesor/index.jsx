@@ -1,7 +1,6 @@
 /* eslint-disable */
 import React, { useState, useEffect } from 'react';
 import { PanelContainerBG } from "./components/LayoutAdmin.jsx";
-import NavAdmin from "./components/NavAdmin.jsx";
 import CreateModal from "./components/create/CreateModal.jsx";
 import { useGeneralContext } from "../../context/GeneralContext";
 import axios from 'axios';
@@ -11,6 +10,10 @@ import styles from  "./components/create/Index.module.css";
 import APILINK from '../../components/link.js';
 import { useNavigate } from 'react-router';
 import ListDetallesProfesor from './list/ListDetallesProfesor.jsx';
+
+import StyleComponentBreadcrumb from '../../components/StyleComponentBreadcrumb.jsx';
+
+import Tabla from '../../components/Tabla.jsx';
 
 
 
@@ -30,6 +33,8 @@ function Profesores() {
   const [next, setNext] = useState(false);
   const isLastPage = page === totalPage -1;
   const [currentPage, setCurrentPage] = useState(0);
+
+
 
   const nav = useNavigate()
 
@@ -61,9 +66,12 @@ function Profesores() {
     }
   }, [page, cancan, verifyToken, nav, getToken]);
 
-  const doFetch =(profesor) =>{
+ const doFetch =(profesor) =>{
     setProfesores([...profesores, profesor])
 }
+ 
+
+
 
 
 const btndetalles = (id) => {
@@ -97,42 +105,42 @@ const handleCloseModal = () => {
     <>
 
       <div className="page">
-        <NavAdmin />
+      <StyleComponentBreadcrumb nombre="Profesor" />
 
         <PanelContainerBG>
 
 
           <div>
-            <table className={styles.CustomTable}>
-              <thead>
-                <tr>
-                  <th>CI</th>
-                  <th>Nombre</th>
-                  <th>Apellido</th>
-                  <th>Fecha de nacimiento</th>
-                  <th>Direccion</th>
-                  <th>Telefono</th>
-                 
-                </tr>
-              </thead>
-              <tbody > 
+          <Tabla
+              datosTabla={{
+                tituloTabla: 'Lista de profesores',
+                titulos: [
+                  { titulo: 'CI' },
+                  { titulo: 'Nombre' },
+                  { titulo: 'Apellido' },
+                  { titulo: 'Fecha de nacimiento' },
+                  { titulo: 'Dirección' },
+                  { titulo: 'Teléfono' },
+                ],
+                clickable: { action: btndetalles },
+                colorHeader: '',
+                tableWidth: '',
+                filas: profesores.map((profe) => ({
+                  fila: profe.id,
+                  datos: [
+                    { dato: profe.documento },
+                    { dato: profe.nombre },
+                    { dato: profe.apellido },
+                    {
+                      dato: new Date(profe.nacimiento).toLocaleDateString(),
+                    },
+                    { dato: profe.direccion },
+                    { dato: profe.telefono },
+                  ],
+                })),
+              }}
+/>
 
-              {profesores && profesores.length > 0 && profesores.map(profe => (
-            <tr  className={styles.tableRow} key={profe.id} onClick={() => btndetalles(profe.id)}>
-                    <td>{profe.documento}</td>
-                    <td>{profe.nombre}</td>
-                    <td>{profe.apellido}</td>
-                    <td>{(new Date(profe.nacimiento)).toLocaleDateString()}</td>
-                 
-                    <td>{profe.direccion}</td>
-                    <td>{profe.telefono}</td>
-                  
-
-                  </tr>
-                 
-                ))}
-              </tbody>
-            </table>
            
             <ListDetallesProfesor showModal={showModal} setShowModal={setShowModal} id={id}  triggerState={(profesor)=>{setProfesores(profesor)}} page={page} />
 
@@ -177,17 +185,6 @@ const handleCloseModal = () => {
      
 
         </footer>
-
-
-
-
-
-
-
-
-
-
-
 
       </div>
 
