@@ -19,7 +19,7 @@ namespace profefolio.Services
             _userManager = userManager;
         }
 
-        public IEnumerable<Persona> GetUsersAssignedOrNotWithRoles(bool band, string role)
+        public IEnumerable<Persona> GetUsersAssignedOrNotWithRoles(bool band)
         {
 
             var colegioQuery = _db.Colegios.Where(c => !c.Deleted).Include(c => c.personas);
@@ -31,14 +31,14 @@ namespace profefolio.Services
                     .Where(c => c.personas != null)
                     .Select(p => p.personas)
                     .Where(p => !p.Deleted)
-                    .Where( p =>  _userManager.IsInRoleAsync(p, role).Result);    
+                    .Where( p =>  _userManager.IsInRoleAsync(p, "Administrador de Colegio").Result);    
             }
 
             return personaQuery
                 .Where(p => colegioQuery
                     .Any(c => c.personas != null && c.personas.Id.Equals(p.Id))
                  )
-                .Where(p => _userManager.IsInRoleAsync(p, role).Result);
+                .Where(p => _userManager.IsInRoleAsync(p, "Administrador de Colegio").Result);
 
         }
 
