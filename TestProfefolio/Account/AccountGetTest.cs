@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Newtonsoft.Json;
 using profefolio.Controllers;
@@ -149,7 +150,102 @@ namespace TestProfefolio.Account
             var result = await _accountController.GetAll();
 
             Assert.IsType<NotFoundResult>(result.Result);
-            
+
+        }
+
+        [Fact]
+        public async Task Get_All_With_Page_Ok()
+        {
+
+            var personas = _entityParser.ToIEnumerable();
+
+            _personaServiceMock.Setup(x => x.FilterByRol(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()))
+                .Returns<int, int, string>((page, cantPerPage, role) =>
+                {
+                    var result = personas.Skip(page*cantPerPage).Take(cantPerPage);
+
+                    return Task.FromResult(result);
+                });
+
+            _personaServiceMock.Setup(x => x.CountByRol(It.IsAny<string>()))
+                .ReturnsAsync(22);
+
+            _mapperMock.Setup(x => x.Map<List<PersonaResultDTO>>(It.IsAny<List<Persona>>))
+                .Returns<List<Persona>>( p =>
+                {
+                    return p.ConvertAll(y => new PersonaResultDTO
+                    {
+                        Id = y.Id,
+                        Nombre = y.Nombre,
+                        Apellido = y.Apellido,
+                        Genero = y.EsM ? "Masculino" : "Femenino",
+                        Email = y.Email,
+                        Telefono = y.PhoneNumber,
+                        Direccion = y.Direccion,
+                        DocumentoTipo = y.DocumentoTipo,
+                        Documento = y.Documento
+                    });
+                } );
+
+
+            var result0 = await _accountController.Get(0);
+            var result1 = await _accountController.Get(1);
+
+            var resultOk0 = Assert.IsType<OkObjectResult>(result0.Result);
+            var resultOk1 = Assert.IsType<OkObjectResult>(result1.Result);
+
+            var value0 = Assert.IsType<DataListDTO<PersonaResultDTO>>(resultOk0.Value);
+            var value1 = Assert.IsType<DataListDTO<PersonaResultDTO>>(resultOk1.Value);
+
+        }
+
+        [Fact]
+        public async Task Get_All_With_Page_No_Valid()
+        {
+
+            var personas = _entityParser.ToIEnumerable();
+
+            _personaServiceMock.Setup(x => x.FilterByRol(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()))
+                .Returns<int, int, string>((page, cantPerPage, role) =>
+                {
+                    var result = personas.Skip(page * cantPerPage).Take(cantPerPage);
+
+                    return Task.FromResult(result);
+                });
+
+            _personaServiceMock.Setup(x => x.CountByRol(It.IsAny<string>()))
+                .ReturnsAsync(22);
+
+            _mapperMock.Setup(x => x.Map<List<PersonaResultDTO>>(It.IsAny<List<Persona>>))
+                .Returns<List<Persona>>(p =>
+                {
+                    return p.ConvertAll(y => new PersonaResultDTO
+                    {
+                        Id = y.Id,
+                        Nombre = y.Nombre,
+                        Apellido = y.Apellido,
+                        Genero = y.EsM ? "Masculino" : "Femenino",
+                        Email = y.Email,
+                        Telefono = y.PhoneNumber,
+                        Direccion = y.Direccion,
+                        DocumentoTipo = y.DocumentoTipo,
+                        Documento = y.Documento
+                    });
+                });
+
+
+            var result0 = await _accountController.Get(-1);
+            var result1 = await _accountController.Get(3);
+
+            var resultBR0 = Assert.IsType<BadRequestObjectResult>(result0.Result);
+            var resultBR1 = Assert.IsType<BadRequestObjectResult>(result1.Result);
+
+            var value0 = Assert.IsType<string>(resultBR0.Value);
+            var value1 = Assert.IsType<string>(resultBR1.Value);
+
+            Assert.Equal($"No existe la pagina: {-1} ", value0);
+            Assert.Equal($"No existe la pagina: {3} ", value1);
+
         }
     }
 
