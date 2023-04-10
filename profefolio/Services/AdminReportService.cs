@@ -1,4 +1,6 @@
-﻿using profefolio.Models;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using profefolio.Models;
 using profefolio.Models.Entities;
 using profefolio.Repository;
 
@@ -9,15 +11,29 @@ namespace profefolio.Services
         private bool disposedValue;
 
         private readonly ApplicationDbContext _db;
+        private readonly UserManager<Persona> _userManager;
 
-        public AdminReportService(ApplicationDbContext db)
+        public AdminReportService(ApplicationDbContext db, UserManager<Persona> userManager)
         {
             _db = db;
+            _userManager = userManager;
         }
 
-        public Task<IEnumerable<Persona>> GetUsersAssignedOrNotWithRoles(bool band, string role)
+        public IEnumerable<Persona> GetUsersAssignedOrNotWithRoles(bool band, string role)
         {
-            throw new NotImplementedException();
+            var queryBase = _db.Colegios
+                    .Include(c => c.personas)
+                    .Where(c => !c.Deleted && c.personas != null)
+                    .Select(p => p.personas)
+                    .Where(p => !p.Deleted);
+            if (band)
+            {
+                return queryBase
+                    .Where( p =>  _userManager.IsInRoleAsync(p, role).Result);    
+            }
+
+            return queryBase;
+
         }
 
         protected virtual void Dispose(bool disposing)

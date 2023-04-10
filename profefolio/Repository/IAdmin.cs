@@ -4,6 +4,6 @@ namespace profefolio.Repository
 {
     public interface IAdmin : IDisposable
     {
-        Task<IEnumerable<Persona>> GetUsersAssignedOrNotWithRoles(bool band, string role);
+        IEnumerable<Persona> GetUsersAssignedOrNotWithRoles(bool band, string role);
     }
 }
