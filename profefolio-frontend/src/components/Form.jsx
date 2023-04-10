@@ -1,6 +1,8 @@
 import React from 'react';
 import { Col, Container, Row, Form } from "react-bootstrap";
 import Info from "./componentsStyles/StyledForm";
+import IconButton, {IconButton as Icon} from "./IconButton";
+import TextButton, {TextButton as Text} from "./TextButton";
 
 const types = ["text", "date", "password", "textarea"];
 const check = ["checkbox", "radio", "switch"];
@@ -44,6 +46,9 @@ function Form(inputs, buttons, info, onSubmit){
 
     */
 
+    /* Formato del prop buttons
+    */
+
     return (
         <>
         <Container>    
@@ -84,9 +89,25 @@ function Form(inputs, buttons, info, onSubmit){
                     </Form.Group>
                 </Col>
             })}</Row>}
+            <Row>
             {buttons && buttons.map((button) => {
-
+                <Col>
+                    {button?.style && button?.type && button?.onclick && button?.style == "icon" && 
+                        <IconButton
+                            enabled={button?.enabled ?? false}
+                            buttonType={button.type}
+                            onClick={button.onclick}
+                        ></IconButton>}
+                    {button?.style && button?.type && button?.onclick && button?.style == "text" && 
+                        <TextButton
+                            enabled={button?.enabled ?? false}
+                            buttonType={button.type}
+                            onClick={button.onclick}
+                        ></TextButton>
+                    }
+                </Col>
             })}
+            </Row>
         </Container>
         </>
     )
