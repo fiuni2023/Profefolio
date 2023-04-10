@@ -14,8 +14,9 @@ function ModalVerColegios(props) {
 
   const handleClose = () => {
     setNombre("");
-    setNombreAdministrador("");
+    setIdAdmin("");
     setApellidoAdministrador("");
+    setNombreAdministrador("");
     setShow(false);
 
   }
@@ -24,7 +25,7 @@ function ModalVerColegios(props) {
   const nav = useNavigate();
   const [administradores, setAdministradores] = useState([]);
   // eslint-disable-next-line no-unused-vars
-  const [idAdmin, setIdAdmin] = useState(0);
+  const [idAdmin, setIdAdmin] = useState("");
 
 
   //Lamada de los datos del colegio
@@ -107,8 +108,8 @@ function ModalVerColegios(props) {
       toast.error("revisa los datos, los campos deben ser completados")
     else {
       axios.put(`${APILINK}/api/Colegios/${datoIdColegio}`, {
-        nombre,
-        idAdmin
+        "nombre":nombre,
+        "personaId":idAdmin
 
       }, {
         headers: {
@@ -116,16 +117,14 @@ function ModalVerColegios(props) {
         }
       })
         .then(response => {
-          //triggerState(response.data)
-
-
-
           setColegio("");
           toast.success("Editado exitoso");
-
           handleClose(false);
+          handleUpdate();
           setNombre("");
           setIdAdmin("");
+          setApellidoAdministrador("");
+          setNombreAdministrador("");
 
         })
         .catch(error => {
@@ -157,7 +156,7 @@ function ModalVerColegios(props) {
       .then(response => {
         triggerState(response.data.dataList);
 
-    
+
 
 
       })
@@ -168,7 +167,7 @@ function ModalVerColegios(props) {
 
   //Eliminar colegio
   const handleDelete = (id) => {
-   
+
     axios.delete(`${APILINK}/api/Colegios/${datoIdColegio}`, {
       headers: {
         Authorization: `Bearer ${getToken()}`,
@@ -215,7 +214,7 @@ function ModalVerColegios(props) {
 
           <Modal.Footer>
             <Button className={styles.btnCancelar} onClick={handleDelete}>Si</Button>
-           
+
           </Modal.Footer>
         </Modal>
       </div>
@@ -274,7 +273,7 @@ function ModalVerColegios(props) {
                 <Button className={styles.btnGuardar} onClick={handleEdit}>Editar</Button>
               </div>
               : <div>
-               
+
                 <Button className={styles.btnGuardar} onClick={handleSubmit}>Guardar</Button>
               </div>
             }

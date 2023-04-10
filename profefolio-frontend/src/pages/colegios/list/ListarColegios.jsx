@@ -18,7 +18,7 @@ function ListarColegios() {
   const nav = useNavigate()
 
   const navigate = useNavigate()
-  const [totalPage, setTotalPage] = useState(0);
+  
   const [currentPage, setCurrentPage] = useState(0);
   const [colegios, setColegios] = useState([]);
   const [datoIdColegio, setDatoIdColegio] = useState(null);
@@ -37,7 +37,6 @@ function ListarColegios() {
 
         .then(response => {
           setColegios(response.data.dataList); //Guarda los datos
-          setTotalPage(response.data.totalPage);//Total de Paginas
           setCurrentPage(response.data.currentPage);//Actualiza la pagina en donde estan los datos
           setNext(response.data.next);
           console.log(response.data);
@@ -67,11 +66,7 @@ function ListarColegios() {
     )
 }
 
-  const handleCurrentPage = (idPage) => {
-    setCurrentPage(idPage);
-
-
-  }
+ 
   const [show, setShow] = useState(false);
   const [disabled, setDisabled] = useState(true);
   const handleShow = (id) => {
