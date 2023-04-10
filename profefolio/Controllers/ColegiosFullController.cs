@@ -30,7 +30,7 @@ namespace profefolio.Controllers
 
         [HttpGet]
         [Route("page/{page}")]
-        public ActionResult<DataListDTO<Colegio>> GetColegios(int page)
+        public ActionResult<DataListDTO<ColegioFullDTO>> GetColegios(int page)
         {
             var query = _colegioService.GetAll(page, _cantPorPag);
             int totalPage = (int)Math.Ceiling((double)_colegioService.Count() / _cantPorPag);
