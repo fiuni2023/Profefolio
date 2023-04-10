@@ -6,4 +6,4 @@ const H1 = styled.h1`
     font-weight: 600;
     font-size: 1.8em;`;
 
-export default {H1};    
+export {H1};    

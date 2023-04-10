@@ -62,4 +62,4 @@ const TD = styled.td`
         border-top: 1px #C2C2C2 solid;
     `;
 
-export default {Table, Thead, Tbody, TR, TH, TD};    
+export {Table, Thead, Tbody, TR, TH, TD};    
