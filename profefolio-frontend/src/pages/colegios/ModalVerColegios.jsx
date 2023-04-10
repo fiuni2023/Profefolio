@@ -10,7 +10,7 @@ import { toast } from 'react-hot-toast';
 
 function ModalVerColegios(props) {
 
-  const { datoIdColegio, setShow, show, disabled, setDisabled, triggerState } = props;
+  const { datoIdColegio, setShow, show, disabled, setDisabled, triggerState, page } = props;
 
   const handleClose = () => {
     setNombre("");
@@ -24,9 +24,8 @@ function ModalVerColegios(props) {
   const nav = useNavigate();
   const [administradores, setAdministradores] = useState([]);
   // eslint-disable-next-line no-unused-vars
-  const [nombreColegio, setNombreColegio] = useState(colegio.nombre || "");
   const [idAdmin, setIdAdmin] = useState(0);
-  
+
 
   //Lamada de los datos del colegio
 
@@ -102,10 +101,10 @@ function ModalVerColegios(props) {
     console.log(idAdmin);
     // eslint-disable-next-line no-mixed-operators, eqeqeq
 
-    console.log(typeof(idAdmin) );
+    console.log(typeof (idAdmin));
 
-    if (nombre === "" || idAdmin==="") 
-    toast.error("revisa los datos, los campos deben ser completados")
+    if (nombre === "" || idAdmin === "")
+      toast.error("revisa los datos, los campos deben ser completados")
     else {
       axios.put(`${APILINK}/api/Colegios/${datoIdColegio}`, {
         nombre,
@@ -118,9 +117,9 @@ function ModalVerColegios(props) {
       })
         .then(response => {
           //triggerState(response.data)
-          
 
-          
+
+
           setColegio("");
           toast.success("Editado exitoso");
 
@@ -130,9 +129,9 @@ function ModalVerColegios(props) {
 
         })
         .catch(error => {
-          if(typeof(error.response.data) === "string"? true:false){
+          if (typeof (error.response.data) === "string" ? true : false) {
             toast.error(error.response.data)
-          }else{
+          } else {
             toast.error(error.response.data?.errors.Email[0])
           }
         });
@@ -148,20 +147,78 @@ function ModalVerColegios(props) {
   const handleIDAdmin = (event) => {
     setIdAdmin(event.target.value)
   }
+  const handleUpdate = () => {
+    axios.get(`${APILINK}/api/ColegiosFull/page/${page}`, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+      }
+    })
 
+      .then(response => {
+        triggerState(response.data.dataList);
+
+    
+
+
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }
 
   //Eliminar colegio
   const handleDelete = (id) => {
-    //https://localhost:7063/api/Colegios/5
+   
+    axios.delete(`${APILINK}/api/Colegios/${datoIdColegio}`, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+      }
+    })
+
+      .then(response => {
+        handleUpdate();
+        setColegio(response.data)
+        toast.success("Eliminado exitoso");
+        handleClose(false);
+        handleCloseModal2(false);
+
+
+
+      })
+      .catch(error => {
+        console.error(error);
+      });
 
   }
   const [nombre, setNombre] = useState(colegio.nombre || "");
   const [nombreAdministrador, setNombreAdministrador] = useState(colegio.nombreAdministrador || "");
   const [apellido, setApellidoAdministrador] = useState(colegio.apellido || "");
+  const [showModal2, setShowModal2] = useState(false);
 
+  const handleCloseModal2 = () => setShowModal2(false);
+  const handleShowModal2 = () => setShowModal2(true);
   return (
 
     <>
+      <div
+        className="modal show"
+        style={{ display: 'block', position: 'initial' }}
+      >
+        <Modal show={showModal2} onHide={handleCloseModal2}>
+          <Modal.Header id={styles.modalContenido} closeButton>
+            <Modal.Title>Eliminar Colegio</Modal.Title>
+          </Modal.Header>
+
+          <Modal.Body id={styles.modalContenido}>
+            <p>Desea eliminar el Colegio {nombre}</p>
+          </Modal.Body>
+
+          <Modal.Footer>
+            <Button className={styles.btnCancelar} onClick={handleDelete}>Si</Button>
+           
+          </Modal.Footer>
+        </Modal>
+      </div>
       <div>
 
         <Modal show={show} onHide={handleClose}>
@@ -213,11 +270,11 @@ function ModalVerColegios(props) {
           <Modal.Footer >
             {disabled
               ? <div>
-                <Button className={styles.btnCancelar} onClick={handleDelete} >Eliminar</Button>
+                <Button className={styles.btnCancelar} onClick={handleShowModal2} >Eliminar</Button>
                 <Button className={styles.btnGuardar} onClick={handleEdit}>Editar</Button>
               </div>
               : <div>
-                <Button className={styles.btnCancelar} onClick={handleClose} >Cancelar</Button>
+               
                 <Button className={styles.btnGuardar} onClick={handleSubmit}>Guardar</Button>
               </div>
             }
