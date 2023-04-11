@@ -68,7 +68,7 @@ namespace profefolio.Controllers
             {
                 try
                 {
-                    var profesor = await _personasService.FindById(id);
+                    var profesor = await _personasService.FindByIdAndRole(id, PROFESOR_ROLE);
                     return Ok(_mapper.Map<PersonaResultDTO>(profesor));
                 }
                 catch (FileNotFoundException e)
