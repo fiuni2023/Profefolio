@@ -273,7 +273,8 @@ namespace profefolio.Controllers
         {
             try
             {
-                bool result = await _personasService.DeleteUser(id);
+
+                bool result = await _personasService.DeleteByUserAndRole(id, PROFESOR_ROLE);
                 return result ? Ok() : NotFound();
             }
             catch (Exception e)
