@@ -315,7 +315,15 @@ public class ProfesorTestingGets
         Mock<IColegioProfesor> serviceColProf = new Mock<IColegioProfesor>();
 
         ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object, serviceColProf.Object);
+        var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+        {
+            new Claim(ClaimTypes.Name, "user1")
+        }, "mock"));
 
+        controller.ControllerContext = new ControllerContext()
+        {
+            HttpContext = new DefaultHttpContext() { User = user }
+        };
         profefolio.Models.Entities.Persona persona = new profefolio.Models.Entities.Persona()
         {
             Id = "sd65sd6asd46asd4a6s5da6sd4a6s5da6",
@@ -334,7 +342,8 @@ public class ProfesorTestingGets
             PhoneNumber = "0985123456"
         };
 
-        service.Setup(a => a.FindById(It.IsAny<string>())).ReturnsAsync(persona);
+        service.Setup(a => a.FindByIdAndRole(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(persona);
+        serviceColProf.Setup(a => a.Exist(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(true);
 
         mapper.Setup(m => m.Map<PersonaResultDTO>(It.IsAny<Persona>())).Throws(new Exception("Error inesperado"));
 
@@ -367,7 +376,7 @@ public class ProfesorTestingGets
         {
             HttpContext = new DefaultHttpContext() { User = user }
         };
-        
+
         service.Setup(a => a.FindByIdAndRole(It.IsAny<string>(), It.IsAny<string>())).Throws(new FileNotFoundException());
         serviceColProf.Setup(a => a.Exist(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(false);
 
