@@ -12,6 +12,8 @@ using profefolio.Models.DTOs;
 using profefolio.Models.DTOs.Persona;
 using profefolio.Services;
 using profefolio.Models.Entities;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
 
 namespace TestProfefolio.Profesor;
 
@@ -340,7 +342,7 @@ public class ProfesorTestingGets
 
         var jsonResult = Assert.IsType<BadRequestObjectResult>(result.Result);
         Assert.Equal("Error inesperado", jsonResult.Value);
-        
+
     }
 
 
@@ -356,8 +358,18 @@ public class ProfesorTestingGets
 
         ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object, serviceColProf.Object);
 
+        var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+        {
+            new Claim(ClaimTypes.Name, "user1")
+        }, "mock"));
 
-        service.Setup(a => a.FindById(It.IsAny<string>())).Throws(new FileNotFoundException());
+        controller.ControllerContext = new ControllerContext()
+        {
+            HttpContext = new DefaultHttpContext() { User = user }
+        };
+        
+        service.Setup(a => a.FindByIdAndRole(It.IsAny<string>(), It.IsAny<string>())).Throws(new FileNotFoundException());
+        serviceColProf.Setup(a => a.Exist(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(false);
 
         var result = await controller.Get(id);
 
