@@ -6,7 +6,7 @@ import TextButton from "./TextButton";
 
 const types = ["text", "date", "password", "textarea"];
 const checks = ["checkbox", "radio", "switch"];
-const inputs = ["text", "date", "password", "textarea", "select"];
+const allinputs = ["text", "date", "password", "textarea", "select"];
 
 /*  Formato del prop "inputs", es un arreglo de objetos, todas las opciones son opcionales, pero algunas son necesarias 
     para mostrar los inputs, por ejemplo, para mostrar un grupo de selects, se necesita que el input tenga un key value 
@@ -73,21 +73,20 @@ function Form (form, onSubmit){
         setInfo(form?.form?.info ?? null);
     } , [form])
 
-    const handleSubmit = (event) => {
+    const handleSubmit = (event, func) => {
         const cform = event.currentTarget;
-        event.preventDefault();
-        console.log(event.target);
-        if (cform.checkValidity() === false) {
-          event.stopPropagation();
-        }
-    
+        if (cform.checkValidity() === false && !validated) {
+            event.preventDefault();
+            event.stopPropagation();
+        } 
         setValidated(true);
+        
       };
 
     return (
         <>
         <SContainer>
-            <RForm noValidate validated={validated}>     
+            <RForm id="My-form" validated={validated} >     
                 {info && <Info>{info}</Info>}
                 {inputs && <Row>{inputs.map((input, i) => {
                     return (
@@ -107,6 +106,7 @@ function Form (form, onSubmit){
                                         >      
                                     </SControl>}
                                 {input?.type === "select" && 
+                                <div>
                                     <SSelect 
                                         required={input?.required ?? false}
                                         key={input?.key ?? ""}
@@ -116,12 +116,15 @@ function Form (form, onSubmit){
                                             {input?.select?.options && input.select.options.map((option) => {
                                                 return ( <option key={`${option?.value ?? i}-${option?.text ?? 'option'}`} value={option?.value}>{option?.text}</option> )
                                             })}
-                                    </SSelect>}
-                                {input?.type && inputs.includes(input.type) && input?.required && 
-                                    <RForm.Control.Feedback type="invalid" tooltip> 
-                                        {input?.invalidText ?? "Este campo es necesario"} 
-                                    </RForm.Control.Feedback>
+                                    </SSelect>
+                                    {input?.type && allinputs.includes(input.type) && input?.required && 
+                                        <RForm.Control.Feedback type="invalid" tooltip> 
+                                            {input?.invalidText ?? "Este campo es necesario"} 
+                                        </RForm.Control.Feedback>
+                                    }
+                                </div>
                                 }
+                                
                                 {input?.type && input?.key && checks.includes(input?.type) && input?.checks && 
                                     <Row>
                                         {input.checks.map((check) => {
@@ -164,7 +167,7 @@ function Form (form, onSubmit){
                                     key={i} 
                                     enabled={button?.enabled ?? true}
                                     buttonType={button.type}
-                                    onClick={button?.submit ? handleSubmit : button.onclick.action}
+                                    onClick={button?.submit ? (event) => handleSubmit(event, button.onclick) : button.onclick.action}
                                 ></TextButton>
                             }
                         </div>
