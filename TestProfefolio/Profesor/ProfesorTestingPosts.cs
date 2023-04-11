@@ -22,8 +22,9 @@ public class ProfesorTestingPosts
         Mock<IMapper> mapper = new Mock<IMapper>();
         Mock<IPersona> service = new Mock<IPersona>();
         Mock<IRol> rol = new Mock<IRol>();
+        Mock<IColegioProfesor> serviceColProf = new Mock<IColegioProfesor>();
 
-        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object, serviceColProf.Object);
 
         profefolio.Models.Entities.Persona persona = new profefolio.Models.Entities.Persona()
         {
@@ -115,8 +116,9 @@ public class ProfesorTestingPosts
         Mock<IMapper> mapper = new Mock<IMapper>();
         Mock<IPersona> service = new Mock<IPersona>();
         Mock<IRol> rol = new Mock<IRol>();
+        Mock<IColegioProfesor> serviceColProf = new Mock<IColegioProfesor>();
 
-        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object, serviceColProf.Object);
 
 
         PersonaDTO personaDto = new PersonaDTO()
@@ -147,8 +149,9 @@ public class ProfesorTestingPosts
         Mock<IMapper> mapper = new Mock<IMapper>();
         Mock<IPersona> service = new Mock<IPersona>();
         Mock<IRol> rol = new Mock<IRol>();
+        Mock<IColegioProfesor> serviceColProf = new Mock<IColegioProfesor>();
 
-        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object, serviceColProf.Object);
 
         PersonaDTO personaDto = new PersonaDTO()
         {
@@ -180,8 +183,9 @@ public class ProfesorTestingPosts
         Mock<IMapper> mapper = new Mock<IMapper>();
         Mock<IPersona> service = new Mock<IPersona>();
         Mock<IRol> rol = new Mock<IRol>();
+        Mock<IColegioProfesor> serviceColProf = new Mock<IColegioProfesor>();
 
-        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object, serviceColProf.Object);
         controller.ModelState.AddModelError("model_error", "El modelo es erroneo");
         PersonaDTO personaDto = new PersonaDTO()
         {
@@ -211,8 +215,9 @@ public class ProfesorTestingPosts
         Mock<IMapper> mapper = new Mock<IMapper>();
         Mock<IPersona> service = new Mock<IPersona>();
         Mock<IRol> rol = new Mock<IRol>();
+        Mock<IColegioProfesor> serviceColProf = new Mock<IColegioProfesor>();
 
-        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object, serviceColProf.Object);
 
         PersonaDTO personaDto = new PersonaDTO()
         {
@@ -242,8 +247,9 @@ public class ProfesorTestingPosts
         Mock<IMapper> mapper = new Mock<IMapper>();
         Mock<IPersona> service = new Mock<IPersona>();
         Mock<IRol> rol = new Mock<IRol>();
+        Mock<IColegioProfesor> serviceColProf = new Mock<IColegioProfesor>();
 
-        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object, serviceColProf.Object);
 
         PersonaDTO personaDto = new PersonaDTO()
         {
@@ -274,8 +280,9 @@ public class ProfesorTestingPosts
         Mock<IMapper> mapper = new Mock<IMapper>();
         Mock<IPersona> service = new Mock<IPersona>();
         Mock<IRol> rol = new Mock<IRol>();
+        Mock<IColegioProfesor> serviceColProf = new Mock<IColegioProfesor>();
 
-        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object, serviceColProf.Object);
 
         PersonaDTO personaDto = new PersonaDTO()
         {
@@ -306,8 +313,9 @@ public class ProfesorTestingPosts
         Mock<IMapper> mapper = new Mock<IMapper>();
         Mock<IPersona> service = new Mock<IPersona>();
         Mock<IRol> rol = new Mock<IRol>();
+        Mock<IColegioProfesor> serviceColProf = new Mock<IColegioProfesor>();
 
-        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object, serviceColProf.Object);
 
         profefolio.Models.Entities.Persona persona = new profefolio.Models.Entities.Persona()
         {
@@ -372,8 +380,9 @@ public class ProfesorTestingPosts
         Mock<IMapper> mapper = new Mock<IMapper>();
         Mock<IPersona> service = new Mock<IPersona>();
         Mock<IRol> rol = new Mock<IRol>();
+        Mock<IColegioProfesor> serviceColProf = new Mock<IColegioProfesor>();
 
-        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object, serviceColProf.Object);
 
         profefolio.Models.Entities.Persona persona = new profefolio.Models.Entities.Persona()
         {
@@ -437,8 +446,9 @@ public class ProfesorTestingPosts
         Mock<IMapper> mapper = new Mock<IMapper>();
         Mock<IPersona> service = new Mock<IPersona>();
         Mock<IRol> rol = new Mock<IRol>();
+        Mock<IColegioProfesor> serviceColProf = new Mock<IColegioProfesor>();
 
-        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object, serviceColProf.Object);
 
         profefolio.Models.Entities.Persona persona = new profefolio.Models.Entities.Persona()
         {
@@ -502,8 +512,9 @@ public class ProfesorTestingPosts
         Mock<IMapper> mapper = new Mock<IMapper>();
         Mock<IPersona> service = new Mock<IPersona>();
         Mock<IRol> rol = new Mock<IRol>();
+        Mock<IColegioProfesor> serviceColProf = new Mock<IColegioProfesor>();
 
-        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object, serviceColProf.Object);
 
         profefolio.Models.Entities.Persona persona = new profefolio.Models.Entities.Persona()
         {
@@ -568,8 +579,9 @@ public class ProfesorTestingPosts
         Mock<IMapper> mapper = new Mock<IMapper>();
         Mock<IPersona> service = new Mock<IPersona>();
         Mock<IRol> rol = new Mock<IRol>();
+        Mock<IColegioProfesor> serviceColProf = new Mock<IColegioProfesor>();
 
-        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object, serviceColProf.Object);
 
         profefolio.Models.Entities.Persona persona = new profefolio.Models.Entities.Persona()
         {
