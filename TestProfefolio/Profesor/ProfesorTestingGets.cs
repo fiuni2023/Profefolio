@@ -253,6 +253,16 @@ public class ProfesorTestingGets
         Mock<IColegioProfesor> serviceColProf = new Mock<IColegioProfesor>();
 
         ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object, serviceColProf.Object);
+        
+        var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+        {
+            new Claim(ClaimTypes.Name, "user1")
+        }, "mock"));
+
+        controller.ControllerContext = new ControllerContext()
+        {
+            HttpContext = new DefaultHttpContext() { User = user }
+        };
 
         profefolio.Models.Entities.Persona persona = new profefolio.Models.Entities.Persona()
         {
@@ -285,7 +295,8 @@ public class ProfesorTestingGets
             Telefono = "0985123456"
         };
 
-        service.Setup(a => a.FindById(It.IsAny<string>())).ReturnsAsync(persona);
+        service.Setup(a => a.FindByIdAndRole(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(persona);
+        serviceColProf.Setup(a => a.Exist(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(true);
 
         mapper.Setup(m => m.Map<PersonaResultDTO>(It.IsAny<Persona>())).Returns(dto);
 
