@@ -5,12 +5,12 @@ import { BiArrowBack } from "react-icons/bi"
 import { Table } from "../../components/Table";
 import ModalAgregarColegios from './AgregarColegios'
 import axios from "axios";
-import Pagination from 'react-bootstrap/Pagination';
+
 import { useGeneralContext } from "../../context/GeneralContext";
 import APILINK from "../../components/link";
 import ModalVerColegios from './ModalVerColegios'
 import { AiOutlineEye } from "react-icons/ai";
-
+import Paginations from "../../components/Paginations"
 function ListarColegios() {
 
   const { getToken, verifyToken, cancan } = useGeneralContext()
@@ -22,7 +22,7 @@ function ListarColegios() {
   const [currentPage, setCurrentPage] = useState(0);
   const [colegios, setColegios] = useState([]);
   const [datoIdColegio, setDatoIdColegio] = useState('');
-
+  const [next, setNext]=useState(false);
   useEffect(() => {
 
     verifyToken()
@@ -39,7 +39,7 @@ function ListarColegios() {
           setColegios(response.data.dataList); //Guarda los datos
           setTotalPage(response.data.totalPage);//Total de Paginas
           setCurrentPage(response.data.currentPage);//Actualiza la pagina en donde estan los datos
-          
+          setNext(response.data.next);
         })
         .catch(error => {
           console.error(error);
@@ -52,21 +52,9 @@ function ListarColegios() {
   const doFetch = (colegio) => {
     setColegios([...colegios, colegio])
   }
-  let items = [];
+  
 
-  for (let number = 0; number < totalPage; number++) {
-    items.push(
-      <Pagination.Item key={number} >
-        {number}
-      </Pagination.Item>,
-    );
-  }
-
-  const handleCurrentPage = (idPage) => {
-    setCurrentPage(idPage);
-
-
-  }
+  
   const [show, setShow] = useState(false);
   const [disabled, setDisabled] = useState(true);
   const handleShow = (id) => {
@@ -102,7 +90,8 @@ function ListarColegios() {
               )
             }}
           />
-          <Pagination onClick={e => handleCurrentPage(e.target.text)} size="sm">{items} </Pagination>
+        
+          <Paginations totalPage={totalPage} currentPage={currentPage} setCurrentPage={setCurrentPage} next={next} ></Paginations>
         </div>
 
         <ModalVerColegios idColegio={datoIdColegio} show={show} setShow={setShow} disabled={disabled} setDisabled={setDisabled}></ModalVerColegios>
