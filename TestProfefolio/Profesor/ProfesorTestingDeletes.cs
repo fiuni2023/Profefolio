@@ -18,7 +18,7 @@ public class ProfesorTestingDeletes
 
         ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
 
-        service.Setup(s => s.DeleteUser(It.IsAny<string>())).ReturnsAsync(true);
+        service.Setup(s => s.DeleteByUserAndRole(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(true);
 
         var result = await controller.Delete(id);
         Assert.IsType<OkResult>(result);
