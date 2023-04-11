@@ -121,7 +121,9 @@ public class ProfesorTestingGets
         Mock<IMapper> mapper = new Mock<IMapper>();
         Mock<IPersona> service = new Mock<IPersona>();
         Mock<IRol> rol = new Mock<IRol>();
-        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
+        Mock<IColegioProfesor> serviceColProf = new Mock<IColegioProfesor>();
+
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object, serviceColProf.Object);
 
 
         int cantPages = (int)Math.Ceiling((double)profesores.Count() / 20);
@@ -170,7 +172,9 @@ public class ProfesorTestingGets
         Mock<IMapper> mapper = new Mock<IMapper>();
         Mock<IPersona> service = new Mock<IPersona>();
         Mock<IRol> rol = new Mock<IRol>();
-        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
+        Mock<IColegioProfesor> serviceColProf = new Mock<IColegioProfesor>();
+
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object, serviceColProf.Object);
 
 
 
@@ -193,7 +197,9 @@ public class ProfesorTestingGets
         Mock<IMapper> mapper = new Mock<IMapper>();
         Mock<IPersona> service = new Mock<IPersona>();
         Mock<IRol> rol = new Mock<IRol>();
-        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
+        Mock<IColegioProfesor> serviceColProf = new Mock<IColegioProfesor>();
+
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object, serviceColProf.Object);
 
 
         int cantPages = (int)Math.Ceiling((double)profesores.Count() / 20);
@@ -242,7 +248,9 @@ public class ProfesorTestingGets
         Mock<IMapper> mapper = new Mock<IMapper>();
         Mock<IPersona> service = new Mock<IPersona>();
         Mock<IRol> rol = new Mock<IRol>();
-        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
+        Mock<IColegioProfesor> serviceColProf = new Mock<IColegioProfesor>();
+
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object, serviceColProf.Object);
 
         profefolio.Models.Entities.Persona persona = new profefolio.Models.Entities.Persona()
         {
@@ -302,7 +310,9 @@ public class ProfesorTestingGets
         Mock<IMapper> mapper = new Mock<IMapper>();
         Mock<IPersona> service = new Mock<IPersona>();
         Mock<IRol> rol = new Mock<IRol>();
-        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
+        Mock<IColegioProfesor> serviceColProf = new Mock<IColegioProfesor>();
+
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object, serviceColProf.Object);
 
         profefolio.Models.Entities.Persona persona = new profefolio.Models.Entities.Persona()
         {
@@ -342,8 +352,9 @@ public class ProfesorTestingGets
         Mock<IMapper> mapper = new Mock<IMapper>();
         Mock<IPersona> service = new Mock<IPersona>();
         Mock<IRol> rol = new Mock<IRol>();
+        Mock<IColegioProfesor> serviceColProf = new Mock<IColegioProfesor>();
 
-        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object, serviceColProf.Object);
 
 
         service.Setup(a => a.FindById(It.IsAny<string>())).Throws(new FileNotFoundException());
@@ -361,8 +372,9 @@ public class ProfesorTestingGets
         Mock<IMapper> mapper = new Mock<IMapper>();
         Mock<IPersona> service = new Mock<IPersona>();
         Mock<IRol> rol = new Mock<IRol>();
+        Mock<IColegioProfesor> serviceColProf = new Mock<IColegioProfesor>();
 
-        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object, serviceColProf.Object);
 
         var result = await controller.Get(id);
 
