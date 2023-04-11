@@ -77,6 +77,10 @@ namespace profefolio.Services
                 !cp.Deleted 
                 && cp.Colegio != null
                 && cp.PersonaId != null
+                && cp.Persona != null
+                && !cp.Persona.Deleted
+                && !cp.Colegio.Deleted
+                && !cp.Colegio.personas.Deleted
                 && cp.PersonaId.Equals(idProfesor) 
                 && cp.Colegio.personas.Email.Equals(emailAdmin));
         }
