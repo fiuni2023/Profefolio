@@ -11,7 +11,6 @@ using System.Security.Claims;
 namespace profefolio.Controllers
 {
     [ApiController]
-    [Authorize(Roles = "Administrador de Colegio,Profesor")]
     [Route("api/[controller]")]
     public class ProfesorController : ControllerBase
     {
@@ -32,6 +31,7 @@ namespace profefolio.Controllers
 
 
         [HttpGet("page/{page:int}")]
+        [Authorize(Roles = "Administrador de Colegio")]
         public async Task<ActionResult<DataListDTO<PersonaResultDTO>>> Get(int page)
         {
             if (page < 0)
@@ -62,6 +62,7 @@ namespace profefolio.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "Administrador de Colegio,Profesor")]
         public async Task<ActionResult<PersonaResultDTO>> Get(string id)
         {
             if (id.Length > 0)
@@ -89,6 +90,7 @@ namespace profefolio.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Administrador de Colegio")]
         public async Task<ActionResult<PersonaResultDTO>> Post([FromBody] PersonaDTO dto)
         {
 
@@ -158,6 +160,7 @@ namespace profefolio.Controllers
 
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Administrador de Colegio")]
         public async Task<ActionResult<PersonaResultDTO>> Put(string id, [FromBody] PersonaEditDTO dto)
         {
             if (ModelState.IsValid)
@@ -180,19 +183,24 @@ namespace profefolio.Controllers
                 }
                 try
                 {
-                    
+
                     var persona = await _personasService.FindByIdAndRole(id, PROFESOR_ROLE);
-                    if(persona == null){
+                    if (persona == null)
+                    {
                         return NotFound("No se encontro el profesor");
                     }
-                    var name = User.FindFirstValue(ClaimTypes.Name);
+                    var adminEmail = User.FindFirstValue(ClaimTypes.Name);
 
+                    if (!(await _colegioProfesor.Exist(id, adminEmail)))
+                    {
+                        return BadRequest("No pertenece a su colegio");
+                    }
                     if ((!persona.Email.Equals(dto.Email)) && await _personasService.ExistMail(dto.Email))
                     {
                         return BadRequest("El email nuevo que queres actualizar ya existe");
                     }
-                    
-                    MapOldToNew(persona, dto, name);
+
+                    MapOldToNew(persona, dto, adminEmail);
                     //var personaNew = _mapper.Map<Persona>(dto);
 
 
@@ -227,6 +235,7 @@ namespace profefolio.Controllers
 
         [HttpPut]
         [Route("change/password/{id}")]
+        [Authorize(Roles = "Administrador de Colegio,Profesor")]
         public async Task<ActionResult> ChangePassword(string id, [FromBody] Models.DTOs.Auth.ChangePasswordDTO dto)
         {
             if (!ModelState.IsValid)
@@ -270,6 +279,7 @@ namespace profefolio.Controllers
             }
         }
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Administrador de Colegio")]
         public async Task<ActionResult> Delete(string id)
         {
             try
