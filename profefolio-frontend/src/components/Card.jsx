@@ -1,13 +1,20 @@
 import React from 'react';
 import { Col } from 'react-bootstrap';
-import {SCard, SBody, SHeader} from "../components/componentsStyles/StyledCard";
+import {SCard, SBody, SHeader, STitle} from "../components/componentsStyles/StyledCard";
+import Tabla from './Tabla';
 
 function Card(cardInfo){
     return (
-        <Col xs={cardInfo?.xs ?? 12} sm={cardInfo?.sm ?? 12} md={cardInfo?.md ?? 6} lg={cardInfo?.lg ?? 4}>
+        <Col xs={cardInfo?.cardInfo?.xs ?? 12} sm={cardInfo?.cardInfo?.sm ?? 12} md={cardInfo?.cardInfo?.md ?? 6} lg={cardInfo?.cardInfo?.lg ?? 4}>
             <SCard>
-                {cardInfo?.header && <SHeader>{cardInfo?.header?.title}</SHeader>}
-                {cardInfo?.body && <SBody></SBody>}
+                {cardInfo?.cardInfo?.header && 
+                    <SHeader background={cardInfo?.cardInfo?.background ?? "gray"}>
+                        {cardInfo?.cardInfo?.header?.title}</SHeader>}
+                {cardInfo?.cardInfo?.body && 
+                    <SBody background={cardInfo?.cardInfo?.background ?? "gray"}>
+                        {cardInfo?.cardInfo?.body?.title && <STitle>{cardInfo.cardInfo.body.title}</STitle>}
+                        {cardInfo?.cardInfo?.body?.table && <Tabla datosTabla={cardInfo?.cardInfo?.body?.table}></Tabla>}
+                    </SBody>}
             </SCard>
         </Col>
     )

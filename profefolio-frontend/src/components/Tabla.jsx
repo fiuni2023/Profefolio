@@ -1,6 +1,7 @@
 import React from 'react';
 import {Table, Thead, Tbody, TR, TH, TD} from "./componentsStyles/StyledTable"; 
 
+
 /*Estructura del datosTabla todos los campos son opcionales
 
 datosTabla = {
@@ -19,30 +20,30 @@ datosTabla = {
 
 */ 
 function Tabla({datosTabla, selected}){
-
+    console.log(datosTabla);
     return (
         <>
         {datosTabla &&(
             <Table  key = {datosTabla?.tituloTabla}
                     width={datosTabla?.tableWidth ? datosTabla.tableWidth : "100%"}>
                 {datosTabla?.titulos && (
-                    <Thead  background={datosTabla?.colorHeader ? datosTabla.ColorHeader : "#DDDDDD"}><TR key="thead">
+                    <Thead small={datosTabla?.small ?? false}  background={datosTabla?.colorHeader ? datosTabla.ColorHeader : "#DDDDDD"}><TR key="thead">
                         {datosTabla.titulos.map((titulo, index) => {
-                            let titulos = null;
-                            titulos = (
+                            return (
                                 <TH key={titulo?.titulo}>{titulo?.titulo}</TH>
                             );
-                            return titulos;
                         })}
                     </TR></Thead>
                 )}
                 {datosTabla?.filas && (
-                    <Tbody>               
+                    <Tbody small={datosTabla?.small ?? false}>               
                         {datosTabla.filas.map((fila, index)=>{
-                            return <TR  key = {index} 
+                            return <TR  small={datosTabla?.small ?? false}
+                                        key = {index} 
                                         selected={fila?.fila?.id === selected ? true : false} 
                                         clickable={datosTabla?.clickable ? true : false}
-                                        onClick = {datosTabla?.clickable ? ()=>datosTabla.clickable?.action(fila?.fila) : null}>{fila?.datos.map((dato, indexDato) =>{
+                                        onClick = {datosTabla?.clickable ? ()=>datosTabla.clickable?.action(fila?.fila) : null}>
+                                            {fila?.datos.map((dato, indexDato) =>{
                                 return <TD
                                 key={dato.dato ? dato.dato : indexDato}>{dato?.dato}</TD>
                             })}</TR>

@@ -1,5 +1,27 @@
 import styled from 'styled-components';
 
+const handleSmall = (small, element) => {
+    switch (element) {
+        case "h-fsize":
+            return small ? "0.9em" : "1em";
+        case "h-fheiht":
+            return small ? "1em" : "2em";
+        case "h-align":
+            return small ? "center" : "left";    
+        case "r-background":
+            return small ? "#FFFFFF" : "#9C8CBB";
+        case "b-fsize":
+            return small ? "0.9em" : "1em"; 
+        case "b-fheiht":
+            return small ? "1em" : "2em";
+        case "b-align":
+            return small ? "center" : "left";                 
+        default: 
+            return "";    
+    }
+  };
+
+
 const Table = styled.table`
         width: ${props => props.width};
         box-shadow: 2px 2px 10px 2px rgba(0, 0, 0, 0.1);
@@ -20,26 +42,29 @@ const Table = styled.table`
     `;
 const Thead = styled.thead`
         background: ${props => props.background};
-        height: "2em";
+        height: 2em;
         font-family: 'Poppins';
         font-style: normal;
         font-weight: 500;
-        font-size: 1em;
-        line-height: 2em;
+        font-size:  ${({ small }) => handleSmall(small, "h-fsize")} ;
+        line-height: ${({ small }) => handleSmall(small, "h-fheiht")};
+        text-align: ${({ small }) => handleSmall(small, "h-align")};
     `;
 const Tbody = styled.tbody`
         font-family: 'Poppins';
         font-style: normal;
         font-weight: 300;
-        font-size: 1em;
-        line-height: 2em;
+        font-size:  ${({ small }) => handleSmall(small, "b-fsize")} ;
+        line-height:  ${({ small }) => handleSmall(small, "b-fheiht")} ;
+        text-align: ${({ small }) => handleSmall(small, "b-align")} ;
 
 `;
 const TR = styled.tr`
+    background: #FFFFFF;
     ${props =>
         props.selected &&
         `
-            background: #9C8CBB;
+            background: ${({ small }) => handleSmall(small, "r-background")};
         `}
         ${props => 
         props.clickable &&
