@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Col, Container, Row, Form as RForm} from "react-bootstrap";
-import {Info} from "./componentsStyles/StyledForm";
+import { Col, Row, Form as RForm} from "react-bootstrap";
+import {SContainer, SRow, Info, SControl, SLabel, SSelect, SCheck, SGroup} from "./componentsStyles/StyledForm";
 import IconButton from "./IconButton";
 import TextButton from "./TextButton";
 
@@ -72,25 +72,25 @@ function Form (form){
 
     return (
         <>
-        <Container>    
+        <SContainer>    
             {info && <Info>{info}</Info>}
             {inputs && <Row>{inputs.map((input, i) => {
                 return (
                     <Col key={input?.key ?? i} xs={input?.xs ?? 12} sm={input?.sm ?? 12} md={input?.md ?? 12} lg={input?.lg ?? 12} >
-                        <RForm.Group key={input?.key ?? i} controlId={input?.key ?? input?.label ?? ""}>
-                            {input?.label && <RForm.Label key={input.label}>{input.label}</RForm.Label>}
+                        <SGroup key={input?.key ?? i} controlId={input?.key ?? input?.label ?? ""}>
+                            {input?.label && <SLabel key={input.label}>{input.label}</SLabel>}
                             
                             {input?.type && types.includes(input.type) && 
-                                <RForm.Control 
+                                <SControl 
                                     key={input?.key ?? i}
                                     onChange={input?.onChange ?? null}
                                     type= {input.type}
                                     placeholder={input?.placeholder ?? ""} 
                                     disabled={input?.disabled ?? false} 
                                     readOnly={input?.disabled ?? false}>      
-                                </RForm.Control>}
+                                </SControl>}
                             {input?.type === "select" && 
-                                <RForm.Select 
+                                <SSelect 
                                     key={input?.key ?? ""}
                                     disabled={input?.disabled ?? false} 
                                     onChange={input?.onChange ?? null}>
@@ -98,33 +98,35 @@ function Form (form){
                                         {input?.select?.options && input.select.options.map((option) => {
                                             return ( <option key={`${option?.value ?? i}-${option?.text ?? 'option'}`} value={option?.value}>{option?.text}</option> )
                                         })}
-                                </RForm.Select>}
+                                </SSelect>}
                             {input?.type && input?.key && checks.includes(input?.type) && input?.checks && 
                             <Row>
                                 {input.checks.map((check) => {
                                     return (
-                                        <Col key={check?.id ?? ""} xs={check?.xs ?? "auto"} sm={check?.sm ?? "auto"} md={check?.md ?? "auto"} lg={check?.lg ?? "auto"}><RForm.Check
-                                            key={check?.id ?? ""}
-                                            name={input.key}
-                                            type={input.type}
-                                            disabled={check?.disabled ?? false}
-                                            id={check?.id}
-                                            label={check?.label ?? ""}>
-                                        </RForm.Check></Col>
+                                        <Col key={check?.id ?? ""} xs={check?.xs ?? "auto"} sm={check?.sm ?? "auto"} md={check?.md ?? "auto"} lg={check?.lg ?? "auto"}>
+                                            <SCheck
+                                                key={check?.id ?? ""}
+                                                name={input.key}
+                                                type={input.type}
+                                                disabled={check?.disabled ?? false}
+                                                id={check?.id}
+                                                label={check?.label ?? ""}>
+                                            </SCheck>
+                                        </Col>
                                     )
                                 })}
                             </Row>
                             }
 
                             {input?.text && <RForm.Text key="additional" muted>{input.text}</RForm.Text>}
-                        </RForm.Group>
+                        </SGroup>
                     </Col>
                 )
             })}</Row>}
-            <Row>
+            <SRow>
             {buttons && buttons.map((button, i) => {
                 return (
-                    <Col key={i}>
+                    <div key={i}>
                         {button?.style === "icon" && 
                             <IconButton
                                 key={i} 
@@ -140,11 +142,11 @@ function Form (form){
                                 onClick={button.onclick.action}
                             ></TextButton>
                         }
-                    </Col>
+                    </div>
                 )
             })}
-            </Row>
-        </Container>
+            </SRow>
+        </SContainer>
         </>
     )
 

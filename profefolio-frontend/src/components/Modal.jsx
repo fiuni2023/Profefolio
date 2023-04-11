@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {H1} from './componentsStyles/StyledModal';
+import {H1, Text, SHeader} from './componentsStyles/StyledModal';
 import { Modal as BModal } from 'react-bootstrap';
 import {Form} from './Form';
 
@@ -33,11 +33,11 @@ function Modal({datosModal, isOpen}){
 
         {datosModal && (
             <BModal show={open} onHide={handleClose}>
-                <BModal.Header closeButton onClick={handleClose}>
+                <SHeader closeButton onClick={handleClose}>
                     {datosModal?.header && <H1>{datosModal.header}</H1>}
-                </BModal.Header>
+                </SHeader>
                 <BModal.Body>
-                    {datosModal?.text && <div>{datosModal.text}</div>}
+                    {datosModal?.text && <Text>{datosModal.text}</Text>}
                     {datosModal?.form && <Form 
                             form={form}
                         ></Form>}
