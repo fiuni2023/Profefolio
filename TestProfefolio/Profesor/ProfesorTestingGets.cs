@@ -256,7 +256,9 @@ public class ProfesorTestingGets
         
         var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
         {
-            new Claim(ClaimTypes.Name, "user1")
+            new Claim(ClaimTypes.Name, "user1"),
+            new Claim(ClaimTypes.Role, "Profesor")
+
         }, "mock"));
 
         controller.ControllerContext = new ControllerContext()
