@@ -18,16 +18,18 @@ namespace profefolio.Controllers
         private readonly IMapper _mapper;
         private readonly IPersona _personasService;
         private readonly IRol _rolService;
+        private readonly IColegioProfesor _colegioProfesor;
         private const int CantPorPage = 20;
 
         private const string PROFESOR_ROLE = "Profesor";
 
 
-        public ProfesorController(IMapper mapper, IPersona personasService, IRol rolService)
+        public ProfesorController(IMapper mapper, IPersona personasService, IRol rolService, IColegioProfesor colProf)
         {
             _mapper = mapper;
             _personasService = personasService;
             _rolService = rolService;
+            _colegioProfesor = colProf;
         }
 
 
@@ -68,7 +70,13 @@ namespace profefolio.Controllers
             {
                 try
                 {
+                    var adminEmail = User.FindFirstValue(ClaimTypes.Name); 
                     var profesor = await _personasService.FindByIdAndRole(id, PROFESOR_ROLE);
+                    //verificar que el profesor exista en la relacion colegioProfesor por medio de su id y el email del administrador
+                    if(profesor!=null && ! (await _colegioProfesor.Exist(profesor.Id, adminEmail))){
+                        return NotFound();
+                    }
+
                     return Ok(_mapper.Map<PersonaResultDTO>(profesor));
                 }
                 catch (FileNotFoundException e)
