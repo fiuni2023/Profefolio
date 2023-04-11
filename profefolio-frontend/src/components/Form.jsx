@@ -6,6 +6,7 @@ import TextButton from "./TextButton";
 
 const types = ["text", "date", "password", "textarea"];
 const checks = ["checkbox", "radio", "switch"];
+const inputs = ["text", "date", "password", "textarea", "select"];
 
 /*  Formato del prop "inputs", es un arreglo de objetos, todas las opciones son opcionales, pero algunas son necesarias 
     para mostrar los inputs, por ejemplo, para mostrar un grupo de selects, se necesita que el input tenga un key value 
@@ -21,6 +22,7 @@ inputs = [
         type: tipo de input: text, date, password, textarea, checkbox, radio, select, switch
         placeholder: placeholder del input
         disabled: boolean que indica si esta desactivado, o se puede editar, por defecto es false
+        required: boolean si el input es requerido
         onChange: { action: si es necesario, se puede mandar un callback para cuando el input cambia }
         select: {
             default: valor por defecto, que se usa solo como placeholder
@@ -59,10 +61,11 @@ inputs = [
     ]
 */
 
-function Form (form){
+function Form (form, onSubmit){
     const [inputs, setInputs] = useState(form?.form?.inputs ?? null); 
     const [buttons, setButtons] = useState(form?.form?.buttons ?? null);
     const [info, setInfo] = useState(form?.form?.info ?? null); 
+    const [validated, setValidated] = useState(false);
     
     useEffect(() => {
         setInputs(form?.form?.inputs ?? null);
@@ -70,82 +73,105 @@ function Form (form){
         setInfo(form?.form?.info ?? null);
     } , [form])
 
+    const handleSubmit = (event) => {
+        const cform = event.currentTarget;
+        event.preventDefault();
+        console.log(event.target);
+        if (cform.checkValidity() === false) {
+          event.stopPropagation();
+        }
+    
+        setValidated(true);
+      };
+
     return (
         <>
-        <SContainer>    
-            {info && <Info>{info}</Info>}
-            {inputs && <Row>{inputs.map((input, i) => {
-                return (
-                    <Col key={input?.key ?? i} xs={input?.xs ?? 12} sm={input?.sm ?? 12} md={input?.md ?? 12} lg={input?.lg ?? 12} >
-                        <SGroup key={input?.key ?? i} controlId={input?.key ?? input?.label ?? ""}>
-                            {input?.label && <SLabel key={input.label}>{input.label}</SLabel>}
-                            
-                            {input?.type && types.includes(input.type) && 
-                                <SControl 
-                                    key={input?.key ?? i}
-                                    onChange={input?.onChange ?? null}
-                                    type= {input.type}
-                                    placeholder={input?.placeholder ?? ""} 
-                                    disabled={input?.disabled ?? false} 
-                                    readOnly={input?.disabled ?? false}>      
-                                </SControl>}
-                            {input?.type === "select" && 
-                                <SSelect 
-                                    key={input?.key ?? ""}
-                                    disabled={input?.disabled ?? false} 
-                                    onChange={input?.onChange ?? null}>
-                                        {input?.select?.default && <option key="default">{input?.select?.default}</option>}
-                                        {input?.select?.options && input.select.options.map((option) => {
-                                            return ( <option key={`${option?.value ?? i}-${option?.text ?? 'option'}`} value={option?.value}>{option?.text}</option> )
+        <SContainer>
+            <RForm noValidate validated={validated}>     
+                {info && <Info>{info}</Info>}
+                {inputs && <Row>{inputs.map((input, i) => {
+                    return (
+                        <Col key={input?.key ?? i} xs={input?.xs ?? 12} sm={input?.sm ?? 12} md={input?.md ?? 12} lg={input?.lg ?? 12} >
+                            <SGroup key={input?.key ?? i} controlId={input?.key ?? input?.label ?? ""}>
+                                {input?.label && <SLabel key={input.label}>{input.label}{input?.required ? " *" : ""}</SLabel>}
+                                
+                                {input?.type && types.includes(input.type) && 
+                                    <SControl 
+                                        key={input?.key ?? i}
+                                        onChange={input?.onChange ?? null}
+                                        type= {input.type}
+                                        placeholder={input?.placeholder ?? ""} 
+                                        disabled={input?.disabled ?? false} 
+                                        readOnly={input?.disabled ?? false}
+                                        required={input?.required ?? false}
+                                        >      
+                                    </SControl>}
+                                {input?.type === "select" && 
+                                    <SSelect 
+                                        required={input?.required ?? false}
+                                        key={input?.key ?? ""}
+                                        disabled={input?.disabled ?? false} 
+                                        onChange={input?.onChange ?? null}>
+                                            {input?.select?.default && <option key="default">{input?.select?.default}</option>}
+                                            {input?.select?.options && input.select.options.map((option) => {
+                                                return ( <option key={`${option?.value ?? i}-${option?.text ?? 'option'}`} value={option?.value}>{option?.text}</option> )
+                                            })}
+                                    </SSelect>}
+                                {input?.type && inputs.includes(input.type) && input?.required && 
+                                    <RForm.Control.Feedback type="invalid" tooltip> 
+                                        {input?.invalidText ?? "Este campo es necesario"} 
+                                    </RForm.Control.Feedback>
+                                }
+                                {input?.type && input?.key && checks.includes(input?.type) && input?.checks && 
+                                    <Row>
+                                        {input.checks.map((check) => {
+                                            return (
+                                                <Col key={check?.id ?? ""} xs={check?.xs ?? "auto"} sm={check?.sm ?? "auto"} md={check?.md ?? "auto"} lg={check?.lg ?? "auto"}>
+                                                    <SCheck
+                                                        key={check?.id ?? ""}
+                                                        name={input.key}
+                                                        type={input.type}
+                                                        disabled={check?.disabled ?? false}
+                                                        id={check?.id}
+                                                        label={check?.label ?? ""}
+                                                        value={check?.value ?? 0}
+                                                        isInvalid={false}>
+                                                    </SCheck>
+                                                </Col>
+                                            )
                                         })}
-                                </SSelect>}
-                            {input?.type && input?.key && checks.includes(input?.type) && input?.checks && 
-                            <Row>
-                                {input.checks.map((check) => {
-                                    return (
-                                        <Col key={check?.id ?? ""} xs={check?.xs ?? "auto"} sm={check?.sm ?? "auto"} md={check?.md ?? "auto"} lg={check?.lg ?? "auto"}>
-                                            <SCheck
-                                                key={check?.id ?? ""}
-                                                name={input.key}
-                                                type={input.type}
-                                                disabled={check?.disabled ?? false}
-                                                id={check?.id}
-                                                label={check?.label ?? ""}>
-                                            </SCheck>
-                                        </Col>
-                                    )
-                                })}
-                            </Row>
-                            }
+                                    </Row>
+                                }
 
-                            {input?.text && <RForm.Text key="additional" muted>{input.text}</RForm.Text>}
-                        </SGroup>
-                    </Col>
-                )
-            })}</Row>}
-            <SRow>
-            {buttons && buttons.map((button, i) => {
-                return (
-                    <div key={i}>
-                        {button?.style === "icon" && 
-                            <IconButton
-                                key={i} 
-                                enabled={button?.enabled ?? false}
-                                buttonType={button.type}
-                                onClick={button.onclick.action}
-                            ></IconButton>}
-                        {button?.style === "text" && 
-                            <TextButton
-                                key={i} 
-                                enabled={button?.enabled ?? true}
-                                buttonType={button.type}
-                                onClick={button.onclick.action}
-                            ></TextButton>
-                        }
-                    </div>
-                )
-            })}
-            </SRow>
+                                {input?.text && <RForm.Text key="additional" muted>{input.text}</RForm.Text>}
+                            </SGroup>
+                        </Col>
+                    )
+                })}</Row>}
+                <SRow>
+                {buttons && buttons.map((button, i) => {
+                    return (
+                        <div key={i}>
+                            {button?.style === "icon" && 
+                                <IconButton
+                                    key={i} 
+                                    enabled={button?.enabled ?? false}
+                                    buttonType={button.type}
+                                    onClick={button.onclick.action}
+                                ></IconButton>}
+                            {button?.style === "text" && 
+                                <TextButton
+                                    key={i} 
+                                    enabled={button?.enabled ?? true}
+                                    buttonType={button.type}
+                                    onClick={button?.submit ? handleSubmit : button.onclick.action}
+                                ></TextButton>
+                            }
+                        </div>
+                    )
+                })}
+                </SRow>
+            </RForm> 
         </SContainer>
         </>
     )

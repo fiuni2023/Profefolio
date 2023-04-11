@@ -57,14 +57,24 @@ const SCheck = styled(FormCheck)`
     color: #282828;
     margin: 0;
     margin-left: calc(var(--bs-gutter-x) * .5);
-
-    .form-check-input:checked{
-        background-color: #F0544F;
-        border-color: #F5918E;
+    
+    .form-check-input:valid{
+        color: #282828 !important;
+        border-color: #A6A6A6 !important;
     }
 
     .form-check-input:hover{
-        border-color: #F5918E;
+        border-color: #F5918E !important;
+    }
+
+    .form-check-label{
+        color: #282828 !important;
+    }
+
+    
+    .form-check-input:checked{
+        background-color: #F0544F !important;
+        border-color: #F5918E !important;
     }
     
 `;
