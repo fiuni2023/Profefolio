@@ -180,10 +180,11 @@ namespace profefolio.Controllers
                 }
                 try
                 {
-                    //if (dto.Password == null) return BadRequest("Password es requerido");
-
-                    var persona = await _personasService.FindById(id);
-
+                    
+                    var persona = await _personasService.FindByIdAndRole(id, PROFESOR_ROLE);
+                    if(persona == null){
+                        return NotFound("No se encontro el profesor");
+                    }
                     var name = User.FindFirstValue(ClaimTypes.Name);
 
                     if ((!persona.Email.Equals(dto.Email)) && await _personasService.ExistMail(dto.Email))
