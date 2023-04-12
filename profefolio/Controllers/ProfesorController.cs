@@ -165,14 +165,15 @@ namespace profefolio.Controllers
             {
                 var adminEmail = User.FindFirstValue(ClaimTypes.Name);
                 var admin = await _personasService.FindByEmail(adminEmail);
-                
-                if(admin == null || admin.Colegio == null){
+
+                if (admin == null || admin.Colegio == null)
+                {
                     return BadRequest("Hay problemas con sus credenciales");
                 }
-                
+
                 var result = await _profesorService.Add(entity, dto.Password, PROFESOR_ROLE, admin.Colegio.Id);
-    
-                
+
+
                 if (result != null)
                 {
                     return Ok(_mapper.Map<PersonaResultDTO>(result));

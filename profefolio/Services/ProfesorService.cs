@@ -91,21 +91,24 @@ namespace profefolio.Services
                 }
 
                 // asignar el profesor al colegio indicado
-                var colProfesor = new ColegioProfesor(){
+                var colProfesor = new ColegioProfesor()
+                {
                     ColegioId = idColegio,
                     PersonaId = prof.Id
                 };
                 _context.Entry(colProfesor).State = EntityState.Added;
                 var colProfResult = await Task.FromResult(colProfesor);
 
-                if(colProfResult == null){
+                if (colProfResult == null)
+                {
                     await transaction.RollbackAsync();
                     throw new HttpRequestException("No se pudo asignar el profesor al colegio");
                 }
-                
+
                 await transaction.CommitAsync();
-                
-                var result = new ColegioProfesorResultOfCreatedDTO(){
+
+                var result = new ColegioProfesorResultOfCreatedDTO()
+                {
                     Id = colProfResult.Id,
                     IdColegio = colProfResult.ColegioId,
                     IdProfesor = colProfResult.PersonaId,
