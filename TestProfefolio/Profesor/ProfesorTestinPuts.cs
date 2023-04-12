@@ -89,7 +89,7 @@ public class ProfesorTestinPuts
 
         var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
             {
-                new Claim(ClaimTypes.Name, "user@gmail.com")
+                new Claim(ClaimTypes.Name, "user@gmail.com"),
             }, "role"));
 
         controller.ControllerContext = new ControllerContext()
@@ -97,7 +97,9 @@ public class ProfesorTestinPuts
             HttpContext = new DefaultHttpContext() { User = user }
         };
 
-        service.Setup(p => p.FindById(It.IsAny<string>())).ReturnsAsync(personaOld);
+        service.Setup(p => p.FindByIdAndRole(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(personaOld);
+
+        serviceColProf.Setup(a => a.Exist(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(true);
 
         service.Setup(p => p.ExistMail(It.IsAny<string>())).ReturnsAsync(true);
 
@@ -352,10 +354,11 @@ public class ProfesorTestinPuts
             HttpContext = new DefaultHttpContext() { User = user }
         };
 
-        service.Setup(p => p.FindById(It.IsAny<string>())).ReturnsAsync(personaOld);
+        service.Setup(p => p.FindByIdAndRole(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(personaOld);
 
         service.Setup(p => p.ExistMail(It.IsAny<string>())).ReturnsAsync(true);
 
+        serviceColProf.Setup(a => a.Exist(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(true);
 
         var result = await controller.Put(id, personaDtoNew);
 
@@ -421,9 +424,11 @@ public class ProfesorTestinPuts
             HttpContext = new DefaultHttpContext() { User = user }
         };
 
-        service.Setup(p => p.FindById(It.IsAny<string>())).ReturnsAsync(personaOld);
+        service.Setup(p => p.FindByIdAndRole(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(personaOld);
 
         service.Setup(p => p.ExistMail(It.IsAny<string>())).ReturnsAsync(true);
+
+        serviceColProf.Setup(a => a.Exist(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(true);
 
         service.Setup(p => p.EditProfile(It.IsAny<Persona>())).ThrowsAsync(new FileNotFoundException(""));
 
@@ -491,9 +496,11 @@ public class ProfesorTestinPuts
             HttpContext = new DefaultHttpContext() { User = user }
         };
 
-        service.Setup(p => p.FindById(It.IsAny<string>())).ReturnsAsync(personaOld);
+        service.Setup(p => p.FindByIdAndRole(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(personaOld);
 
         service.Setup(p => p.ExistMail(It.IsAny<string>())).ReturnsAsync(true);
+
+        serviceColProf.Setup(a => a.Exist(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(true);
 
         service.Setup(p => p.EditProfile(It.IsAny<Persona>())).ThrowsAsync(new BadHttpRequestException(""));
 
@@ -561,9 +568,11 @@ public class ProfesorTestinPuts
             HttpContext = new DefaultHttpContext() { User = user }
         };
 
-        service.Setup(p => p.FindById(It.IsAny<string>())).ReturnsAsync(personaOld);
+        service.Setup(p => p.FindByIdAndRole(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(personaOld);
 
         service.Setup(p => p.ExistMail(It.IsAny<string>())).ReturnsAsync(true);
+
+        serviceColProf.Setup(a => a.Exist(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(true);
 
         service.Setup(p => p.EditProfile(It.IsAny<Persona>())).ThrowsAsync(new Exception(""));
 
@@ -630,9 +639,11 @@ public class ProfesorTestinPuts
             HttpContext = new DefaultHttpContext() { User = user }
         };
 
-        service.Setup(p => p.FindById(It.IsAny<string>())).ReturnsAsync(personaOld);
+        service.Setup(p => p.FindByIdAndRole(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(personaOld);
 
         service.Setup(p => p.ExistMail(It.IsAny<string>())).ReturnsAsync(true);
+
+        serviceColProf.Setup(a => a.Exist(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(true);
 
         service.Setup(p => p.EditProfile(It.IsAny<Persona>()));
 
