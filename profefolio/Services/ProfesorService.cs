@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using profefolio.Models;
+using profefolio.Models.DTOs.ColegioProfesor;
 using profefolio.Models.Entities;
 using profefolio.Repository;
 
@@ -63,7 +64,7 @@ namespace profefolio.Services
             throw new NotImplementedException();
         }
 
-        public async Task<Persona> Save(Persona p, string password, string rol, int idColegio)
+        public async Task<ColegioProfesorResultOfCreatedDTO> Add(Persona p, string password, string rol, int idColegio)
         {
             using var transaction = _context.Database.BeginTransaction();
 
@@ -95,11 +96,31 @@ namespace profefolio.Services
                     PersonaId = prof.Id
                 };
                 _context.Entry(colProfesor).State = EntityState.Added;
-                await Task.FromResult(colProfesor);
+                var colProfResult = await Task.FromResult(colProfesor);
+
+                if(colProfResult == null){
+                    await transaction.RollbackAsync();
+                    throw new HttpRequestException("No se pudo asignar el profesor al colegio");
+                }
                 
                 await transaction.CommitAsync();
-                //retorna el profesor
-                return prof;
+                
+                var result = new ColegioProfesorResultOfCreatedDTO(){
+                    Id = colProfResult.Id,
+                    IdColegio = colProfResult.ColegioId,
+                    IdProfesor = colProfResult.PersonaId,
+                    Nombre = prof.Nombre,
+                    Apellido = prof.Apellido,
+                    Email = prof.Email,
+                    Direccion = prof.Direccion,
+                    Documento = prof.Documento,
+                    DocumentoTipo = prof.DocumentoTipo,
+                    Genero = prof.EsM ? "Masculino" : "Feminino",
+                    Nacimiento = prof.Nacimiento,
+                    Telefono = prof.PhoneNumber,
+                };
+
+                return result;
             }
             catch (Exception e)
             {
