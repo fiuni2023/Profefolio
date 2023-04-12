@@ -26,10 +26,9 @@ namespace profefolio.Models.Entities
 
         [Required(ErrorMessage = "Se tiene que agregar el anho")]
         public int Anho { get; set; }
-
-        
         public Ciclo? Ciclo { get; set; }
         public Colegio? Colegio { get; set; }
+        public ICollection<MateriaLista>? MateriaListas { get; set; }
 
     }
 }

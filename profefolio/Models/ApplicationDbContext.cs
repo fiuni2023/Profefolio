@@ -136,16 +136,17 @@ public class ApplicationDbContext : IdentityDbContext<Persona>
         .WithMany(p => p.ColegiosAlumnos)
         .HasForeignKey(p => p.PersonaId);
 
+        modelBuilder.Entity<Clase>()
+            .HasMany(c => c.MateriaListas)
+            .WithOne(c => c.Clase)
+            .HasForeignKey(c => c.ClaseId)
+            .HasPrincipalKey(c => c.Id);
+
     }
 
 
     public DbSet<Materia> Materias { get; set; }
-    public DbSet<Colegio> Colegios
-    {
-        get;
-        set;
-    }
-
+    public DbSet<Colegio> Colegios{ get;set; }
     public DbSet<Ciclo> Ciclos { get; set; }
     public DbSet<Clase> Clases { get; set; }
     public DbSet<ColegioProfesor> ColegiosProfesors { get; set; }
