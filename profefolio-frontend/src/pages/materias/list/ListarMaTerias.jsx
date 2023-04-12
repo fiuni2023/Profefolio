@@ -79,10 +79,6 @@ const btndetalles = (id) => {
   setId(id);
 };
 
-const handleCloseModal = () => {
-  setShowModal(false);
-  setMaterias([]);
-};
 
 
   const handlePrevClick = () => {
