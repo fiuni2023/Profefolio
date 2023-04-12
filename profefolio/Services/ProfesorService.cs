@@ -64,13 +64,12 @@ namespace profefolio.Services
             throw new NotImplementedException();
         }
 
-        public async Task<ColegioProfesorResultOfCreatedDTO> Add(Persona profesor, string password, string rol, int idColegio)
+        public async Task<(ColegioProfesorResultOfCreatedDTO? resultado, Exception? ex)> Add(Persona profesor, string password, string rol, int idColegio)
         {
             using var transaction = _context.Database.BeginTransaction();
 
             try
             {
-
                 // crear el usuario
                 await _userManager.CreateAsync(profesor, password);
 
@@ -79,7 +78,8 @@ namespace profefolio.Services
                 if (prof == null)
                 {
                     await transaction.RollbackAsync();
-                    throw new HttpRequestException("No se pudo crear el usuario");
+                    var ex = new HttpRequestException("No se pudo crear el usuario");
+                    return (null, ex);
                 }
 
                 //asignar rol al usuario creado
@@ -87,7 +87,8 @@ namespace profefolio.Services
                 if (rolResult == null || (rolResult.Errors.Any()))
                 {
                     await transaction.RollbackAsync();
-                    throw new HttpRequestException("No se pudo crear el usuario porque no se pudo asignar el rol");
+                    var ex = new HttpRequestException("No se pudo crear el usuario porque no se pudo asignar el rol");
+                    return (null, ex);
                 }
 
                 // asignar el profesor al colegio indicado
@@ -102,15 +103,15 @@ namespace profefolio.Services
 
                 _context.Entry(colProfesor).State = EntityState.Added;
                 var colProfResult = await Task.FromResult(colProfesor);
-                
+
                 await _context.SaveChangesAsync();
-                
-                Console.WriteLine($"\n\nId Colegio Profesor{colProfResult.Id}\n\n");
-                
+
+
                 if (colProfResult == null)
                 {
                     await transaction.RollbackAsync();
-                    throw new HttpRequestException("No se pudo asignar el profesor al colegio");
+                    var ex = new HttpRequestException("No se pudo asignar el profesor al colegio");
+                    return (null, ex);
                 }
 
                 await transaction.CommitAsync();
@@ -131,7 +132,7 @@ namespace profefolio.Services
                     Telefono = prof.PhoneNumber,
                 };
 
-                return result;
+                return (result, null);
             }
             catch (Exception e)
             {
