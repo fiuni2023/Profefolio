@@ -138,7 +138,8 @@ namespace profefolio.Services
             {
                 await transaction.RollbackAsync();
                 Console.WriteLine($"{e}");
-                throw new Exception($"{e}");
+                var ex = new Exception($"{e}");
+                return (null, ex);
             }
 
         }

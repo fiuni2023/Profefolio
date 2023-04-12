@@ -174,9 +174,12 @@ namespace profefolio.Controllers
                 var result = await _profesorService.Add(entity, dto.Password, PROFESOR_ROLE, admin.Colegio.Id);
 
 
-                if (result != null)
+                if (result.resultado != null)
                 {
                     return Ok(result);
+                }
+                if (result.ex != null){
+                    return BadRequest(result.ex.Message);
                 }
             }
             catch (BadHttpRequestException e)
