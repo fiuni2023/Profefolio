@@ -31,7 +31,7 @@ namespace profefolio.Controllers
             if (!ModelState.IsValid) 
                 return Ok(dto);
 
-            var userId = User.Identity.GetUserId();
+            var username = User.Identity.Name;
 
 
             foreach (var profes in dto.IdProfesores)
@@ -40,11 +40,41 @@ namespace profefolio.Controllers
                 {
                     ClaseId = dto.IdClase,
                     ProfesorId = profes,
-                    MateriaId = dto.IdMateria
+                    MateriaId = dto.IdMateria,
+                    Created  = DateTime.Now,
+                    CreatedBy = username
                 });
             }
 
-            return Ok(dto);
+            await _materiaListaService.Save();
+
+            return Ok();
         }
+
+        [HttpGet]
+        [Route("Administrador de Colegio")]
+        public async Task<ActionResult> GetAllTemp()
+        {
+
+            var query = _materiaListaService
+                .GetAll(0, 0)
+                .ToList()
+                .ConvertAll(p => new MateriaListDTO
+                {
+                    Id = p.Id,
+                    IdProfesor = p.Profesor.Email,
+                    Clase = p.Clase.Nombre,
+                    Materia = p.Materia.Nombre_Materia,
+                });
+
+
+            return Ok(query);
+
+
+
+            return Ok();
+        }
+
+
     }
 }

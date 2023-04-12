@@ -50,7 +50,10 @@ namespace profefolio.Services
 
         public IEnumerable<MateriaLista> GetAll(int page, int cantPorPag)
         {
-            throw new NotImplementedException();
+            return _db.MateriaListas
+                .Include(p => p.Clase)
+                .Include(p => p.Profesor)
+                .Include(p => p.Materia);
         }
 
         public async Task Save()
