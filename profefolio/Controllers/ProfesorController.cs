@@ -229,20 +229,25 @@ namespace profefolio.Controllers
                 }
                 try
                 {
-                    //if (dto.Password == null) return BadRequest("Password es requerido");
 
-                    var persona = await _personasService.FindById(id);
+                    var persona = await _personasService.FindByIdAndRole(id, PROFESOR_ROLE);
+                    if (persona == null)
+                    {
+                        return NotFound("No se encontro el profesor");
+                    }
+                    var adminEmail = User.FindFirstValue(ClaimTypes.Name);
 
-                    var name = User.FindFirstValue(ClaimTypes.Name);
-
+                    // se verifica que el profesor sea del colegio del administrador
+                    if (!(await _colegioProfesor.Exist(id, adminEmail)))
+                    {
+                        return BadRequest("No pertenece a su colegio");
+                    }
                     if ((!persona.Email.Equals(dto.Email)) && await _personasService.ExistMail(dto.Email))
                     {
                         return BadRequest("El email nuevo que queres actualizar ya existe");
                     }
-
-                    MapOldToNew(persona, dto, name);
-                    //var personaNew = _mapper.Map<Persona>(dto);
-
+                    
+                    MapOldToNew(persona, dto, adminEmail);
 
                     var query = await _personasService.EditProfile(persona);
 
@@ -319,8 +324,6 @@ namespace profefolio.Controllers
             }
         }
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Administrador de Colegio")]
-
         public async Task<ActionResult> Delete(string id)
         {
             try

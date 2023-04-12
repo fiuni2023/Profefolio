@@ -96,7 +96,7 @@ namespace profefolio.Controllers
                     return BadRequest($"No existe la pagina: {page} ");
                 }
 
-                result.CantItems = cantItmed;
+                result.CantItems = colProf.ToList().Count;
                 result.CurrentPage = page;
                 result.Next = result.CurrentPage + 1 < cantPages;
                 result.DataList = _mapper.Map<List<ColegioProfesorByIdResult>>(colProf.ToList());

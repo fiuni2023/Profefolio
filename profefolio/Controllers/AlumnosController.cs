@@ -18,6 +18,7 @@ public class AlumnosController : ControllerBase
     private readonly IMapper _mapper;
     private readonly IRol _rolService;
     private const int CantPerPage = 20;
+    const string rol = "Alumno";
 
     public AlumnosController(IPersona personasService, IMapper mapper, IRol rolService)
     {
@@ -70,7 +71,7 @@ public class AlumnosController : ControllerBase
         [Route("page/{page:int}")]
         public async Task<ActionResult<DataListDTO<AlumnoGetDTO>>> Get(int page)
         {
-            const string rol = "Alumno";
+            
             var query = await _personasService
                 .FilterByRol(page, CantPerPage, rol);
 
@@ -114,7 +115,7 @@ public class AlumnosController : ControllerBase
         [Route("{id}")]
         public async Task<ActionResult> Delete(string id)
         {
-            return await _personasService.DeleteUser(id) ? Ok() : NotFound();
+            return await _personasService.DeleteByUserAndRole(id, rol) ? Ok() : NotFound();
         }
         
         
