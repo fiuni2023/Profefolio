@@ -11,7 +11,7 @@ import Partidos from "../partidos";
 import CreatePartidos from "../partidos/components/create";
 import PartidosEdit from "../partidos/components/edit";
 import PartidosList from "../partidos/components/list";
-import Colegios from "../colegios/index.jsx"
+
 import ListarColegios from "../colegios/ListarColegios.jsx";
 import CreateProfesor from "../profesor/components/create/CreateModal.jsx";
 import ListarMaterias from "../materias/list/ListarMaTerias.jsx"
@@ -47,8 +47,8 @@ const App = () => {
                                     <Route path="list" element={<ListAdministrador />} />
                                 </Route>
 
-                                <Route path="/colegios" element={<Colegios />}>
-                                    <Route path="list" element={<ListarColegios/>}/>
+                                <Route path="/colegios/list" element={<ListarColegios />}>
+                                    
                                 </Route>
 
 
