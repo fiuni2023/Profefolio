@@ -136,6 +136,7 @@ public class ApplicationDbContext : IdentityDbContext<Persona>
         .WithMany(p => p.ColegiosAlumnos)
         .HasForeignKey(p => p.PersonaId);
 
+        //Definimos la relacion entre Clase y Listas de Materias
         modelBuilder.Entity<Clase>()
             .HasMany(c => c.MateriaListas)
             .WithOne(c => c.Clase)
@@ -151,4 +152,5 @@ public class ApplicationDbContext : IdentityDbContext<Persona>
     public DbSet<Clase> Clases { get; set; }
     public DbSet<ColegioProfesor> ColegiosProfesors { get; set; }
     public DbSet<ColegiosAlumnos> ColegiosAlumnos { get; set; }
+    public DbSet<MateriaLista> MateriaListas { get; set; }
 }
