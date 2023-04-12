@@ -23,6 +23,7 @@ function ListDetallesMateria(props) {
 
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
 
+
   const handleDeleteClick = () => {
     setShowConfirmDialog(true);
   };
@@ -51,6 +52,8 @@ function ListDetallesMateria(props) {
 
   const handleClose = () => {
     setShowConfirmDialog(false);
+
+   
   };
  
 
@@ -123,12 +126,16 @@ function ListDetallesMateria(props) {
     setShowModal(false);
     setReadOnly(true);
     setEliminarVisible(true);
+
+    setNombreMateria("");
   };
 
   function closeModal() {
     setShowModal(false);
     setReadOnly(true);
     setEliminarVisible(true);
+
+    setNombreMateria("");
   }
   
   const handleCancelar = () => {
@@ -148,7 +155,6 @@ function ListDetallesMateria(props) {
   useEffect(() => {
 
     if(showModal){
-      
     axios.get(`${APILINK}/api/Materia/${id}`, {
       headers: {
         Authorization: `Bearer ${getToken()}`,
@@ -160,8 +166,8 @@ function ListDetallesMateria(props) {
         setMaterias(response.data);
         const { nombre_Materia} = response.data;
         setNombreMateria(nombre_Materia);
-       
 
+      
 
       })
       .catch(error => {
@@ -186,9 +192,6 @@ const [nombre_Materia, setNombreMateria] = useState(materia.nombre_Materia || ''
     
       <Modal.Body className={styles.contentModal} >
 
-         
-   
-      
             <Row>
               <Col>
               <Form.Label >Nombre Materia: </Form.Label>
@@ -200,7 +203,7 @@ const [nombre_Materia, setNombreMateria] = useState(materia.nombre_Materia || ''
             {eliminarVisible && (
               <Form.Control
               type="text"
-              defaultValue={materia.nombre_Materia  || ''}
+              value={materia.nombre_Materia  || ''}
               readOnly={readOnly}
             /> 
             )}
