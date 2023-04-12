@@ -209,6 +209,7 @@ namespace profefolio.Controllers
                     }
                     var adminEmail = User.FindFirstValue(ClaimTypes.Name);
 
+                    // se verifica que el profesor sea del colegio del administrador
                     if (!(await _colegioProfesor.Exist(id, adminEmail)))
                     {
                         return BadRequest("No pertenece a su colegio");
@@ -219,8 +220,6 @@ namespace profefolio.Controllers
                     }
                     
                     MapOldToNew(persona, dto, adminEmail);
-                    //var personaNew = _mapper.Map<Persona>(dto);
-
 
                     var query = await _personasService.EditProfile(persona);
 
