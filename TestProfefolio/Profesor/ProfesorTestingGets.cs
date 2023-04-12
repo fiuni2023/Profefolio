@@ -12,6 +12,8 @@ using profefolio.Models.DTOs;
 using profefolio.Models.DTOs.Persona;
 using profefolio.Services;
 using profefolio.Models.Entities;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
 
 namespace TestProfefolio.Profesor;
 
@@ -121,7 +123,9 @@ public class ProfesorTestingGets
         Mock<IMapper> mapper = new Mock<IMapper>();
         Mock<IPersona> service = new Mock<IPersona>();
         Mock<IRol> rol = new Mock<IRol>();
-        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
+        Mock<IColegioProfesor> serviceColProf = new Mock<IColegioProfesor>();
+
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object, serviceColProf.Object);
 
 
         int cantPages = (int)Math.Ceiling((double)profesores.Count() / 20);
@@ -170,7 +174,9 @@ public class ProfesorTestingGets
         Mock<IMapper> mapper = new Mock<IMapper>();
         Mock<IPersona> service = new Mock<IPersona>();
         Mock<IRol> rol = new Mock<IRol>();
-        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
+        Mock<IColegioProfesor> serviceColProf = new Mock<IColegioProfesor>();
+
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object, serviceColProf.Object);
 
 
 
@@ -193,7 +199,9 @@ public class ProfesorTestingGets
         Mock<IMapper> mapper = new Mock<IMapper>();
         Mock<IPersona> service = new Mock<IPersona>();
         Mock<IRol> rol = new Mock<IRol>();
-        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
+        Mock<IColegioProfesor> serviceColProf = new Mock<IColegioProfesor>();
+
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object, serviceColProf.Object);
 
 
         int cantPages = (int)Math.Ceiling((double)profesores.Count() / 20);
@@ -242,7 +250,21 @@ public class ProfesorTestingGets
         Mock<IMapper> mapper = new Mock<IMapper>();
         Mock<IPersona> service = new Mock<IPersona>();
         Mock<IRol> rol = new Mock<IRol>();
-        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
+        Mock<IColegioProfesor> serviceColProf = new Mock<IColegioProfesor>();
+
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object, serviceColProf.Object);
+        
+        var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+        {
+            new Claim(ClaimTypes.Name, "user1"),
+            new Claim(ClaimTypes.Role, "Profesor")
+
+        }, "mock"));
+
+        controller.ControllerContext = new ControllerContext()
+        {
+            HttpContext = new DefaultHttpContext() { User = user }
+        };
 
         profefolio.Models.Entities.Persona persona = new profefolio.Models.Entities.Persona()
         {
@@ -275,7 +297,8 @@ public class ProfesorTestingGets
             Telefono = "0985123456"
         };
 
-        service.Setup(a => a.FindById(It.IsAny<string>())).ReturnsAsync(persona);
+        service.Setup(a => a.FindByIdAndRole(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(persona);
+        serviceColProf.Setup(a => a.Exist(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(true);
 
         mapper.Setup(m => m.Map<PersonaResultDTO>(It.IsAny<Persona>())).Returns(dto);
 
@@ -302,8 +325,18 @@ public class ProfesorTestingGets
         Mock<IMapper> mapper = new Mock<IMapper>();
         Mock<IPersona> service = new Mock<IPersona>();
         Mock<IRol> rol = new Mock<IRol>();
-        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
+        Mock<IColegioProfesor> serviceColProf = new Mock<IColegioProfesor>();
 
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object, serviceColProf.Object);
+        var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+        {
+            new Claim(ClaimTypes.Name, "user1")
+        }, "mock"));
+
+        controller.ControllerContext = new ControllerContext()
+        {
+            HttpContext = new DefaultHttpContext() { User = user }
+        };
         profefolio.Models.Entities.Persona persona = new profefolio.Models.Entities.Persona()
         {
             Id = "sd65sd6asd46asd4a6s5da6sd4a6s5da6",
@@ -322,7 +355,8 @@ public class ProfesorTestingGets
             PhoneNumber = "0985123456"
         };
 
-        service.Setup(a => a.FindById(It.IsAny<string>())).ReturnsAsync(persona);
+        service.Setup(a => a.FindByIdAndRole(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(persona);
+        serviceColProf.Setup(a => a.Exist(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(true);
 
         mapper.Setup(m => m.Map<PersonaResultDTO>(It.IsAny<Persona>())).Throws(new Exception("Error inesperado"));
 
@@ -330,7 +364,7 @@ public class ProfesorTestingGets
 
         var jsonResult = Assert.IsType<BadRequestObjectResult>(result.Result);
         Assert.Equal("Error inesperado", jsonResult.Value);
-        
+
     }
 
 
@@ -342,11 +376,22 @@ public class ProfesorTestingGets
         Mock<IMapper> mapper = new Mock<IMapper>();
         Mock<IPersona> service = new Mock<IPersona>();
         Mock<IRol> rol = new Mock<IRol>();
+        Mock<IColegioProfesor> serviceColProf = new Mock<IColegioProfesor>();
 
-        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object, serviceColProf.Object);
 
+        var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+        {
+            new Claim(ClaimTypes.Name, "user1")
+        }, "mock"));
 
-        service.Setup(a => a.FindById(It.IsAny<string>())).Throws(new FileNotFoundException());
+        controller.ControllerContext = new ControllerContext()
+        {
+            HttpContext = new DefaultHttpContext() { User = user }
+        };
+
+        service.Setup(a => a.FindByIdAndRole(It.IsAny<string>(), It.IsAny<string>())).Throws(new FileNotFoundException());
+        serviceColProf.Setup(a => a.Exist(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(false);
 
         var result = await controller.Get(id);
 
@@ -361,8 +406,9 @@ public class ProfesorTestingGets
         Mock<IMapper> mapper = new Mock<IMapper>();
         Mock<IPersona> service = new Mock<IPersona>();
         Mock<IRol> rol = new Mock<IRol>();
+        Mock<IColegioProfesor> serviceColProf = new Mock<IColegioProfesor>();
 
-        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object, serviceColProf.Object);
 
         var result = await controller.Get(id);
 
