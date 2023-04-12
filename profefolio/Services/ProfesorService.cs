@@ -34,9 +34,9 @@ namespace profefolio.Services
             throw new NotImplementedException();
         }
 
-        public void Dispose()
+        public async void Dispose()
         {
-            throw new NotImplementedException();
+            await _context.DisposeAsync();
         }
 
         public Persona Edit(Persona t)
@@ -127,6 +127,7 @@ namespace profefolio.Services
             }
             catch (Exception e)
             {
+                await transaction.RollbackAsync();
                 Console.WriteLine($"{e}");
                 throw new Exception($"{e}");
             }
