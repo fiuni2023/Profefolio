@@ -564,7 +564,12 @@ public class ProfesorTestingPosts
             EsM = true,
             Nacimiento = nacimiento,
             Created = nacimiento,
-            PhoneNumber = "0985123456"
+            PhoneNumber = "0985123456",
+            Colegio = new Colegio(){
+                Id = 1,
+                Nombre = "San Juan",
+                PersonaId = "adsadasdads"
+            }
         };
 
         PersonaDTO personaDto = new PersonaDTO()
@@ -594,8 +599,14 @@ public class ProfesorTestingPosts
 
         mapper.Setup(m => m.Map<profefolio.Models.Entities.Persona>(It.IsAny<PersonaDTO>())).Returns(persona);
 
+    service.Setup(a => a.ExistMail(It.IsAny<string>())).ReturnsAsync(false);
 
-        service.Setup(b => b.CreateUser(It.IsAny<Persona>(), It.IsAny<string>())).ThrowsAsync(new Exception());
+        service.Setup(a => a.ExistDoc(It.IsAny<Persona>())).ReturnsAsync(false);
+
+        service.Setup(a => a.FindByEmail(It.IsAny<string>())).ReturnsAsync(persona);
+
+        serviceProfesor.Setup(b => b.Add(It.IsAny<Persona>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>())).ThrowsAsync(new Exception());
+
 
         var result = await controller.Post(personaDto);
 
