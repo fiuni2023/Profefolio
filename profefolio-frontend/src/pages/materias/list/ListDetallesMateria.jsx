@@ -99,7 +99,7 @@ function ListDetallesMateria(props) {
           handleUpdate();
 
           
-          setProfesores(response.data)
+          setMaterias(response.data)
           toast.success("Editado exitoso");
 
           setShowModal(false);
@@ -232,6 +232,29 @@ const [nombre_Materia, setNombreMateria] = useState(materia.nombre_Materia || ''
 
      
         <Modal.Footer className={styles.footerModal}>
+
+        {readOnly ? (
+          <>
+            <button variant="primary" className={styles.buttonModify} onClick={handleModificar}>
+            <BsPencilFill />
+            </button>
+            {eliminarVisible && (
+              <button variant="danger" onClick={handleDeleteClick} className={styles.buttonDelete}>   <BsTrash />  </button>
+            )}
+          </>
+        ) : (
+          <div>
+          <button type='submit' className={styles.buttonModify} onClick={handleSubmit}>
+            Guardar
+          </button>
+
+          <button variant="primary"  className={styles.buttonDelete} onClick={handleCancelar}>
+          Cancelar
+        </button>
+          </div>
+
+
+        )}
          
 
        

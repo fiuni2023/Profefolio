@@ -137,7 +137,7 @@ const handleCloseModal = () => {
             <div >
 
 
-            <ListDetallesMateria showModal={showModal} setShowModal={setShowModal} id={id}  triggerState={(profesor)=>{setProfesores(profesor)}} page={page} />
+            <ListDetallesMateria showModal={showModal} setShowModal={setShowModal} id={id}  triggerState={(materias)=>{setMaterias(materias)}} page={page} />
 
             <div>
   </div>
