@@ -14,11 +14,12 @@ public class ProfesorTestingDeletes
         string id = "sdasd4adaddg465g4d6fg4";
         Mock<IMapper> mapper = new Mock<IMapper>();
         Mock<IPersona> service = new Mock<IPersona>();
+        Mock<IColegioProfesor> serviceColProf = new Mock<IColegioProfesor>();
         Mock<IRol> rol = new Mock<IRol>();
 
-        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object, serviceColProf.Object);
 
-        service.Setup(s => s.DeleteUser(It.IsAny<string>())).ReturnsAsync(true);
+        service.Setup(s => s.DeleteByUserAndRole(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(true);
 
         var result = await controller.Delete(id);
         Assert.IsType<OkResult>(result);
@@ -31,8 +32,9 @@ public class ProfesorTestingDeletes
         Mock<IMapper> mapper = new Mock<IMapper>();
         Mock<IPersona> service = new Mock<IPersona>();
         Mock<IRol> rol = new Mock<IRol>();
+        Mock<IColegioProfesor> serviceColProf = new Mock<IColegioProfesor>();
 
-        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object, serviceColProf.Object);
 
         service.Setup(s => s.DeleteUser(It.IsAny<string>())).ReturnsAsync(false);
 
@@ -47,8 +49,9 @@ public class ProfesorTestingDeletes
         Mock<IMapper> mapper = new Mock<IMapper>();
         Mock<IPersona> service = new Mock<IPersona>();
         Mock<IRol> rol = new Mock<IRol>();
+        Mock<IColegioProfesor> serviceColProf = new Mock<IColegioProfesor>();
 
-        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object, serviceColProf.Object);
 
         service.Setup(s => s.DeleteUser(It.IsAny<string>())).ThrowsAsync(new Exception());
 

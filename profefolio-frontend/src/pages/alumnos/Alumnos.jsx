@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { useGeneralContext } from '../../context/GeneralContext'
 import { AiOutlinePlus } from 'react-icons/ai'
 import { AddButton, MainContainer, TableContainer } from './styles/Styles'
-import { useStudentContext } from "./context/StudentContext";
 import StudentHelper from './helpers/StudentHelper'
 import { Pagination } from "react-bootstrap";
 import Tabla from '../../components/Tabla';
@@ -10,7 +9,6 @@ import { toast } from "react-hot-toast";
 import { useNavigate } from 'react-router-dom';
 import { useFetchEffect } from '../../components/utils/useFetchEffect';
 import StyleComponentBreadcrumb from '../../components/StyleComponentBreadcrumb';
-import { PanelContainerBG } from '../../components/Layout';
 
 const Alumnos = () => {
     const { getToken, cancan, verifyToken } = useGeneralContext()
