@@ -176,7 +176,7 @@ namespace profefolio.Controllers
 
                 if (result != null)
                 {
-                    return Ok(_mapper.Map<PersonaResultDTO>(result));
+                    return Ok(result);
                 }
             }
             catch (BadHttpRequestException e)

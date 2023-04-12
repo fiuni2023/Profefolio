@@ -64,7 +64,7 @@ namespace profefolio.Services
             throw new NotImplementedException();
         }
 
-        public async Task<ColegioProfesorResultOfCreatedDTO> Add(Persona p, string password, string rol, int idColegio)
+        public async Task<ColegioProfesorResultOfCreatedDTO> Add(Persona profesor, string password, string rol, int idColegio)
         {
             using var transaction = _context.Database.BeginTransaction();
 
@@ -72,10 +72,10 @@ namespace profefolio.Services
             {
 
                 // crear el usuario
-                await _userManager.CreateAsync(p, password);
+                await _userManager.CreateAsync(profesor, password);
 
                 var prof = await _userManager.Users
-                    .Where(p => !p.Deleted && p.Email.Equals(p.Email)).FirstOrDefaultAsync();
+                    .Where(p => !p.Deleted && p.Email.Equals(profesor.Email)).FirstOrDefaultAsync();
                 if (prof == null)
                 {
                     await transaction.RollbackAsync();
@@ -83,7 +83,7 @@ namespace profefolio.Services
                 }
 
                 //asignar rol al usuario creado
-                var rolResult = await _userManager.AddToRoleAsync(p, rol);
+                var rolResult = await _userManager.AddToRoleAsync(prof, rol);
                 if (rolResult == null || (rolResult.Errors.Any()))
                 {
                     await transaction.RollbackAsync();
@@ -94,11 +94,19 @@ namespace profefolio.Services
                 var colProfesor = new ColegioProfesor()
                 {
                     ColegioId = idColegio,
-                    PersonaId = prof.Id
+                    PersonaId = prof.Id,
+                    Deleted = false,
+                    Created = prof.Created,
+                    CreatedBy = prof.CreatedBy
                 };
+
                 _context.Entry(colProfesor).State = EntityState.Added;
                 var colProfResult = await Task.FromResult(colProfesor);
-
+                
+                await _context.SaveChangesAsync();
+                
+                Console.WriteLine($"\n\nId Colegio Profesor{colProfResult.Id}\n\n");
+                
                 if (colProfResult == null)
                 {
                     await transaction.RollbackAsync();
