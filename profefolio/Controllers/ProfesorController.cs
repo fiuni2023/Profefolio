@@ -17,16 +17,18 @@ namespace profefolio.Controllers
         private readonly IMapper _mapper;
         private readonly IPersona _personasService;
         private readonly IRol _rolService;
+        private readonly IColegioProfesor _colegioProfesor;
         private const int CantPorPage = 20;
 
         private const string PROFESOR_ROLE = "Profesor";
 
 
-        public ProfesorController(IMapper mapper, IPersona personasService, IRol rolService)
+        public ProfesorController(IMapper mapper, IPersona personasService, IRol rolService, IColegioProfesor colProf)
         {
             _mapper = mapper;
             _personasService = personasService;
             _rolService = rolService;
+            _colegioProfesor = colProf;
         }
 
 
@@ -69,7 +71,23 @@ namespace profefolio.Controllers
             {
                 try
                 {
-                    var profesor = await _personasService.FindById(id);
+                    var adminEmail = User.FindFirstValue(ClaimTypes.Name);
+                    var userRole = User.FindFirstValue(ClaimTypes.Role);
+                    var profesor = await _personasService.FindByIdAndRole(id, PROFESOR_ROLE);
+
+
+                    if (profesor != null && PROFESOR_ROLE.Equals(userRole) && adminEmail.Equals(profesor.Email))
+                    {
+                        /* se verifica si el usuario es un profesor y si es asi se verifica su email con el profesor 
+                            obtenido y si son iguales se retorna el valor*/
+                        return Ok(_mapper.Map<PersonaResultDTO>(profesor));
+                    }
+                    else if (profesor == null || !(await _colegioProfesor.Exist(profesor.Id, adminEmail)))
+                    {
+                        //verificar que el profesor exista en la relacion colegioProfesor por medio de su id y el email del administrador
+                        return NotFound("No se encontro al profesor");
+                    }
+
                     return Ok(_mapper.Map<PersonaResultDTO>(profesor));
                 }
                 catch (FileNotFoundException e)
@@ -199,7 +217,7 @@ namespace profefolio.Controllers
                     {
                         return BadRequest("El email nuevo que queres actualizar ya existe");
                     }
-
+                    
                     MapOldToNew(persona, dto, adminEmail);
                     //var personaNew = _mapper.Map<Persona>(dto);
 
@@ -279,12 +297,12 @@ namespace profefolio.Controllers
             }
         }
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Administrador de Colegio")]
         public async Task<ActionResult> Delete(string id)
         {
             try
             {
-                bool result = await _personasService.DeleteUser(id);
+
+                bool result = await _personasService.DeleteByUserAndRole(id, PROFESOR_ROLE);
                 return result ? Ok() : NotFound();
             }
             catch (Exception e)

@@ -72,16 +72,9 @@ function Profesores() {
  
 
 
-
-
 const btndetalles = (id) => {
   setShowModal(true);
   setId(id);
-};
-
-const handleCloseModal = () => {
-  setShowModal(false);
-  setProfesores([]);
 };
 
 
@@ -104,13 +97,14 @@ const handleCloseModal = () => {
   return (
     <>
 
-      <div className="page">
+      <div>
       <StyleComponentBreadcrumb nombre="Profesor" />
 
         <PanelContainerBG>
 
 
           <div>
+
           <Tabla
               datosTabla={{
                 tituloTabla: 'Lista de profesores',
@@ -125,6 +119,9 @@ const handleCloseModal = () => {
                 clickable: { action: btndetalles },
                 colorHeader: '',
                 tableWidth: '',
+
+            
+
                 filas: profesores.map((profe) => ({
                   fila: profe.id,
                   datos: [

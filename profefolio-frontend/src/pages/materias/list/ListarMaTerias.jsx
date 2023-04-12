@@ -79,10 +79,6 @@ const btndetalles = (id) => {
   setId(id);
 };
 
-const handleCloseModal = () => {
-  setShowModal(false);
-  setMaterias([]);
-};
 
 
   const handlePrevClick = () => {
@@ -137,7 +133,7 @@ const handleCloseModal = () => {
             <div >
 
 
-            <ListDetallesMateria showModal={showModal} setShowModal={setShowModal} id={id}  triggerState={(profesor)=>{setProfesores(profesor)}} page={page} />
+            <ListDetallesMateria showModal={showModal} setShowModal={setShowModal} id={id}  triggerState={(materias)=>{setMaterias(materias)}} page={page} />
 
             <div>
   </div>
