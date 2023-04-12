@@ -4,5 +4,6 @@
     {
         public List<string> IdProfesores { get; set; }
         public int IdMateria { get; set; }
+        public int IdClase { get; set; }
     }
 }

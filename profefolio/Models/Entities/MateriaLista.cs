@@ -5,7 +5,7 @@ namespace profefolio.Models.Entities
 {
     public class MateriaLista : Data
     {
-        public int ProfesorId { get; set; }
+        public string ProfesorId { get; set; }
         public int ClaseId { get; set; }
         public int MateriaId { get; set; }
         [Required]
