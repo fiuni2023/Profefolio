@@ -8,7 +8,7 @@ namespace profefolio.Repository
 {
     public interface IProfesor : IRepository<Persona>
     {
-        Task<Persona> Save(Persona profesor, int idColegio);
+        Task<Persona> Save(Persona p, string password, string rol, int idColegio);
         
     }
 }
