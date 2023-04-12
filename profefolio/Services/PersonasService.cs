@@ -192,7 +192,10 @@ public class PersonasService : IPersona
 
     public async Task<Persona> FindByEmail(string email = "")
     {
-        return await _userManager.Users.FirstOrDefaultAsync(u => !u.Deleted && email.Equals(u.Email));
+        return await _userManager
+                .Users
+                .Include(a => a.Colegio)
+                .FirstOrDefaultAsync(u => !u.Deleted && email.Equals(u.Email));
     }
 
 
