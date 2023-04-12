@@ -170,16 +170,19 @@ namespace profefolio.Controllers
                 {
                     return BadRequest("Hay problemas con sus credenciales");
                 }
-
-                var result = await _profesorService.Add(entity, dto.Password, PROFESOR_ROLE, admin.Colegio.Id);
-
-
-                if (result.resultado != null)
+                else
                 {
-                    return Ok(result);
-                }
-                if (result.ex != null){
-                    return BadRequest(result.ex.Message);
+                    var result = await _profesorService.Add(entity, dto.Password, PROFESOR_ROLE, admin.Colegio.Id);
+
+
+                    if (result.resultado != null)
+                    {
+                        return Ok(result.resultado);
+                    }
+                    if (result.ex != null)
+                    {
+                        return BadRequest(result.ex.Message);
+                    }
                 }
             }
             catch (BadHttpRequestException e)
