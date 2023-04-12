@@ -9,7 +9,7 @@
     color: white;
     height: 20%;
     font-size: medium;
-    margin-left: 1%;
+    
     
     
 }
@@ -25,5 +25,8 @@
     height: 30px;
 }
 .getCurrent{
-    width: 12%;
+    width: 30px;
 }
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none;}

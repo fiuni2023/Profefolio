@@ -1,52 +1,38 @@
 import React from "react";
-import Pagination from 'react-bootstrap/Pagination';
 import styles from './Paginations.module.css'
 import IconButton from './IconButton'
-import { toast } from "react-hot-toast";
+
 const Paginations = ({ totalPage, currentPage, setCurrentPage, next }) => {
-    const getPages = () => {
-        return (
-            <>
-                <Pagination.Prev disabled={currentPage <= 0} onClick={() => {
-                    setCurrentPage(currentPage - 1)
-                }} />
+   
 
-                <Pagination.Next disabled={!next} onClick={() => {
-                    setCurrentPage(currentPage + 1)
-                }} />
-            </>
-        )
-    }
-    const getPage = (event) => {
+    const sumar = () => {
 
-        if (event.target.value >= totalPage) {
-           toast.error("No existe la Pagina nro."+event.target.value)
-        }
-        else {
-            setCurrentPage(event.target.value);
-        }
+        setCurrentPage((currentPage) => currentPage + 1);
+    };
+    const restar = () => {
+        setCurrentPage((currentPage) => currentPage - 1)
 
-    }
-    //Otra version de paginacion
-    /*  <div className={styles.pagination}>
-            
-            <div className={styles.paginas}>{currentPage + 1} DE {totalPage}</div>
-            
-        </div>
-     */
+    };
+
+    const onChangeValue = (e) => {
+        setCurrentPage(parseInt(e.target.value));
+    };
+
     return (<>
 
         <div className={styles.pagination}>
-            <IconButton enabled={currentPage > 0} buttonType='arrowL' onClick={() => setCurrentPage(currentPage - 1)} />
-            <div className={styles.texto}>
-                <input type="number" value={currentPage + 1} onChange={event => getPage(event)} className={styles.inputCurrent} />
 
-                de {totalPage}
-            </div>
-
-            <IconButton enabled={next} buttonType='arrowR' onClick={() => setCurrentPage(currentPage + 1)} />
-
-
+            <IconButton enabled={currentPage > 0} buttonType='arrowL' onClick={restar} />
+            <input
+                className="text-center"
+                type="number"
+                value={currentPage+1}
+                onChange={onChangeValue}
+                min={currentPage+1}
+                max={currentPage-1}
+            />
+            de {totalPage}
+            <IconButton enabled={next} buttonType='arrowR' onClick={sumar} />
 
         </div>
 
