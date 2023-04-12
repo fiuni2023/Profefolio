@@ -124,8 +124,9 @@ public class ProfesorTestingGets
         Mock<IPersona> service = new Mock<IPersona>();
         Mock<IRol> rol = new Mock<IRol>();
         Mock<IColegioProfesor> serviceColProf = new Mock<IColegioProfesor>();
+        Mock<IProfesor> serviceProfesor = new Mock<IProfesor>();
 
-        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object, serviceColProf.Object);
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object, serviceColProf.Object, serviceProfesor.Object);
 
 
         int cantPages = (int)Math.Ceiling((double)profesores.Count() / 20);
@@ -175,8 +176,9 @@ public class ProfesorTestingGets
         Mock<IPersona> service = new Mock<IPersona>();
         Mock<IRol> rol = new Mock<IRol>();
         Mock<IColegioProfesor> serviceColProf = new Mock<IColegioProfesor>();
+        Mock<IProfesor> serviceProfesor = new Mock<IProfesor>();
 
-        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object, serviceColProf.Object);
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object, serviceColProf.Object, serviceProfesor.Object);
 
 
 
@@ -200,8 +202,9 @@ public class ProfesorTestingGets
         Mock<IPersona> service = new Mock<IPersona>();
         Mock<IRol> rol = new Mock<IRol>();
         Mock<IColegioProfesor> serviceColProf = new Mock<IColegioProfesor>();
+        Mock<IProfesor> serviceProfesor = new Mock<IProfesor>();
 
-        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object, serviceColProf.Object);
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object, serviceColProf.Object, serviceProfesor.Object);
 
 
         int cantPages = (int)Math.Ceiling((double)profesores.Count() / 20);
@@ -251,8 +254,9 @@ public class ProfesorTestingGets
         Mock<IPersona> service = new Mock<IPersona>();
         Mock<IRol> rol = new Mock<IRol>();
         Mock<IColegioProfesor> serviceColProf = new Mock<IColegioProfesor>();
+        Mock<IProfesor> serviceProfesor = new Mock<IProfesor>();
 
-        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object, serviceColProf.Object);
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object, serviceColProf.Object, serviceProfesor.Object);
         
         var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
         {
@@ -326,8 +330,9 @@ public class ProfesorTestingGets
         Mock<IPersona> service = new Mock<IPersona>();
         Mock<IRol> rol = new Mock<IRol>();
         Mock<IColegioProfesor> serviceColProf = new Mock<IColegioProfesor>();
+        Mock<IProfesor> serviceProfesor = new Mock<IProfesor>();
 
-        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object, serviceColProf.Object);
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object, serviceColProf.Object, serviceProfesor.Object);
         var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
         {
             new Claim(ClaimTypes.Name, "user1")
@@ -377,8 +382,9 @@ public class ProfesorTestingGets
         Mock<IPersona> service = new Mock<IPersona>();
         Mock<IRol> rol = new Mock<IRol>();
         Mock<IColegioProfesor> serviceColProf = new Mock<IColegioProfesor>();
+        Mock<IProfesor> serviceProfesor = new Mock<IProfesor>();
 
-        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object, serviceColProf.Object);
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object, serviceColProf.Object, serviceProfesor.Object);
 
         var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
         {
@@ -407,8 +413,9 @@ public class ProfesorTestingGets
         Mock<IPersona> service = new Mock<IPersona>();
         Mock<IRol> rol = new Mock<IRol>();
         Mock<IColegioProfesor> serviceColProf = new Mock<IColegioProfesor>();
+        Mock<IProfesor> serviceProfesor = new Mock<IProfesor>();
 
-        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object, serviceColProf.Object);
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object, serviceColProf.Object, serviceProfesor.Object);
 
         var result = await controller.Get(id);
 
