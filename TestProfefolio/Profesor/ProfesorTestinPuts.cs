@@ -19,8 +19,9 @@ public class ProfesorTestinPuts
         Mock<IMapper> mapper = new Mock<IMapper>();
         Mock<IPersona> service = new Mock<IPersona>();
         Mock<IRol> rol = new Mock<IRol>();
+        Mock<IColegioProfesor> serviceColProf = new Mock<IColegioProfesor>();
 
-        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object, serviceColProf.Object);
 
         string id = "sd65sd6asd46asd4a6s5da6sd4a6s5da6";
 
@@ -133,8 +134,9 @@ public class ProfesorTestinPuts
         Mock<IMapper> mapper = new Mock<IMapper>();
         Mock<IPersona> service = new Mock<IPersona>();
         Mock<IRol> rol = new Mock<IRol>();
+        Mock<IColegioProfesor> serviceColProf = new Mock<IColegioProfesor>();
 
-        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object, serviceColProf.Object);
         controller.ModelState.AddModelError("", "");
 
         string id = "sd65sd6asd46asd4a6s5da6sd4a6s5da6";
@@ -166,8 +168,9 @@ public class ProfesorTestinPuts
         Mock<IMapper> mapper = new Mock<IMapper>();
         Mock<IPersona> service = new Mock<IPersona>();
         Mock<IRol> rol = new Mock<IRol>();
+        Mock<IColegioProfesor> serviceColProf = new Mock<IColegioProfesor>();
 
-        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object, serviceColProf.Object);
 
         string id = "sd65sd6asd46asd4a6s5da6sd4a6s5da6";
 
@@ -199,8 +202,9 @@ public class ProfesorTestinPuts
         Mock<IMapper> mapper = new Mock<IMapper>();
         Mock<IPersona> service = new Mock<IPersona>();
         Mock<IRol> rol = new Mock<IRol>();
+        Mock<IColegioProfesor> serviceColProf = new Mock<IColegioProfesor>();
 
-        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object, serviceColProf.Object);
 
         string id = "sd65sd6asd46asd4a6s5da6sd4a6s5da6";
 
@@ -232,8 +236,9 @@ public class ProfesorTestinPuts
         Mock<IMapper> mapper = new Mock<IMapper>();
         Mock<IPersona> service = new Mock<IPersona>();
         Mock<IRol> rol = new Mock<IRol>();
+        Mock<IColegioProfesor> serviceColProf = new Mock<IColegioProfesor>();
 
-        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object, serviceColProf.Object);
 
         string id = "sd65sd6asd46asd4a6s5da6sd4a6s5da6";
 
@@ -265,8 +270,9 @@ public class ProfesorTestinPuts
         Mock<IMapper> mapper = new Mock<IMapper>();
         Mock<IPersona> service = new Mock<IPersona>();
         Mock<IRol> rol = new Mock<IRol>();
+        Mock<IColegioProfesor> serviceColProf = new Mock<IColegioProfesor>();
 
-        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object, serviceColProf.Object);
 
         string id = "sd65sd6asd46asd4a6s5da6sd4a6s5da6";
 
@@ -298,8 +304,9 @@ public class ProfesorTestinPuts
         Mock<IMapper> mapper = new Mock<IMapper>();
         Mock<IPersona> service = new Mock<IPersona>();
         Mock<IRol> rol = new Mock<IRol>();
+        Mock<IColegioProfesor> serviceColProf = new Mock<IColegioProfesor>();
 
-        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object, serviceColProf.Object);
 
         string id = "sd65sd6asd46asd4a6s5da6sd4a6s5da6";
 
@@ -366,8 +373,9 @@ public class ProfesorTestinPuts
         Mock<IMapper> mapper = new Mock<IMapper>();
         Mock<IPersona> service = new Mock<IPersona>();
         Mock<IRol> rol = new Mock<IRol>();
+        Mock<IColegioProfesor> serviceColProf = new Mock<IColegioProfesor>();
 
-        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object, serviceColProf.Object);
 
         string id = "sd65sd6asd46asd4a6s5da6sd4a6s5da6";
 
@@ -435,8 +443,9 @@ public class ProfesorTestinPuts
         Mock<IMapper> mapper = new Mock<IMapper>();
         Mock<IPersona> service = new Mock<IPersona>();
         Mock<IRol> rol = new Mock<IRol>();
+        Mock<IColegioProfesor> serviceColProf = new Mock<IColegioProfesor>();
 
-        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object, serviceColProf.Object);
 
         string id = "sd65sd6asd46asd4a6s5da6sd4a6s5da6";
 
@@ -504,8 +513,9 @@ public class ProfesorTestinPuts
         Mock<IMapper> mapper = new Mock<IMapper>();
         Mock<IPersona> service = new Mock<IPersona>();
         Mock<IRol> rol = new Mock<IRol>();
+        Mock<IColegioProfesor> serviceColProf = new Mock<IColegioProfesor>();
 
-        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object, serviceColProf.Object);
 
         string id = "sd65sd6asd46asd4a6s5da6sd4a6s5da6";
 
@@ -572,8 +582,9 @@ public class ProfesorTestinPuts
         Mock<IMapper> mapper = new Mock<IMapper>();
         Mock<IPersona> service = new Mock<IPersona>();
         Mock<IRol> rol = new Mock<IRol>();
+        Mock<IColegioProfesor> serviceColProf = new Mock<IColegioProfesor>();
 
-        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object, serviceColProf.Object);
 
         string id = "sd65sd6asd46asd4a6s5da6sd4a6s5da6";
 
