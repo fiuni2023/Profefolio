@@ -19,9 +19,9 @@ const Paginations = ({ totalPage, currentPage, setCurrentPage, next }) => {
 
     const onChangeValue = (e) => {
         const inputValue = e.target.value;
-        if (e.key === 'Enter') {
+        if (!e.key === 'Enter'&& !(isNaN(inputValue))) {
            console.log(inputValue)
-           
+           setCurrentPage(parseInt(inputValue))
            
         } 
     };
@@ -35,7 +35,8 @@ const Paginations = ({ totalPage, currentPage, setCurrentPage, next }) => {
 
                 className="text-center"
                 type="number"
-                placeholder="hooa"
+                value={currentPage+1}
+                onChange={onChangeValue}
                 
                 
                
