@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import styles from './ListarColegios.module.css'
+import styles from './ListarColegios.module.css';
 import { useNavigate } from "react-router-dom";
 import { BiArrowBack } from "react-icons/bi"
 import { Table } from "../../components/Table";
@@ -10,6 +10,9 @@ import { useGeneralContext } from "../../context/GeneralContext";
 import APILINK from "../../components/link";
 import ModalVerColegios from './ModalVerColegios'
 import { AiOutlineEye } from "react-icons/ai";
+import ModalColegios from "./ModalColegios";
+import { BsFillPlusCircleFill } from "react-icons/bs"
+import Modal from "../../components/Modal";
 
 function ListarColegios() {
 
@@ -22,6 +25,9 @@ function ListarColegios() {
   const [currentPage, setCurrentPage] = useState(0);
   const [colegios, setColegios] = useState([]);
   const [datoIdColegio, setDatoIdColegio] = useState('');
+
+  const [enabled, setEnabled] = useState(true);
+
 
   useEffect(() => {
 
@@ -68,16 +74,25 @@ function ListarColegios() {
 
   }
   const [show, setShow] = useState(false);
-  const [disabled, setDisabled] = useState(true);
+  const [disabled, setDisabled] = useState(false);
+  const [tituloModal, setTituloModal] = useState("AgregarColegio")
   const handleShow = (id) => {
     setDatoIdColegio(id);
-    console.log(datoIdColegio);
     setShow(true);
+  }
+
+  const handleChangeTituloModal = (titulo) => {
+    setTituloModal(titulo); 
+  }
+
+  const openNew = () => {
+    setShow(!show);
   }
 
 
   return (
     <>
+    <button className={styles.buttonAgregar} onClick={openNew}><BsFillPlusCircleFill className={styles.iconoAgregar} /></button>
       <div>
 
         <div className={styles.nombrePagina}>
@@ -105,9 +120,9 @@ function ListarColegios() {
           <Pagination onClick={e => handleCurrentPage(e.target.text)} size="sm">{items} </Pagination>
         </div>
 
-        <ModalVerColegios idColegio={datoIdColegio} show={show} setShow={setShow} disabled={disabled} setDisabled={setDisabled}></ModalVerColegios>
+       
+        <ModalColegios tituloModal={tituloModal} isOpen={show} disabled={disabled}></ModalColegios>  
 
-        <ModalAgregarColegios triggerState={(colegio) => { doFetch(colegio) }}></ModalAgregarColegios>
       </div>
     </>)
 }
