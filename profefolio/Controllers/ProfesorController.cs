@@ -7,8 +7,8 @@ using profefolio.Models.Entities;
 using profefolio.Repository;
 using Microsoft.AspNet.Identity;
 using System.Security.Claims;
+using profefolio.Helpers;
 using profefolio.Models.DTOs.ColegioProfesor;
-
 namespace profefolio.Controllers
 {
     [ApiController]
@@ -19,8 +19,8 @@ namespace profefolio.Controllers
         private readonly IPersona _personasService;
         private readonly IRol _rolService;
         private readonly IColegioProfesor _colegioProfesor;
+        private static int CantPorPage => Constantes.CANT_ITEMS_POR_PAGE;
         private readonly IProfesor _profesorService;
-        private const int CantPorPage = 20;
 
         private const string PROFESOR_ROLE = "Profesor";
 

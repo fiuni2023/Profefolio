@@ -7,6 +7,7 @@ using profefolio.Models.DTOs.Materia;
 using profefolio.Models.Entities;
 using profefolio.Repository;
 using log4net;
+using profefolio.Helpers;
 
 namespace profefolio.Controllers
 {
@@ -16,7 +17,7 @@ namespace profefolio.Controllers
     {
         private static readonly ILog _log = LogManager.GetLogger(typeof(MateriaController));
         private readonly IMateria _materiaService;
-        private readonly int _cantPorPag = 10;
+        private static int _cantPorPag => Constantes.CANT_ITEMS_POR_PAGE;
         private readonly IMapper _mapper;
         public MateriaController(IMateria materiaService, IMapper mapper)
         {
