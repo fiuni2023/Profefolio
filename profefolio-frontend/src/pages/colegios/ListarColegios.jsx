@@ -2,13 +2,13 @@ import React, { useEffect, useState } from "react";
 import styles from './ListarColegios.module.css'
 import { useNavigate } from "react-router-dom";
 import { BiArrowBack } from "react-icons/bi"
-import { Table } from "../../../components/Table";
-import ModalAgregarColegios from '../AgregarColegios'
+import { Table } from "../../components/Table";
+import ModalAgregarColegios from './AgregarColegios'
 import axios from "axios";
 import Pagination from 'react-bootstrap/Pagination';
-import { useGeneralContext} from '../../../context/GeneralContext'
-import APILINK from "../../../components/link";
-import ModalVerColegios from '../ModalVerColegios'
+import { useGeneralContext} from '../../context/GeneralContext'
+import APILINK from "../../components/link";
+import ModalVerColegios from './ModalVerColegios'
 
 
 function ListarColegios() {
