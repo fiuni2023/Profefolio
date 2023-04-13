@@ -52,6 +52,8 @@ namespace profefolio.Controllers
             return Ok();
         }
 
+
+        //Este metodo GET NO SE DEBE IMPLEMENTAR EN EL FRONT-ENT, es con fines de Testing
         [HttpGet]
         public ActionResult GetAllTemp()
         {
