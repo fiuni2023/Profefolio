@@ -85,7 +85,6 @@ namespace profefolio.Controllers
         public async Task<ActionResult> Delete(int idmateria, int idclase)
         {
             var username = User.Identity.Name;
-
             var listas = _materiaListaService.FilterByIdMateriaAndUserAndClass(idmateria, username, idclase);
 
             foreach(var item in listas)
