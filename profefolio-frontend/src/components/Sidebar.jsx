@@ -48,6 +48,7 @@ const SideBar = () => {
                         <SideBarTab page={"clases"}  handleClick={()=>{navigate("/clases")}}>- Clases</SideBarTab>
 
                          <SideBarTab page={"materia"}  handleClick={()=>{navigate("/materias")}}>- Materias</SideBarTab>
+                         <SideBarTab page={"alumnos"}  handleClick={()=>{navigate("/alumnos")}}>- Alumnos</SideBarTab>
                     </>
                 }
 

@@ -15,6 +15,7 @@ import PartidosList from "../partidos/components/list";
 import ListarColegios from "../colegios/ListarColegios.jsx";
 import CreateProfesor from "../profesor/components/create/CreateModal.jsx";
 import ListarMaterias from "../materias/list/ListarMaTerias.jsx"
+import Alumnos from "../alumnos/Alumnos.jsx";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 
@@ -66,6 +67,7 @@ const App = () => {
                                 <Route path="/materias" element={<ListarMaterias />}>
                                     <Route path="list" element={<ListarMaterias />} />
                                 </Route>
+                                <Route path="/alumnos" element={<Alumnos/>}/>
                             </Routes>
                         </div>
                     </div>

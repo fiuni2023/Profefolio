@@ -27,10 +27,15 @@ namespace profefolio.Services
             throw new NotImplementedException();
         }
 
-        public async Task<int> Count(int idColegio)
+        public async Task<int> Count(int idColegio, string userEmail)
         {
             return await _context.ColegiosProfesors
-                            .CountAsync(ca => !ca.Deleted && ca.ColegioId == idColegio);
+                            .CountAsync(cp => !cp.Deleted 
+                                && cp.ColegioId == idColegio
+                                && cp.Persona != null 
+                                && cp.Colegio != null 
+                                && (userEmail.Equals(cp.Colegio.personas.Email) 
+                                    || userEmail.Equals(cp.Persona.Email)));
         }
 
         public void Dispose()
@@ -58,10 +63,37 @@ namespace profefolio.Services
                         && ca.PersonaId.Equals(idProf));
         }
 
-        public async Task<IEnumerable<ColegioProfesor>> FindAllByIdColegio(int page, int cantPorPag, int idColegio)
+        public async Task<bool> Exist(int idColegio)
         {
             return await _context.ColegiosProfesors
-                    .Where(cp => !cp.Deleted && cp.ColegioId == idColegio)
+                    .AnyAsync(ca => !ca.Deleted
+                        && ca.PersonaId != null
+                        && ca.ColegioId == idColegio);
+        }
+
+        public async Task<bool> Exist(string idProfesor, string emailAdmin)
+        {
+            return await _context.ColegiosProfesors.AnyAsync(cp =>
+                !cp.Deleted 
+                && cp.Colegio != null
+                && cp.PersonaId != null
+                && cp.Persona != null
+                && !cp.Persona.Deleted
+                && !cp.Colegio.Deleted
+                && !cp.Colegio.personas.Deleted
+                && cp.PersonaId.Equals(idProfesor) 
+                && cp.Colegio.personas.Email.Equals(emailAdmin));
+        }
+
+        public async Task<IEnumerable<ColegioProfesor>> FindAllByIdColegio(int page, int cantPorPag, int idColegio, string userEmail)
+        {
+            return await _context.ColegiosProfesors
+                    .Where(cp => !cp.Deleted 
+                        && cp.ColegioId == idColegio
+                        && cp.Colegio != null
+                        && cp.Persona != null
+                        && (userEmail.Equals(cp.Colegio.personas.Email) 
+                            || userEmail.Equals(cp.Persona.Email)))
                     .OrderByDescending(cp => cp.Id)
                     .Skip(page * cantPorPag)
                     .Take(cantPorPag)
@@ -70,10 +102,15 @@ namespace profefolio.Services
                     .ToListAsync();
         }
 
-        public async Task<IEnumerable<ColegioProfesor>> FindAllByIdColegio(int idColegio)
+        public async Task<IEnumerable<ColegioProfesor>> FindAllByIdColegio(int idColegio, string userEmail)
         {
             return await _context.ColegiosProfesors
-                    .Where(cp => !cp.Deleted && cp.ColegioId == idColegio)
+                    .Where(cp => !cp.Deleted 
+                        && cp.ColegioId == idColegio
+                        && cp.Colegio != null
+                        && cp.Persona != null
+                        && (userEmail.Equals(cp.Colegio.personas.Email) 
+                            || userEmail.Equals(cp.Persona.Email)))
                     .Include(cp => cp.Persona)
                     .ToListAsync();
         }
@@ -85,6 +122,7 @@ namespace profefolio.Services
                 .Where(cp => cp != null && !cp.Deleted && cp.Id == id)
                 .Include(cp => cp.Persona)
                 .Include(cp => cp.Colegio)
+                .Include(cp => cp.Colegio.personas)
                 .FirstOrDefaultAsync();
         }
 

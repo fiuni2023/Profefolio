@@ -13,6 +13,12 @@ import { useNavigate } from 'react-router';
 
 import Pagination from 'react-bootstrap/Pagination';
 
+import Tabla from '../../../components/Tabla';
+
+import CreateModalMaterias from '../create/CreateModalMaterias.jsx';
+
+import ListDetallesMateria from './ListDetallesMateria';
+
 
 
 
@@ -68,15 +74,11 @@ function ListarMaTerias() {
 }
 
 
-const btndetalles = (id) => {
+const btndetalles = (data) => {
   setShowModal(true);
-  setId(id);
+  setId(data.id);
 };
 
-const handleCloseModal = () => {
-  setShowModal(false);
-  setMaterias([]);
-};
 
 
   const handlePrevClick = () => {
@@ -90,6 +92,11 @@ const handleCloseModal = () => {
       setPage(page + 1);
     }
   };
+
+  const modalOnHide = (bool) => {
+    setShowModal(bool)
+    setId(null)
+  }
 
 
   const [show, setShow] = useState(false);
@@ -106,32 +113,31 @@ const handleCloseModal = () => {
 
 
           <div className={styles.container}>
-            <table className={styles.CustomTable}>
-              <thead>
-                <tr>
-                  <th>Nombre de la Materia</th>
-                 
-                </tr>
-              </thead>
-              <tbody > 
-
-          {materias && materias.length > 0 && materias.map(materia => (
-            <tr  className={styles.tableRow} key={materia.id}>
-                    <td>{materia.nombre_Materia}</td>
-                      </tr>
-
-                        ))}
-                  
-
-                
-                 
-              
-              </tbody>
-            </table>
+          
+            <Tabla
+              datosTabla={{
+                tituloTabla: 'Lista de materias',
+                titulos: [
+                  { titulo: 'Nombre Materia' },
+                ],
+                clickable: { action: btndetalles },
+                tableWidth: '50%',
+                filas: materias.map((materia) => ({
+                  fila: materia,
+                  datos: [
+                    { dato: materia.nombre_Materia },
+                  ],
+                })),
+              }}
+              selected={id ?? '-'}
+/>
         
-  
+
            
             <div >
+
+
+            <ListDetallesMateria showModal={showModal} setShowModal={modalOnHide} id={id}  triggerState={(materias)=>{setMaterias(materias)}} page={page} />
 
             <div>
   </div>
@@ -159,9 +165,9 @@ const handleCloseModal = () => {
         </PanelContainerBG>
          <footer>
           <div className={styles.NButtonForSideA}>
-            <CreateModal title="My Modal" onClose={() => setShow(false)}  show={show}
-             triggerState={(profesor)=>{doFetch(profesor)}}>
-            </CreateModal>
+            <CreateModalMaterias title="My Modal" onClose={() => setShow(false)}  show={show}
+             triggerState={(materia)=>{doFetch(materia)}}>
+            </CreateModalMaterias>
             
           </div>
 

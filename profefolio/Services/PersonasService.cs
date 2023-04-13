@@ -192,12 +192,54 @@ public class PersonasService : IPersona
 
     public async Task<Persona> FindByEmail(string email = "")
     {
-        return await _userManager.Users.FirstOrDefaultAsync(u => !u.Deleted && email.Equals(u.Email));
+        return await _userManager
+                .Users
+                .Include(a => a.Colegio)
+                .FirstOrDefaultAsync(u => !u.Deleted && email.Equals(u.Email));
     }
 
 
     public async Task<IList<string>> GetRolesPersona(Persona user)
     {
         return await _userManager.GetRolesAsync(user);
+    }
+
+    public async Task<Persona> FindByIdAndRole(string id, string role)
+    {
+        var query = await _userManager.Users
+            .Where(p => !p.Deleted && p.Id.Equals(id))
+            .FirstOrDefaultAsync();
+
+        if(null == query || !(await _userManager.IsInRoleAsync(query, role)))
+        {
+            throw new FileNotFoundException();
+        }
+
+        return query;
+
+        
+
+    }
+
+    public async Task<bool> DeleteByUserAndRole(string id, string role)
+    {
+        var query = await _userManager.Users
+            .Where(p => !p.Deleted && p.Id.Equals(id))
+            .FirstOrDefaultAsync();
+
+
+        if(query == null || (!(await _userManager.IsInRoleAsync(query, role))))
+        {
+            return false;
+        }
+        query.Modified = DateTime.Now;
+        query.Deleted = true;
+        query.Email = $"deleted.{query.Id}.{query.Email}";
+        query.UserName = query.Email;
+
+        await _userManager.UpdateAsync(query);
+
+
+        return true;
     }
 }

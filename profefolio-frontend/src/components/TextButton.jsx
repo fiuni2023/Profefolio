@@ -14,6 +14,7 @@ import StyledTextButton from './componentsStyles/StyledTextButton';
 */
 function TextButton({ buttonType, onClick, enabled }) {
   let text;
+  let type="button";
   switch (buttonType) {
     case 'cancel':
       text = 'Cancelar';
@@ -23,6 +24,7 @@ function TextButton({ buttonType, onClick, enabled }) {
       break;
     case 'save':
       text = 'Guardar';
+      type="submit"; 
       break;
     case 'confirm':
       text = 'Confirmar';
@@ -33,7 +35,7 @@ function TextButton({ buttonType, onClick, enabled }) {
 
   return (
     <div style={{ display: 'inline-block', verticalAlign: 'middle' }}>
-      <StyledTextButton buttonType={buttonType} enabled={enabled} onClick={onClick}>
+      <StyledTextButton  type={type} buttonType={buttonType} enabled={enabled} onClick={onClick}>
         {text}
       </StyledTextButton>
     </div>

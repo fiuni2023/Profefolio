@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using profefolio.Helpers;
 using profefolio.Models.DTOs;
 using profefolio.Models.DTOs.ColegioProfesor;
 using profefolio.Models.Entities;
@@ -22,7 +23,7 @@ namespace profefolio.Controllers
         private IColegio _colegioService;
         private IMapper _mapper;
 
-        private const int CantPorPage = 20;
+        private static int CantPorPage => Constantes.CANT_ITEMS_POR_PAGE;
 
 
         public ColegioProfesorController(IPersona personaService, IColegioProfesor colegioProfesorService, IColegio colegioService, IMapper mapper)
@@ -42,10 +43,20 @@ namespace profefolio.Controllers
         {
             try
             {
+
                 var colProf = await _cProfService.FindById(id);
+
                 if (colProf == null)
                 {
                     return NotFound();
+                }
+
+                //validacion de que sea un administrador o profesor dado su name en el token
+                var userMail = User.FindFirstValue(ClaimTypes.Name);
+
+                if (!userMail.Equals(colProf.Colegio.personas.Email) && !userMail.Equals(colProf.Persona.Email))
+                {
+                    return Unauthorized("No tiene permiso de acceso a los datos");
                 }
 
                 return Ok(_mapper.Map<ColegioProfesorByIdResult>(colProf));
@@ -65,9 +76,16 @@ namespace profefolio.Controllers
         {
             try
             {
-                var colProf = await _cProfService.FindAllByIdColegio(page, CantPorPage, idColegio);
+                if (!(await _cProfService.Exist(idColegio)))
+                {
+                    return NotFound("No se encontraron datos asociados al colegio");
+                }
+                
+                var userEmail = User.FindFirstValue(ClaimTypes.Name);
 
-                var cantItmed = await _cProfService.Count(idColegio);
+                //en el service se valida que el usuario sea el administrador del colegio o el profesor de la relacion
+                var colProf = await _cProfService.FindAllByIdColegio(page, CantPorPage, idColegio, userEmail);
+                var cantItmed = await _cProfService.Count(idColegio, userEmail);
 
                 int cantPages = (int)Math.Ceiling((double)cantItmed / (double)CantPorPage);
 
@@ -79,7 +97,7 @@ namespace profefolio.Controllers
                     return BadRequest($"No existe la pagina: {page} ");
                 }
 
-                result.CantItems = cantItmed;
+                result.CantItems = colProf.ToList().Count;
                 result.CurrentPage = page;
                 result.Next = result.CurrentPage + 1 < cantPages;
                 result.DataList = _mapper.Map<List<ColegioProfesorByIdResult>>(colProf.ToList());
@@ -102,10 +120,23 @@ namespace profefolio.Controllers
         {
             try
             {
-                var colegioProfesores = await _cProfService.FindAllByIdColegio(idColegio);
-                if (colegioProfesores == null)
+                if (!(await _cProfService.Exist(idColegio)))
                 {
-                    return NotFound("El Colegio no fue encontrado");
+                    return NotFound("No se encontraron datos asociados al colegio");
+                }
+
+                var userEmail = User.FindFirstValue(ClaimTypes.Name);
+                //se obtiene la lista de ColegioProfesores en la cual este asociado el administrador o profesor
+                var colegioProfesores = await _cProfService.FindAllByIdColegio(idColegio, userEmail);
+                //se valida que la lista tenga algun valor 
+                if (colegioProfesores == null || (!colegioProfesores.Any()))
+                {
+                    var userRole = User.FindFirstValue(ClaimTypes.Role);
+                    if ("Profesor".Equals(userRole))
+                    {
+                        return BadRequest("Como profesor no fue asignado a este colegio todavia");
+                    }
+                    return NotFound("El Colegio no tiene datos, verifique que sea su colegio o que tenga profesores en su colegio");
                 }
 
                 var result = _mapper.Map<List<ColegioProfesorSimpleDTO>>(colegioProfesores.ToList());
@@ -209,10 +240,29 @@ namespace profefolio.Controllers
 
             try
             {
+
+                var userEmail = User.FindFirstValue(ClaimTypes.Name);
+                
+                //se verifica que exista un colegio en donde este asignado el administrador 
+                Colegio colegio = await _colegioService.FindById(dto.ColegioId);
+                if (colegio == null)
+                {
+                    return NotFound("El colegio no esta disponible");
+                }
+                
+                
+
+                //validar que el usuario sea administrador del colegio esto a traves del role
                 var colProf = await _cProfService.FindById(id);
                 if (colProf == null)
                 {
                     return NotFound("No se puede editar, no esta disponible");
+                }
+
+                //se verifica que el administrador tenga el mismo email que el del administrador que hizo la peticion
+                if (!colegio.personas.Email.Equals(userEmail) || !userEmail.Equals(colProf.Colegio.personas.Email))
+                {
+                    return Unauthorized("No puede modificar datos de otros colegios");
                 }
 
 
@@ -221,22 +271,6 @@ namespace profefolio.Controllers
                     return BadRequest("Ya se registro el Profesor en este colegio");
                 }
 
-
-                var nameUser = User.FindFirstValue(ClaimTypes.Name);
-
-
-                //se verifica que exista un colegio en donde este asignado el administrador 
-                Colegio colegio = await _colegioService.FindById(dto.ColegioId);
-                if (colegio == null)
-                {
-                    return NotFound("El colegio no esta disponible");
-                }
-
-                //se verifica que el administrador tenga el mismo email que el del administrador que hizo la peticion
-                if (!colegio.personas.Email.Equals(nameUser))
-                {
-                    return Unauthorized("No puede agregar Profesores en otros colegios");
-                }
 
                 /*
                     Se verifica que exista el profesor --- no se verifica que no sea nulo porque retorna una 
@@ -255,7 +289,7 @@ namespace profefolio.Controllers
                 }
 
 
-                colProf.ModifiedBy = nameUser;
+                colProf.ModifiedBy = userEmail;
                 colProf.Modified = DateTime.Now;
                 colProf.PersonaId = dto.ProfesorId;
                 colProf.ColegioId = dto.ColegioId;
@@ -281,11 +315,14 @@ namespace profefolio.Controllers
 
         [HttpDelete("{id:int}")]
         [Authorize(Roles = "Administrador de Colegio")]
-        public async Task<ActionResult> Delete(int id){
-            try{
+        public async Task<ActionResult> Delete(int id)
+        {
+            try
+            {
                 //Obtenemos la relacion Colegio-Profesor
                 var colProf = await _cProfService.FindById(id);
-                if(colProf == null){
+                if (colProf == null)
+                {
                     return NotFound("No se puede eliminar no esta disponible");
                 }
 
@@ -293,22 +330,23 @@ namespace profefolio.Controllers
                 var nameUser = User.FindFirstValue(ClaimTypes.Name);
 
                 var admin = await _personaService.FindByEmail(nameUser);
-                if(admin == null){
+                if (admin == null)
+                {
                     return BadRequest("Error. El administradir no existe");
                 }
-                
-                
+
+
                 //se verifica que exista un colegio en donde este asignado el administrador 
                 Colegio colegio = await _colegioService.FindByIdAdmin(admin.Id);
                 if (colegio == null)
                 {
                     return NotFound("El colegio no esta disponible");
                 }
-
-                //se verifica que el administrador tenga el mismo email que el del administrador que hizo la peticion
-                if (!colegio.personas.Email.Equals(nameUser))
+                
+                //se verifica que el Id del colegio de la relacion no sea igual al Id del colegio al que pertenece le administrador
+                if (colProf.ColegioId != colegio.Id)
                 {
-                    return Unauthorized("No puede eliminar Profesores en otros colegios");
+                    return Unauthorized("No puede eliminar datos de otros colegios");
                 }
 
                 colProf.Deleted = true;
@@ -320,7 +358,9 @@ namespace profefolio.Controllers
 
                 return Ok();
 
-            }catch(Exception e){
+            }
+            catch (Exception e)
+            {
                 Console.WriteLine($"{e}");
                 return BadRequest("Error de servidor mientras se intentaba eliminar");
             }
