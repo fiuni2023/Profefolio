@@ -7,6 +7,7 @@ using AutoMapper;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using profefolio.Helpers;
 using profefolio.Models.DTOs.Ciclo;
 using profefolio.Models.Entities;
 using profefolio.Repository;
@@ -19,7 +20,7 @@ namespace profefolio.Controllers
     {
         private readonly IMapper _mapper;
         private readonly ICiclo _cicloService;
-        private const int CantPorPage = 20;
+        private static int CantPorPage => Constantes.CANT_ITEMS_POR_PAGE;
 
         public CicloController(IMapper mapper, ICiclo cicloService)
         {
