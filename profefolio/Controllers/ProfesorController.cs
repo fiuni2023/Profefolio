@@ -8,7 +8,7 @@ using profefolio.Repository;
 using Microsoft.AspNet.Identity;
 using System.Security.Claims;
 using profefolio.Helpers;
-
+using profefolio.Models.DTOs.ColegioProfesor;
 namespace profefolio.Controllers
 {
     [ApiController]
@@ -20,16 +20,18 @@ namespace profefolio.Controllers
         private readonly IRol _rolService;
         private readonly IColegioProfesor _colegioProfesor;
         private static int CantPorPage => Constantes.CANT_ITEMS_POR_PAGE;
+        private readonly IProfesor _profesorService;
 
         private const string PROFESOR_ROLE = "Profesor";
 
 
-        public ProfesorController(IMapper mapper, IPersona personasService, IRol rolService, IColegioProfesor colProf)
+        public ProfesorController(IMapper mapper, IPersona personasService, IRol rolService, IColegioProfesor colProf, IProfesor profesorService)
         {
             _mapper = mapper;
             _personasService = personasService;
             _rolService = rolService;
             _colegioProfesor = colProf;
+            _profesorService = profesorService;
         }
 
 
@@ -110,7 +112,7 @@ namespace profefolio.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Administrador de Colegio")]
-        public async Task<ActionResult<PersonaResultDTO>> Post([FromBody] PersonaDTO dto)
+        public async Task<ActionResult<ColegioProfesorResultOfCreatedDTO>> Post([FromBody] PersonaDTO dto)
         {
 
             if (!ModelState.IsValid)
@@ -149,13 +151,38 @@ namespace profefolio.Controllers
             entity.Deleted = false;
             entity.CreatedBy = name;
 
+            if (await _personasService.ExistMail(dto.Email))
+            {
+                return BadRequest("El email al cual quiere registrarse ya existe");
+            }
+
+            if (await _personasService.ExistDoc(entity))
+            {
+                return BadRequest($"El usuario con doc {dto.Documento} ya existe");
+            }
+
             try
             {
-                var saved = await _personasService.CreateUser(entity, dto.Password);
+                var adminEmail = User.FindFirstValue(ClaimTypes.Name);
+                var admin = await _personasService.FindByEmail(adminEmail);
 
-                if (await _rolService.AsignToUser(PROFESOR_ROLE, saved))
+                if (admin == null || admin.Colegio == null)
                 {
-                    return Ok(_mapper.Map<PersonaResultDTO>(saved));
+                    return BadRequest("Hay problemas con sus credenciales");
+                }
+                else
+                {
+                    var result = await _profesorService.Add(entity, dto.Password, PROFESOR_ROLE, admin.Colegio.Id);
+
+
+                    if (result.resultado != null)
+                    {
+                        return Ok(result.resultado);
+                    }
+                    if (result.ex != null)
+                    {
+                        return BadRequest(result.ex.Message);
+                    }
                 }
             }
             catch (BadHttpRequestException e)
