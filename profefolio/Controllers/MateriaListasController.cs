@@ -31,7 +31,7 @@ namespace profefolio.Controllers
             var username = User.Identity.Name;
 
 
-            foreach (var profes in dto.IdProfesores)
+            foreach (var profes in dto.IdProfesores.Distinct())
             {
 
                 var p = await _profesorService.FindById(profes);
