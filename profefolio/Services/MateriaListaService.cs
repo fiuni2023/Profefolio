@@ -10,9 +10,8 @@ namespace profefolio.Services
         private bool disposedValue;
         private readonly ApplicationDbContext _db;
 
-        public MateriaListaService(bool disposedValue, ApplicationDbContext db)
+        public MateriaListaService(ApplicationDbContext db)
         {
-            this.disposedValue = disposedValue;
             _db = db;
         }
 

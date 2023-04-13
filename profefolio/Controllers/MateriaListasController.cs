@@ -9,20 +9,17 @@ using System.Transactions;
 
 namespace profefolio.Controllers
 {
-    [Route("administrador/materia/profesores")]
+    [Route("api/administrador/materia/profesores")]
     [ApiController]
     [Authorize(Roles = "Administrador de Colegio")]
     public class MateriaListasController : ControllerBase
     {
         private readonly IMateriaLista _materiaListaService;
         private readonly IPersona _profesorService;
-        private readonly IMateria _materiaService;
-
-        public MateriaListasController(IMateriaLista materiaListaService, IPersona profesorService, IMateria materiaService)
+        public MateriaListasController(IMateriaLista materiaListaService, IPersona profesorService)
         {
             _materiaListaService = materiaListaService;
             _profesorService = profesorService;
-            _materiaService = materiaService;
         }
 
         [HttpPost]
@@ -36,6 +33,10 @@ namespace profefolio.Controllers
 
             foreach (var profes in dto.IdProfesores)
             {
+
+                var p = await _profesorService.FindById(profes);
+
+                if(p == null) { continue; }
                 await _materiaListaService.Add(new MateriaLista
                 {
                     ClaseId = dto.IdClase,
@@ -52,8 +53,7 @@ namespace profefolio.Controllers
         }
 
         [HttpGet]
-        [Route("Administrador de Colegio")]
-        public async Task<ActionResult> GetAllTemp()
+        public ActionResult GetAllTemp()
         {
 
             var query = _materiaListaService
