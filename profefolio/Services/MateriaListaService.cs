@@ -78,5 +78,12 @@ namespace profefolio.Services
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
         }
+
+        public IEnumerable<MateriaLista> FilterByIdMateriaAndUser(int idMateria, string createdBy)
+        {
+            return _db.MateriaListas.Where(d => !d.Deleted)
+                .Where(d => d.Id == idMateria)
+                .Where(d => d.CreatedBy.Equals(createdBy));
+        }
     }
 }

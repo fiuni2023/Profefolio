@@ -77,6 +77,24 @@ namespace profefolio.Controllers
             return Ok();
         }
 
+        [HttpDelete]
+        [Route("{id:int}")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            var username = User.Identity.Name;
+
+            var listas = _materiaListaService.FilterByIdMateriaAndUser(id, username);
+
+            foreach(var item in listas)
+            {
+                item.Deleted = true;
+                item.ModifiedBy = username;
+                item.Modified = DateTime.Now;
+                _materiaListaService.Edit(item);
+            }
+            await _materiaListaService.Save();
+            return Ok();
+        }
 
     }
 }
