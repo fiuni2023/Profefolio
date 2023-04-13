@@ -74,9 +74,9 @@ function ListarMaTerias() {
 }
 
 
-const btndetalles = (id) => {
+const btndetalles = (data) => {
   setShowModal(true);
-  setId(id);
+  setId(data.id);
 };
 
 
@@ -92,6 +92,11 @@ const btndetalles = (id) => {
       setPage(page + 1);
     }
   };
+
+  const modalOnHide = (bool) => {
+    setShowModal(bool)
+    setId(null)
+  }
 
 
   const [show, setShow] = useState(false);
@@ -114,18 +119,17 @@ const btndetalles = (id) => {
                 tituloTabla: 'Lista de materias',
                 titulos: [
                   { titulo: 'Nombre Materia' },
-                 
                 ],
                 clickable: { action: btndetalles },
-                colorHeader: '',
                 tableWidth: '50%',
                 filas: materias.map((materia) => ({
-                  fila: materia.id,
+                  fila: materia,
                   datos: [
                     { dato: materia.nombre_Materia },
                   ],
                 })),
               }}
+              selected={id ?? '-'}
 />
         
 
@@ -133,7 +137,7 @@ const btndetalles = (id) => {
             <div >
 
 
-            <ListDetallesMateria showModal={showModal} setShowModal={setShowModal} id={id}  triggerState={(materias)=>{setMaterias(materias)}} page={page} />
+            <ListDetallesMateria showModal={showModal} setShowModal={modalOnHide} id={id}  triggerState={(materias)=>{setMaterias(materias)}} page={page} />
 
             <div>
   </div>
