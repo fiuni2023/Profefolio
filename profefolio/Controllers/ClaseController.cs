@@ -3,6 +3,7 @@ using AutoMapper;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using profefolio.Helpers;
 using profefolio.Models.DTOs;
 using profefolio.Models.DTOs.Clase;
 using profefolio.Models.Entities;
@@ -18,7 +19,7 @@ namespace profefolio.Controllers
         private readonly IClase _claseService;
         private readonly ICiclo _cicloService;
         private readonly IColegio _colegioService;
-        private const int CantPorPage = 20;
+        private static int CantPorPage => Constantes.CANT_ITEMS_POR_PAGE;
 
         public ClaseController(IMapper mapper, IClase claseService, ICiclo cicloService, IColegio colegioService)
         {

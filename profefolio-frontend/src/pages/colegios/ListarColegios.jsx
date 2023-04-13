@@ -6,10 +6,10 @@ import { Table } from "../../components/Table";
 import ModalAgregarColegios from './AgregarColegios'
 import axios from "axios";
 import Pagination from 'react-bootstrap/Pagination';
-import { useGeneralContext } from "../../context/GeneralContext";
+import { useGeneralContext} from '../../context/GeneralContext'
 import APILINK from "../../components/link";
 import ModalVerColegios from './ModalVerColegios'
-import { AiOutlineEye } from "react-icons/ai";
+
 import ModalColegios from "./ModalColegios";
 import { BsFillPlusCircleFill } from "react-icons/bs"
 import Modal from "../../components/Modal";
@@ -21,11 +21,11 @@ function ListarColegios() {
   const nav = useNavigate()
 
   const navigate = useNavigate()
-  const [totalPage, setTotalPage] = useState(0);
+  
   const [currentPage, setCurrentPage] = useState(0);
   const [colegios, setColegios] = useState([]);
-  const [datoIdColegio, setDatoIdColegio] = useState('');
-
+  const [datoIdColegio, setDatoIdColegio] = useState(null);
+  const [next, setNext] = useState(true)
   const [enabled, setEnabled] = useState(true);
 
 
@@ -43,9 +43,9 @@ function ListarColegios() {
 
         .then(response => {
           setColegios(response.data.dataList); //Guarda los datos
-          setTotalPage(response.data.totalPage);//Total de Paginas
           setCurrentPage(response.data.currentPage);//Actualiza la pagina en donde estan los datos
-          
+          setNext(response.data.next);
+          console.log(response.data);
         })
         .catch(error => {
           console.error(error);
@@ -58,26 +58,27 @@ function ListarColegios() {
   const doFetch = (colegio) => {
     setColegios([...colegios, colegio])
   }
-  let items = [];
+  const getPages = () => {
+    return (
+        <>
+            <Pagination.Prev disabled={currentPage<=0} onClick={()=>{
+                setCurrentPage(currentPage-1)
+            }} />
+            <Pagination.Item disabled >{currentPage + 1}</Pagination.Item>
+            <Pagination.Next disabled={!next} onClick={()=>{
+                setCurrentPage(currentPage+1)
+            }}/>
+        </>
+    )
+}
 
-  for (let number = 0; number < totalPage; number++) {
-    items.push(
-      <Pagination.Item key={number} >
-        {number}
-      </Pagination.Item>,
-    );
-  }
-
-  const handleCurrentPage = (idPage) => {
-    setCurrentPage(idPage);
-
-
-  }
+ 
   const [show, setShow] = useState(false);
   const [disabled, setDisabled] = useState(false);
   const [tituloModal, setTituloModal] = useState("AgregarColegio")
   const handleShow = (id) => {
     setDatoIdColegio(id);
+   
     setShow(true);
   }
 
@@ -103,26 +104,30 @@ function ListarColegios() {
         </div>
         <div className={styles.tablePrincipal} >
           <Table
-            headers={["Numero", "Nombre", "Administrador", "Acciones"]}
+            headers={["Numero", "Nombre", "Administrador"]}
             datas={colegios}
             parseToRow={(col, index) => {
               return (
-                <tr key={index} >
+                <tr key={index} onClick={() => handleShow(col.id)}>
                   <td>{index + 1}</td>
                   <td>{col?.nombre}</td>
                   <td>{col?.nombreAdministrador} {col?.apellido}</td>
-                  <td><button className={styles.iconButton} onClick={() => handleShow(col?.id)}><AiOutlineEye /></button></td>
-
+                 
                 </tr>
               )
             }}
           />
-          <Pagination onClick={e => handleCurrentPage(e.target.text)} size="sm">{items} </Pagination>
+          <Pagination size="sm mt-3">
+                        {getPages()}
+                    </Pagination>
         </div>
 
        
         <ModalColegios tituloModal={tituloModal} isOpen={show} disabled={disabled}></ModalColegios>  
 
+        <ModalVerColegios datoIdColegio={datoIdColegio} show={show} setShow={setShow} disabled={disabled} setDisabled={setDisabled} triggerState={(colegio)=>{setColegios(colegio)}} page={currentPage}></ModalVerColegios>
+
+        <ModalAgregarColegios triggerState={(colegio) => { doFetch(colegio) }}  ></ModalAgregarColegios>
       </div>
     </>)
 }

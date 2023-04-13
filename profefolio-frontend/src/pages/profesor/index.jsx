@@ -14,6 +14,8 @@ import ListDetallesProfesor from './list/ListDetallesProfesor.jsx';
 import StyleComponentBreadcrumb from '../../components/StyleComponentBreadcrumb.jsx';
 
 import Tabla from '../../components/Tabla.jsx';
+import styled from 'styled-components';
+import { AiOutlinePlus } from 'react-icons/ai';
 
 
 
@@ -72,16 +74,9 @@ function Profesores() {
  
 
 
-
-
 const btndetalles = (id) => {
   setShowModal(true);
   setId(id);
-};
-
-const handleCloseModal = () => {
-  setShowModal(false);
-  setProfesores([]);
 };
 
 
@@ -104,13 +99,14 @@ const handleCloseModal = () => {
   return (
     <>
 
-      <div className="page">
+      <div>
       <StyleComponentBreadcrumb nombre="Profesor" />
 
         <PanelContainerBG>
 
 
           <div>
+
           <Tabla
               datosTabla={{
                 tituloTabla: 'Lista de profesores',
@@ -125,8 +121,11 @@ const handleCloseModal = () => {
                 clickable: { action: btndetalles },
                 colorHeader: '',
                 tableWidth: '',
+
+            
+
                 filas: profesores.map((profe) => ({
-                  fila: profe.id,
+                  fila: profe,
                   datos: [
                     { dato: profe.documento },
                     { dato: profe.nombre },
@@ -144,6 +143,9 @@ const handleCloseModal = () => {
            
             <ListDetallesProfesor showModal={showModal} setShowModal={setShowModal} id={id}  triggerState={(profesor)=>{setProfesores(profesor)}} page={page} />
 
+            <AddButton onClick={()=>setShow(true)}>
+              <AiOutlinePlus size={"35px"} />
+            </AddButton>
   
             <div >
 
@@ -172,19 +174,12 @@ const handleCloseModal = () => {
             </nav>
  
           </div>
+          
+          <CreateModal title="My Modal" onHide={() => setShow(false)}  show={show}
+             triggerState={(profesor)=>{doFetch(profesor)}}/>
 
         </PanelContainerBG>
-        <footer>
-          <div className={styles.NButtonForSideA}>
-            <CreateModal title="My Modal" onClose={() => setShow(false)}  show={show}
-             triggerState={(profesor)=>{doFetch(profesor)}}>
-            </CreateModal>
-            
-          </div>
-
-     
-
-        </footer>
+        
 
       </div>
 
@@ -208,5 +203,24 @@ const handleCloseModal = () => {
     </>
   )
 }
+
+const AddButton = styled.button`
+    width: 50px;
+    height: 50px;
+    padding: 7px;
+    color: white;
+    background-color: #F0544F;
+    border-radius: 50%;
+    position: fixed;
+    bottom: 1.5%;
+    right: 1%;
+    cursor: pointer;
+    border: none;
+&:hover {
+    filter: brightness(0.95);
+&:active {
+    filter: brightness(0.8);
+  }
+`;
 
 export default Profesores

@@ -64,6 +64,7 @@ builder.Services.AddAuthentication(options =>
 
 //Servicios
 builder.Services.AddScoped<IPersona, PersonasService>();
+builder.Services.AddScoped<IProfesor, ProfesorService>();
 builder.Services.AddScoped<IColegio, ColegiosService>();
 builder.Services.AddScoped<IColegioProfesor, ColegioProfesorService>();
 builder.Services.AddScoped<IColegiosAlumnos, ColegiosAlumnosServices>();
@@ -73,6 +74,7 @@ builder.Services.AddScoped<IClase, ClaseService>();
 builder.Services.AddScoped<IFullColegio, ColegiosFullService>();
 builder.Services.AddScoped<IRol, RolService>();
 builder.Services.AddScoped<IAuth, AuthService>();
+builder.Services.AddScoped<IMateriaLista, MateriaListaService>();
 
 var app = builder.Build();
 
