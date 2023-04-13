@@ -29,6 +29,7 @@ function ListarMaTerias() {
   
   const [showModal, setShowModal] = useState(false);
   const [id, setId] = useState(null);
+  const [data, setData] = useState({})
   const { getToken, cancan, verifyToken } = useGeneralContext();
 
   const [page, setPage] = useState(0);
@@ -77,6 +78,7 @@ function ListarMaTerias() {
 const btndetalles = (data) => {
   setShowModal(true);
   setId(data.id);
+  setData(data)
 };
 
 
@@ -137,7 +139,7 @@ const btndetalles = (data) => {
             <div >
 
 
-            <ListDetallesMateria showModal={showModal} setShowModal={modalOnHide} id={id}  triggerState={(materias)=>{setMaterias(materias)}} page={page} />
+            <ListDetallesMateria showModal={showModal} setShowModal={modalOnHide} id={id} data={data}  triggerState={(materias)=>{setMaterias(materias)}} page={page} />
 
             <div>
   </div>
