@@ -4,6 +4,6 @@ namespace profefolio.Repository
 {
     public interface IMateriaLista : IRepository<MateriaLista>
     {
-        IEnumerable<MateriaLista> FilterByIdMateriaAndUser(int idMateria, string createdBy);
+        IEnumerable<MateriaLista> FilterByIdMateriaAndUserAndClass(int idMateria, string createdBy, int idClase);
     }
 }
