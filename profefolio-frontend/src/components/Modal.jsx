@@ -24,10 +24,8 @@ function Modal({datosModal, isOpen}){
     useEffect(() => { setOpen(isOpen) }, [isOpen]);
     useEffect(() => { setForm(datosModal?.form) }, [datosModal]);
 
-    const handleClose = () => {
-        setOpen(false); 
-    }
-
+    const handleClose = () => { setOpen(false); }
+    
     return (
         <>
 

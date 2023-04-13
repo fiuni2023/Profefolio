@@ -20,7 +20,6 @@ datosTabla = {
 
 */ 
 function Tabla({datosTabla, selected}){
-    console.log(datosTabla);
     return (
         <>
         {datosTabla &&(

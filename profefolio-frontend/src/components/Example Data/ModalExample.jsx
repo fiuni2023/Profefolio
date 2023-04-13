@@ -144,4 +144,4 @@ const ModalExample = {
     }
 }
 
-export default ModalExample;
+export {ModalExample};

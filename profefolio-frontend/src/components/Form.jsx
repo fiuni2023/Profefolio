@@ -8,50 +8,46 @@ const types = ["text", "date", "password", "textarea"];
 const checks = ["checkbox", "radio", "switch"];
 const allinputs = ["text", "date", "password", "textarea", "select"];
 
-/*  Formato del prop "inputs", es un arreglo de objetos, todas las opciones son opcionales, pero algunas son necesarias 
-    para mostrar los inputs, por ejemplo, para mostrar un grupo de selects, se necesita que el input tenga un key value 
-
-inputs = [
-    {    
-        xs: valor del 1 al 12 que representa en ancho del input en una pantalla pequeñita en una base de 12, por defecto es 12
-        sm: valor del 1 al 12 que representa en ancho del input en una pantalla pequeña en una base de 12, por defecto es 12
-        md: valor del 1 al 12 que representa en ancho del input en una pantalla mediana en una base de 12, por defecto es 12
-        lg: valor del 1 al 12 que representa en ancho del input en una pantalla grande en una base de 12, por defecto es 12
-        key: valor unico
-        label: label del input
-        type: tipo de input: text, date, password, textarea, checkbox, radio, select, switch
-        placeholder: placeholder del input
-        disabled: boolean que indica si esta desactivado, o se puede editar, por defecto es false
-        required: boolean si el input es requerido
-        onChange: { action: si es necesario, se puede mandar un callback para cuando el input cambia }
-        select: {
-            default: valor por defecto, que se usa solo como placeholder
-            options: [
+/*  Formato del prop "form" es basicamente un objeto con un arreglo de inputs y un arreglo de botones 
+form = {
+    inputs : [ es un arreglo de onjetos
+        {    
+            xs: valor del 1 al 12 que representa en ancho del input en una pantalla pequeñita en una base de 12, por defecto es 12
+            sm: valor del 1 al 12 que representa en ancho del input en una pantalla pequeña en una base de 12, por defecto es 12
+            md: valor del 1 al 12 que representa en ancho del input en una pantalla mediana en una base de 12, por defecto es 12
+            lg: valor del 1 al 12 que representa en ancho del input en una pantalla grande en una base de 12, por defecto es 12
+            key: valor unico
+            label: label del input
+            type: tipo de input: text, date, password, textarea, checkbox, radio, select, switch
+            placeholder: placeholder del input
+            disabled: boolean que indica si esta desactivado, o se puede editar, por defecto es false
+            required: boolean si el input es requerido
+            onChange: { action: si es necesario, se puede mandar un callback para cuando el input cambia }
+            select: {
+                default: valor por defecto, que se usa solo como placeholder
+                options: [
+                    {
+                        value: valor del select, suele ser el id del elemento
+                        text: lo que lee el usuario
+                    }
+                ]
+            }
+            checks: [
                 {
-                    value: valor del select, suele ser el id del elemento
-                    text: lo que lee el usuario
+                    xs: valor del 1 al 12 que representa en ancho del input en una pantalla pequeñita en una base de 12, por defecto es 12
+                    sm: valor del 1 al 12 que representa en ancho del input en una pantalla pequeña en una base de 12, por defecto es 12
+                    md: valor del 1 al 12 que representa en ancho del input en una pantalla mediana en una base de 12, por defecto es 12
+                    lg: valor del 1 al 12 que representa en ancho del input en una pantalla grande en una base de 12, por defecto es 12
+                    id: id de la opcion
+                    disabled: cuando la opcion esta desactivada, por defecto es false
+                    label: label de la opcion
                 }
             ]
+
         }
-        checks: [
-            {
-                xs: valor del 1 al 12 que representa en ancho del input en una pantalla pequeñita en una base de 12, por defecto es 12
-                sm: valor del 1 al 12 que representa en ancho del input en una pantalla pequeña en una base de 12, por defecto es 12
-                md: valor del 1 al 12 que representa en ancho del input en una pantalla mediana en una base de 12, por defecto es 12
-                lg: valor del 1 al 12 que representa en ancho del input en una pantalla grande en una base de 12, por defecto es 12
-                id: id de la opcion
-                disabled: cuando la opcion esta desactivada, por defecto es false
-                label: label de la opcion
-            }
-        ]
-
-    }
-}]
-
-*/
-
-/* Formato del prop buttons, es un arreglo de objetos
-    buttons = [
+    }], 
+    
+    buttons : [ Es un arreglo de objetos que representan los datos de cada boton
         {
             style: tipo general de boton icon o text
             type: tipo especifico de boton: cancel, accept, etc
@@ -59,45 +55,52 @@ inputs = [
             enabled: cuando la opcion esta desactivada, por defecto es false
         }
     ]
+
 */
 
-function Form (form, onSubmit){
-    const [inputs, setInputs] = useState(form?.form?.inputs ?? null); 
-    const [buttons, setButtons] = useState(form?.form?.buttons ?? null);
-    const [info, setInfo] = useState(form?.form?.info ?? null); 
+
+/**/
+
+function Form (form){
+    
+    const [inputs, setInputs] = useState(form?.form?.inputs ?? (form?.inputs ?? null)); 
+    const [buttons, setButtons] = useState(form?.form?.buttons ?? (form?.buttons ?? null));
+    const [info, setInfo] = useState(form?.form?.info ?? (form?.info ?? null)); 
     const [validated, setValidated] = useState(false);
     
     useEffect(() => {
-        setInputs(form?.form?.inputs ?? null);
-        setButtons(form?.form?.buttons ?? null);
-        setInfo(form?.form?.info ?? null);
+        setInputs(form?.form?.inputs ?? (form?.inputs ?? null));
+        setButtons(form?.form?.buttons ?? (form?.buttons ?? null));
+        setInfo(form?.form?.info ?? (form?.info ?? null));
     } , [form])
 
-    const handleSubmit = (event, func) => {
+    const handleSubmit = (event) => {
         const cform = event.currentTarget;
-        if (cform.checkValidity() === false && !validated) {
-            event.preventDefault();
+        event.preventDefault();
+        if (cform.checkValidity() === false) {
             event.stopPropagation();
-        } 
-        setValidated(true);
-        
-      };
+        } else {
+            form?.form?.onSubmit?.action();
+            setValidated(true);       
+        }
+    };
 
     return (
         <>
         <SContainer>
-            <RForm id="My-form" validated={validated} >     
+            <RForm id="My-form"  validated={validated} onSubmit={handleSubmit}>     
                 {info && <Info>{info}</Info>}
                 {inputs && <Row>{inputs.map((input, i) => {
                     return (
                         <Col key={input?.key ?? i} xs={input?.xs ?? 12} sm={input?.sm ?? 12} md={input?.md ?? 12} lg={input?.lg ?? 12} >
-                            <SGroup key={input?.key ?? i} controlId={input?.key ?? input?.label ?? ""}>
+                            <SGroup key={input?.key ?? i} >
                                 {input?.label && <SLabel key={input.label}>{input.label}{input?.required ? " *" : ""}</SLabel>}
                                 
                                 {input?.type && types.includes(input.type) && 
-                                    <SControl 
+                                    <SControl
+                                        id ={input?.key ?? i}
                                         key={input?.key ?? i}
-                                        onChange={input?.onChange ?? null}
+                                        onChange={() => input?.onChange?.action() ?? null}
                                         type= {input.type}
                                         placeholder={input?.placeholder ?? ""} 
                                         disabled={input?.disabled ?? false} 
@@ -108,13 +111,14 @@ function Form (form, onSubmit){
                                 {input?.type === "select" && 
                                 <div>
                                     <SSelect 
+                                        id={input?.key ?? ""}
                                         required={input?.required ?? false}
                                         key={input?.key ?? ""}
                                         disabled={input?.disabled ?? false} 
-                                        onChange={input?.onChange ?? null}>
-                                            {input?.select?.default && <option key="default">{input?.select?.default}</option>}
+                                        onChange={ () => input?.onChange?.action() ?? null}>
+                                            {input?.select?.default && <option key="default" value={0}>{input?.select?.default}</option>}
                                             {input?.select?.options && input.select.options.map((option) => {
-                                                return ( <option key={`${option?.value ?? i}-${option?.text ?? 'option'}`} value={option?.value}>{option?.text}</option> )
+                                                return ( <option key={`${option?.value ?? option?.id ?? i}`} value={option?.value ?? option?.id}>{option?.text ?? option?.nombre ?? "opcion"}</option> )
                                             })}
                                     </SSelect>
                                     {input?.type && allinputs.includes(input.type) && input?.required && 
@@ -131,6 +135,7 @@ function Form (form, onSubmit){
                                             return (
                                                 <Col key={check?.id ?? ""} xs={check?.xs ?? "auto"} sm={check?.sm ?? "auto"} md={check?.md ?? "auto"} lg={check?.lg ?? "auto"}>
                                                     <SCheck
+                                                        onChange={ () => input?.onChange?.action ?? null}
                                                         key={check?.id ?? ""}
                                                         name={input.key}
                                                         type={input.type}
@@ -167,7 +172,7 @@ function Form (form, onSubmit){
                                     key={i} 
                                     enabled={button?.enabled ?? true}
                                     buttonType={button.type}
-                                    onClick={button?.submit ? (event) => handleSubmit(event, button.onclick) : button.onclick.action}
+                                    onClick={() => button.onclick.action() ?? null}
                                 ></TextButton>
                             }
                         </div>
