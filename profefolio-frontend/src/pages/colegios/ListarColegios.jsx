@@ -48,6 +48,9 @@ function ListarColegios() {
      // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cancan, verifyToken, nav, currentPage, getToken]);
 
+  
+
+  
  
   const doFetch = (colegio) => {
     setColegios([...colegios, colegio])

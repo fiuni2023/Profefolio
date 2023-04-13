@@ -3,7 +3,7 @@ import styles from './Paginations.module.css'
 import IconButton from './IconButton'
 
 const Paginations = ({ totalPage, currentPage, setCurrentPage, next }) => {
-   
+
 
     const sumar = () => {
 
@@ -13,9 +13,23 @@ const Paginations = ({ totalPage, currentPage, setCurrentPage, next }) => {
         setCurrentPage((currentPage) => currentPage - 1)
 
     };
-
+    const handleKeyDown = (event) => {
+        if (event.key === 'Enter') {
+          console.log('do validate')
+        }
+      }
     const onChangeValue = (e) => {
-        setCurrentPage(parseInt(e.target.value));
+        let cambio = parseInt(e.target.value)
+        console.log(cambio);
+        if (e.key === 'Enter') {
+            console.log('do validate')
+          }
+        if(!(isNaN(cambio))){
+            setCurrentPage(parseInt(e.target.value));
+        }
+        else{
+            
+        }
     };
 
     return (<>
@@ -26,10 +40,9 @@ const Paginations = ({ totalPage, currentPage, setCurrentPage, next }) => {
             <input
                 className="text-center"
                 type="number"
-                value={currentPage+1}
+                value={isNaN(currentPage)? 0 : currentPage+1}
                 onChange={onChangeValue}
-                min={currentPage+1}
-                max={currentPage-1}
+                max={totalPage - 1}
             />
             de {totalPage}
             <IconButton enabled={next} buttonType='arrowR' onClick={sumar} />
