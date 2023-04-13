@@ -13,8 +13,6 @@ import ModalConfirmacion from '../../profesor/components/create/ModalConfirmacon
 function ListDetallesMateria(props) {
   const { showModal, setShowModal, id, data, triggerState, page } = props;
 
-  const [materia, setMaterias] = useState([]);
-
   const { getToken } = useGeneralContext();
 
   const [readOnly, setReadOnly] = useState(true);
@@ -38,8 +36,6 @@ function ListDetallesMateria(props) {
     })
 
       .then(response => {
-        handleUpdate();
-        setMaterias(response.data)
         toast.success("Eliminado exitoso");
         setShowModal(false);
 
@@ -54,8 +50,6 @@ function ListDetallesMateria(props) {
 
   const handleClose = () => {
     setShowConfirmDialog(false);
-
-
   };
 
 
@@ -87,9 +81,9 @@ function ListDetallesMateria(props) {
     event.preventDefault();
 
     if (nombre_Materia === "") toast.error("revisa los datos, los campos deben ser completados")
-
-
-    else {
+    else if(nombre_Materia === temporal){
+      toast.error("no se detectaron cambios")
+    }else {
       axios.put(`${APILINK}/api/Materia/${id}`, {
         nombre_Materia,
 
@@ -104,7 +98,6 @@ function ListDetallesMateria(props) {
           handleUpdate();
 
 
-          setMaterias(response.data)
           toast.success("Editado exitoso");
           setReadOnly(false)
           setShowModal(false)

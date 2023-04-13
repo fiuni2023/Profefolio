@@ -97,6 +97,7 @@ const btndetalles = (data) => {
 
   const modalOnHide = (bool) => {
     setShowModal(bool)
+    setData({})
     setId(null)
   }
 
