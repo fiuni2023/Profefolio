@@ -1,32 +1,9 @@
 .pagination{
     display: flex;
+    font-size: medium;
+    padding-top: 2%;
 }
 
-.buttonPag{
-    border: none;
-    border-radius: 5px;
-    background-color: #F0544F;
-    color: white;
-    height: 20%;
-    font-size: medium;
-    
-    
-    
+.text{
+    padding-top: 1%;
 }
-.texto{
-    margin-top: 15px;
-    font-size: medium;
-    display: flex;
-}
-.current{
-    background-color: #D1D1D1;
-    border-radius: 5px;
-    width: 30px;
-    height: 30px;
-}
-.getCurrent{
-    width: 30px;
-}
-input[type=number]::-webkit-inner-spin-button, 
-input[type=number]::-webkit-outer-spin-button { 
-  -webkit-appearance: none;}

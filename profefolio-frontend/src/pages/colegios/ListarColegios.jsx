@@ -5,12 +5,13 @@ import { BiArrowBack } from "react-icons/bi"
 import { Table } from "../../components/Table";
 import ModalAgregarColegios from './AgregarColegios'
 import axios from "axios";
-
-import { useGeneralContext } from "../../context/GeneralContext";
+import Paginations from "../../components/Paginations"
+import { useGeneralContext} from '../../context/GeneralContext'
 import APILINK from "../../components/link";
 import ModalVerColegios from './ModalVerColegios'
-import { AiOutlineEye } from "react-icons/ai";
-import Paginations from "../../components/Paginations"
+import { toast } from "react-hot-toast";
+
+  
 function ListarColegios() {
 
   const { getToken, verifyToken, cancan } = useGeneralContext()
@@ -23,6 +24,7 @@ function ListarColegios() {
   const [colegios, setColegios] = useState([]);
   const [datoIdColegio, setDatoIdColegio] = useState('');
   const [next, setNext]=useState(false);
+  const [totalPage, setTotalPage]=useState(0);
   useEffect(() => {
 
     verifyToken()
@@ -39,10 +41,12 @@ function ListarColegios() {
           setColegios(response.data.dataList); //Guarda los datos
           setCurrentPage(response.data.currentPage);//Actualiza la pagina en donde estan los datos
           setNext(response.data.next);
-          console.log(response.data);
+          setTotalPage(response.data.totalPage)
+          
         })
         .catch(error => {
-          console.error(error);
+          toast.error(error);
+          
         });
     }
      // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -66,15 +70,9 @@ function ListarColegios() {
     setShow(true);
   }
 
-
-  const openNew = () => {
-    setShow(!show);
-  }
-
-
   return (
     <>
-    <button className={styles.buttonAgregar} onClick={openNew}><BsFillPlusCircleFill className={styles.iconoAgregar} /></button>
+   
       <div>
 
         <div className={styles.nombrePagina}>
