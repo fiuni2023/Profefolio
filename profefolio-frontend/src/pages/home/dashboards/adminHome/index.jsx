@@ -1,7 +1,7 @@
 import React from "react";
 import { useGeneralContext } from "../../../../context/GeneralContext";
 import styles from "./index.module.css";
-import { Row, Container } from "react-bootstrap";
+import { Container } from "react-bootstrap";
 import Card from "../../../../components/Card";
 import { Colegios, Administradores } from "./cards";
 import {DTitle, SRow} from "../../../../components/componentsStyles/StyledDashComponent"

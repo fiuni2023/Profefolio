@@ -18,12 +18,12 @@ const handleColorType = (color, header) => {
   };
 
   const getPointer = (hover) => {
-    if (hover == "true") return "pointer";
+    if (hover === "true") return "pointer";
     else return "default";
   }
 
   const getHover = (hover) => {
-    if (hover == "true") { 
+    if (hover === "true") { 
         return `:hover{
             transform: scale(1.03); 
         }`
