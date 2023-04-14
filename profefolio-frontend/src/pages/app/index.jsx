@@ -20,6 +20,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 import Profesor from "../profesor/index.jsx";
 import Clases from "../clases/index.jsx";
+import ShowClase from "../clases/pages/view/ShowClase.jsx";
 import Home from "../home/index.jsx";
 import TestPage from "../../components/TestPage.jsx";
 
@@ -36,7 +37,7 @@ const App = () => {
                             <Routes>
 
                                 <Route path="/" element={<Home />} />
-                                <Route path="/test" element={<TestPage />}/>
+                                <Route path="/test" element={<TestPage />} />
                                 <Route path="/pagina1" element={<Partidos />}>
                                     <Route path="list" element={<PartidosList />} />
                                     <Route path='create' element={<CreatePartidos />} />
@@ -60,12 +61,13 @@ const App = () => {
                                 </Route>
 
                                 <Route path="/clases" element={<Clases />}>
+                                    <Route path="view/:idClase" element={<ShowClase />} />
                                 </Route>
-                                
+
                                 <Route path="/materias" element={<ListarMaterias />}>
                                     <Route path="list" element={<ListarMaterias />} />
                                 </Route>
-                                <Route path="/alumnos" element={<Alumnos/>}/>
+                                <Route path="/alumnos" element={<Alumnos />} />
                             </Routes>
                         </div>
                     </div>
