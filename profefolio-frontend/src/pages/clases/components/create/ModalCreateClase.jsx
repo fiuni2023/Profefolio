@@ -191,24 +191,25 @@ const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = 
                                     </InputGroup>
                                 </Form.Group>
 
-                                <Form.Group as={Col} md="12" controlId="validationFormikTurno">
-                                    <Form.Label>Turno</Form.Label>
-                                    <InputGroup hasValidation >
-                                        <Form.Control disabled={addCiclos || isSend}
-                                            type="text"
-                                            placeholder="Turno"
-                                            aria-describedby="inputGroupPrepend"
-                                            name="turno"
-                                            value={values.turno}
-                                            onChange={handleChange}
-                                            onBlur={handleBlur}
-                                            isInvalid={!addCiclos && (!!errors.turno && touched.turno)}
-                                        />
-                                        {errors.turno && touched.turno && <Form.Control.Feedback type="invalid" tooltip>
-                                            {errors.turno}
-                                        </Form.Control.Feedback>}
-                                    </InputGroup>
-                                </Form.Group>
+
+                                <SGroup as={Col} md="12" controlId="validationFormikTurno" className="position-relative">
+
+                                    <SLabel>Turno</SLabel>
+                                    <SControl disabled={addCiclos || isSend}
+                                        type="text"
+                                        placeholder="Turno"
+                                        aria-describedby="inputGroupPrepend"
+                                        name="turno"
+                                        value={values.turno}
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                        isInvalid={!addCiclos && (!!errors.turno && touched.turno)}
+                                    />
+                                    {errors.turno && touched.turno && <Form.Control.Feedback type="invalid" tooltip>
+                                        {errors.turno}
+                                    </Form.Control.Feedback>}
+                                </SGroup>
+
 
                                 {!addCiclos
                                     ?
@@ -239,31 +240,13 @@ const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = 
                             </Row>
 
                             <Row className="mb-3">
-                                {/* <Form.Group
-                                    as={Col}
-                                    md="12"
-                                    controlId="validationFormik103"
-                                    className="position-relative"
-                                > */}
                                 <SGroup
                                     as={Col}
                                     md="12"
                                     controlId="validationFormik103"
                                     className="position-relative"
                                 >
-                                    {/* <Form.Label>Año</Form.Label> */}
                                     <SLabel>Año</SLabel>
-                                    {/* <Form.Control disabled={addCiclos || isSend}
-                                        type="number"
-                                        placeholder="Año"
-                                        name="anho"
-                                        value={values.anho}
-                                        onChange={handleChange}
-                                        onBlur={handleBlur}
-                                        min={1950}
-                                        max={new Date().getFullYear() + 1}
-                                        isInvalid={!addCiclos && (!!errors.anho && touched.anho)}
-                                    /> */}
                                     <SControl
                                         disabled={addCiclos || isSend}
                                         type="number"
@@ -279,7 +262,7 @@ const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = 
                                     {touched.anho && errors.anho && <Form.Control.Feedback type="invalid" tooltip>
                                         {errors.anho}
                                     </Form.Control.Feedback>}
-                                    {/* </Form.Group> */}
+
                                 </SGroup>
                             </Row>
 
