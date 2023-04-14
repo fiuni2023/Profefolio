@@ -5,16 +5,18 @@ import APILINK from '../../components/link';
 import Modal from '../../components/Modal';
 import { toast } from 'react-hot-toast';
 
-function ModalColegios({ tituloModal, isOpen, disabled }) {
+function ModalColegios({tituloModal, isOpen, disabled, onSubmit = () => { }, triggerState = () => { }}) {
+
     const { getToken } = useGeneralContext()
     const [administradores, setAdministradores] = useState([]);
     const [open, setOpen] = useState(isOpen ? isOpen : false);
     const [ModalTitle, setModalTitle] = useState(tituloModal ? tituloModal : "");
-    const [isDisabled, setDisabled] = useState(disabled ? disabled : false);
+    const [isDisabled, setDisabled] = useState(disabled ? disabled : false); 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    useEffect(() => {setModalTitle(ModalTitle)}, [ModalTitle]);
+    useEffect(() => {setOpen(isOpen) }, [isOpen]);
+    useEffect(() => {setDisabled(disabled)}, [disabled]);
 
-    useEffect(() => { setModalTitle(ModalTitle) }, [ModalTitle]);
-    useEffect(() => { setOpen(isOpen) }, [isOpen]);
-    useEffect(() => { setDisabled(disabled) }, [disabled]);
     //Get administadores
     useEffect(() => {
         let config = {
@@ -32,6 +34,7 @@ function ModalColegios({ tituloModal, isOpen, disabled }) {
             .catch(function (error) {
                 console.log(error);
             });
+             // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [getToken])
 
     const handleSubmit = () => {
@@ -57,6 +60,10 @@ function ModalColegios({ tituloModal, isOpen, disabled }) {
             .then(function (response) {
                 if (response.status >= 200) {
                     setOpen(false);
+                    triggerState(response.data);
+                    onSubmit(response.data);
+                    //setNombreColegio("");
+                    //setIdAdmin("");
                     toast.success("Guardado correctamente");
                 }
             })
@@ -69,7 +76,6 @@ function ModalColegios({ tituloModal, isOpen, disabled }) {
 
 
     }
-
 
     const [datosModal, setDatosModal] = useState(null);
 

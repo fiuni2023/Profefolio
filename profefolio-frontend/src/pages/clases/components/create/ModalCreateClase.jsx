@@ -1,4 +1,4 @@
-import { Button, Col, Form, InputGroup, Modal, Row } from "react-bootstrap";
+import { Button, Col, Form, InputGroup, Row, Modal } from "react-bootstrap";
 import * as Yup from 'yup';
 import { Formik } from "formik";
 import { map } from "lodash";
@@ -10,6 +10,7 @@ import axios from "axios";
 import APILINK from "../../../../components/link";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import ModalContainer from "../../../../components/Modals";
 
 
 const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = false, triggerState = () => { }, handlePage = () => { } }) => {
@@ -129,9 +130,9 @@ const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = 
     }
 
     return <>
-        <Modal
+        <ModalContainer
             show={show}
-            onHide={handleClose}
+            handleClose={handleClose}
             backdrop="static"
             keyboard={false}
             
@@ -275,7 +276,7 @@ const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = 
 
             </Modal.Body>
 
-        </Modal>
+        </ModalContainer>
 
         <style jsx="true">
             {

@@ -21,6 +21,7 @@ function TextButton({ buttonType, onClick, enabled }) {
       break;
     case 'accept':
       text = 'Aceptar';
+      type="submit"; 
       break;
     case 'save':
       text = 'Guardar';
