@@ -70,7 +70,6 @@ const Alumnos = () => {
         }
     )
 
-
     const [show, setShow] = useState(false);
     const [disabled, setDisabled] = useState(false);
     const [tituloModal, setTituloModal] = useState("Agregar Alumno")
