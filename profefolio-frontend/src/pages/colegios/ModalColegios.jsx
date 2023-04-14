@@ -62,8 +62,8 @@ function ModalColegios({tituloModal, isOpen, disabled, onSubmit = () => { }, tri
                     setOpen(false);
                     triggerState(response.data);
                     onSubmit(response.data);
-                    setNombreColegio("");
-                    setIdAdmin("");
+                    //setNombreColegio("");
+                    //setIdAdmin("");
                     toast.success("Guardado correctamente");
                 }
             })
