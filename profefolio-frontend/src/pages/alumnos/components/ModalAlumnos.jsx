@@ -162,7 +162,8 @@ function ModalColegios({ tituloModal, isOpen, disabled }) {
                 ]
             }
         })
-    }, []);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [ ModalTitle, isDisabled ]);
 
     return (
         <>

@@ -70,8 +70,10 @@ const Alumnos = () => {
         }
     )
     const [show, setShow] = useState(false);
-    const [disabled, setDisabled] = useState(false);
-    const [tituloModal, setTituloModal] = useState("Agregar Alumno")
+    // const [disabled, setDisabled] = useState(false);
+    // const [tituloModal, setTituloModal] = useState("Agregar Alumno")
+    const disabled =false;
+    const tituloModal="Agregar Alumno"
 
     const openNew = () => {
         setShow(!show);
