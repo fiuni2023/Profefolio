@@ -12,7 +12,7 @@ import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import ModalContainer from "../../../../components/Modals";
 import TextButton from "../../../../components/TextButton";
-import { SControl, SGroup, SLabel } from "../../../../components/componentsStyles/StyledForm";
+import { SControl, SGroup, SLabel, SSelect } from "../../../../components/componentsStyles/StyledForm";
 
 
 const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = false, triggerState = () => { }, handlePage = () => { } }) => {
@@ -212,10 +212,10 @@ const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = 
 
                                 {!addCiclos
                                     ?
-                                    <Form.Group as={Col} md="12" controlId="validationFormikCiclo" >
-                                        <Form.Label>Ciclo</Form.Label>
+                                    <SGroup as={Col} md="12" controlId="validationFormikCiclo" >
+                                        <SLabel>Ciclo</SLabel>
 
-                                        <Form.Select aria-label="Default select" disabled={isSend}
+                                        <SSelect aria-label="Default select" disabled={isSend}
                                             name="ciclo"
                                             value={values.ciclo}
                                             onChange={(e) => {
@@ -228,9 +228,9 @@ const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = 
                                             <option value={""} disabled>Seleccione un Ciclo</option>
                                             <option className="option-create-ciclo" value={CREATE_CICLO}>Crear Ciclo</option>
                                             {map(data, (c) => <option key={c.id} value={c.id}>{c.nombre}</option>)}
-                                        </Form.Select>
+                                        </SSelect>
 
-                                    </Form.Group>
+                                    </SGroup>
 
                                     :
                                     <FormAddCiclo handleClose={onSetAddCiclos} handleChangeListCiclos={addCicloList} />
