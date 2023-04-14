@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using profefolio.Models.DTOs.ClaseMateria;
 using profefolio.Models.Entities;
 using profefolio.Repository;
+using System.Runtime.CompilerServices;
 using System.Transactions;
 
 namespace profefolio.Controllers
@@ -16,10 +17,12 @@ namespace profefolio.Controllers
     {
         private readonly IMateriaLista _materiaListaService;
         private readonly IPersona _profesorService;
-        public MateriaListasController(IMateriaLista materiaListaService, IPersona profesorService)
+        private readonly IMateria _materiaService;
+        public MateriaListasController(IMateriaLista materiaListaService, IPersona profesorService, IMateria materiaService)
         {
             _materiaListaService = materiaListaService;
             _profesorService = profesorService;
+            _materiaService = materiaService;
         }
 
         [HttpPost]
@@ -77,6 +80,25 @@ namespace profefolio.Controllers
             return Ok();
         }
 
+        [HttpDelete]
+        [Route("{idmateria:int}/{idclase:int}")]
+        public async Task<ActionResult> Delete(int idmateria, int idclase)
+        {
+            var username = User.Identity.Name;
+
+            var listas = _materiaListaService.FilterByIdMateriaAndUserAndClass(idmateria, username, idclase);
+
+            foreach(var item in listas)
+            {
+                item.Deleted = true;
+                item.ModifiedBy = username;
+                item.Modified = DateTime.Now;
+                _materiaListaService.Edit(item);
+            }
+
+            await _materiaListaService.Save();
+            return Ok();
+        }
 
     }
 }
