@@ -5,13 +5,12 @@ import { BiArrowBack } from "react-icons/bi"
 import { Table } from "../../components/Table";
 import ModalAgregarColegios from './AgregarColegios'
 import axios from "axios";
-import Pagination from 'react-bootstrap/Pagination';
-import { useGeneralContext } from '../../context/GeneralContext'
+import Paginations from "../../components/Paginations"
+import { useGeneralContext} from '../../context/GeneralContext'
+
 import APILINK from "../../components/link";
 import ModalVerColegios from './ModalVerColegios'
-
-import { BsFillPlusCircleFill } from "react-icons/bs"
-
+import { toast } from "react-hot-toast";
 
 function ListarColegios() {
 
@@ -23,10 +22,9 @@ function ListarColegios() {
 
   const [currentPage, setCurrentPage] = useState(0);
   const [colegios, setColegios] = useState([]);
-  const [datoIdColegio, setDatoIdColegio] = useState(null);
-  const [next, setNext] = useState(true)
-
-
+  const [datoIdColegio, setDatoIdColegio] = useState('');
+  const [next, setNext]=useState(false);
+  const [totalPage, setTotalPage]=useState(0);
   useEffect(() => {
 
     verifyToken()
@@ -43,33 +41,20 @@ function ListarColegios() {
           setColegios(response.data.dataList); //Guarda los datos
           setCurrentPage(response.data.currentPage);//Actualiza la pagina en donde estan los datos
           setNext(response.data.next);
-          console.log(response.data);
+          setTotalPage(response.data.totalPage)
+          
         })
         .catch(error => {
+          toast.error(error);
           console.error(error);
         });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cancan, verifyToken, nav, currentPage, getToken]);
-
-
+ 
   const doFetch = (colegio) => {
     setColegios([...colegios, colegio])
   }
-  const getPages = () => {
-    return (
-      <>
-        <Pagination.Prev disabled={currentPage <= 0} onClick={() => {
-          setCurrentPage(currentPage - 1)
-        }} />
-        <Pagination.Item disabled >{currentPage + 1}</Pagination.Item>
-        <Pagination.Next disabled={!next} onClick={() => {
-          setCurrentPage(currentPage + 1)
-        }} />
-      </>
-    )
-  }
-
 
   const [show, setShow] = useState(false);
   const [disabled, setDisabled] = useState(false);
@@ -78,12 +63,6 @@ function ListarColegios() {
 
     setShow(true);
   }
-
-
-  const openNew = () => {
-    setShow(!show);
-  }
-
 
   return (
     <>
@@ -111,9 +90,8 @@ function ListarColegios() {
               )
             }}
           />
-          <Pagination size="sm mt-3">
-            {getPages()}
-          </Pagination>
+          <Paginations totalPage={totalPage} currentPage={currentPage} setCurrentPage={setCurrentPage} next={next} ></Paginations>
+
         </div>
 
         <ModalVerColegios datoIdColegio={datoIdColegio} show={show} setShow={setShow} disabled={disabled} setDisabled={setDisabled} triggerState={(colegio) => { setColegios(colegio) }} page={currentPage}></ModalVerColegios>
