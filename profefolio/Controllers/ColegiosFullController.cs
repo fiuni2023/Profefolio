@@ -6,6 +6,7 @@ using profefolio.Models.DTOs.Persona;
 using profefolio.Models.DTOs.Colegio;
 using profefolio.Models.Entities;
 using profefolio.Repository;
+using profefolio.Helpers;
 /**
 * Controlador que devuelve los datos del colegio y los datos del administrador en la misma petición.
 * 
@@ -19,7 +20,7 @@ namespace profefolio.Controllers
     public class ColegiosFullController : ControllerBase
     {
         private readonly IFullColegio _colegioService;
-        private readonly int _cantPorPag = 10;
+        private static int _cantPorPag => Constantes.CANT_ITEMS_POR_PAGE;
         private readonly IMapper _mapper;
         public ColegiosFullController(IFullColegio colegioService, IMapper mapper)
         {

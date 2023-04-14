@@ -7,6 +7,7 @@ using profefolio.Models.DTOs.Persona;
 using profefolio.Models.DTOs.Colegio;
 using profefolio.Models.Entities;
 using profefolio.Repository;
+using profefolio.Helpers;
 
 /**
 * Controlador que maneja al administrador solo por el id
@@ -20,7 +21,7 @@ namespace profefolio.Controllers
     public class ColegiosController : ControllerBase
     {
         private readonly IColegio _colegioService;
-        private readonly int _cantPorPag = 10;
+        private static int _cantPorPag => Constantes.CANT_ITEMS_POR_PAGE;
         private readonly IMapper _mapper;
         public ColegiosController(IColegio colegioService, IMapper mapper)
         {

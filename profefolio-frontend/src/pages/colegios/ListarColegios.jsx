@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from "react";
-import styles from './ListarColegios.module.css'
+import styles from './ListarColegios.module.css';
 import { useNavigate } from "react-router-dom";
 import { BiArrowBack } from "react-icons/bi"
-import { Table } from "../../../components/Table";
-import ModalAgregarColegios from '../AgregarColegios'
+import { Table } from "../../components/Table";
+import ModalAgregarColegios from './AgregarColegios'
 import axios from "axios";
 import Pagination from 'react-bootstrap/Pagination';
-import { useGeneralContext} from '../../../context/GeneralContext'
-import APILINK from "../../../components/link";
-import ModalVerColegios from '../ModalVerColegios'
+import { useGeneralContext} from '../../context/GeneralContext'
+import APILINK from "../../components/link";
+import ModalVerColegios from './ModalVerColegios'
 
+import ModalColegios from "./ModalColegios";
+import { BsFillPlusCircleFill } from "react-icons/bs"
+import Modal from "../../components/Modal";
 
 function ListarColegios() {
 
@@ -23,6 +26,9 @@ function ListarColegios() {
   const [colegios, setColegios] = useState([]);
   const [datoIdColegio, setDatoIdColegio] = useState(null);
   const [next, setNext] = useState(true)
+  const [enabled, setEnabled] = useState(true);
+
+
   useEffect(() => {
 
     verifyToken()
@@ -68,17 +74,26 @@ function ListarColegios() {
 
  
   const [show, setShow] = useState(false);
-  const [disabled, setDisabled] = useState(true);
+  const [disabled, setDisabled] = useState(false);
+  const [tituloModal, setTituloModal] = useState("AgregarColegio")
   const handleShow = (id) => {
+    setDatoIdColegio(id);
    
     setShow(true);
-    setDatoIdColegio(id); 
   }
-  //Guarda el ID del admin que recien se creo, aun no se como utilizar esto 
+
+  const handleChangeTituloModal = (titulo) => {
+    setTituloModal(titulo); 
+  }
+
+  const openNew = () => {
+    setShow(!show);
+  }
 
 
   return (
     <>
+    <button className={styles.buttonAgregar} onClick={openNew}><BsFillPlusCircleFill className={styles.iconoAgregar} /></button>
       <div>
 
         <div className={styles.nombrePagina}>
@@ -106,6 +121,9 @@ function ListarColegios() {
                         {getPages()}
                     </Pagination>
         </div>
+
+       
+        <ModalColegios tituloModal={tituloModal} isOpen={show} disabled={disabled}></ModalColegios>  
 
         <ModalVerColegios datoIdColegio={datoIdColegio} show={show} setShow={setShow} disabled={disabled} setDisabled={setDisabled} triggerState={(colegio)=>{setColegios(colegio)}} page={currentPage}></ModalVerColegios>
 

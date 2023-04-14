@@ -4,6 +4,8 @@ import styles from "./index.module.css";
 import { Row, Col } from "react-bootstrap";
 import CategoryPanel from "./components/categoryPanel";
 import { useNavigate } from "react-router";
+import Card from "../../../../components/Card";
+import { ExampleCard1 } from "../../../../components/Example Data/ExampleCards";
 
 const AdminHome = () => {
 
@@ -43,6 +45,9 @@ const AdminHome = () => {
                         </div>
                     </CategoryPanel>
                 </Col>
+            </Row>
+            <Row>
+                <Card cardInfo={ExampleCard1}></Card>
             </Row>
         </div>
     )

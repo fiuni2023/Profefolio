@@ -2,6 +2,7 @@
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using profefolio.Helpers;
 using profefolio.Models.DTOs;
 using profefolio.Models.DTOs.Alumno;
 using profefolio.Models.DTOs.Persona;
@@ -17,7 +18,7 @@ public class AlumnosController : ControllerBase
     private readonly IPersona _personasService;
     private readonly IMapper _mapper;
     private readonly IRol _rolService;
-    private const int CantPerPage = 20;
+    private static int CantPerPage => Constantes.CANT_ITEMS_POR_PAGE;
     const string rol = "Alumno";
 
     public AlumnosController(IPersona personasService, IMapper mapper, IRol rolService)
