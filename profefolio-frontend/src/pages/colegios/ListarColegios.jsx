@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import styles from './ListarColegios.module.css'
+import styles from './ListarColegios.module.css';
 import { useNavigate } from "react-router-dom";
 import { BiArrowBack } from "react-icons/bi"
 import { Table } from "../../components/Table";
@@ -18,7 +18,7 @@ function ListarColegios() {
   const nav = useNavigate()
 
   const navigate = useNavigate()
-  const [totalPage, setTotalPage] = useState(0);
+  
   const [currentPage, setCurrentPage] = useState(0);
   const [colegios, setColegios] = useState([]);
   const [datoIdColegio, setDatoIdColegio] = useState('');
@@ -37,9 +37,9 @@ function ListarColegios() {
 
         .then(response => {
           setColegios(response.data.dataList); //Guarda los datos
-          setTotalPage(response.data.totalPage);//Total de Paginas
           setCurrentPage(response.data.currentPage);//Actualiza la pagina en donde estan los datos
           setNext(response.data.next);
+          console.log(response.data);
         })
         .catch(error => {
           console.error(error);
@@ -59,16 +59,22 @@ function ListarColegios() {
 
   
   const [show, setShow] = useState(false);
-  const [disabled, setDisabled] = useState(true);
+  const [disabled, setDisabled] = useState(false);
   const handleShow = (id) => {
     setDatoIdColegio(id);
-    console.log(datoIdColegio);
+   
     setShow(true);
+  }
+
+
+  const openNew = () => {
+    setShow(!show);
   }
 
 
   return (
     <>
+    <button className={styles.buttonAgregar} onClick={openNew}><BsFillPlusCircleFill className={styles.iconoAgregar} /></button>
       <div>
 
         <div className={styles.nombrePagina}>
@@ -79,16 +85,15 @@ function ListarColegios() {
         </div>
         <div className={styles.tablePrincipal} >
           <Table
-            headers={["Numero", "Nombre", "Administrador", "Acciones"]}
+            headers={["Numero", "Nombre", "Administrador"]}
             datas={colegios}
             parseToRow={(col, index) => {
               return (
-                <tr key={index} >
+                <tr key={index} onClick={() => handleShow(col.id)}>
                   <td>{index + 1}</td>
                   <td>{col?.nombre}</td>
                   <td>{col?.nombreAdministrador} {col?.apellido}</td>
-                  <td><button className={styles.iconButton} onClick={() => handleShow(col?.id)}><AiOutlineEye /></button></td>
-
+                 
                 </tr>
               )
             }}
@@ -97,9 +102,9 @@ function ListarColegios() {
           <Paginations totalPage={totalPage} currentPage={currentPage} setCurrentPage={setCurrentPage} next={next} ></Paginations>
         </div>
 
-        <ModalVerColegios idColegio={datoIdColegio} show={show} setShow={setShow} disabled={disabled} setDisabled={setDisabled}></ModalVerColegios>
+        <ModalVerColegios datoIdColegio={datoIdColegio} show={show} setShow={setShow} disabled={disabled} setDisabled={setDisabled} triggerState={(colegio)=>{setColegios(colegio)}} page={currentPage}></ModalVerColegios>
 
-        <ModalAgregarColegios triggerState={(colegio) => { doFetch(colegio) }}></ModalAgregarColegios>
+        <ModalAgregarColegios triggerState={(colegio) => { doFetch(colegio) }}  ></ModalAgregarColegios>
       </div>
     </>)
 }

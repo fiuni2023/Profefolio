@@ -38,7 +38,7 @@ const SideBar = () => {
                     cancan("Master") &&
                     <>
                         <SideBarTab page={"administrador"}  handleClick={()=>{navigate("/administrador/list")}} > - Administrador </SideBarTab>
-                        <SideBarTab page={"colegio"}  handleClick={()=>{navigate("/colegio")}} > - Colegios </SideBarTab>                    
+                        <SideBarTab page={"/colegios/list"}  handleClick={()=>{navigate("/colegios/list")}} > - Colegios </SideBarTab>                    
                     </>
                 }
                 {
