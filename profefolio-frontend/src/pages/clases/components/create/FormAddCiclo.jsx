@@ -6,6 +6,8 @@ import axios from 'axios';
 import APILINK from '../../../../components/link';
 import { useGeneralContext } from '../../../../context/GeneralContext';
 import { toast } from 'react-hot-toast';
+import { SControl, SGroup, SLabel, SRow } from '../../../../components/componentsStyles/StyledForm';
+import TextButton from '../../../../components/TextButton';
 
 
 const FormAddCiclo = ({ handleClose, handleChangeListCiclos }) => {
@@ -70,11 +72,10 @@ const FormAddCiclo = ({ handleClose, handleChangeListCiclos }) => {
                 blur
             }) => {
                 return <Form  onSubmit={handleSubmit}>
-                    <Row className="mb-3">
-                        <Form.Group as={Col} md="7" controlId="validationFormikNombreCicloNuevo">
-                            <Form.Label>Ciclo Nuevo</Form.Label>
-                            <InputGroup hasValidation>
-                                <Form.Control disabled={isSend}
+                    <SRow className="mb-3">
+                        <SGroup as={Col} md="4" /* controlId="validationFormikNombreCicloNuevo" */ className="position-relative">
+                            <SLabel>Ciclo Nuevo</SLabel>
+                                <SControl disabled={isSend}
                                     type="text"
                                     placeholder="Ciclo Nuevo"
                                     aria-describedby="inputGroupPrepend"
@@ -88,13 +89,12 @@ const FormAddCiclo = ({ handleClose, handleChangeListCiclos }) => {
                                 {errors.nombre && touched.nombre && <Form.Control.Feedback type="invalid" tooltip>
                                     {errors.nombre}
                                 </Form.Control.Feedback>}
-                            </InputGroup>
-                        </Form.Group>
-                        <Form.Group as={Col} md="5" className="btn-gestion-ciclo">
-                            <Button className="btn-save" type="submit" disabled={isSend}>Guardar</Button>
-                            <Button className="btn-cancel" onClick={onClose} disabled={isSend}>Cancelar</Button>
-                        </Form.Group>
-                    </Row>
+                        </SGroup>
+                        <SGroup as={Col} md="8" className="btn-gestion-ciclo">
+                            <TextButton type="submit" enabled={!isSend} buttonType='save'>Guardar</TextButton>
+                            <TextButton onClick={onClose} enabled={!isSend} buttonType='cancel'>Cancelar</TextButton>
+                        </SGroup>
+                    </SRow>
                 </Form>
             }}
 
