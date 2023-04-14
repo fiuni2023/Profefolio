@@ -6,13 +6,12 @@ import { Table } from "../../components/Table";
 import ModalAgregarColegios from './AgregarColegios'
 import axios from "axios";
 import Pagination from 'react-bootstrap/Pagination';
-import { useGeneralContext} from '../../context/GeneralContext'
+import { useGeneralContext } from '../../context/GeneralContext'
 import APILINK from "../../components/link";
 import ModalVerColegios from './ModalVerColegios'
 
-import ModalColegios from "./ModalColegios";
 import { BsFillPlusCircleFill } from "react-icons/bs"
-import Modal from "../../components/Modal";
+
 
 function ListarColegios() {
 
@@ -21,12 +20,11 @@ function ListarColegios() {
   const nav = useNavigate()
 
   const navigate = useNavigate()
-  
+
   const [currentPage, setCurrentPage] = useState(0);
   const [colegios, setColegios] = useState([]);
   const [datoIdColegio, setDatoIdColegio] = useState(null);
   const [next, setNext] = useState(true)
-  const [enabled, setEnabled] = useState(true);
 
 
   useEffect(() => {
@@ -51,40 +49,36 @@ function ListarColegios() {
           console.error(error);
         });
     }
-     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cancan, verifyToken, nav, currentPage, getToken]);
 
- 
+
   const doFetch = (colegio) => {
     setColegios([...colegios, colegio])
   }
   const getPages = () => {
     return (
-        <>
-            <Pagination.Prev disabled={currentPage<=0} onClick={()=>{
-                setCurrentPage(currentPage-1)
-            }} />
-            <Pagination.Item disabled >{currentPage + 1}</Pagination.Item>
-            <Pagination.Next disabled={!next} onClick={()=>{
-                setCurrentPage(currentPage+1)
-            }}/>
-        </>
+      <>
+        <Pagination.Prev disabled={currentPage <= 0} onClick={() => {
+          setCurrentPage(currentPage - 1)
+        }} />
+        <Pagination.Item disabled >{currentPage + 1}</Pagination.Item>
+        <Pagination.Next disabled={!next} onClick={() => {
+          setCurrentPage(currentPage + 1)
+        }} />
+      </>
     )
-}
+  }
 
- 
+
   const [show, setShow] = useState(false);
   const [disabled, setDisabled] = useState(false);
-  const [tituloModal, setTituloModal] = useState("AgregarColegio")
   const handleShow = (id) => {
     setDatoIdColegio(id);
-   
+
     setShow(true);
   }
 
-  const handleChangeTituloModal = (titulo) => {
-    setTituloModal(titulo); 
-  }
 
   const openNew = () => {
     setShow(!show);
@@ -93,7 +87,7 @@ function ListarColegios() {
 
   return (
     <>
-    <button className={styles.buttonAgregar} onClick={openNew}><BsFillPlusCircleFill className={styles.iconoAgregar} /></button>
+      <button className={styles.buttonAgregar} onClick={openNew}><BsFillPlusCircleFill className={styles.iconoAgregar} /></button>
       <div>
 
         <div className={styles.nombrePagina}>
@@ -112,20 +106,17 @@ function ListarColegios() {
                   <td>{index + 1}</td>
                   <td>{col?.nombre}</td>
                   <td>{col?.nombreAdministrador} {col?.apellido}</td>
-                 
+
                 </tr>
               )
             }}
           />
           <Pagination size="sm mt-3">
-                        {getPages()}
-                    </Pagination>
+            {getPages()}
+          </Pagination>
         </div>
 
-       
-        <ModalColegios tituloModal={tituloModal} isOpen={show} disabled={disabled}></ModalColegios>  
-
-        <ModalVerColegios datoIdColegio={datoIdColegio} show={show} setShow={setShow} disabled={disabled} setDisabled={setDisabled} triggerState={(colegio)=>{setColegios(colegio)}} page={currentPage}></ModalVerColegios>
+        <ModalVerColegios datoIdColegio={datoIdColegio} show={show} setShow={setShow} disabled={disabled} setDisabled={setDisabled} triggerState={(colegio) => { setColegios(colegio) }} page={currentPage}></ModalVerColegios>
 
         <ModalAgregarColegios triggerState={(colegio) => { doFetch(colegio) }}  ></ModalAgregarColegios>
       </div>
