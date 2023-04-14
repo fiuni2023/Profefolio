@@ -10,8 +10,10 @@ import { useNavigate } from 'react-router-dom';
 import { useFetchEffect } from '../../components/utils/useFetchEffect';
 import StyleComponentBreadcrumb from '../../components/StyleComponentBreadcrumb';
 import ModalAlumnos from './components/ModalAlumnos'
+import { useStudentContext } from './context/StudentContext'
 
 const Alumnos = () => {
+    const {selectedStudent, setSelectedStudent, showStudent, setShowStudent } = useStudentContext()
     const { getToken, cancan, verifyToken } = useGeneralContext()
     const [condFetch, setCondFetch] = useState(false)
     const [currentPage, setCurrentPage] = useState(0)
@@ -36,10 +38,6 @@ const Alumnos = () => {
         }
     }, [cancan, verifyToken, nav])
 
-    const doChangeStudent = (data) => {
-        console.log("Seleccionado", data)
-    }
-
     const { isLoading, error } = useFetchEffect(
         () => {
             return StudentHelper.getStudentsPage(currentPage, getToken())
@@ -50,7 +48,7 @@ const Alumnos = () => {
             handleSuccess: (r) => {
                 setNext(r.data.next)
                 setDatosTabla({
-                    ...datosTabla, clickable: { action: doChangeStudent },
+                    ...datosTabla, clickable: { action: doSelectStudent },
                     filas: r.data.dataList.map((dato) => {
                         return {
                             fila: dato,
@@ -79,6 +77,10 @@ const Alumnos = () => {
         setShow(!show);
     }
 
+    const doSelectStudent = (data) => {
+        setSelectedStudent(data)
+        setShowStudent(true)
+    }
     const getPages = () => {
         return (
             <>
@@ -106,7 +108,8 @@ const Alumnos = () => {
                         <AiOutlinePlus size={"35px"} />
                     </AddButton>
                 </TableContainer >
-                <ModalAlumnos tituloModal={tituloModal} isOpen={show} disabled={disabled}></ModalAlumnos>  
+                <ModalAlumnos tituloModal={tituloModal} isOpen={show} disabled={disabled}></ModalAlumnos> 
+                <ModalAlumnos tituloModal={"Detalles de alumno"} isOpen={showStudent} disabled={disabled}></ModalAlumnos> 
             </MainContainer >
         </>
     )
