@@ -11,6 +11,8 @@ import APILINK from "../../../../components/link";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import ModalContainer from "../../../../components/Modals";
+import TextButton from "../../../../components/TextButton";
+import { SControl, SGroup, SLabel } from "../../../../components/componentsStyles/StyledForm";
 
 
 const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = false, triggerState = () => { }, handlePage = () => { } }) => {
@@ -135,7 +137,7 @@ const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = 
             handleClose={handleClose}
             backdrop="static"
             keyboard={false}
-            
+
         >
             <Modal.Header closeButton className="modal-crear-clase">
                 <Modal.Title>{title}</Modal.Title>
@@ -237,14 +239,33 @@ const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = 
                             </Row>
 
                             <Row className="mb-3">
-                                <Form.Group
+                                {/* <Form.Group
+                                    as={Col}
+                                    md="12"
+                                    controlId="validationFormik103"
+                                    className="position-relative"
+                                > */}
+                                <SGroup
                                     as={Col}
                                     md="12"
                                     controlId="validationFormik103"
                                     className="position-relative"
                                 >
-                                    <Form.Label>Año</Form.Label>
-                                    <Form.Control disabled={addCiclos || isSend}
+                                    {/* <Form.Label>Año</Form.Label> */}
+                                    <SLabel>Año</SLabel>
+                                    {/* <Form.Control disabled={addCiclos || isSend}
+                                        type="number"
+                                        placeholder="Año"
+                                        name="anho"
+                                        value={values.anho}
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                        min={1950}
+                                        max={new Date().getFullYear() + 1}
+                                        isInvalid={!addCiclos && (!!errors.anho && touched.anho)}
+                                    /> */}
+                                    <SControl
+                                        disabled={addCiclos || isSend}
                                         type="number"
                                         placeholder="Año"
                                         name="anho"
@@ -258,12 +279,14 @@ const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = 
                                     {touched.anho && errors.anho && <Form.Control.Feedback type="invalid" tooltip>
                                         {errors.anho}
                                     </Form.Control.Feedback>}
-                                </Form.Group>
+                                    {/* </Form.Group> */}
+                                </SGroup>
                             </Row>
 
                             <Row className="btn-save-contanier">
                                 <Col className="btn-save-subcontanier" md={4}>
-                                    <Button className="btn-save" type="submit" disabled={addCiclos || isSend}>Guardar</Button>
+                                    {/* <Button className="btn-save" type="submit" disabled={addCiclos || isSend}>Guardar</Button>*/}
+                                    <TextButton enabled={!(addCiclos || isSend)} buttonType='save' onClick={() => console.log('Guardando')} />
                                 </Col>
                             </Row>
                         </Form>
