@@ -11,7 +11,7 @@ import { toast } from 'react-hot-toast';
 function ModalVerColegios(props) {
 
   const { datoIdColegio, setShow, show, disabled, setDisabled, triggerState, page } = props;
-
+  
   const handleClose = () => {
     setNombre("");
     setIdAdmin("");
@@ -108,8 +108,8 @@ function ModalVerColegios(props) {
       toast.error("revisa los datos, los campos deben ser completados")
     else {
       axios.put(`${APILINK}/api/Colegios/${datoIdColegio}`, {
-        "nombre":nombre,
-        "personaId":idAdmin
+        "nombre": nombre,
+        "personaId": idAdmin
 
       }, {
         headers: {
