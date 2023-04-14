@@ -11,7 +11,6 @@ function ModalColegios({tituloModal, isOpen, disabled}) {
     const [open, setOpen] = useState(isOpen ? isOpen : false);
     const [ModalTitle, setModalTitle] = useState(tituloModal ? tituloModal : "");
     const [isDisabled, setDisabled] = useState(disabled ? disabled : false); 
-    const [timer, setTimer] = useState(null)
     
     useEffect(() => {setModalTitle(ModalTitle)}, [ModalTitle]);
     useEffect(() => {setOpen(isOpen) }, [isOpen]);
