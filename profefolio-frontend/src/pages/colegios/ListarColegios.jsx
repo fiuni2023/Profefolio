@@ -10,9 +10,8 @@ import { useGeneralContext} from '../../context/GeneralContext'
 import APILINK from "../../components/link";
 import ModalVerColegios from './ModalVerColegios'
 
-import ModalColegios from "./ModalColegios";
 import { BsFillPlusCircleFill } from "react-icons/bs"
-import Modal from "../../components/Modal";
+
 
 function ListarColegios() {
 
@@ -26,7 +25,6 @@ function ListarColegios() {
   const [colegios, setColegios] = useState([]);
   const [datoIdColegio, setDatoIdColegio] = useState(null);
   const [next, setNext] = useState(true)
-  const [enabled, setEnabled] = useState(true);
 
 
   useEffect(() => {
@@ -75,16 +73,12 @@ function ListarColegios() {
  
   const [show, setShow] = useState(false);
   const [disabled, setDisabled] = useState(false);
-  const [tituloModal, setTituloModal] = useState("AgregarColegio")
   const handleShow = (id) => {
     setDatoIdColegio(id);
    
     setShow(true);
   }
 
-  const handleChangeTituloModal = (titulo) => {
-    setTituloModal(titulo); 
-  }
 
   const openNew = () => {
     setShow(!show);
@@ -121,9 +115,6 @@ function ListarColegios() {
                         {getPages()}
                     </Pagination>
         </div>
-
-       
-        <ModalColegios tituloModal={tituloModal} isOpen={show} disabled={disabled}></ModalColegios>  
 
         <ModalVerColegios datoIdColegio={datoIdColegio} show={show} setShow={setShow} disabled={disabled} setDisabled={setDisabled} triggerState={(colegio)=>{setColegios(colegio)}} page={currentPage}></ModalVerColegios>
 

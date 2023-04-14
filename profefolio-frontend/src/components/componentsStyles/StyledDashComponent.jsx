@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { Card } from 'react-bootstrap';
+import { Col, Row } from 'react-bootstrap';
 
 const handleColorType = (color, header) => {
     switch (color) {
@@ -16,13 +17,26 @@ const handleColorType = (color, header) => {
     }
   };
 
+  const getPointer = (hover) => {
+    if (hover === "true") return "pointer";
+    else return "default";
+  }
+
+  const getHover = (hover) => {
+    if (hover === "true") { 
+        return `:hover{
+            transform: scale(1.03); 
+        }`
+    }
+  }
+
 const SCard = styled(Card)`
     border-radius: 20px;
     border: none;
-    transition: all .2s ease-in-out; 
-    hover:{
-        transform: scale(1.1); 
-    }
+    cursor: ${({hover}) => getPointer(hover) };
+    transition: all .3s ease-in-out;
+    ${({hover}) => getHover(hover)}
+    width: 100%; 
 `;
 const SHeader = styled(Card.Header)`
     background-color: ${({ background }) => handleColorType(background, true)};
@@ -30,12 +44,14 @@ const SHeader = styled(Card.Header)`
     font-size: 1.5em;
     font-weight: 600;
     text-align: center;
+    border-radius: 20px 20px 0 0 !important;
 `;
 const SBody = styled(Card.Body)`
     background-color: ${({ background }) => handleColorType(background, false)};
     border: none;
     text-align: center;
     font-size: 1.2em;
+    border-radius: 0 0 20px 20px;
 `;
 
 const STitle = styled.div`
@@ -44,4 +60,20 @@ const STitle = styled.div`
 
 `;
 
-export {SCard, SHeader, SBody, STitle}; 
+const DTitle = styled.h3`
+  font-size: 1.5em;
+`
+
+const SCol = styled(Col)`
+  display: flex; 
+`;
+
+const SRow = styled(Row)`
+    --bs-gutter-y: 1.5em;
+`;
+
+const Separator = styled.div`
+  margin-top: 1.5em;  
+`
+
+export {SCard, SHeader, SBody, STitle, DTitle, SCol, SRow, Separator}; 

@@ -1,22 +1,31 @@
 import React from "react";
 import { useGeneralContext } from "../../../../context/GeneralContext";
 import styles from "./index.module.css";
-import { Row, Col } from "react-bootstrap";
+import { Row, Container } from "react-bootstrap";
+import {DTitle, SRow, Separator} from "../../../../components/componentsStyles/StyledDashComponent"
+import Card from "../../../../components/Card";
+import {Alumnos, Profesores, Materias, Clases, Stats} from "./cards"
 
 const CAdminHome = () => {
 
     const {getUserName} = useGeneralContext()
 
     return(
-        <div className={styles.HomeDiv}>
+        <Container className={styles.HomeDiv}>
             <Row className="mb-3">
-                <Col>
-                    <h3>Bienvenido,</h3>  
-                    <h3 className={`${styles.RubyText} mt-2 `}>{getUserName()}</h3>
-                </Col>
+                <DTitle>Bienvenido, {getUserName()}</DTitle>  
             </Row>
-            
-        </div>
+            <SRow>
+                <Card cardInfo={Alumnos}></Card>
+                <Card cardInfo={Profesores}></Card>
+                <Card cardInfo={Materias}></Card>
+                <Card cardInfo={Clases}></Card>
+            </SRow>
+            <SRow>
+                <Separator></Separator>
+                <Card cardInfo={Stats}></Card>
+            </SRow>
+        </Container>
     )
 }
 
