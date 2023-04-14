@@ -10,7 +10,7 @@ import { toast } from 'react-hot-toast';
 
 function ModalVerColegios(props) {
 
-  const { datoIdColegio, setShow, show, disabled, setDisabled, triggerState, page } = props;
+  const { datoIdColegio, setShow, show, disabled, setDisabled, onClose, triggerState, page } = props;
   
   const handleClose = () => {
     setNombre("");
@@ -48,7 +48,8 @@ function ModalVerColegios(props) {
         axios(config)
           .then(function (response) {
             setColegio(response.data); //Guarda los datos
-            console.log(colegio);
+            console.log(response.data);
+
             // eslint-disable-next-line no-unused-vars
             const { apellido, direccion, documento, documentoTipo, genero, id, nacimiento, nombre, nombreAdministrador, telefono } = response.data;
             setNombre(nombre);
@@ -194,7 +195,10 @@ function ModalVerColegios(props) {
   const [apellido, setApellidoAdministrador] = useState(colegio.apellido || "");
   const [showModal2, setShowModal2] = useState(false);
 
-  const handleCloseModal2 = () => setShowModal2(false);
+  const handleCloseModal2 = () => {
+    onClose()
+    setShowModal2(false)
+  };
   const handleShowModal2 = () => setShowModal2(true);
   return (
 
