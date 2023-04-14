@@ -9,6 +9,7 @@ import { toast } from "react-hot-toast";
 import { useNavigate } from 'react-router-dom';
 import { useFetchEffect } from '../../components/utils/useFetchEffect';
 import StyleComponentBreadcrumb from '../../components/StyleComponentBreadcrumb';
+import ModalAlumnos from './components/ModalAlumnos'
 
 const Alumnos = () => {
     const { getToken, cancan, verifyToken } = useGeneralContext()
@@ -68,6 +69,25 @@ const Alumnos = () => {
             }
         }
     )
+
+
+    const [show, setShow] = useState(false);
+    const [disabled, setDisabled] = useState(false);
+    const [tituloModal, setTituloModal] = useState("Agregar Alumno")
+    // const handleShow = (id) => {
+    //     setDatoIdColegio(id);
+
+    //     setShow(true);
+    // }
+
+    // const handleChangeTituloModal = (titulo) => {
+    //     setTituloModal(titulo);
+    // }
+
+    const openNew = () => {
+        setShow(!show);
+    }
+
     const getPages = () => {
         return (
             <>
@@ -91,10 +111,12 @@ const Alumnos = () => {
                     <Pagination size="sm mt-3">
                         {getPages()}
                     </Pagination>
-                    <AddButton>
+                    <AddButton onClick={openNew}>
                         <AiOutlinePlus size={"35px"} />
                     </AddButton>
                 </TableContainer >
+                <ModalAlumnos tituloModal={tituloModal} isOpen={show} disabled={disabled}></ModalAlumnos>  
+
             </MainContainer >
         </>
     )
