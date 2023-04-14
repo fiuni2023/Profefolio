@@ -86,5 +86,10 @@ namespace profefolio.Services
                 .Where(d => d.CreatedBy.Equals(createdBy))
                 .Where(d => d.ClaseId == idClase);
         }
+
+        public async Task<bool> IsUsedMateria(int idMateria)
+        {
+            return await _db.MateriaListas.AnyAsync(d => d.MateriaId == idMateria);
+        }
     }
 }
