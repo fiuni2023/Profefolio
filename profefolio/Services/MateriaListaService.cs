@@ -29,7 +29,8 @@ namespace profefolio.Services
 
         public MateriaLista Edit(MateriaLista t)
         {
-            throw new NotImplementedException();
+            _db.Entry(t).State = EntityState.Modified;
+            return t;
         }
 
         public bool Exist()
@@ -76,6 +77,14 @@ namespace profefolio.Services
         {
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
+        }
+
+        public IEnumerable<MateriaLista> FilterByIdMateriaAndUserAndClass(int idMateria, string createdBy, int idClase)
+        {
+            return _db.MateriaListas.Where(d => !d.Deleted)
+                .Where(d => d.Id == idMateria)
+                .Where(d => d.CreatedBy.Equals(createdBy))
+                .Where(d => d.ClaseId == idClase);
         }
     }
 }
