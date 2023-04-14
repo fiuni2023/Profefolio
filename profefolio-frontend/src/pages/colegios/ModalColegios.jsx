@@ -11,20 +11,10 @@ function ModalColegios({tituloModal, isOpen, disabled, onSubmit = () => { }, tri
     const [open, setOpen] = useState(isOpen ? isOpen : false);
     const [ModalTitle, setModalTitle] = useState(tituloModal ? tituloModal : "");
     const [isDisabled, setDisabled] = useState(disabled ? disabled : false); 
-    
-    
-    useEffect(() => {setModalTitle(ModalTitle)}, 
-    // eslint-disable-next-line react-hooks/exhaustive-deps 
-    [ModalTitle]);
-     // eslint-disable-next-line react-hooks/exhaustive-deps
-    useEffect(() => {setOpen(isOpen) }, 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [isOpen]);
-     
-    useEffect(() => {setDisabled(disabled)}, 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [disabled]);
-     
+    useEffect(() => {setModalTitle(ModalTitle)}, [ModalTitle]);
+    useEffect(() => {setOpen(isOpen) }, [isOpen]);
+    useEffect(() => {setDisabled(disabled)}, [disabled]);
     //Get administadores
     useEffect(() => {
         let config = {
@@ -84,7 +74,6 @@ function ModalColegios({tituloModal, isOpen, disabled, onSubmit = () => { }, tri
          
         
     }
- // eslint-disable-next-line react-hooks/exhaustive-deps
 
     const [datosModal, setDatosModal] = useState(null);
 

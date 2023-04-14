@@ -11,7 +11,6 @@ import APILINK from "../../components/link";
 import ModalVerColegios from './ModalVerColegios'
 import { toast } from "react-hot-toast";
 
-  
 function ListarColegios() {
 
   const { getToken, verifyToken, cancan } = useGeneralContext()
@@ -46,7 +45,7 @@ function ListarColegios() {
         })
         .catch(error => {
           toast.error(error);
-          
+          console.error(error);
         });
     }
      // eslint-disable-next-line react-hooks/exhaustive-deps
