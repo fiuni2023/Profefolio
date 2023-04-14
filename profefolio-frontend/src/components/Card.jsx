@@ -1,22 +1,28 @@
 import React from 'react';
-import { Col } from 'react-bootstrap';
-import {SCard, SBody, SHeader, STitle} from "../components/componentsStyles/StyledCard";
+import {SCard, SBody, SHeader, STitle, SCol} from "./componentsStyles/StyledDashComponent";
 import Tabla from './Tabla';
+import { useNavigate } from 'react-router';
 
-function Card(cardInfo){
+
+
+function Card({cardInfo}){
+    const nav = useNavigate();
+    const handleClick = (goto) => {
+        nav(goto);
+    }
     return (
-        <Col xs={cardInfo?.cardInfo?.xs ?? 12} sm={cardInfo?.cardInfo?.sm ?? 12} md={cardInfo?.cardInfo?.md ?? 6} lg={cardInfo?.cardInfo?.lg ?? 4}>
-            <SCard>
-                {cardInfo?.cardInfo?.header && 
-                    <SHeader background={cardInfo?.cardInfo?.background ?? "gray"}>
-                        {cardInfo?.cardInfo?.header?.title}</SHeader>}
-                {cardInfo?.cardInfo?.body && 
-                    <SBody background={cardInfo?.cardInfo?.background ?? "gray"}>
-                        {cardInfo?.cardInfo?.body?.title && <STitle>{cardInfo.cardInfo.body.title}</STitle>}
-                        {cardInfo?.cardInfo?.body?.table && <Tabla datosTabla={cardInfo?.cardInfo?.body?.table}></Tabla>}
+        <SCol xs={cardInfo?.xs ?? 12} sm={cardInfo?.sm ?? 12} md={cardInfo?.md ?? 6} lg={cardInfo?.lg ?? 4}>
+            <SCard onClick={cardInfo?.goto ? () => handleClick(cardInfo.goto) : null} hover={cardInfo?.hover ? "true" : "false" }>
+                {cardInfo?.header && 
+                    <SHeader background={cardInfo?.background ?? "gray"}>
+                        {cardInfo?.header?.title}</SHeader>}
+                {cardInfo?.body && 
+                    <SBody background={cardInfo?.background ?? "gray"}>
+                        {cardInfo?.body?.title && <STitle>{cardInfo.body.title}</STitle>}
+                        {cardInfo?.body?.table && <Tabla datosTabla={cardInfo?.body?.table}></Tabla>}
                     </SBody>}
             </SCard>
-        </Col>
+        </SCol>
     )
 }
 
