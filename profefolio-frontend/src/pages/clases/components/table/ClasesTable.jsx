@@ -1,11 +1,6 @@
 import React, { useState } from 'react'
-import { Pagination } from 'react-bootstrap'
-import NavAdminClases from '../NavAdminClase'
-import { PanelContainerBG } from '../../../../components/Layout'
-import StyleComponentBreadcrumb from '../../../../components/StyleComponentBreadcrumb'
-import { AddButton, MainContainer, TableContainer } from '../../../alumnos/styles/Styles'
+import { TableContainer } from '../../../alumnos/styles/Styles'
 import Tabla from '../../../../components/Tabla'
-import { AiOutlinePlus } from 'react-icons/ai'
 import { useFetchEffect } from '../../../../components/utils/useFetchEffect'
 import ClassesHelper from '../../Helpers/ClassesHelper'
 import { toast } from 'react-hot-toast'
@@ -38,6 +33,7 @@ const ClasesTable = ({condFetch, colegioId, getToken, doChangeStudent}) => {
         {
             condition: condFetch,
             handleSuccess: (r) => {
+                console.log(r)
                 setNextPage(r.data.next)
                 setClassesTable({
                     ...classesTable, clickable: { action: doChangeStudent },

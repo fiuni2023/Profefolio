@@ -1,24 +1,12 @@
-import axios from 'axios';
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
-import APILINK from '../../components/link';
 import { useGeneralContext } from '../../context/GeneralContext';
-import NavAdminClases from './components/NavAdminClase.jsx';
-import { PanelContainerBG } from "../../components/Layout.jsx";
 import ModalCreateClase from './components/create/ModalCreateClase.jsx';
-import BtnAdd from './components/create/BtnAdd';
 import useAxiosGet from './hooks/useAxiosGet';
-import { toast } from 'react-hot-toast';
-import { Pagination } from 'react-bootstrap';
-import { AddButton, MainContainer, TableContainer } from '../alumnos/styles/Styles';
+import { AddButton, MainContainer } from '../alumnos/styles/Styles';
 import StyleComponentBreadcrumb from '../../components/StyleComponentBreadcrumb';
-import Tabla from '../../components/Tabla';
 import { AiOutlinePlus } from 'react-icons/ai';
-import ClassesHelper from "./Helpers/ClassesHelper";
-import { useFetchEffect } from '../../components/utils/useFetchEffect';
 import ClasesTable from './components/table/ClasesTable';
-import ShowClase from './pages/view/ShowClase';
-
 
 const Clases = () => {
 
@@ -78,6 +66,7 @@ const Clases = () => {
         if (colegioId !== null) {
             setTabla(<ClasesTable condFetch={condFetch} colegioId={colegioId} getToken={getToken} doChangeStudent={doChangeStudent} />);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [colegioId, condFetch, getToken])
 
 
@@ -95,17 +84,7 @@ const Clases = () => {
     }; */
 
 
-
-    const [show, setShow] = useState(false);
-
-
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
-
-
     ///////////////////////////////////
-
-    const [currentPage, setCurrentPage] = useState(0)
 
     return <>
         
