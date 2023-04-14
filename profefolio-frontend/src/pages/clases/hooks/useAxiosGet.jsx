@@ -4,7 +4,7 @@ import APILINK from '../../../components/link';
 
 const useAxiosGet = (url = "", token = "") => {
 
-    const [data, setData] = useState(null);
+    const [data, setData] = useState({id: null, nombre: null});
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
