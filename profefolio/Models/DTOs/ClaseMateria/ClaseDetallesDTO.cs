@@ -1,10 +1,10 @@
 ﻿namespace profefolio.Models.DTOs.ClaseMateria
 {
-    public class ClaseDetallesDTO : DataDTO
+    public class ClaseDetallesDTO
     {
-        public string Clase { get; set; }
+        public int ClaseId { get; set; }
         public List<string> Profes { get; set; }
-        public string Materia { get; set; }
+        public int MateriaId { get; set; }
 
 
     }
