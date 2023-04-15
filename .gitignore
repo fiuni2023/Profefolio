@@ -11,4 +11,4 @@ profefolio/appsettings.json
 /.vs
 package-lock.json
 
-./vscode
+.vscode
