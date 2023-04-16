@@ -24,7 +24,10 @@ namespace profefolio
 
             //Filtramos por aquellas que no han sido borradas
             queryPersonas = queryPersonas
-            .Where(p => !p.Deleted).ToList();
+            .Where(p => !p.Deleted)
+            .Skip(cantPerPage * page)
+            .Take(cantPerPage)
+            .ToList();
 
             //Creamos otra query donde obtenemos las personas cuyos Id de Persona en la tabla Colegio es NULL
             var result = queryPersonas.Where(p => !_db.Colegios.Any(c => c.PersonaId == null ? false : c.PersonaId.Equals(p.Id)));
