@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using profefolio.Models;
 using profefolio.Models.Entities;
 
@@ -30,10 +31,30 @@ namespace profefolio
             .ToList();
 
             //Creamos otra query donde obtenemos las personas cuyos Id de Persona en la tabla Colegio es NULL
-            var result = queryPersonas.Where(p => !_db.Colegios.Any(c => c.PersonaId == null ? false : c.PersonaId.Equals(p.Id)));
+            var result = queryPersonas
+                .Where(p => !_db.Colegios
+                    .Any(c => c.PersonaId == null ?
+                        false : c.PersonaId.Equals(p.Id)));
 
             //Retornamos la query
             return result;
         }
+
+        public async Task<IEnumerable<Persona>> GetPersonasConColegio(int cantPerPage, int page)
+        {
+            var query = _db.Colegios
+                            .Include(c => c.personas)
+                            .Where(c => !c.Deleted)
+                            .Select(c => c.personas)
+                            .Where(p => !p.Deleted);
+
+            var personas = await query
+                                .Skip(cantPerPage * (page - 1))
+                                .Take(cantPerPage)
+                                .ToListAsync();
+
+            return personas;
+        }
+
     }
 }
