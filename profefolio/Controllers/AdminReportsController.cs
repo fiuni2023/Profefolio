@@ -28,6 +28,8 @@ namespace profefolio
         [Route("admin/assigned/{page:int}")]
         public async Task<ActionResult<DataListDTO<PersonaResultDTO>>> GetAssigned(int page)
         {
+
+            
             var query = await _adminReportService.GetPersonasConColegio(page, CantPerPage);
 
 
@@ -51,6 +53,39 @@ namespace profefolio
             return Ok(result);
         }
 
+        [HttpGet]
+        [Route("admin/not/assigned/{page:int}")]
+        public async Task<ActionResult<DataListDTO<PersonaResultDTO>>> GetNotAssigned(int page)
+        {
+
+            
+            var query = await _adminReportService.GetPersonasSinColegio(page, CantPerPage);
+
+
+            var cantPages = (int)Math.Ceiling((double)await _adminReportService.Count(false) / CantPerPage);
+
+
+            var result = new DataListDTO<PersonaResultDTO>();
+
+            if (page >= cantPages || page < 0)
+            {
+                return BadRequest($"No existe la pagina: {page} ");
+            }
+
+            var enumerable = query.ToArray();
+            result.CantItems = enumerable.Length;
+            result.CurrentPage = page;
+            result.Next = result.CurrentPage + 1 < cantPages;
+            result.DataList = _mapper.Map<List<PersonaResultDTO>>(enumerable.ToList());
+            result.TotalPage = cantPages;
+
+            return Ok(result);
+        }
+
+
+
+
+        
 
 
     }
