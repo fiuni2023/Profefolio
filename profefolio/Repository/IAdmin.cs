@@ -6,5 +6,6 @@ namespace profefolio
     {
         Task<IEnumerable<Persona>> GetPersonasSinColegio(int cantPerPage, int page);
         Task<IEnumerable<Persona>> GetPersonasConColegio(int cantPerPage, int page);
+        Task<int> Count(bool band);
     }
 }

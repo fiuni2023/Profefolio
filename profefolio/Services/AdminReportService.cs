@@ -56,5 +56,36 @@ namespace profefolio
             return personas;
         }
 
+        public async Task<int> Count(bool band)
+        {
+            if (band)
+            {
+                var queryPersona = _db.Colegios
+                            .Include(c => c.personas)
+                            .Where(c => !c.Deleted)
+                            .Select(c => c.personas)
+                            .Where(p => !p.Deleted);
+
+                var personas = await queryPersona
+                                    .ToListAsync();
+
+                return personas.Count;
+            }
+            var query = await _userManager.GetUsersInRoleAsync(rol);
+
+            query = query
+                .Where(p => !p.Deleted)
+                .ToList();
+
+
+            var result = query
+            .Where(p => !_db.Colegios
+                .Any(c => c.PersonaId == null ?
+                    false : c.PersonaId.Equals(p.Id)))
+            .Count();
+
+            return result;
+
+        }
     }
 }
