@@ -1,6 +1,4 @@
-//background options: orange, purple, blue, yellow, gray
-
-const ExampleCard1 = {
+const Colegios = {
     background: "orange",
     hover: true,
     goto: '/colegios/list',
@@ -24,7 +22,7 @@ const ExampleCard1 = {
 
 }
 
-const ExampleCard2 = {
+const Administradores = {
     background: "orange",
     hover: true,
     goto: '/administrador/list',
@@ -47,10 +45,4 @@ const ExampleCard2 = {
     }
 }
 
-const ExampleCard3 = {
-
-}
-
-
-
-export {ExampleCard1, ExampleCard2, ExampleCard3};
+export {Colegios, Administradores};

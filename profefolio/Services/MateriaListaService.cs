@@ -87,6 +87,11 @@ namespace profefolio.Services
                 .Where(d => d.ClaseId == idClase);
         }
 
+
+        public async Task<bool> IsUsedMateria(int idMateria)
+        {
+            return await _db.MateriaListas.AnyAsync(d => d.MateriaId == idMateria);
+
         public async Task<IEnumerable<MateriaLista>> GetDetalleClaseByIdMateriaAndUsername(string username, int idMateria)
         {
             var query = await _db.MateriaListas
@@ -99,8 +104,6 @@ namespace profefolio.Services
 
 
             return query;
-
-
 
         }
     }
