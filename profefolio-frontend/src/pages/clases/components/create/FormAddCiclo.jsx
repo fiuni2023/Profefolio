@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import * as Yup from 'yup';
 import { Formik } from "formik";
-import { Button, Col, Form, InputGroup, Row } from 'react-bootstrap';
+import { Col, Form } from 'react-bootstrap';
 import axios from 'axios';
 import APILINK from '../../../../components/link';
 import { useGeneralContext } from '../../../../context/GeneralContext';
@@ -13,7 +13,7 @@ import TextButton from '../../../../components/TextButton';
 const FormAddCiclo = ({ handleClose, handleChangeListCiclos }) => {
     const { getToken } = useGeneralContext();
 
-    const [isSend, setIsSend] = useState(false);    
+    const [isSend, setIsSend] = useState(false);
 
 
     const schema = Yup.object().shape({
@@ -24,27 +24,27 @@ const FormAddCiclo = ({ handleClose, handleChangeListCiclos }) => {
         handleClose()
     }
     const handleSubmitCiclo = async (ciclo) => {
-        
+
         const obj = {
             "nombre": ciclo.nombre
         }
-        
+
         //console.log(obj)
 
-        const result = await axios.post(`${APILINK}/api/ciclo`, 
-        obj, 
-        {
-            headers: {
-                Authorization: `Bearer ${getToken()}`,
-            }
-        })
+        const result = await axios.post(`${APILINK}/api/ciclo`,
+            obj,
+            {
+                headers: {
+                    Authorization: `Bearer ${getToken()}`,
+                }
+            })
 
-        if(result.status === 200){
+        if (result.status === 200) {
             setIsSend(false);
             onClose();
             handleChangeListCiclos(result.data)
             toast.success("Guardado exitoso.");
-        } else{
+        } else {
             //console.log("Error: ", result.data)
             setIsSend(false);
             toast.error(`Error durante el guardado, verifique que el nombre no exista.`);
@@ -71,24 +71,24 @@ const FormAddCiclo = ({ handleClose, handleChangeListCiclos }) => {
                 errors,
                 blur
             }) => {
-                return <Form  onSubmit={handleSubmit}>
+                return <Form onSubmit={handleSubmit}>
                     <SRow className="mb-3">
-                        <SGroup as={Col} md="7" className="position-relative"  style={{"margin" : "4px"}}>
+                        <SGroup as={Col} md="7" className="position-relative" style={{ "margin": "4px" }}>
                             <SLabel>Ciclo Nuevo</SLabel>
-                                <SControl disabled={isSend}
-                                    type="text"
-                                    placeholder="Ciclo Nuevo"
-                                    aria-describedby="inputGroupPrepend"
-                                    name="nombre"
-                                    value={values.nombre}
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                    isInvalid={!!errors.nombre && touched.nombre}
+                            <SControl disabled={isSend}
+                                type="text"
+                                placeholder="Ciclo Nuevo"
+                                aria-describedby="inputGroupPrepend"
+                                name="nombre"
+                                value={values.nombre}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                isInvalid={!!errors.nombre && touched.nombre}
 
-                                />
-                                {errors.nombre && touched.nombre && <Form.Control.Feedback type="invalid" tooltip>
-                                    {errors.nombre}
-                                </Form.Control.Feedback>}
+                            />
+                            {errors.nombre && touched.nombre && <Form.Control.Feedback type="invalid" tooltip>
+                                {errors.nombre}
+                            </Form.Control.Feedback>}
                         </SGroup>
                         <SGroup as={Col} md="5" className="btn-gestion-ciclo">
                             <TextButton type="submit" enabled={!isSend} buttonType='save'>Guardar</TextButton>
