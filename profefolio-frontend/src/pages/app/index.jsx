@@ -63,8 +63,8 @@ const App = () => {
                                 </Route>
 
                                 <Route path="/clases" element={<Clases />}>
-                                    <Route path="view/:idClase" element={<ShowClase />} />
                                 </Route>
+                                <Route path="/clases/view/:idClase" element={<ShowClase />} ></Route>
 
                                 <Route path="/materias" element={<ListarMaterias />}>
                                     <Route path="list" element={<ListarMaterias />} />
