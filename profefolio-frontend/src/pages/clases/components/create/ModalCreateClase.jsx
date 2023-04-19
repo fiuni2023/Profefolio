@@ -210,6 +210,7 @@ const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = 
 
                                 <SpecialSelect
                                     name={"ciclo"}
+                                    textLabel={"Ciclo"}
                                     className={""}
                                     isSend={isSend} // estado para bloquear los input si es que se esta enviando datos del formulario principal 
                                     inCreation={addCiclos} // estado para poder saber si el otro formulario esta activo
