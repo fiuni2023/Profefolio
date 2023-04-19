@@ -6,24 +6,16 @@ import ClassesHelper from '../../Helpers/ClassesHelper'
 import { toast } from 'react-hot-toast'
 import ClasesPaginacion from './ClasesPaginacion'
 
-const ClasesTable = ({condFetch, colegioId, getToken, doChangeStudent}) => {
+const ClasesTable = ({ condFetch, colegioId, getToken, doChangeStudent }) => {
     const [currentPage, setCurrentPage] = useState(0);
     const [nextPage, setNextPage] = useState(false);
-    //const [page, setPage] = useState(0);
+
     const [classesTable, setClassesTable] = useState(
         {
             tituloTabla: "ClassesList",
             titulos: [{ titulo: "Id" }, { titulo: "Nombre" }, { titulo: "Turno" }, { titulo: "Ciclo" }, { titulo: "Año" }]
         }
     );
-
-    /* const handlePrevClick = () => {
-        page > 0 && setPage(page - 1);
-    };
-
-    const handleNextClick = () => {
-        nextPage && setPage(page + 1);
-    }; */
 
     const { isLoading, error } = useFetchEffect(
         () => {
@@ -52,7 +44,20 @@ const ClasesTable = ({condFetch, colegioId, getToken, doChangeStudent}) => {
                 })
             },
             handleError: (e) => {
-                toast.error(e.response.data)
+                const msg = e.response.data;
+                // si el error recibido es sobre inexistencia de pagina entonces se sumara un 1 al numero de pagina de error
+                const newMsg = `${msg}`.includes("No existe la pagina: ") ? () => {
+                    msg.split(": ")
+                    const vals = msg.split(": ");
+                    return `${vals[0]}: ${parseInt(vals[1]) + 1}` 
+                } : msg; 
+
+                console.log(msg)
+                toast.error(newMsg)
+                setClassesTable({
+                    ...classesTable, clickable: { action: doChangeStudent },
+                    filas: []
+                })
             }
         }
     )
@@ -61,20 +66,20 @@ const ClasesTable = ({condFetch, colegioId, getToken, doChangeStudent}) => {
 
     return <>
 
-                <TableContainer>
-                    <Tabla datosTabla={classesTable} />
-                    
-                        <ClasesPaginacion 
-                            currentPage={currentPage} 
-                            setCurrentPage={setCurrentPage} 
-                            nextPage={nextPage} 
-                            isLoading={isLoading} 
-                            error={error}
-                        />
+        <TableContainer>
+            <Tabla datosTabla={classesTable} />
 
-                    
-                    
-                </TableContainer >
+            <ClasesPaginacion
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
+                nextPage={nextPage}
+                isLoading={isLoading}
+                error={error}
+            />
+
+
+
+        </TableContainer >
 
     </>
 }
