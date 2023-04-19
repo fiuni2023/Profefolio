@@ -33,7 +33,7 @@ const ClasesTable = ({condFetch, colegioId, getToken, doChangeStudent}) => {
         {
             condition: condFetch,
             handleSuccess: (r) => {
-                console.log(r)
+                //console.log(r)
                 setNextPage(r.data.next)
                 setClassesTable({
                     ...classesTable, clickable: { action: doChangeStudent },

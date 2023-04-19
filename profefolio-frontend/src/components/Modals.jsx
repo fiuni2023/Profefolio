@@ -13,7 +13,7 @@ const ModalContainer = ({children, show = false, handleClose=()=>{}, title="", s
                     opacity: 0.25;
                 }
                 .ModalCustom{
-                    background-color: #C6D8D3;
+                    /* background-color: #C6D8D3; */
                     box-shadow: 0px 0px 10px 0px #00000040;
                 }
                 .Header{
