@@ -1,7 +1,6 @@
-import { Button, Col, Form, InputGroup, Row, Modal } from "react-bootstrap";
+import { Col, Form, Modal } from "react-bootstrap";
 import * as Yup from 'yup';
 import { Formik } from "formik";
-import { map } from "lodash";
 import { useEffect, useState } from "react";
 import useAxiosGet from "../../hooks/useAxiosGet";
 import { useGeneralContext } from "../../../../context/GeneralContext";
@@ -12,12 +11,13 @@ import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import ModalContainer from "../../../../components/Modals";
 import TextButton from "../../../../components/TextButton";
-import { SContainer, SControl, SGroup, SLabel, SRow, SSelect } from "../../../../components/componentsStyles/StyledForm";
-import {Text, H1, SHeader } from "../../../../components/componentsStyles/StyledModal";
+import { SContainer, SControl, SGroup, SLabel, SRow } from "../../../../components/componentsStyles/StyledForm";
+import { SHeader } from "../../../../components/componentsStyles/StyledModal";
+import { SpecialSelect } from "../../../../components/SpecialSelect.jsx";
+
 
 
 const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = false, triggerState = () => { }, handlePage = () => { } }) => {
-    const CREATE_CICLO = "___option____create____ciclo";
 
     // eslint-disable-next-line no-unused-vars
     const { getToken, cancan, verifyToken, getUserMail } = useGeneralContext();
@@ -30,12 +30,7 @@ const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = 
         setAddCiclos(!addCiclos)
     }
 
-    const validateSelect = (e) => {
-        if (CREATE_CICLO === e.target.value) {
-            onSetAddCiclos();
-            e.target.value = "";
-        }
-    }
+
 
     // eslint-disable-next-line no-unused-vars
     const [data, loading, error, setData] = useAxiosGet(`api/ciclo`, getToken());
@@ -139,6 +134,7 @@ const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = 
             backdrop="static"
             keyboard={false}
             className="modal-crear-clases"
+            size={"lg"}
         >
             <SHeader closeButton >
                 <Modal.Title>{title}</Modal.Title>
@@ -172,8 +168,7 @@ const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = 
                         return <SContainer>
                             <Form noValidate onSubmit={handleSubmit} as={`${addCiclos ? "div" : "form"}`} >
 
-                                {/* <SRow className="mb-3"> */}
-                                <SGroup as={Col} md={12} /* controlId="validationFormikNombre" */ className="position-relative">
+                                <SGroup as={Col} md={12} className="position-relative">
                                     <SLabel>Nombre</SLabel>
                                     <SControl disabled={addCiclos || isSend}
                                         type="text"
@@ -193,7 +188,7 @@ const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = 
                                 </SGroup>
 
 
-                                <SGroup as={Col} md={12} /* controlId="validationFormikTurno" */ className="position-relative">
+                                <SGroup as={Col} md={12} className="position-relative">
 
                                     <SLabel>Turno</SLabel>
                                     <SControl disabled={addCiclos || isSend}
@@ -212,39 +207,27 @@ const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = 
                                 </SGroup>
 
 
-                                {!addCiclos
-                                    ?
-                                    <SGroup as={Col} md={12} /* controlId="validationFormikCiclo" */ >
-                                        <SLabel>Ciclo</SLabel>
 
-                                        <SSelect aria-label="Default select" disabled={isSend}
-                                            name="ciclo"
-                                            value={values.ciclo}
-                                            onChange={(e) => {
-                                                validateSelect(e);
-                                                return handleChange(e);
-                                            }}
-                                            onBlur={handleBlur}
-                                            isInvalid={!!errors.ciclo && touched.ciclo}
-                                        >
-                                            <option value={""} disabled>Seleccione un Ciclo</option>
-                                            <option className="option-create-ciclo" value={CREATE_CICLO}>Crear Ciclo</option>
-                                            {map(data, (c) => <option key={c.id} value={c.id}>{c.nombre}</option>)}
-                                        </SSelect>
+                                <SpecialSelect
+                                    name={"ciclo"}
+                                    className={""}
+                                    isSend={isSend} // estado para bloquear los input si es que se esta enviando datos del formulario principal 
+                                    inCreation={addCiclos} // estado para poder saber si el otro formulario esta activo
+                                    setInCreation={onSetAddCiclos}  // setea el estado de actividad del otro formulario
+                                    col={12}
+                                    values={values.ciclo}
+                                    handleChange={handleChange}
+                                    handleBlur={handleBlur}
+                                    errors={errors.ciclo}
+                                    touched={touched.ciclo}
+                                    data={data} // valores del select
+                                    specialOption="Crear Ciclo" //texto de la opcion que mostrara el otro formulario
+                                    alternativeForm={<FormAddCiclo handleClose={onSetAddCiclos} handleChangeListCiclos={addCicloList} />}
+                                />
 
-                                    </SGroup>
-
-                                    :
-                                    <FormAddCiclo handleClose={onSetAddCiclos} handleChangeListCiclos={addCicloList} />
-                                }
-
-                                {/* </SRow> */}
-
-                                {/* <SRow className="mb-3"> */}
                                 <SGroup
                                     as={Col}
                                     md={12}
-                                    /* controlId="validationFormik103" */
                                     className="position-relative"
                                 >
                                     <SLabel>Año</SLabel>
@@ -267,10 +250,12 @@ const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = 
                                 </SGroup>
                                 {/* </SRow> */}
 
-                                <SRow className="btn-save-contanier">
-                                    <Col className="btn-save-subcontanier" md={4}>
-                                        {/* <Button className="btn-save" type="submit" disabled={addCiclos || isSend}>Guardar</Button>*/}
-                                        <TextButton enabled={!(addCiclos || isSend)} buttonType='accept' onClick={() => console.log('Guardando')} />
+                                <SRow>
+                                    <Col className="btn-container pe-2" md={10}>
+                                        <TextButton enabled={!(addCiclos || isSend)} buttonType='accept' />
+                                    </Col>
+                                    <Col className="btn-container" md={2}>
+                                        <TextButton enabled={!(addCiclos || isSend)} buttonType='cancel' onClick={handleClose} />
                                     </Col>
                                 </SRow>
                             </Form>
@@ -278,66 +263,21 @@ const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = 
                     }}
                 </Formik>
 
-
-
-
-
             </Modal.Body>
 
         </ModalContainer>
-
+        
         <style jsx="true">
             {
                 `
-                    .modal-crear-clases{
-                        background-color:red;
-                    }
-
-                    .btn-gestion-ciclo{
-                        display:flex;
-                        align-items: flex-end;
-                        justify-content: flex-end;
-                        column-gap: 8px;
-                    }
-                    
-                    .btn-icon-ciclo{
-                        font-size: 39px;
-                    }
-
-                    .btn-save-icon {
-                        color: #F0544F;
-                    }
-
-                    .btn-save {
-                        background: #F0544F;
-                        border: 1px solid #F0544F;
-                    }
-
-                    .btn-save:disabled {
-                        background: gray;
-                        border: 1px solid #F0544F;
-                    }
-
-                    .btn-save:hover {
-                        background: #F05418;
-                        border: 1px solid #F0544F;
-                    }
-
-                    .btn-cancel-icon {
-                        color: #FDF0D5;
-                    }
-                    .btn-save-contanier, .btn-save-subcontanier{
+                    .btn-container{
                         display: flex;
-                        justify-content: center;
+                        justify-content: flex-end;
                     }
-                    .option-create-ciclo{
-                        background: #e59c68;
-                        color: white;
-                    }
-
-                `
+                ` 
             }
         </style>
+        
     </>
 }
 
