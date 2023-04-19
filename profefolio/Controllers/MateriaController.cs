@@ -8,6 +8,7 @@ using profefolio.Models.Entities;
 using profefolio.Repository;
 using log4net;
 using profefolio.Helpers;
+using System.Security.Claims;
 
 namespace profefolio.Controllers
 {
@@ -17,12 +18,14 @@ namespace profefolio.Controllers
     {
         private static readonly ILog _log = LogManager.GetLogger(typeof(MateriaController));
         private readonly IMateria _materiaService;
+        private readonly IMateriaLista _materiaListaService;
         private static int _cantPorPag => Constantes.CANT_ITEMS_POR_PAGE;
         private readonly IMapper _mapper;
-        public MateriaController(IMateria materiaService, IMapper mapper)
+        public MateriaController(IMateria materiaService, IMapper mapper, IMateriaLista materiaLista)
         {
             _materiaService = materiaService;
             _mapper = mapper;
+            _materiaListaService = materiaLista;
         }
 
 
@@ -154,16 +157,25 @@ namespace profefolio.Controllers
         [Authorize(Roles = "Administrador de Colegio")]
         public async Task<IActionResult> Delete(int id)
         {
+            
             var data = await _materiaService.FindById(id);
-
+            
             if (data == null)
             {
                 return NotFound();
             }
 
+            // se verifica que la materia no se este usando en la relacion de materia-clase
+            var isUsed = await _materiaListaService.IsUsedMateria(id);
+            if(isUsed){
+                return BadRequest("La materia no se puede eliminar porque que ya se esta usando.");
+            }
+            
+            var userEmail = User.FindFirstValue(ClaimTypes.Name);
+
             data.Modified = DateTime.Now;
             data.Deleted = true;
-            data.ModifiedBy = "Anonimous";
+            data.ModifiedBy = userEmail;
             _materiaService.Edit(data);
             await _materiaService.Save();
 
