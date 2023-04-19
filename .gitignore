@@ -12,3 +12,5 @@ profefolio/appsettings.json
 package-lock.json
 
 .vscode
+
+profefolio-frontend/src/components/link.js
