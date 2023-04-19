@@ -83,23 +83,24 @@ namespace profefolio.Services
         {
             return _db.MateriaListas.Where(d => !d.Deleted)
                 .Where(d => d.Id == idMateria)
-                .Where(d => d.CreatedBy.Equals(createdBy))
+                .Where(d => d.CreatedBy == null ? false : d.CreatedBy.Equals(createdBy))
                 .Where(d => d.ClaseId == idClase);
         }
 
         public async Task<IEnumerable<MateriaLista>> GetDetalleClaseByIdMateriaAndUsername(string username, int idMateria)
         {
-            var query = await _db.Materias
-                .Include(m => m.MateriaListas)
-                .Where(m => !m.Deleted)
-                .Where(m => m.CreatedBy.Equals(username))
-                .FirstOrDefaultAsync();
+            var query = await _db.MateriaListas
+                .Where(p => !p.Deleted)
+                .Where(p => p.CreatedBy == null ? false : p.CreatedBy.Equals(username))
+                .Where(p => p.MateriaId == idMateria).ToListAsync();
 
-            if (query == null) throw new FileNotFoundException();
+            if(query.Count() < 1) 
+                throw new FileNotFoundException();
 
-            return query.MateriaListas
-                .Where(l => !l.Deleted)
-                .Where(l => l.CreatedBy.Equals(username));
+
+            return query;
+
+
 
         }
     }
