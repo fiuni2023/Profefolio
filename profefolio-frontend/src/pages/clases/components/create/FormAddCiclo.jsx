@@ -73,7 +73,7 @@ const FormAddCiclo = ({ handleClose, handleChangeListCiclos }) => {
             }) => {
                 return <Form  onSubmit={handleSubmit}>
                     <SRow className="mb-3">
-                        <SGroup as={Col} md="4" /* controlId="validationFormikNombreCicloNuevo" */ className="position-relative">
+                        <SGroup as={Col} md="7" className="position-relative"  style={{"margin" : "4px"}}>
                             <SLabel>Ciclo Nuevo</SLabel>
                                 <SControl disabled={isSend}
                                     type="text"
@@ -90,7 +90,7 @@ const FormAddCiclo = ({ handleClose, handleChangeListCiclos }) => {
                                     {errors.nombre}
                                 </Form.Control.Feedback>}
                         </SGroup>
-                        <SGroup as={Col} md="8" className="btn-gestion-ciclo">
+                        <SGroup as={Col} md="5" className="btn-gestion-ciclo">
                             <TextButton type="submit" enabled={!isSend} buttonType='save'>Guardar</TextButton>
                             <TextButton onClick={onClose} enabled={!isSend} buttonType='cancel'>Cancelar</TextButton>
                         </SGroup>
