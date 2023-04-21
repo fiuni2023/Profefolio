@@ -21,7 +21,14 @@ function Scrolleable({ cardInfo }) {
                     </SBody>}
                 <SForm onSubmit={cardInfo?.onSubmit ?? null}>
                     <span>Agregar alumnos</span>
-                    <Select placeholder='Seleccionar Alumno'></Select>
+                    <Select aria-label="Default select" >
+                        <option value="" disabled selected>Seleccione un alumno</option>
+                        {cardInfo?.options?.map((option) => (
+                            <option key={option.value} value={option.value}>
+                                {option.label}
+                            </option>
+                        ))}
+                    </Select>
                     <div style={{ textAlign: 'right' }}>
                         <TextButton buttonType={'save-changes'} enabled={cardInfo?.enabled ?? false} />
                     </div>

@@ -12,11 +12,15 @@ const TestPage = () => {
     background: "white",
     hover: true,
     goto: '',
-    onSubmit: ()=>console.log("presionado"),
+    onSubmit: () => console.log("presionado"),
     enabled: true,
     header: {
       title: "Lista de Alumnos inscriptos",
     },
+    options:[
+      {label: "Carlos", value: 1},
+      {label: "Gabriela", value: 1}
+    ],
     body: {
       table: {
         small: true,
@@ -25,7 +29,25 @@ const TestPage = () => {
           { datos: [{ dato: "John" }, { dato: "12/12/2017" }] },
           { datos: [{ dato: "Mery" }, { dato: "02/02/2017" }] },
           { datos: [{ dato: "Pepe" }, { dato: "01/10/2017" }] },
-          { datos: [{ dato: "Laura" }, { dato: "31/01/2017" }] }
+          { datos: [{ dato: "Laura" }, { dato: "31/01/2017" }] },
+          { datos: [{ dato: "Mery" }, { dato: "02/02/2017" }] },
+          { datos: [{ dato: "Pepe" }, { dato: "01/10/2017" }] },
+          { datos: [{ dato: "Laura" }, { dato: "31/01/2017" }] },
+          { datos: [{ dato: "Mery" }, { dato: "02/02/2017" }] },
+          { datos: [{ dato: "Mery" }, { dato: "02/02/2017" }] },
+          { datos: [{ dato: "Pepe" }, { dato: "01/10/2017" }] },
+          { datos: [{ dato: "Laura" }, { dato: "31/01/2017" }] },
+          { datos: [{ dato: "Mery" }, { dato: "02/02/2017" }] },
+          { datos: [{ dato: "Pepe" }, { dato: "01/10/2017" }] },
+          { datos: [{ dato: "Laura" }, { dato: "31/01/2017" }] },
+          { datos: [{ dato: "Mery" }, { dato: "02/02/2017" }] },
+          { datos: [{ dato: "Mery" }, { dato: "02/02/2017" }] },
+          { datos: [{ dato: "Pepe" }, { dato: "01/10/2017" }] },
+          { datos: [{ dato: "Laura" }, { dato: "31/01/2017" }] },
+          { datos: [{ dato: "Mery" }, { dato: "02/02/2017" }] },
+          { datos: [{ dato: "Pepe" }, { dato: "01/10/2017" }] },
+          { datos: [{ dato: "Laura" }, { dato: "31/01/2017" }] },
+          { datos: [{ dato: "Mery" }, { dato: "02/02/2017" }] }
         ]
       }
     }
@@ -48,7 +70,7 @@ const TestPage = () => {
         <TextButton enabled={true} buttonType='save-changes' onClick={() => console.log('Confirmando')} />
       </div>
       <div>
-        <ScrolleableTable cardInfo={Alumnos}/>
+        <ScrolleableTable cardInfo={Alumnos} />
       </div>
     </div>
   )
