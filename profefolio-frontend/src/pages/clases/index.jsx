@@ -60,19 +60,14 @@ return <>
 
                 {tabla}
 
-
-                {/* <BtnAdd handleShowModal={handleShow} /> */}
                 <AddButton>
                         <AiOutlinePlus size={"35px"} onClick={handleShowModal}/>
                 </AddButton>
 
                 <ModalCreateClase title="Agregar Clase" handleClose={handelCloseModal} show={showModal} />
 
-
-
             </MainContainer >
             
-   
 
         <style jsx='true'>{`
     .page{

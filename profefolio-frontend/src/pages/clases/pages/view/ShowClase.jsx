@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { map } from "lodash";
 import { SContainer, SRow } from '../../../../components/componentsStyles/StyledForm';
 import { Col } from 'react-bootstrap';
+import InfoClase from '../../components/show/InfoClase';
 
 const ShowClase = () => {
     const combinaciones = [[12], [6, 6], [12, 6, 6]]; // combinacion de tamanhos de columnas
@@ -17,7 +18,7 @@ const ShowClase = () => {
 
         title: "Primer grado",
         componentes: [
-            <div><h1>Componente 1</h1></div>,
+            <InfoClase/>,
             <div><h1>Componente 2</h1></div>,
             <div><h1>Componente 3</h1></div>
         ]
@@ -40,7 +41,7 @@ const ShowClase = () => {
                 .scol-showclase {
                     box-sizing: border-box;
                     padding: 1rem;
-                    border: 1px solid red;
+                    /*border: 1px solid red;*/
                 }
                 
             `}
