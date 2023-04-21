@@ -5,7 +5,7 @@ import APILINK from '../../../components/link';
 import Modal from '../../../components/Modal';
 import { toast } from 'react-hot-toast';
 
-function ModalColegios({ tituloModal, isOpen, disabled }) {
+function ModalAlumnos({ tituloModal, isOpen, disabled, triggerState = () => { } }) {
     const { getToken } = useGeneralContext()
     const [open, setOpen] = useState(isOpen ? isOpen : false);
     const [ModalTitle, setModalTitle] = useState(tituloModal ? tituloModal : "");
@@ -49,6 +49,7 @@ function ModalColegios({ tituloModal, isOpen, disabled }) {
             .then(function (response) {
                 if (response.status >= 200) {
                     setOpen(false);
+                    triggerState(response.data);
                     toast.success("Guardado correctamente");
                 }
             })
@@ -114,6 +115,7 @@ function ModalColegios({ tituloModal, isOpen, disabled }) {
                                     text: "Masculino"
                                 }
                             ],
+                            disabled: "Seleccione el género"
 
                         }
                     },
@@ -144,6 +146,7 @@ function ModalColegios({ tituloModal, isOpen, disabled }) {
                                     text: "Pasaporte"
                                 }
                             ],
+                            disabled: "Seleccione un Tipo"
 
                         }
                     },
@@ -171,4 +174,4 @@ function ModalColegios({ tituloModal, isOpen, disabled }) {
         </>
     )
 }
-export default ModalColegios;
+export default ModalAlumnos;

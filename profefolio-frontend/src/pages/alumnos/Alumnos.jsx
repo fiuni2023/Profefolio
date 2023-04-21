@@ -27,6 +27,11 @@ const Alumnos = () => {
 
     const nav = useNavigate()
 
+
+    const doAddAlumno = (alumno) => {
+        setDatosTabla([alumno,...datosTabla ])
+    }
+
     useEffect(() => {
         verifyToken()
         if (!cancan("Administrador de Colegio")) {
@@ -72,8 +77,8 @@ const Alumnos = () => {
     const [show, setShow] = useState(false);
     // const [disabled, setDisabled] = useState(false);
     // const [tituloModal, setTituloModal] = useState("Agregar Alumno")
-    const disabled =false;
-    const tituloModal="Agregar Alumno"
+    const disabled = false;
+    const tituloModal = "Agregar Alumno"
 
     const openNew = () => {
         setShow(!show);
@@ -106,7 +111,7 @@ const Alumnos = () => {
                         <AiOutlinePlus size={"35px"} />
                     </AddButton>
                 </TableContainer >
-                <ModalAlumnos tituloModal={tituloModal} isOpen={show} disabled={disabled}></ModalAlumnos>  
+                <ModalAlumnos tituloModal={tituloModal} isOpen={show} disabled={disabled} triggerState={(alumno) => { doAddAlumno(alumno) }}></ModalAlumnos>
             </MainContainer >
         </>
     )
