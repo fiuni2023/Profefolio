@@ -139,7 +139,8 @@ const FormExample =  {
             onclick: { action: (() => console.log("edit")) },
         },
       ],
-      info : "Info del formulario"
+      info : "Info del formulario",
+      onSubmit: { action: () => console.log("Submit") },
     }
 
 export {FormExample};
