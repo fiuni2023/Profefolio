@@ -49,8 +49,7 @@ const Clases = () => {
 
     
     const doChangeStudent = (data) => {
-        console.log("Seleccionado", data)
-        nav(`view/${data.id}`)
+        nav(`/clases/view/${data.id}`)
     }
 
 
