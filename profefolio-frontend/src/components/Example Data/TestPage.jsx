@@ -1,6 +1,6 @@
 import React from 'react'
-import TextButton from './TextButton'
-import IconButton from './IconButton'
+import TextButton from '../TextButton'
+import IconButton from '../IconButton'
 
 const TestPage = () => {
   const miFuncion = () => {
