@@ -12,8 +12,10 @@ const TestPage = () => {
     background: "white",
     hover: true,
     goto: '',
+    onSubmit: ()=>console.log("presionado"),
+    enabled: true,
     header: {
-      title: "Alumnos",
+      title: "Lista de Alumnos inscriptos",
     },
     body: {
       table: {
@@ -43,6 +45,7 @@ const TestPage = () => {
         <TextButton enabled={true} buttonType='cancel' onClick={() => console.log('Cancelando')} />
         <TextButton enabled={true} buttonType='save' onClick={() => console.log('Guardando')} />
         <TextButton enabled={true} buttonType='confirm' onClick={() => console.log('Confirmando')} />
+        <TextButton enabled={true} buttonType='save-changes' onClick={() => console.log('Confirmando')} />
       </div>
       <div>
         <ScrolleableTable cardInfo={Alumnos}/>
