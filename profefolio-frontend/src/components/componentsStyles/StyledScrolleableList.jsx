@@ -59,7 +59,7 @@ const SCol = styled(Col)`
 const SForm = styled.form`
     background-color: white;
     border-top: solid 1px #C2C2C2;
-    font-size: 1.3em;
+    font-size: 1.4em;
     font-weight: 300;
     padding: 20px;
     padding-top: 10px;
@@ -68,7 +68,7 @@ const SForm = styled.form`
 const Select = styled(FormSelect)`
     background-color: #F5F5F5;
     border: none;
-    font-size: 1.2em;
+    font-size: 1.1em;
     font-weight: 400;
     border-radius: 5px;
     width: 100%;
@@ -77,12 +77,11 @@ const Select = styled(FormSelect)`
 
 const List = styled.ol`
   list-style-type: none;
-  margin: 10px 0;
   padding: 0;
 `;
 
 const Item = styled.li`
-  font-size: 0.9em;
+  font-size: 1.1em;
   font-weight: 400;
   text-align: left;
 `;
@@ -117,10 +116,10 @@ const ListButton = styled.button`
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size:0.9em;
+    font-size:1em;
     font-weight:300;
-    width: 22px;
-    height: 22px;
+    width: 24px;
+    height: 24px;
     border: none;
     border-radius: 15px;
     background-color: transparent;
