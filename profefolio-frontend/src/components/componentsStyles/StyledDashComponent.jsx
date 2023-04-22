@@ -45,6 +45,7 @@ const SHeader = styled(Card.Header)`
     font-weight: 600;
     text-align: center;
     border-radius: 20px 20px 0 0 !important;
+    color: #ffffff;
 `;
 const SBody = styled(Card.Body)`
     background-color: ${({ background }) => handleColorType(background, false)};
