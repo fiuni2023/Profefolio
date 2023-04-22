@@ -4,7 +4,7 @@ import {SContainer, SRow, Info, SControl, SLabel, SSelect, SCheck, SGroup, SOpti
 import IconButton from "./IconButton";
 import TextButton from "./TextButton";
 
-const types = ["text", "date", "password", "textarea", "email"];
+const types = ["text", "date", "password", "textarea", "email", "number"];
 const checks = ["checkbox", "radio", "switch"];
 const allinputs = ["text", "date", "password", "textarea", "select"];
 const passRegx = `^(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$`
