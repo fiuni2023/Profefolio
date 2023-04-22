@@ -1,27 +1,3 @@
-const Colegios = {
-    background: "orange",
-    hover: true,
-    goto: '/colegios/list',
-    header: {
-        title: "Colegios",
-    },
-    body: {
-        title: "Ultimos Colegios",
-        table: {
-            small: true, 
-            titulos: [ {titulo: "Nombre"}, {titulo: "Creado el"} ], 
-            filas: [
-                    {datos: [{dato: "Ceuce"}, {dato: "12/12/2017"}]},
-                    {datos: [{dato: "Cree"},  {dato: "02/02/2017"}]},
-                    {datos: [{dato: "Principito"}, {dato: "27/04/2017"}]},
-                    {datos: [{dato: "Inmaculada"}, {dato: "01/10/2017"}]},
-                    {datos: [{dato: "Morinigo"}, {dato: "31/01/2017"}]}
-            ]
-        }
-    }
-
-}
-
 const Administradores = {
     background: "orange",
     hover: true,
@@ -33,16 +9,41 @@ const Administradores = {
         title: "Ultimos Administradores",
         table: {
             small: true, 
-            titulos: [ {titulo: "Nombre"}, {titulo: "Apellido"}, {titulo: "Creado en"} ], 
+            titulos: [ {titulo: "Nombre"}, {titulo: "Apellido"}, {titulo: "Colegio"} ], 
             filas: [
-                    {datos: [{dato: "John"}, {dato: "Doe"}, {dato: "12/12/2017"}]},
-                    {datos: [{dato: "Mery"}, {dato: "Jane"}, {dato: "02/02/2017"}]},
-                    {datos: [{dato: "Pepe"}, {dato: "Lepew"}, {dato: "27/04/2017"}]},
-                    {datos: [{dato: "Max"}, {dato: "Steele"}, {dato: "01/10/2017"}]},
-                    {datos: [{dato: "Laura"}, {dato: "Doe"}, {dato: "31/01/2017"}]}
+                    {datos: [{dato: "John"}, {dato: "Doe"}, {dato: "CREE"}]},
+                    {datos: [{dato: "Mery"}, {dato: "Jane"}, {dato: "CEUCE"}]},
+                    {datos: [{dato: "Pepe"}, {dato: "Lepew"}, {dato: "INMACULADA"}]},
+                    {datos: [{dato: "Max"}, {dato: "Steele"}, {dato: "CIC"}]},
+                    {datos: [{dato: "Laura"}, {dato: "Doe"}, {dato: "DIV. ESPERANZA"}]}
             ]
         }
     }
 }
+
+const Colegios = {
+    background: "orange",
+    hover: true,
+    goto: '/colegios/list',
+    header: {
+        title: "Colegios",
+    },
+    body: {
+        title: "Ultimos Colegios",
+        table: {
+            small: true, 
+            titulos: [ {titulo: "Nombre"}, {titulo: "Estado"} ], 
+            filas: [
+                    {datos: [{dato: "Ceuce"}, {dato: "ACTIVO"}]},
+                    {datos: [{dato: "Cree"},  {dato: "ACTIVO"}]},
+                    {datos: [{dato: "Principito"}, {dato: "SIN ASIGNAR"}]},
+                    {datos: [{dato: "Inmaculada"}, {dato: "ACTIVO"}]},
+                    {datos: [{dato: "Morinigo"}, {dato: "INACTIVO"}]}
+            ]
+        }
+    }
+
+}
+
 
 export {Colegios, Administradores};
