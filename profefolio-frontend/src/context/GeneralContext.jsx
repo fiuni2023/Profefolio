@@ -6,40 +6,42 @@ import Login from "../pages/login";
 
 const GeneralContext = createContext();
 
-export const useGeneralContext = () =>{
+export const useGeneralContext = () => {
     return useContext(GeneralContext)
 }
 
-export const GeneralProvider = ({children}) => {
+export const GeneralProvider = ({ children }) => {
     const location = useLocation()
     const [currentPage, setCurrentPage] = useState(location.pathname)
     const [showSB, setShowSB] = useState(false)
-    const [isLogged, setIsLogged] = useState(localStorage.getItem('loginData')? true : false)
-    
+    const [isLogged, setIsLogged] = useState(localStorage.getItem('loginData') ? true : false)
+
+    //dato de colegio
+    const [colegio, setColegio] = useState({ id: 0, nombre: "" })
 
     const getLoginData = () => {
-        if(localStorage.getItem('loginData')? true : false) return JSON.parse(localStorage.getItem('loginData'))
-        if(sessionStorage.getItem('loginData')? true : false) return JSON.parse(sessionStorage.getItem('loginData')) 
+        if (localStorage.getItem('loginData') ? true : false) return JSON.parse(localStorage.getItem('loginData'))
+        if (sessionStorage.getItem('loginData') ? true : false) return JSON.parse(sessionStorage.getItem('loginData'))
         return null
     }
 
     const depricateLoginData = () => {
-        if(localStorage.getItem('loginData')? true : false) localStorage.removeItem('loginData')
-        if(sessionStorage.getItem('loginData')? true : false) sessionStorage.removeItem('loginData')
+        if (localStorage.getItem('loginData') ? true : false) localStorage.removeItem('loginData')
+        if (sessionStorage.getItem('loginData') ? true : false) sessionStorage.removeItem('loginData')
         setIsLogged(false)
     }
 
     const verifyToken = () => {
         const expire = new Date(getLoginData()?.expires)
         const now = new Date()
-        if(now>expire) depricateLoginData()
+        if (now > expire) depricateLoginData()
     }
 
     const getToken = () => {
         return getLoginData().token
     }
 
-    const getRole = () =>{
+    const getRole = () => {
         return getLoginData().roles[0]
     }
 
@@ -57,9 +59,9 @@ export const GeneralProvider = ({children}) => {
     }
 
     const values = {
-        currentPage, 
+        currentPage,
         setCurrentPage,
-        showSB, 
+        showSB,
         setShowSB,
         isLogged,
         setIsLogged,
@@ -68,7 +70,9 @@ export const GeneralProvider = ({children}) => {
         verifyToken,
         cancan,
         getUserName,
-        getUserMail
+        getUserMail,
+        colegio, 
+        setColegio
     }
 
     verifyToken()
@@ -78,12 +82,12 @@ export const GeneralProvider = ({children}) => {
             <>
                 <Toaster />
                 {
-                    isLogged?
-                    children
-                    :
-                    <>
-                    <Login changeState={()=>{setIsLogged(!isLogged)}} />
-                </>
+                    isLogged ?
+                        children
+                        :
+                        <>
+                            <Login changeState={() => { setIsLogged(!isLogged) }} />
+                        </>
                 }
             </>
         </GeneralContext.Provider>
