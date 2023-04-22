@@ -41,6 +41,7 @@ const SBody = styled(Card.Body)`
     max-height: 500px;
     height: min-content;
     overflow-y: auto;  
+    padding:10px;
     padding-bottom:0;
     &::-webkit-scrollbar {
         width: 15px;
@@ -88,7 +89,7 @@ const List = styled.ol`
 
 const Item = styled.li`
   font-size: 1.1em;
-  font-weight: 400;
+  font-weight: 300;
   text-align: left;
 `;
 
