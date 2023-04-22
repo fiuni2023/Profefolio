@@ -1,51 +1,31 @@
 import React from 'react'
 import { useParams } from 'react-router-dom';
-import { map } from "lodash";
-import { SContainer, SRow } from '../../../../components/componentsStyles/StyledForm';
-import { Col } from 'react-bootstrap';
-import InfoClase from '../../components/show/InfoClase';
+//import { map } from "lodash";
+//import { SContainer, SRow } from '../../../../components/componentsStyles/StyledForm';
+//import { Col } from 'react-bootstrap';
+import ShowContainer from '../../components/ShowContainer';
+//import InfoClase from '../../components/show/InfoClase';
 
 const ShowClase = () => {
-    const combinaciones = [[12], [6, 6], [12, 6, 6]]; // combinacion de tamanhos de columnas
     const { idClase } = useParams();
 
-    const dato = {
+    /**
+     * TO DO
+     * Validar logeo
+     */
 
-        /**
-         * TO DO
-         * Validar logeo
-         */
-
-        title: "Primer grado",
+    // contiene el titulo que tendra la pagina y la lista de componentes a mostrar
+    const componentes = {
+        title: `Nombre de clase ${idClase}`,
         componentes: [
-            <InfoClase/>,
-            <div><h1>Componente 2</h1></div>,
-            <div><h1>Componente 3</h1></div>
+            <div><h5>Editar datos de grado</h5></div>,
+            <div><h5>Lista de alumnos inscriptos</h5></div>,
+            <div><h5>Lista de materias de la clase</h5></div>
         ]
     };
 
     return <>
-        <SContainer>
-            <h4>{dato.title}</h4>
-            <SRow className="srow-showclase">
-                {map(dato.componentes, (e, i) => <Col className="scol-showclase" key={i} md={combinaciones[dato.componentes.length - 1 >= 0 ? dato.componentes.length - 1 : 0 ][i]}>{e}</Col>)}
-            </SRow>
-            <div>User Profile for User ID: {idClase}</div>
-        </SContainer>
-
-        <style jsx="true">
-            {`
-                .srow-showclase{
-                    flex-wrap: wrap;
-                }
-                .scol-showclase {
-                    box-sizing: border-box;
-                    padding: 1rem;
-                    /*border: 1px solid red;*/
-                }
-                
-            `}
-        </style>
+            <ShowContainer data={componentes}/>
     </>
 
 }

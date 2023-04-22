@@ -1,12 +1,12 @@
-import React, { useState } from 'react'
-import { Form } from '../../../../components/Form';
+//import React, { useState } from 'react'
+//import { Form } from '../../../../components/Form';
 import { ContainerBlock, STitle } from '../ShowsStyled';
-import { H1} from '../../../../components/componentsStyles/StyledModal.jsx';
+//import { H1} from '../../../../components/componentsStyles/StyledModal.jsx';
 
 
 
 const InfoClase = ({ idClase }) => {
-    const [disabledInputs, setDisabledInputs] = useState(false);
+    /* const [disabledInputs, setDisabledInputs] = useState(false);
 
     const [nombre, setNombre] = useState("");
 
@@ -82,12 +82,12 @@ const InfoClase = ({ idClase }) => {
                 enabled: true
             }
         ]
-    }
+    } */
 
     return <>
         <ContainerBlock>
             <STitle>Editar Datos del Grado</STitle>
-            <Form form={form} />
+            {/* <Form form={form} /> */}
         </ContainerBlock>
     </>
 }
