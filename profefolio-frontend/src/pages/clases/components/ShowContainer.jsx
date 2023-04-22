@@ -2,13 +2,14 @@ import React from 'react'
 import { SContainer, SRow } from '../../../components/componentsStyles/StyledForm'
 import { map } from "lodash";
 import { Col } from 'react-bootstrap';
+import { STitle } from './ShowsStyled';
 
 const ShowContainer = ({ data = {} }) => {
     const combinaciones = [[12], [6, 6], [12, 6, 6]]; // combinacion de tamanhos de columnas
     return <>
         <div className="principal-container">
             <SContainer>
-                <h4>{data?.title}</h4>
+                <STitle>{data?.title}</STitle>
                 <SRow className="srow-showclase">
                     {map(data?.componentes, (e, i) => <Col
                         className="scol-showclase"

@@ -6,7 +6,7 @@ import ClassesHelper from '../../Helpers/ClassesHelper'
 import { toast } from 'react-hot-toast'
 import ClasesPaginacion from './ClasesPaginacion'
 
-const ClasesTable = ({condFetch, colegioId, getToken, doChangeStudent}) => {
+const ClasesTable = ({condFetch, colegioId, getToken, doChangeClase}) => {
     const [currentPage, setCurrentPage] = useState(0);
     const [nextPage, setNextPage] = useState(false);
     //const [page, setPage] = useState(0);
@@ -36,7 +36,7 @@ const ClasesTable = ({condFetch, colegioId, getToken, doChangeStudent}) => {
                 //console.log(r)
                 setNextPage(r.data.next)
                 setClassesTable({
-                    ...classesTable, clickable: { action: doChangeStudent },
+                    ...classesTable, clickable: { action: doChangeClase },
                     filas: r.data.dataList.map((dato) => {
                         return {
                             fila: dato,
