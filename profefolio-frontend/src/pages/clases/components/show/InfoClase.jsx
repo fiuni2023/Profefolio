@@ -1,15 +1,22 @@
-//import React, { useState } from 'react'
-//import { Form } from '../../../../components/Form';
+import React, { useState } from 'react'
+import { Form } from '../../../../components/Form';
 import { ContainerBlock, STitle } from '../ShowsStyled';
-//import { H1} from '../../../../components/componentsStyles/StyledModal.jsx';
+import { H1} from '../../../../components/componentsStyles/StyledModal.jsx';
 
 
 
 const InfoClase = ({ idClase }) => {
-    /* const [disabledInputs, setDisabledInputs] = useState(false);
+    const [disabledInputs, setDisabledInputs] = useState(false);
 
     const [nombre, setNombre] = useState("");
+    const [turno, setTurno] = useState("");
+    const [ciclo, setCiclo] = useState("");
+    const [anho, setAnho] = useState(0);
 
+    const onChangeNombre = (nombre) => {
+        console.log(nombre.target.value)
+        setNombre(nombre.target.value);
+    }
     const form = {
         inputs: [
             {
@@ -23,7 +30,8 @@ const InfoClase = ({ idClase }) => {
                 placeholder: "Nombre",
                 disabled: disabledInputs,
                 required: true,
-                onChange: () => { }
+                value: nombre,
+                onChange: { action: onChangeNombre }
             },
             {
                 xs: 6,
@@ -36,7 +44,7 @@ const InfoClase = ({ idClase }) => {
                 placeholder: "Turno",
                 disabled: disabledInputs,
                 required: true,
-                onChange: () => { }
+                onChange: null
             },
             {
                 xs: 6,
@@ -82,12 +90,12 @@ const InfoClase = ({ idClase }) => {
                 enabled: true
             }
         ]
-    } */
+    }
 
     return <>
         <ContainerBlock>
             <STitle>Editar Datos del Grado</STitle>
-            {/* <Form form={form} /> */}
+            <Form form={form} />
         </ContainerBlock>
     </>
 }
