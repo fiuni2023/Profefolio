@@ -21,29 +21,6 @@ const Clases = () => {
     const [{ id: colegioId, nombre: colegioNombre }, loadingColegio, errorColegio, setColegio] = useAxiosGet(`api/administrador/${getUserMail()}`, getToken());
 
     
-    /*     useEffect(() => {
-            verifyToken()
-            if (!cancan("Administrador de Colegio")) {
-                nav("/")
-            } else {
-                //axios.get(`https://miapi.com/products?page=${page}&size=${size}`, {
-    
-                colegio && axios.get(`${APILINK}/api/clase/page/${colegio?.id}/${page}`, {
-                    headers: {
-                        Authorization: `Bearer ${getToken()}`,
-                    }
-                })
-                    .then(response => {
-                        setClases(response.data.dataList);
-                        setNextPage(response.data.next);
-                    })
-                    .catch(error => {
-                        //console.error(error);
-                        toast.error("Recargue la pagina, no se pudo obtener las clases");
-                    });
-            }
-        }, [page, cancan, verifyToken, nav, getToken, colegio]);
-     */
 
     const handleShowModal = () => {
         setShowModal(true);
@@ -77,16 +54,7 @@ const Clases = () => {
     }
 
 
-    /* console.log(clases)
-
-    const doFetch = (clase) => {
-        setClases(clase)
-    }; */
-
-
-    ///////////////////////////////////
-
-    return <>
+return <>
         
             <MainContainer>
                 <StyleComponentBreadcrumb nombre="Clases" />
@@ -99,12 +67,8 @@ const Clases = () => {
                         <AiOutlinePlus size={"35px"} onClick={handleShowModal}/>
                 </AddButton>
 
-                <ModalCreateClase title="Agregar Clase" handleClose={handelCloseModal} show={showModal}
-                    triggerState={(profesor) => { /* doFetch(profesor) */ }} handlePage={(pag) => {
-                        /* setNextPage(pag);
-                        setPage(0); */
-                    }}>
-                </ModalCreateClase>
+                <ModalCreateClase title="Agregar Clase" handleClose={handelCloseModal} show={showModal} />
+
 
 
             </MainContainer >

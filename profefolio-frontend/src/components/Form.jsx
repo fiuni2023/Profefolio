@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Col, Row, Form as RForm} from "react-bootstrap";
-import {SContainer, SRow, Info, SControl, SLabel, SSelect, SCheck, SGroup} from "./componentsStyles/StyledForm";
+import {SContainer, SRow, Info, SControl, SLabel, SSelect, SCheck, SGroup, SOption, SDOption} from "./componentsStyles/StyledForm";
 import IconButton from "./IconButton";
 import TextButton from "./TextButton";
 
-const types = ["text", "date", "password", "textarea"];
+const types = ["text", "date", "password", "textarea", "email", "number"];
 const checks = ["checkbox", "radio", "switch"];
 const allinputs = ["text", "date", "password", "textarea", "select"];
+const passRegx = `^(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$`
 
 /*  Formato del prop "form" es basicamente un objeto con un arreglo de inputs y un arreglo de botones 
 form = {
@@ -61,28 +62,28 @@ form = {
 
 /**/
 
-function Form (form){
+function Form ({form}){
     
-    const [inputs, setInputs] = useState(form?.form?.inputs ?? (form?.inputs ?? null)); 
-    const [buttons, setButtons] = useState(form?.form?.buttons ?? (form?.buttons ?? null));
-    const [info, setInfo] = useState(form?.form?.info ?? (form?.info ?? null)); 
+    const [inputs, setInputs] = useState(form?.inputs ?? null); 
+    const [buttons, setButtons] = useState(form?.buttons ??  null);
+    const [info, setInfo] = useState(form?.info ?? null); 
     const [validated, setValidated] = useState(false);
     
     useEffect(() => {
-        setInputs(form?.form?.inputs ?? (form?.inputs ?? null));
-        setButtons(form?.form?.buttons ?? (form?.buttons ?? null));
-        setInfo(form?.form?.info ?? (form?.info ?? null));
+        setInputs(form?.inputs ?? null);
+        setButtons(form?.buttons ?? null);
+        setInfo(form?.info ?? null);
     } , [form])
 
     const handleSubmit = (event) => {
         const cform = event.currentTarget;
-        event.preventDefault();
         if (cform.checkValidity() === false) {
+            event.preventDefault();
             event.stopPropagation();
-        } else {
-            form?.form?.onSubmit?.action();
+        } 
+            form?.onSubmit?.action();
             setValidated(true);       
-        }
+        
     };
 
     return (
@@ -106,6 +107,7 @@ function Form (form){
                                         disabled={input?.disabled ?? false} 
                                         readOnly={input?.disabled ?? false}
                                         required={input?.required ?? false}
+                                        pattern={input?.type === "password" ? passRegx : null}
                                         >      
                                     </SControl>}
                                 {input?.type === "select" && 
@@ -116,9 +118,9 @@ function Form (form){
                                         key={input?.key ?? ""}
                                         disabled={input?.disabled ?? false} 
                                         onChange={ () => input?.onChange?.action() ?? null}>
-                                            {input?.select?.default && <option key="default" value={0}>{input?.select?.default}</option>}
+                                            {input?.select?.default && <SDOption key="default" value="">{input?.select?.default}</SDOption>}
                                             {input?.select?.options && input.select.options.map((option) => {
-                                                return ( <option key={`${option?.value ?? option?.id ?? i}`} value={option?.value ?? option?.id}>{option?.text ?? option?.nombre ?? "opcion"}</option> )
+                                                return ( <SOption key={`${option?.value ?? option?.id ?? i}`} value={option?.value ?? option?.id}>{option?.text ?? option?.nombre ?? "opcion"}</SOption> )
                                             })}
                                     </SSelect>
                                     {input?.type && allinputs.includes(input.type) && input?.required && 
@@ -172,7 +174,7 @@ function Form (form){
                                     key={i} 
                                     enabled={button?.enabled ?? true}
                                     buttonType={button.type}
-                                    onClick={() => button.onclick.action() ?? null}
+                                    onClick={!button.submit ? () => button.onclick.action() : null}
                                 ></TextButton>
                             }
                         </div>

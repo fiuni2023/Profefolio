@@ -1,12 +1,8 @@
-﻿using Microsoft.AspNet.Identity;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using profefolio.Models.DTOs.ClaseMateria;
 using profefolio.Models.Entities;
 using profefolio.Repository;
-using System.Runtime.CompilerServices;
-using System.Transactions;
 
 namespace profefolio.Controllers
 {
@@ -56,7 +52,7 @@ namespace profefolio.Controllers
         }
 
 
-        //Este metodo GET NO SE DEBE IMPLEMENTAR EN EL FRONT-ENT, es con fines de Testing
+        //Este metodo GET NO SE DEBE IMPLEMENTAR EN EL FRONT-END, es con fines de Testing
         [HttpGet]
         public ActionResult GetAllTemp()
         {
@@ -75,9 +71,34 @@ namespace profefolio.Controllers
 
             return Ok(query);
 
+        }
+
+        [HttpGet]
+        [Route("{idMateria:int}")]
+        public async Task<ActionResult> GetByIdMateria(int idMateria)
+        {
+            var username = User.Identity.Name;
+            try
+            {
+                List<MateriaLista> query = (List<MateriaLista>)await _materiaListaService.GetDetalleClaseByIdMateriaAndUsername(username, idMateria);
+
+               
+                
+                var result = new ClaseDetallesDTO();
+
+                result.MateriaId = query[0].MateriaId;
+                result.ClaseId = query[0].ClaseId;
+                result.Profes = query.ConvertAll(q => q.ProfesorId);
+
+                return Ok(result);
+            }
+            catch (FileNotFoundException)
+            {
+                
+            }
+            return NotFound();
 
 
-            return Ok();
         }
 
         [HttpDelete]
@@ -85,7 +106,6 @@ namespace profefolio.Controllers
         public async Task<ActionResult> Delete(int idmateria, int idclase)
         {
             var username = User.Identity.Name;
-
             var listas = _materiaListaService.FilterByIdMateriaAndUserAndClass(idmateria, username, idclase);
 
             foreach(var item in listas)
