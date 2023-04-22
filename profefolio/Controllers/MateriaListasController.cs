@@ -14,17 +14,19 @@ namespace profefolio.Controllers
         private readonly IMateriaLista _materiaListaService;
         private readonly IPersona _profesorService;
         private readonly IMateria _materiaService;
-        public MateriaListasController(IMateriaLista materiaListaService, IPersona profesorService, IMateria materiaService)
+        private readonly IClase _claseService;
+        public MateriaListasController(IMateriaLista materiaListaService, IPersona profesorService, IMateria materiaService, IClase claseService)
         {
             _materiaListaService = materiaListaService;
             _profesorService = profesorService;
             _materiaService = materiaService;
+            _claseService = claseService;
         }
 
         [HttpPost]
         public async Task<ActionResult> Post([FromBody] ClaseMateriaCreateDTO dto)
         {
-            if (!ModelState.IsValid) 
+            if (!ModelState.IsValid)
                 return Ok(dto);
 
             var username = User.Identity.Name;
@@ -35,13 +37,13 @@ namespace profefolio.Controllers
 
                 var p = await _profesorService.FindById(profes);
 
-                if(p == null) { continue; }
+                if (p == null) { continue; }
                 await _materiaListaService.Add(new MateriaLista
                 {
                     ClaseId = dto.IdClase,
                     ProfesorId = profes,
                     MateriaId = dto.IdMateria,
-                    Created  = DateTime.Now,
+                    Created = DateTime.Now,
                     CreatedBy = username
                 });
             }
@@ -82,8 +84,8 @@ namespace profefolio.Controllers
             {
                 List<MateriaLista> query = (List<MateriaLista>)await _materiaListaService.GetDetalleClaseByIdMateriaAndUsername(username, idMateria);
 
-               
-                
+
+
                 var result = new ClaseDetallesDTO();
 
                 result.MateriaId = query[0].MateriaId;
@@ -94,7 +96,7 @@ namespace profefolio.Controllers
             }
             catch (FileNotFoundException)
             {
-                
+
             }
             return NotFound();
 
@@ -108,7 +110,7 @@ namespace profefolio.Controllers
             var username = User.Identity.Name;
             var listas = _materiaListaService.FilterByIdMateriaAndUserAndClass(idmateria, username, idclase);
 
-            foreach(var item in listas)
+            foreach (var item in listas)
             {
                 item.Deleted = true;
                 item.ModifiedBy = username;
@@ -120,5 +122,45 @@ namespace profefolio.Controllers
             return Ok();
         }
 
+        [HttpPut]
+        [Route("{idClase:int}")]
+        public async Task<ActionResult> Put(int idClase)
+        {
+            var clase = await _claseService.FindById(idClase);
+            return Ok();
+        }
+
+        private ICollection<MateriaLista> Merge(ICollection<MateriaLista> old, ICollection<MateriaLista> nuevo)
+        {
+            var union = old.Concat(nuevo);
+
+            // Agrupación por Id y selección del elemento más reciente
+            var merge = union.GroupBy(p => p.Id)
+                             .Select(g => g.OrderByDescending(p => p.Deleted)
+                                          .ThenByDescending(p => p == nuevo.FirstOrDefault(e => e.Id == p.Id))
+                                          .First());
+
+            // Actualización del arreglo1 con los valores de merge
+            var result = old.Select(p =>
+            {
+                var m = merge.FirstOrDefault(e => e.Id == p.Id);
+                return m != null ? m : new MateriaLista
+                {
+                    Id = p.Id, 
+                    ClaseId = p.ClaseId,  
+                    MateriaId = p.MateriaId,
+                    ProfesorId = p.ProfesorId
+                };
+            }).ToArray();
+
+
+
+            return (ICollection<MateriaLista>)result;
+        }
+
     }
+
+
+
+
 }
