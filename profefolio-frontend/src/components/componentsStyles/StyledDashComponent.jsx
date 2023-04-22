@@ -81,4 +81,20 @@ const TwoCol = styled.div`
   gap: 1em;
 `;
 
-export {SCard, SHeader, SBody, STitle, DTitle, SCol, SRow, Separator, TwoCol}; 
+const FirstCol = styled.div`
+  width: 50%;
+  font-weight: 600;
+  font-size: 1.5em;  
+`;
+
+const SecondCol = styled.div`
+  width: 50%;
+  font-weight: 400;
+  font-size: 1.5em;  
+`;
+const SingleCol = styled.div`
+    font-weight: 600;
+    font-size: 1.5em; 
+`;
+
+export {SCard, SHeader, SBody, STitle, DTitle, SCol, SRow, Separator, TwoCol, FirstCol, SecondCol, SingleCol}; 

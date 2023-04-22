@@ -1,5 +1,5 @@
 import React from 'react';
-import {SCard, SBody, SHeader, STitle, SCol, TwoCol} from "./componentsStyles/StyledDashComponent";
+import {SCard, SBody, SHeader, STitle, SCol, TwoCol, FirstCol, SecondCol, SingleCol} from "./componentsStyles/StyledDashComponent";
 import Tabla from './Tabla';
 import { useNavigate } from 'react-router';
 
@@ -23,6 +23,17 @@ function Card({cardInfo}){
                             {cardInfo?.body?.table && <Tabla datosTabla={cardInfo?.body?.table}></Tabla>}
                             {cardInfo?.body?.table2 && <Tabla datosTabla={cardInfo?.body?.table2}></Tabla>}
                         </TwoCol>
+                        {cardInfo?.body?.first && cardInfo.body.first.title && cardInfo?.body?.first?.subtitle &&
+                            <TwoCol>
+                                <FirstCol>{cardInfo.body.first.title}</FirstCol>
+                                <SecondCol>{cardInfo.body.first.subtitle}</SecondCol>
+                            </TwoCol>
+                        }
+                        {cardInfo?.body?.first && cardInfo.body.first.title && !cardInfo?.body?.first?.subtitle &&
+                            <TwoCol>
+                                <SingleCol>{cardInfo.body.first.title}</SingleCol>
+                            </TwoCol>
+                        }
                     </SBody>}
             </SCard>
         </SCol>
