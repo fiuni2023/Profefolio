@@ -13,18 +13,18 @@ function ListItem({ index, name, lastName, document, type, onClick }) {
 }
 
 
-function Scrolleable({ cardInfo }) {
+function Scrolleable({ studentsList }) {
     return (
         <Container>
             <ScrollTable>
-                {cardInfo?.header &&
+                {studentsList?.header &&
                     <SHeader>
-                        {cardInfo?.header?.title}
+                        {studentsList?.header?.title}
                     </SHeader>}
-                {cardInfo?.list &&
-                    <SBody background={cardInfo?.background ?? "gray"}>
+                {studentsList?.list &&
+                    <SBody background={studentsList?.background ?? "gray"}>
                         <List>
-                            {cardInfo?.list?.map((student, index) => (
+                            {studentsList?.list?.map((student, index) => (
                                 <ListItem key={index}
                                     index={index + 1}
                                     name={student.name}
@@ -35,18 +35,18 @@ function Scrolleable({ cardInfo }) {
                             ))}
                         </List>
                     </SBody>}
-                <SForm onSubmit={cardInfo?.onSubmit ?? null} >
-                    <span>{cardInfo?.addTitle}</span>
+                <SForm onSubmit={studentsList?.onSubmit ?? null} >
+                    <span>{studentsList?.addTitle}</span>
                     <Select defaultValue={""}>
-                        <option value="" disabled>{cardInfo?.selectTitle}</option>
-                        {cardInfo?.options?.map((option, index) => (
+                        <option value="" disabled>{studentsList?.selectTitle}</option>
+                        {studentsList?.options?.map((option, index) => (
                             <option key={index} value={option.value}>
                                 {option.label}
                             </option>
                         ))}
                     </Select>
                     <div style={{ textAlign: 'right' }}>
-                        <TextButton buttonType={'save-changes'} enabled={cardInfo?.enabled ?? false} />
+                        <TextButton buttonType={'save-changes'} enabled={studentsList?.enabled ?? false} />
                     </div>
                 </SForm>
             </ScrollTable>

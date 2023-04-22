@@ -23,7 +23,7 @@ import Profesor from "../profesor/index.jsx";
 import Clases from "../clases/index.jsx";
 import ShowClase from "../clases/pages/view/ShowClase.jsx";
 import Home from "../home/index.jsx";
-import TestPage from "../../components/Example Data/TestPage.jsx";
+import TestPage from "../../components/TestPage.jsx";
 
 const App = () => {
 
