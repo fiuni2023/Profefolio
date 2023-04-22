@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Card, Col, FormSelect } from 'react-bootstrap';
+import { Card, FormSelect } from 'react-bootstrap';
 
 const getPointer = (hover) => {
     if (hover === "true") return "pointer";
@@ -15,7 +15,7 @@ const getHover = (hover) => {
 }
 
 //Ver como pasarle el alto disponible en el viewPort
-const SCard = styled(Card)`
+const ScrollTable = styled(Card)`
     margin: 10px;
     border-radius: 20px;
     border: none;
@@ -23,12 +23,12 @@ const SCard = styled(Card)`
     cursor: ${({ hover }) => getPointer(hover)};
     transition: all .3s ease-in-out;
     ${({ hover }) => getHover(hover)}
-    width: 616px; 
+    width: 500px; 
     height: 100%; 
 `;
 const SHeader = styled(Card.Header)`
     background-color: white;
-    border-bottom: solid 1px #C2C2C2;
+    border-bottom: solid 1px #D2D2D2;
     font-size: 1.5em;
     font-weight: 400;
     padding-left: 20px;
@@ -38,13 +38,15 @@ const SBody = styled(Card.Body)`
     background-color: white;
     text-align: center;
     font-size: 1.2em;
-    max-height: 400px;
+    max-height: 500px;
     height: min-content;
     overflow-y: auto;  
+    padding-bottom:0;
     &::-webkit-scrollbar {
         width: 15px;
         height: 15px;
         background-color: transparent;
+        border-left: solid 0.5px #D2D2D2;
     }
     &::-webkit-scrollbar-thumb {    
         background-color: rgba(0, 0, 0, 0.1);
@@ -52,13 +54,13 @@ const SBody = styled(Card.Body)`
     
 `;
 
-const SCol = styled(Col)`
-  display: flex; 
+const Container = styled.div`
+  display: inline-block; 
 `;
 
 const SForm = styled.form`
     background-color: white;
-    border-top: solid 1px #C2C2C2;
+    border-top: solid 1px #D2D2D2;
     font-size: 1.4em;
     font-weight: 300;
     padding: 20px;
@@ -73,6 +75,10 @@ const Select = styled(FormSelect)`
     border-radius: 5px;
     width: 100%;
     margin-bottom: 10px;
+    cursor: pointer;
+    option {
+        cursor: pointer;
+    }
 `;
 
 const List = styled.ol`
@@ -101,7 +107,7 @@ const ItemContainer = styled.div`
     border: solid 0.5px #C2C2C2;
     border-radius: 15px;
     width: 100%;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
     text-align: left;
     padding: 3px;
     padding-left: 10px;
@@ -131,4 +137,4 @@ const ListButton = styled.button`
     }
 }
 `;
-export { SCard, SHeader, SBody, SCol, SForm, Select, Item, List, ItemContainer, ListButton }; 
+export { ScrollTable , SHeader, SBody, Container, SForm, Select, Item, List, ItemContainer, ListButton }; 
