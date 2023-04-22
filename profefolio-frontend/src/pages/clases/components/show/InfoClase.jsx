@@ -13,12 +13,22 @@ const InfoClase = ({ idClase }) => {
     const [ciclo, setCiclo] = useState("");
     const [anho, setAnho] = useState(0);
 
+    const handleSudmit = (e) => {
+        e.preventDefault()
+
+        console.log(e)
+    }
+
     const onChangeNombre = (event) => {
-        setNombre(event.target.value);
+        if (`${event.target.value}`.length <= 128) {
+            setNombre(`${event.target.value}`);
+        }
     }
 
     const onChangeTurno = (event) => {
-        setTurno(event.target.value);
+        if (`${event.target.value}`.length <= 32) {
+            setTurno(`${event.target.value}`);
+        }
     }
 
     const onChangeCiclo = (event) => {
@@ -36,6 +46,7 @@ const InfoClase = ({ idClase }) => {
 
 
     const form = {
+        onSubmit: {action : handleSudmit},
         inputs: [
             {
                 xs: 6,
@@ -107,7 +118,7 @@ const InfoClase = ({ idClase }) => {
             {
                 style: "text",
                 type: "save-changes",
-                onclick: () => { },
+                onclick: {action : () => {}},
                 enabled: true
             }
         ]
