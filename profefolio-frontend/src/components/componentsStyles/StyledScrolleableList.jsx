@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Card, Col, FormSelect} from 'react-bootstrap';
+import { Card, Col, FormSelect } from 'react-bootstrap';
 
 const getPointer = (hover) => {
     if (hover === "true") return "pointer";
@@ -75,4 +75,61 @@ const Select = styled(FormSelect)`
     margin-bottom: 10px;
 `;
 
-export { SCard, SHeader, SBody, SCol, SForm, Select}; 
+const List = styled.ol`
+  list-style-type: none;
+  margin: 10px 0;
+  padding: 0;
+`;
+
+const Item = styled.li`
+  font-size: 0.9em;
+  font-weight: 400;
+  text-align: left;
+`;
+
+const handleColorType = (props) => {
+    switch (props.type) {
+        case "reload":
+            return "#F3E6AE";
+        case "new":
+            return "#D1F0E6";
+        default:
+            return "#F5F5F5";
+    }
+  };
+const ItemContainer = styled.div`
+    background-color: ${handleColorType};
+    border: solid 0.5px #C2C2C2;
+    border-radius: 15px;
+    width: 100%;
+    margin-bottom: 6px;
+    text-align: left;
+    padding: 3px;
+    padding-left: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+`;
+const ListButton = styled.button`
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size:0.9em;
+    font-weight:300;
+    width: 22px;
+    height: 22px;
+    border: none;
+    border-radius: 15px;
+    background-color: transparent;
+    &:hover{
+        transform: scale(1.2);
+    }
+    &:active{
+        background-color: #C2C2C2;
+    }
+}
+`;
+export { SCard, SHeader, SBody, SCol, SForm, Select, Item, List, ItemContainer, ListButton }; 
