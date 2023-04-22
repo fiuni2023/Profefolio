@@ -7,6 +7,7 @@ import { AddButton, MainContainer } from '../alumnos/styles/Styles';
 import StyleComponentBreadcrumb from '../../components/StyleComponentBreadcrumb';
 import { AiOutlinePlus } from 'react-icons/ai';
 import ClasesTable from './components/table/ClasesTable';
+import { useClaseContext } from './context/ClaseContext';
 
 const Clases = () => {
 
@@ -49,20 +50,21 @@ const Clases = () => {
 
     useEffect(() => {
         if (colegioId !== null) {
-            setTabla(<ClasesTable condFetch={condFetch} colegioId={colegioId} getToken={getToken} doChangeStudent={doChangeStudent} />);
+            setTabla(<ClasesTable condFetch={condFetch} colegioId={colegioId} getToken={getToken} doChangeStudent={doChangeClase} />);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [colegioId, condFetch, getToken])
 
+    const {setClaseSelectedId} = useClaseContext();
 
-
-    const doChangeStudent = (data) => {
+    const doChangeClase= (data) => {
+        setClaseSelectedId(data.id)
         nav(`/clases/view/${data.id}`)
     }
 
 
     return <>
-
+        
             <MainContainer>
                 <StyleComponentBreadcrumb nombre="Clases" />
 
@@ -77,7 +79,7 @@ const Clases = () => {
             </MainContainer >
 
 
-            <style jsx='true'>{`
+        <style jsx='true'>{`
                 .page{
                     display: grid;
                     grid-template-rows: 5% 95%;
@@ -162,7 +164,7 @@ const Clases = () => {
                 }
                 
                 `
-            }</style>
+        }</style>
     </>
 }
 
