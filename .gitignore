@@ -10,3 +10,8 @@ riderModule.iml
 profefolio/appsettings.json
 /.vs
 package-lock.json
+
+.vscode
+
+profefolio-frontend/src/components/link.js
+profefolio-frontend/package-lock.json
