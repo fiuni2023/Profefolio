@@ -86,10 +86,11 @@ function ModalAlumnos({ tituloModal, isOpen, disabled, triggerState = () => { } 
                         type: "date", placeholder: "Seleccione la fecha",
                         disabled: isDisabled,
                         required: true,
+                        max: new Date().toISOString().slice(0,10),
                     },
                     {
                         key: "email", label: "Correo Electónico",
-                        type: "text", placeholder: "Ingrese correo electónico",
+                        type: "email", placeholder: "Ingrese correo electónico",
                         disabled: isDisabled, required: true,
                         invalidText: "Ingrese un correo electónico válido",
                     },
