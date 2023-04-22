@@ -1,11 +1,16 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Form } from '../../../../components/Form';
 import { ContainerBlock, STitle } from '../ShowsStyled';
-import { H1 } from '../../../../components/componentsStyles/StyledModal.jsx';
+import { useGeneralContext } from '../../../../context/GeneralContext';
+import APILINK from '../../../../components/link';
+import axios from 'axios';
+import { toast } from 'react-hot-toast';
 
 
 
 const InfoClase = ({ idClase }) => {
+    const { colegio, setColegio, getUserMail, getToken } = useGeneralContext();
+
     const [disabledInputs, setDisabledInputs] = useState(false);
 
     const [nombre, setNombre] = useState("");
@@ -13,10 +18,55 @@ const InfoClase = ({ idClase }) => {
     const [ciclo, setCiclo] = useState("");
     const [anho, setAnho] = useState(0);
 
-    const handleSudmit = (e) => {
+    const getClase = () => {
+        
+    }
+
+    useEffect(() => {
+        (async () => {
+            const result = await axios.get(`${APILINK}/api/administrador/${getUserMail()}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${getToken()}`
+                    }
+                })
+            if (result.status === 200) {
+                setColegio(result.data)
+            }
+            else {
+                toast.error(`Error al obtener sus datos, recarge la pagina`);
+            }
+        })()
+    }, [getToken, getUserMail, setColegio])
+
+
+    const handleSudmit = async (e) => {
         e.preventDefault()
 
-        console.log(e)
+        const obj = {
+            "colegioId": colegio.id,
+            "cicloId": parseInt(ciclo),
+            "nombre": nombre,
+            "turno": turno,
+            "anho": anho
+        }
+
+        toast("Enviando")
+        setDisabledInputs(true)
+
+        const result = await axios.post(`${APILINK}/api/clase/${idClase}`, obj, {
+            headers: {
+                Authorization: `Bearer ${getToken()}`,
+            }
+        })
+
+        toast.dismiss();
+        if(result.status === 200){
+            toast.success("Cambios guardados");
+        }else{
+            toast.success(result.error);
+        }
+        setDisabledInputs(false)
     }
 
     const onChangeNombre = (event) => {
@@ -46,7 +96,7 @@ const InfoClase = ({ idClase }) => {
 
 
     const form = {
-        onSubmit: {action : handleSudmit},
+        onSubmit: { action: handleSudmit },
         inputs: [
             {
                 xs: 6,
@@ -118,8 +168,8 @@ const InfoClase = ({ idClase }) => {
             {
                 style: "text",
                 type: "save-changes",
-                onclick: {action : () => {}},
-                enabled: true
+                onclick: { action: () => { } },
+                enabled: !disabledInputs
             }
         ]
     }

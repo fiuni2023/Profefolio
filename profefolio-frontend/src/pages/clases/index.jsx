@@ -10,17 +10,25 @@ import ClasesTable from './components/table/ClasesTable';
 
 const Clases = () => {
 
-    const { getToken, cancan, verifyToken, getUserMail } = useGeneralContext();
+    const { getToken, cancan, verifyToken, getUserMail, setColegio } = useGeneralContext();
     const [condFetch, setCondFetch] = useState(false)
 
     const [showModal, setShowModal] = useState(false);
 
+
+
     const nav = useNavigate()
 
     // eslint-disable-next-line no-unused-vars
-    const [{ id: colegioId, nombre: colegioNombre }, loadingColegio, errorColegio, setColegio] = useAxiosGet(`api/administrador/${getUserMail()}`, getToken());
+    const [{ id: colegioId, nombre: colegioNombre }, loadingColegio, errorColegio, /* setColegio */] = useAxiosGet(`api/administrador/${getUserMail()}`, getToken());
 
-    
+
+    useEffect(() => {
+        setColegio({
+            "id": colegioId,
+            "nombre": colegioNombre
+        });
+    }, [colegioId, colegioNombre, setColegio])
 
     const handleShowModal = () => {
         setShowModal(true);
@@ -47,113 +55,114 @@ const Clases = () => {
     }, [colegioId, condFetch, getToken])
 
 
-    
+
     const doChangeStudent = (data) => {
         nav(`/clases/view/${data.id}`)
     }
 
 
-return <>
-        
+    return <>
+
             <MainContainer>
                 <StyleComponentBreadcrumb nombre="Clases" />
 
                 {tabla}
 
                 <AddButton>
-                        <AiOutlinePlus size={"35px"} onClick={handleShowModal}/>
+                    <AiOutlinePlus size={"35px"} onClick={handleShowModal} />
                 </AddButton>
 
                 <ModalCreateClase title="Agregar Clase" handleClose={handelCloseModal} show={showModal} />
 
             </MainContainer >
-            
 
-        <style jsx='true'>{`
-    .page{
-        display: grid;
-        grid-template-rows: 5% 95%;
-        width: 100%;
-        height: 100vh;
-    }
-    .content{
-        width: 100%;
-        height: 100%;
-    }
-    
-    .NavbarA{
-        width: 100%;
-        height: 100%;
-        background-color:  #F0544F;
-        display: flex;
-        background-color: #F0544F;
-    }
-    .NButtonForSideA{
-        width: 25%;
-        position: absolute;
-        bottom: 5px;
-        right : 5px;
-    }
-    .buttonNavBarA{
-        width: 100%;
-        height: 100%;
-        outline: none;
-        border: none;
-        background-color: #FFFFFF;
-        font-size: 50px;
-        color: #F0544F;
-    }
-    .pag{
-        outline: none;
-        border: none;
-        background-color: #FFFFFF;
-        font-size: 10px;
-        color: #F0544F;
-    }
 
-    .buttonNavBarAa{
-        outline: none;
-        border: none;
-        background-color: #FFFFFF;
-        font-size: 20px;
-        color: black;
-    }
-    .navbarmainAd{
-        width: 97.5%;
-        display: flex;
-        justify-content: space-between;
-    }
+            <style jsx='true'>{`
+                .page{
+                    display: grid;
+                    grid-template-rows: 5% 95%;
+                    width: 100%;
+                    height: 100vh;
+                }
+                .content{
+                    width: 100%;
+                    height: 100%;
+                }
+                
+                .NavbarA{
+                    width: 100%;
+                    height: 100%;
+                    background-color:  #F0544F;
+                    display: flex;
+                    background-color: #F0544F;
+                }
+                .NButtonForSideA{
+                    width: 25%;
+                    position: absolute;
+                    bottom: 5px;
+                    right : 5px;
+                }
+                .buttonNavBarA{
+                    width: 100%;
+                    height: 100%;
+                    outline: none;
+                    border: none;
+                    background-color: #FFFFFF;
+                    font-size: 50px;
+                    color: #F0544F;
+                }
+                .pag{
+                    outline: none;
+                    border: none;
+                    background-color: #FFFFFF;
+                    font-size: 10px;
+                    color: #F0544F;
+                }
 
-    .CustomTable{
-        width: 100%;
-        border-spacing: 0px;
-    }
-    .CustomTable>thead>tr>th{
-        border: 1px solid black;
-        padding-left: 5px;
-    }
-    .CustomTable>tbody>tr>td{
-        text-align: center;
-        border: 1px solid black;
-    }
-    
-    .container-table{
-        border: 0px !important;
-        
-    }
-    .btn-valid-page{
-        /*background: #FDF0D5;*/
-        margin-left:1rem;
-        /*border: 1px solid black;*/
-    }
-
-    .btn-valid-page:hover{
-        /*background: #FADAAA;*/
-        margin-left:1rem;
-        border: 1px solid black;
-    }
-    
-    `}</style>
+                .buttonNavBarAa{
+                    outline: none;
+                    border: none;
+                    background-color: #FFFFFF;
+                    font-size: 20px;
+                    color: black;
+                }
+                .navbarmainAd{
+                    width: 97.5%;
+                    display: flex;
+                    justify-content: space-between;
+                }
+                
+                .CustomTable{
+                    width: 100%;
+                    border-spacing: 0px;
+                }
+                .CustomTable>thead>tr>th{
+                    border: 1px solid black;
+                    padding-left: 5px;
+                }
+                .CustomTable>tbody>tr>td{
+                    text-align: center;
+                    border: 1px solid black;
+                }
+                
+                .container-table{
+                    border: 0px !important;
+                    
+                }
+                .btn-valid-page{
+                    /*background: #FDF0D5;*/
+                    margin-left:1rem;
+                    /*border: 1px solid black;*/
+                }
+                
+                .btn-valid-page:hover{
+                    /*background: #FADAAA;*/
+                    margin-left:1rem;
+                    border: 1px solid black;
+                }
+                
+                `
+            }</style>
     </>
 }
 
