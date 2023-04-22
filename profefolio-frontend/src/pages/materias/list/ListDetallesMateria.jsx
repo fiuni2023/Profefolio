@@ -49,6 +49,7 @@ function ListDetallesMateria(props) {
 
       })
       .catch(error => {
+        toast.success("No se pudo eliminar");
         console.error(error);
       });
     setShowConfirmDialog(false);
