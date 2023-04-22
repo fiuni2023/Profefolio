@@ -91,7 +91,11 @@ namespace profefolio.Controllers
 
                 result.MateriaId = query[0].MateriaId;
                 result.ClaseId = query[0].ClaseId;
-                result.Profes = query.ConvertAll(q => q.ProfesorId);
+                result.Detalles = query.ConvertAll(q => new ClaseMateriaDetalle
+                {
+                    IdDetalle = q.Id,
+                    IdProfesor = q.ProfesorId
+                });
 
                 return Ok(result);
             }
@@ -127,17 +131,22 @@ namespace profefolio.Controllers
         [Route("{idClase:int}")]
         public async Task<ActionResult> Put(int idClase, [FromBody] ClaseMateriaEditDTO dto)
         {
+
+            if (idClase != dto.IdClase)
+            {
+                return BadRequest();
+            }
             try
             {
                 var clase = await _claseService.FindById(idClase);
 
-                var detalles = new Collection<MateriaLista>();         
-                
-                foreach(var item in dto.IdListas.DistinctBy(m => m.IdProfesor))
+                var detalles = new Collection<MateriaLista>();
+
+                foreach (var item in dto.IdListas.DistinctBy(m => m.IdProfesor))
                 {
                     var detalle = new MateriaLista
                     {
-                        Id = item.IdDetalle ,
+                        Id = item.IdDetalle,
                         ClaseId = dto.IdClase,
                         MateriaId = dto.IdMateria,
                         ProfesorId = item.IdProfesor
@@ -148,11 +157,12 @@ namespace profefolio.Controllers
 
                 clase.MateriaListas = Merge(clase.MateriaListas, detalles);
 
-                
-                
-                 _claseService.Edit(clase);
+
+
+                _claseService.Edit(clase);
                 return Ok();
-            } catch(FileNotFoundException e)
+            }
+            catch (FileNotFoundException e)
             {
                 return NotFound();
             }

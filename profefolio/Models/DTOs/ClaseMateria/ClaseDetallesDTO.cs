@@ -3,7 +3,7 @@
     public class ClaseDetallesDTO
     {
         public int ClaseId { get; set; }
-        public List<string> Profes { get; set; }
+        public List<ClaseMateriaDetalle> Detalles { get; set; }
         public int MateriaId { get; set; }
 
 
