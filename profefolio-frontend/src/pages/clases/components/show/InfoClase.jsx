@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Form } from '../../../../components/Form';
 import { ContainerBlock, STitle } from '../ShowsStyled';
 import { useGeneralContext } from '../../../../context/GeneralContext';
@@ -18,30 +18,50 @@ const InfoClase = ({ idClase }) => {
     const [ciclo, setCiclo] = useState("");
     const [anho, setAnho] = useState(0);
 
-    const getClase = () => {
-        
+    console.log(idClase)
+    const getClase = useCallback(() => {
+        idClase && axios.get(`${APILINK}/api/clase/${idClase}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${getToken()}`
+                }
+            }).then((result) => {
+                setNombre(result.data.nombre)
+                setTurno(result.data.turno)
+                setCiclo(result.data.cicloId)
+                setAnho(result.data.anho)
+            }).catch(() => {
+                toast.error(`Error al obtener sus datos, recarge la pagina`);
+            })
+    }, [getToken, idClase])
+
+
+    const getInfoColegio = async () => {
+        await axios.get(`${APILINK}/api/administrador/${getUserMail()}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${getToken()}`
+                }
+            }).then((response) => {
+
+                setColegio(response.data)
+            })
+            .catch(() => {
+                toast.error(`Error al obtener sus datos, recarge la pagina`);
+            })
     }
 
     useEffect(() => {
-        (async () => {
-            const result = await axios.get(`${APILINK}/api/administrador/${getUserMail()}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${getToken()}`
-                    }
-                })
-            if (result.status === 200) {
-                setColegio(result.data)
-            }
-            else {
-                toast.error(`Error al obtener sus datos, recarge la pagina`);
-            }
-        })()
-    }, [getToken, getUserMail, setColegio])
+        getClase();
+    }, [getClase])
 
 
     const handleSudmit = async (e) => {
         e.preventDefault()
+
+        if (colegio == null || colegio.id === 0 || "" === (colegio.nombre)) {
+            await getInfoColegio();
+        }
 
         const obj = {
             "colegioId": colegio.id,
@@ -61,9 +81,9 @@ const InfoClase = ({ idClase }) => {
         })
 
         toast.dismiss();
-        if(result.status === 200){
+        if (result.status === 200) {
             toast.success("Cambios guardados");
-        }else{
+        } else {
             toast.success(result.error);
         }
         setDisabledInputs(false)
