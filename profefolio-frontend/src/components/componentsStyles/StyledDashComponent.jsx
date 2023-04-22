@@ -84,17 +84,40 @@ const TwoCol = styled.div`
 const FirstCol = styled.div`
   width: 50%;
   font-weight: 600;
-  font-size: 1.5em;  
+  font-size: 1.2em;  
+  text-align: initial; 
 `;
 
 const SecondCol = styled.div`
   width: 50%;
   font-weight: 400;
-  font-size: 1.5em;  
+  font-size: 1.2em;  
+  text-align: initial; 
 `;
 const SingleCol = styled.div`
     font-weight: 600;
-    font-size: 1.5em; 
+    font-size: 1.2em; 
+    text-align: initial; 
 `;
 
-export {SCard, SHeader, SBody, STitle, DTitle, SCol, SRow, Separator, TwoCol, FirstCol, SecondCol, SingleCol}; 
+const ThreeCol = styled.div`
+    display: flex;
+    gap: 1em;
+    align-items: center;
+    margin-top: 10px;
+`;
+
+const MainCol = styled.div`
+    text-align: initial; 
+`;
+
+const SecondaryCol = styled.div`
+    margin-left: auto;  
+`;
+
+const ClockContainer = styled.div`
+    width: 2em;
+    height: 2em;
+`;
+
+export {SCard, SHeader, SBody, STitle, DTitle, SCol, SRow, Separator, TwoCol, FirstCol, SecondCol, SingleCol, ThreeCol, MainCol, SecondaryCol, ClockContainer}; 

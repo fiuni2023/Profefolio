@@ -15,6 +15,7 @@ const Div = styled.div`
   width: 50%;
 `;
 
+
 const TestPage = () => {
   const miFuncion = () => {
     console.log("Editando")
@@ -38,13 +39,13 @@ const TestPage = () => {
         <TextButton enabled={true} buttonType='save' onClick={() => console.log('Guardando')} />
         <TextButton enabled={true} buttonType='confirm' onClick={() => console.log('Confirmando')} />
 
-      </div>
-
       <Div>
         <Form form={FormExample}></Form>
       </Div>
+      </div>
 
-      <Container >
+
+      <Container>
            
             <SRow>
               {colegios.map(element => {

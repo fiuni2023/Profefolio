@@ -16,6 +16,7 @@ const colegios = [
             }
         }
     },
+    
 ]
 
 const clases = [
