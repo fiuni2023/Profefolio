@@ -17,6 +17,13 @@ const FormExample =  {
           text: "La contraseña debe tener al menos 8 caracteres, una letra mayuscula, una letra minuscula, un numero y un caracter especial",
         },
         {
+            xs: 6, sm: 6, md: 6, lg: 6,
+            key: "edad", label: "Edad",
+            type: "number", placeholder: "Ingrese su edad",
+            disabled: false,
+            required: false,
+          },
+        {
           xs: 6, sm: 6, md: 6, lg: 6,
           key: "fecha", label: "Fecha",
           type: "date", placeholder: "Seleccione la fecha",
