@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Form } from '../../../../components/Form';
 import { ContainerBlock, STitle } from '../ShowsStyled';
-import { H1} from '../../../../components/componentsStyles/StyledModal.jsx';
+import { H1 } from '../../../../components/componentsStyles/StyledModal.jsx';
 
 
 
@@ -13,10 +13,28 @@ const InfoClase = ({ idClase }) => {
     const [ciclo, setCiclo] = useState("");
     const [anho, setAnho] = useState(0);
 
-    const onChangeNombre = (nombre) => {
-        console.log(nombre.target.value)
-        setNombre(nombre.target.value);
+    const onChangeNombre = (event) => {
+        setNombre(event.target.value);
     }
+
+    const onChangeTurno = (event) => {
+        setTurno(event.target.value);
+    }
+
+    const onChangeCiclo = (event) => {
+        setCiclo(event.target.value);
+    }
+
+    const onChangeAnho = (event) => {
+        const value = parseInt(event.target.value);
+        if (!isNaN(value)) {
+            setAnho(value > 0 ? value : 0);
+        } else {
+            setAnho(0)
+        }
+    }
+
+
     const form = {
         inputs: [
             {
@@ -41,10 +59,11 @@ const InfoClase = ({ idClase }) => {
                 key: "2",
                 label: "Turno",
                 type: "text",
+                value: turno,
                 placeholder: "Turno",
                 disabled: disabledInputs,
                 required: true,
-                onChange: null
+                onChange: { action: onChangeTurno }
             },
             {
                 xs: 6,
@@ -57,7 +76,8 @@ const InfoClase = ({ idClase }) => {
                 placeholder: "Ciclo",
                 disabled: disabledInputs,
                 required: true,
-                onChange: () => { },
+                value: ciclo,
+                onChange: { action: onChangeCiclo },
                 select: {
                     default: "Seleccione",
                     options: [
@@ -74,18 +94,19 @@ const InfoClase = ({ idClase }) => {
                 md: 6,
                 lg: 6,
                 key: "4",
+                value: anho,
                 label: "Año Lectivo",
-                type: "text",
+                type: "number",
                 placeholder: "2023",
                 disabled: disabledInputs,
                 required: true,
-                onChange: () => { }
+                onChange: { action: onChangeAnho }
             }
         ],
         buttons: [
             {
                 style: "text",
-                type: "save",
+                type: "save-changes",
                 onclick: () => { },
                 enabled: true
             }
