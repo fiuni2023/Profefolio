@@ -1,12 +1,31 @@
 import React from 'react'
 import { useParams } from 'react-router-dom';
 
-const ShowClase = (props) => {
-    //const { userId } = props.match.params;
-    const par = useParams();
-    console.log(par)
+import ShowContainer from '../../components/ShowContainer';
+import InfoClase from '../../components/show/InfoClase';
+import AlumnosInscriptos from '../../components/show/AlumnosInscriptos';
+import MateriasDeClase from '../../components/show/MateriasDeClase';
+
+const ShowClase = () => {
+    const { idClase } = useParams();
+
+    /**
+     * TO DO
+     * Validar logeo
+     */
+
+    // contiene el titulo que tendra la pagina y la lista de componentes a mostrar
+    const componentes = {
+        title: `Nombre de clase ${idClase}`,
+        componentes: [
+            <InfoClase/>,
+            <AlumnosInscriptos/>,
+            <MateriasDeClase/>
+        ]
+    };
+
     return <>
-        <div>User Profile for User ID: {5}</div>
+            <ShowContainer data={componentes}/>
     </>
 
 }

@@ -1,17 +1,12 @@
 import React, { useState } from 'react'
-import { Pagination } from 'react-bootstrap'
-import NavAdminClases from '../NavAdminClase'
-import { PanelContainerBG } from '../../../../components/Layout'
-import StyleComponentBreadcrumb from '../../../../components/StyleComponentBreadcrumb'
-import { AddButton, MainContainer, TableContainer } from '../../../alumnos/styles/Styles'
+import { TableContainer } from '../../../alumnos/styles/Styles'
 import Tabla from '../../../../components/Tabla'
-import { AiOutlinePlus } from 'react-icons/ai'
 import { useFetchEffect } from '../../../../components/utils/useFetchEffect'
 import ClassesHelper from '../../Helpers/ClassesHelper'
 import { toast } from 'react-hot-toast'
 import ClasesPaginacion from './ClasesPaginacion'
 
-const ClasesTable = ({condFetch, colegioId, getToken, doChangeStudent}) => {
+const ClasesTable = ({condFetch, colegioId, getToken, doChangeClase}) => {
     const [currentPage, setCurrentPage] = useState(0);
     const [nextPage, setNextPage] = useState(false);
     //const [page, setPage] = useState(0);
@@ -38,9 +33,10 @@ const ClasesTable = ({condFetch, colegioId, getToken, doChangeStudent}) => {
         {
             condition: condFetch,
             handleSuccess: (r) => {
+                //console.log(r)
                 setNextPage(r.data.next)
                 setClassesTable({
-                    ...classesTable, clickable: { action: doChangeStudent },
+                    ...classesTable, clickable: { action: doChangeClase },
                     filas: r.data.dataList.map((dato) => {
                         return {
                             fila: dato,

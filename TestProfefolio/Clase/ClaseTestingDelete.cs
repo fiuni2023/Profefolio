@@ -74,9 +74,9 @@ namespace TestProfefolio.Clase
                 Modified = DateTime.Now
             };
             
-            claseService.Setup(c => c.FindById(id)).ReturnsAsync(clase);
+            claseService.Setup(c => c.FindById(It.IsAny<int>())).ReturnsAsync(clase);
 
-            claseService.Setup(c => c.Edit(claseEliminado)).Returns(claseEliminado);
+            claseService.Setup(c => c.Edit(It.IsAny<profefolio.Models.Entities.Clase>())).Returns(claseEliminado);
         
             claseService.Setup(c => c.Save()).Returns(Task.CompletedTask);
 
@@ -143,7 +143,7 @@ namespace TestProfefolio.Clase
                 cicloService.Object, 
                 colegioService.Object);
             
-            claseService.Setup(c => c.FindById(id));
+            claseService.Setup(c => c.FindById(It.IsAny<int>()));
 
             var result = controller.Delete(id);
 
@@ -211,9 +211,9 @@ namespace TestProfefolio.Clase
                 Modified = DateTime.Now
             };
             
-            claseService.Setup(c => c.FindById(id)).ReturnsAsync(clase);
+            claseService.Setup(c => c.FindById(It.IsAny<int>())).ReturnsAsync(clase);
 
-            claseService.Setup(c => c.Edit(claseEliminado)).Returns(claseEliminado);
+            claseService.Setup(c => c.Edit(It.IsAny<profefolio.Models.Entities.Clase>())).Returns(claseEliminado);
         
             claseService.Setup(c => c.Save()).ThrowsAsync(new Exception("Fallo de eliminacion"));
 
