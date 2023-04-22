@@ -79,4 +79,14 @@ const SCheck = styled(FormCheck)`
     
 `;
 
-export {SContainer, SRow, Info, SControl, SLabel, SSelect, SCheck, SGroup};
+const SDOption = styled.option`
+    color: #6C6C6C;  
+    font-size: 1.2em; 
+`;
+
+const SOption = styled.option`
+    color: #282828;  
+    font-size: 1.2em; 
+`;
+
+export {SContainer, SRow, Info, SControl, SLabel, SSelect, SCheck, SGroup, SOption, SDOption};
