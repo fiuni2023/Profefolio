@@ -113,6 +113,8 @@ function ListDetallesMateria(props) {
           setShowModal(false)
           setNombreMateria("")
 
+          setReadOnly(true);
+
         })
         .catch(error => {
           if (typeof (error.response.data) === "string" ? true : false) {
