@@ -75,6 +75,10 @@ const SRow = styled(Row)`
 
 const Separator = styled.div`
   margin-top: 1.5em;  
-`
+`;
+const TwoCol = styled.div`
+  display: flex;
+  gap: 1em;
+`;
 
-export {SCard, SHeader, SBody, STitle, DTitle, SCol, SRow, Separator}; 
+export {SCard, SHeader, SBody, STitle, DTitle, SCol, SRow, Separator, TwoCol}; 

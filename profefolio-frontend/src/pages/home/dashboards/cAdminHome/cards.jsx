@@ -1,8 +1,8 @@
 const Alumnos = {
     xs: 12, sm:12, md: 6, lg:3,
-    background: "purple",
+    background: "yellow",
     hover: true,
-    goto: '',
+    goto: '/alumnos',
     header: {
         title: "Alumnos",
     },
@@ -10,12 +10,13 @@ const Alumnos = {
         title: "Ultimos Alumnos",
         table: {
             small: true, 
-            titulos: [ {titulo: "Nombre"}, {titulo: "Creado en"} ], 
+            titulos: [ {titulo: "Nombres"}, {titulo: "Apellidos"}, {titulo: "Grado"} ], 
             filas: [
-                    {datos: [{dato: "John"}, {dato: "12/12/2017"}]},
-                    {datos: [{dato: "Mery"}, {dato: "02/02/2017"}]},
-                    {datos: [{dato: "Pepe"}, {dato: "01/10/2017"}]},
-                    {datos: [{dato: "Laura"}, {dato: "31/01/2017"}]}
+                    {datos: [{dato: "John"}, {dato: "Doe"}, {dato: "Primero A"}]},
+                    {datos: [{dato: "Mery"}, {dato: "Amarilla"}, {dato: "Primero B"}]},
+                    {datos: [{dato: "Pepe"}, {dato: "Morinigo"}, {dato: "Primero A"}]},
+                    {datos: [{dato: "Laura"}, {dato: "Gancedo"}, {dato: "Segundo TT"}]},
+                    {datos: [{dato: "Aldo"}, {dato: "Caldo"}, {dato: "Tercero B"}]}
             ]
         }
     }
@@ -24,9 +25,9 @@ const Alumnos = {
 
 const Profesores = {
     xs: 12, sm:12, md: 6, lg:3,
-    background: "purple",
+    background: "yellow",
     hover: true,
-    goto: '/administrador/list',
+    goto: '/profesor',
     header: {
         title: "Profesores",
     },
@@ -34,13 +35,13 @@ const Profesores = {
         title: "Ultimos Profesores",
         table: {
             small: true, 
-            titulos: [ {titulo: "Nombre"},  {titulo: "Creado en"} ], 
+            titulos: [ {titulo: "Nombre"},  {titulo: "Apellido"} ], 
             filas: [
-                    {datos: [{dato: "John"}, {dato: "12/12/2017"}]},
-                    {datos: [{dato: "Mery"}, {dato: "02/02/2017"}]},
-                    {datos: [{dato: "Pepe"}, {dato: "27/04/2017"}]},
-                    {datos: [{dato: "Max"}, {dato: "01/10/2017"}]},
-                    {datos: [{dato: "Laura"}, {dato: "31/01/2017"}]}
+                    {datos: [{dato: "John"}, {dato: "Amarilla"}]},
+                    {datos: [{dato: "Mery"}, {dato: "Cabrera"}]},
+                    {datos: [{dato: "Pepe"}, {dato: "Ansaldo"}]},
+                    {datos: [{dato: "Max"}, {dato: "Steele"}]},
+                    {datos: [{dato: "Laura"}, {dato: "Dern"}]}
             ]
         }
     }
@@ -50,21 +51,34 @@ const Materias = {
     xs: 12, sm:12, md: 6, lg:3,
     background: "orange",
     hover: true,
-    goto: '/administrador/list',
+    goto: '/materias',
     header: {
-        title: "Materias",
+        title: "Materias/Ciclos",
     },
     body: {
-        title: "Ultimas Materias",
+        title: "Ultimas Materias/Ciclos",
         table: {
+            tableWidth: "50%",
             small: true, 
-            titulos: [ {titulo: "Nombre"}, {titulo: "Creado en"} ], 
+            titulos: [ {titulo: "Nombre"} ], 
             filas: [
-                    {datos: [{dato: "Fisica"}, {dato: "12/12/2017"}]},
-                    {datos: [{dato: "Matematica"}, {dato: "02/02/2017"}]},
-                    {datos: [{dato: "Estadistica"}, {dato: "27/04/2017"}]},
-                    {datos: [{dato: "Geofrafia"}, {dato: "01/10/2017"}]},
-                    {datos: [{dato: "Ingenieria del software"}, {dato: "31/01/2017"}]}
+                    {datos: [{dato: "Fisica"}]},
+                    {datos: [{dato: "Matematica"}]},
+                    {datos: [{dato: "Estadistica"}]},
+                    {datos: [{dato: "Geofrafia"}]},
+                    {datos: [{dato: "Ingenieria del software"}]}
+            ]
+        },
+        table2: {
+            tableWidth: "50%",
+            small: true, 
+            titulos: [ {titulo: "Ciclo"}], 
+            filas: [
+                    {datos: [{dato: "Nivel Inicial"}]},
+                    {datos: [{dato: "Primer Ciclo"}]},
+                    {datos: [{dato: "Segundo Ciclo"}]},
+                    {datos: [{dato: "Tercer Ciclo"}]},
+                    {datos: [{dato: "EEB"}]}
             ]
         }
     }
@@ -72,9 +86,9 @@ const Materias = {
 
 const Clases = {
     xs: 12, sm:12, md: 6, lg:3,
-    background: "blue",
+    background: "purple",
     hover: true,
-    goto: '/administrador/list',
+    goto: '/clases',
     header: {
         title: "Clases",
     },
@@ -82,13 +96,13 @@ const Clases = {
         title: "Ultimas Clases",
         table: {
             small: true, 
-            titulos: [ {titulo: "Nombre"},  {titulo: "Creado en"} ], 
+            titulos: [ {titulo: "Titulo"},  {titulo: "Ciclo"}  ], 
             filas: [
-                    {datos: [{dato: "Primero A"},{dato: "12/12/2017"}]},
-                    {datos: [{dato: "Primero B"}, {dato: "02/02/2017"}]},
-                    {datos: [{dato: "Segundo A"},{dato: "27/04/2017"}]},
-                    {datos: [{dato: "Segundo B"},  {dato: "01/10/2017"}]},
-                    {datos: [{dato: "Tercero"},  {dato: "31/01/2017"}]}
+                    {datos: [{dato: "Primero A"},{dato: "Primer ciclo"}]},
+                    {datos: [{dato: "Primero B"}, {dato: "Primer ciclo"}]},
+                    {datos: [{dato: "Segundo A"},{dato: "Primer ciclo"}]},
+                    {datos: [{dato: "Segundo B"},  {dato: "Primer ciclo"}]},
+                    {datos: [{dato: "Tercero"},  {dato: "Primer ciclo"}]}
             ]
         }
     }
@@ -99,10 +113,9 @@ const Stats = {
     background: "gray",
     goto: '/',
     header: {
-        title: "Promedio de Calificaciones",
+        title: "Cantidad de alumnos por grado por curso",
     },
     body: {
-        title: "Promedio de Calificaciones",
         graph: {
             
         }
