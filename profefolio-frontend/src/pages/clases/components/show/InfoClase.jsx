@@ -5,6 +5,9 @@ import { useGeneralContext } from '../../../../context/GeneralContext';
 import APILINK from '../../../../components/link';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
+import { map } from "lodash"
+import { useClaseContext } from '../../context/ClaseContext';
+import ClassesService from '../../Helpers/ClassesHelper';
 
 
 
@@ -13,14 +16,17 @@ const InfoClase = ({ idClase }) => {
 
     const [disabledInputs, setDisabledInputs] = useState(false);
 
+    const { getClaseSelectedId } = useClaseContext()
+
     const [nombre, setNombre] = useState("");
     const [turno, setTurno] = useState("");
     const [ciclo, setCiclo] = useState("");
     const [anho, setAnho] = useState(0);
 
-    console.log(idClase)
+    const [ciclos, setCiclos] = useState([]);
+
     const getClase = useCallback(() => {
-        idClase && axios.get(`${APILINK}/api/clase/${idClase}`,
+        axios.get(`${APILINK}/api/clase/${getClaseSelectedId()}`,
             {
                 headers: {
                     Authorization: `Bearer ${getToken()}`
@@ -28,40 +34,55 @@ const InfoClase = ({ idClase }) => {
             }).then((result) => {
                 setNombre(result.data.nombre)
                 setTurno(result.data.turno)
-                setCiclo(result.data.cicloId)
+                setCiclo(result.data.idCiclo)
                 setAnho(result.data.anho)
             }).catch(() => {
                 toast.error(`Error al obtener sus datos, recarge la pagina`);
             })
-    }, [getToken, idClase])
+    }, [getToken, getClaseSelectedId])
 
-
-    const getInfoColegio = async () => {
-        await axios.get(`${APILINK}/api/administrador/${getUserMail()}`,
+    const getCiclos = useCallback(async () => {
+        await axios.get(`${APILINK}/api/ciclo`,
             {
                 headers: {
                     Authorization: `Bearer ${getToken()}`
                 }
-            }).then((response) => {
+            }).then((result) => {
+                setCiclos(result.data)
 
-                setColegio(response.data)
-            })
-            .catch(() => {
+            }).catch(() => {
                 toast.error(`Error al obtener sus datos, recarge la pagina`);
             })
-    }
+    }, [getToken])
+
+    const getInfoColegio = useCallback(async () => {
+        const response = await axios.get(`${APILINK}/api/administrador/${getUserMail()}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${getToken()}`
+                }
+            })
+
+        if (response.status === 200) {
+            setColegio(response.data)
+            return response.data
+        } else {
+            toast.error(`${response.error}`);
+            return null;
+        }
+    }, [getToken, getUserMail, setColegio])
 
     useEffect(() => {
         getClase();
-    }, [getClase])
+        getCiclos();
+        if (colegio == null || colegio.id === 0 || "" === (colegio.nombre)) {
+            getInfoColegio();
+        }
+    }, [colegio, getCiclos, getClase, getInfoColegio])
 
 
     const handleSudmit = async (e) => {
         e.preventDefault()
-
-        if (colegio == null || colegio.id === 0 || "" === (colegio.nombre)) {
-            await getInfoColegio();
-        }
 
         const obj = {
             "colegioId": colegio.id,
@@ -74,17 +95,19 @@ const InfoClase = ({ idClase }) => {
         toast("Enviando")
         setDisabledInputs(true)
 
-        const result = await axios.post(`${APILINK}/api/clase/${idClase}`, obj, {
-            headers: {
-                Authorization: `Bearer ${getToken()}`,
-            }
-        })
 
-        toast.dismiss();
-        if (result.status === 200) {
-            toast.success("Cambios guardados");
-        } else {
-            toast.success(result.error);
+        try {
+            const result = await ClassesService.updateClasse(getClaseSelectedId(), obj, getToken())
+
+            toast.dismiss();
+            if (result.status >= 200 && result.status < 300) {
+                toast.success("Cambios guardados");
+            } else {
+                console.log(result?.error)
+                toast.error(result.error);
+            }
+        } catch (e) {
+            console.log(e)
         }
         setDisabledInputs(false)
     }
@@ -160,13 +183,8 @@ const InfoClase = ({ idClase }) => {
                 value: ciclo,
                 onChange: { action: onChangeCiclo },
                 select: {
-                    default: "Seleccione",
-                    options: [
-                        {
-                            value: "1",
-                            text: "Opcion 1"
-                        }
-                    ]
+                    default: ciclo,
+                    options: map(ciclos, (c) => ({ value: `${c.id}`, text: c.nombre }))
                 }
             },
             {
@@ -196,6 +214,7 @@ const InfoClase = ({ idClase }) => {
 
     return <>
         <ContainerBlock>
+            nombre{nombre}
             <STitle>Editar Datos del Grado</STitle>
             <Form form={form} />
         </ContainerBlock>
