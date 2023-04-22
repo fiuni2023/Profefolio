@@ -49,8 +49,7 @@ const Clases = () => {
 
     
     const doChangeStudent = (data) => {
-        console.log("Seleccionado", data)
-        nav(`view/${data.id}`)
+        nav(`/clases/view/${data.id}`)
     }
 
 
@@ -61,19 +60,14 @@ return <>
 
                 {tabla}
 
-
-                {/* <BtnAdd handleShowModal={handleShow} /> */}
                 <AddButton>
                         <AiOutlinePlus size={"35px"} onClick={handleShowModal}/>
                 </AddButton>
 
                 <ModalCreateClase title="Agregar Clase" handleClose={handelCloseModal} show={showModal} />
 
-
-
             </MainContainer >
             
-   
 
         <style jsx='true'>{`
     .page{
