@@ -160,6 +160,7 @@ namespace profefolio.Controllers
 
 
                 _claseService.Edit(clase);
+                await _claseService.Save();
                 return Ok();
             }
             catch (FileNotFoundException e)
