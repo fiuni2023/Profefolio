@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Collections.ObjectModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using profefolio.Models.DTOs.ClaseMateria;
 using profefolio.Models.Entities;
@@ -124,10 +125,39 @@ namespace profefolio.Controllers
 
         [HttpPut]
         [Route("{idClase:int}")]
-        public async Task<ActionResult> Put(int idClase)
+        public async Task<ActionResult> Put(int idClase, [FromBody] ClaseMateriaEditDTO dto)
         {
-            var clase = await _claseService.FindById(idClase);
-            return Ok();
+            try
+            {
+                var clase = await _claseService.FindById(idClase);
+
+                var detalles = new Collection<MateriaLista>();         
+                
+                foreach(var item in dto.IdListas.DistinctBy(m => m.IdProfesor))
+                {
+                    var detalle = new MateriaLista
+                    {
+                        Id = item.IdDetalle ,
+                        ClaseId = dto.IdClase,
+                        MateriaId = dto.IdMateria,
+                        ProfesorId = item.IdProfesor
+                    };
+
+                    detalles.Add(detalle);
+                }
+
+                clase.MateriaListas = Merge(clase.MateriaListas, detalles);
+
+                
+                
+                 _claseService.Edit(clase);
+                return Ok();
+            } catch(FileNotFoundException e)
+            {
+                return NotFound();
+            }
+
+
         }
 
         private ICollection<MateriaLista> Merge(ICollection<MateriaLista> old, ICollection<MateriaLista> nuevo)
@@ -146,8 +176,8 @@ namespace profefolio.Controllers
                 var m = merge.FirstOrDefault(e => e.Id == p.Id);
                 return m != null ? m : new MateriaLista
                 {
-                    Id = p.Id, 
-                    ClaseId = p.ClaseId,  
+                    Id = p.Id,
+                    ClaseId = p.ClaseId,
                     MateriaId = p.MateriaId,
                     ProfesorId = p.ProfesorId
                 };
