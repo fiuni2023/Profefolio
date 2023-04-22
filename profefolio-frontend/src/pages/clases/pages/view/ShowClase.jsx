@@ -3,6 +3,8 @@ import { useParams } from 'react-router-dom';
 
 import ShowContainer from '../../components/ShowContainer';
 import InfoClase from '../../components/show/InfoClase';
+import AlumnosInscriptos from '../../components/show/AlumnosInscriptos';
+import MateriasDeClase from '../../components/show/MateriasDeClase';
 
 const ShowClase = () => {
     const { idClase } = useParams();
@@ -17,8 +19,8 @@ const ShowClase = () => {
         title: `Nombre de clase ${idClase}`,
         componentes: [
             <InfoClase/>,
-            <div><h5>Lista de alumnos inscriptos</h5></div>,
-            <div><h5>Lista de materias de la clase</h5></div>
+            <AlumnosInscriptos/>,
+            <MateriasDeClase/>
         ]
     };
 
