@@ -1,9 +1,13 @@
 import React from 'react'
+import { SRowContainer, STitle } from "../ShowsStyled";
 
 const AlumnosInscriptos = () => {
-    return (
-        <div>AlumnosInscriptos</div>
-    )
+    return <>
+        <SRowContainer>
+            <STitle>Alumnos Inscriptos</STitle>
+        </SRowContainer>
+    </>
+
 }
 
 export default AlumnosInscriptos

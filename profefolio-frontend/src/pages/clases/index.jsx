@@ -50,7 +50,7 @@ const Clases = () => {
 
     useEffect(() => {
         if (colegioId !== null) {
-            setTabla(<ClasesTable condFetch={condFetch} colegioId={colegioId} getToken={getToken} doChangeStudent={doChangeClase} />);
+            setTabla(<ClasesTable condFetch={condFetch} colegioId={colegioId} getToken={getToken} doChangeClase={doChangeClase} />);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [colegioId, condFetch, getToken])
