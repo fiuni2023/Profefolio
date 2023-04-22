@@ -41,7 +41,8 @@ const SBody = styled(Card.Body)`
     max-height: 500px;
     height: min-content;
     overflow-y: auto;  
-    padding:10px;
+    padding: 25px;
+    padding-top: 15px;
     padding-bottom:0;
     &::-webkit-scrollbar {
         width: 15px;
@@ -64,8 +65,9 @@ const SForm = styled.form`
     border-top: solid 1px #D2D2D2;
     font-size: 1.4em;
     font-weight: 300;
-    padding: 20px;
+    padding: 30px;
     padding-top: 10px;
+    padding-bottom: 20px;
     border-radius: 0 0 20px 20px !important;
 `;
 const Select = styled(FormSelect)`
@@ -89,7 +91,7 @@ const List = styled.ol`
 
 const Item = styled.li`
   font-size: 1.1em;
-  font-weight: 300;
+  font-weight: 500;
   text-align: left;
 `;
 
@@ -102,7 +104,7 @@ const handleColorType = (props) => {
         default:
             return "#F5F5F5";
     }
-  };
+};
 const ItemContainer = styled.div`
     background-color: ${handleColorType};
     border: solid 0.5px #C2C2C2;
@@ -138,4 +140,4 @@ const ListButton = styled.button`
     }
 }
 `;
-export { ScrollTable , SHeader, SBody, Container, SForm, Select, Item, List, ItemContainer, ListButton }; 
+export { ScrollTable, SHeader, SBody, Container, SForm, Select, Item, List, ItemContainer, ListButton }; 
