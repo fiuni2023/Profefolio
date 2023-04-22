@@ -13,4 +13,13 @@ const STitle = styled.header`
     line-height: 36px;
     padding: 0px 0.75rem;
 `
-export { ContainerBlock, STitle };
+
+const SRowContainer = styled.div`
+    background: #FFFFFF;
+    box-shadow: 4px 4px 10px 5px rgba(0, 0, 0, 0.25);
+    border-radius: 20px;
+    display: flex;
+    border: 1px solid gray;
+    min-height: 700px;
+`
+export { ContainerBlock, STitle, SRowContainer };

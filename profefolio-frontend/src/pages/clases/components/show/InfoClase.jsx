@@ -183,7 +183,7 @@ const InfoClase = ({ idClase }) => {
                 value: ciclo,
                 onChange: { action: onChangeCiclo },
                 select: {
-                    default: ciclo,
+                    default: "Seleccionar",
                     options: map(ciclos, (c) => ({ value: `${c.id}`, text: c.nombre }))
                 }
             },
@@ -214,7 +214,6 @@ const InfoClase = ({ idClase }) => {
 
     return <>
         <ContainerBlock>
-            nombre{nombre}
             <STitle>Editar Datos del Grado</STitle>
             <Form form={form} />
         </ContainerBlock>

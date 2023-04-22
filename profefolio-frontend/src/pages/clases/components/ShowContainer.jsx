@@ -26,6 +26,7 @@ const ShowContainer = ({ data = {} }) => {
                     margin-top: 2rem;
                 }
                 .srow-showclase{
+                    padding-bottom: 3rem;
                     flex-wrap: wrap;
                 }
                 .scol-showclase {
