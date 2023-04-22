@@ -8,50 +8,41 @@ const TestPage = () => {
   }
   //Datos de prueba
   const Alumnos = {
-    xs: 12, sm: 12, md: 6, lg: 3,
-    background: "white",
-    hover: true,
-    goto: '',
-    onSubmit: () => console.log("presionado"),
+    onSubmit: () => console.log("Guardado"),
     enabled: true,
     header: {
       title: "Lista de Alumnos inscriptos",
     },
-    options:[
-      {label: "Carlos", value: 1},
-      {label: "Gabriela", value: 1}
+    addTitle:"Agregar alumnos",
+    selectTitle:"Seleccionar alumno",
+    options: [
+      { label: "Carlos", value: 1 },
+      { label: "Gabriela", value: 1 }
     ],
-    body: {
-      table: {
-        small: true,
-        titulos: [{ titulo: "Nombre" }, { titulo: "Creado en" }],
-        filas: [
-          { datos: [{ dato: "John" }, { dato: "12/12/2017" }] },
-          { datos: [{ dato: "Mery" }, { dato: "02/02/2017" }] },
-          { datos: [{ dato: "Pepe" }, { dato: "01/10/2017" }] },
-          { datos: [{ dato: "Laura" }, { dato: "31/01/2017" }] },
-          { datos: [{ dato: "Mery" }, { dato: "02/02/2017" }] },
-          { datos: [{ dato: "Pepe" }, { dato: "01/10/2017" }] },
-          { datos: [{ dato: "Laura" }, { dato: "31/01/2017" }] },
-          { datos: [{ dato: "Mery" }, { dato: "02/02/2017" }] },
-          { datos: [{ dato: "Mery" }, { dato: "02/02/2017" }] },
-          { datos: [{ dato: "Pepe" }, { dato: "01/10/2017" }] },
-          { datos: [{ dato: "Laura" }, { dato: "31/01/2017" }] },
-          { datos: [{ dato: "Mery" }, { dato: "02/02/2017" }] },
-          { datos: [{ dato: "Pepe" }, { dato: "01/10/2017" }] },
-          { datos: [{ dato: "Laura" }, { dato: "31/01/2017" }] },
-          { datos: [{ dato: "Mery" }, { dato: "02/02/2017" }] },
-          { datos: [{ dato: "Mery" }, { dato: "02/02/2017" }] },
-          { datos: [{ dato: "Pepe" }, { dato: "01/10/2017" }] },
-          { datos: [{ dato: "Laura" }, { dato: "31/01/2017" }] },
-          { datos: [{ dato: "Mery" }, { dato: "02/02/2017" }] },
-          { datos: [{ dato: "Pepe" }, { dato: "01/10/2017" }] },
-          { datos: [{ dato: "Laura" }, { dato: "31/01/2017" }] },
-          { datos: [{ dato: "Mery" }, { dato: "02/02/2017" }] }
-        ]
-      }
-    }
-
+    list: [
+       { name: "John", status: "" } ,
+       { name: "Mery" , status: "" } ,
+       { name: "Pepe" , status: "new" } ,
+       { name: "Laura",  status: "reload" } ,
+       { name: "Mery" , status: "" } ,
+       { name: "Pepe" , status: "" },
+       { name: "Laura",  status: "" } ,
+       { name: "Mery" , status: "" } ,
+       { name: "Mery" , status: "" } ,
+       { name: "Pepe" , status: "" } ,
+       { name: "Laura",  status: "" } ,
+       { name: "Mery" , status: "reload" } ,
+       { name: "Pepe" , status: "" } ,
+       { name: "Laura",  status: "" } ,
+       { name: "Mery" , status: "" } ,
+       { name: "Mery" , status: "" } ,
+       { name: "Pepe" , status: "" } ,
+       { name: "Laura",  status: "new" } ,
+       { name: "Mery" , status: "" } ,
+       { name: "Pepe" , status: "" } ,
+       { name: "Laura",  status: "" } ,
+       { name: "Mery" , status: "" } 
+    ]
   }
 
 

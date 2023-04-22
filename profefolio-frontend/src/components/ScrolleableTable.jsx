@@ -6,6 +6,7 @@ import TextButton from './TextButton';
 import { RxReload } from 'react-icons/rx';
 
 function ListItem({ index, item, type, onClick }) {
+    console.log(item)
     return (
         <ItemContainer type={type}>
             <Item>{index}- {item}</Item>
@@ -20,47 +21,29 @@ function Scrolleable({ cardInfo }) {
     const handleClick = (goto) => {
         nav(goto);
     }
+    console.log(cardInfo)
     return (
         <SCol xs={cardInfo?.xs ?? 12} sm={cardInfo?.sm ?? 12} md={cardInfo?.md ?? 6} lg={cardInfo?.lg ?? 4}>
             <SCard onClick={cardInfo?.goto ? () => handleClick(cardInfo.goto) : null} hover={"false"}>
                 {cardInfo?.header &&
                     <SHeader background={cardInfo?.background ?? "gray"}>
                         {cardInfo?.header?.title}</SHeader>}
-                {cardInfo?.body &&
+                {cardInfo?.list &&
                     <SBody background={cardInfo?.background ?? "gray"}>
-                        {cardInfo?.body?.table && <Tabla datosTabla={cardInfo?.body?.table}></Tabla>}
-
                         <List>
-                            <ItemContainer>
-                                <Item>First list item</Item>
-                            </ItemContainer>
-                            <ItemContainer  type={'reload'}>
-                                <Item>Second list item</Item>
-                            </ItemContainer>
-                            <ItemContainer type={'new'}>
-                                <Item >Last list item</Item>
-                                <ListButton>X</ListButton>
-                            </ItemContainer>
-                            <ListItem 
-                            index={5}
-                            item={'Claudia Martinez'}
-                            type={'new'}
-                            onClick={()=>console.log('first')}/>
-                            <ListItem 
-                            index={6}
-                            item={'Claudia Martinez'}
-                            type={'reload'}
-                            onClick={()=>console.log('first')}/>
-                            <ListItem 
-                            index={7}
-                            item={'Claudia Martinez'}
-                            onClick={()=>console.log('first')}/>
+                            {cardInfo?.list?.map((student, index) => (
+                                <ListItem
+                                    index={index+1}
+                                    item={student.name}
+                                    type={student.status}
+                                    onClick={() => console.log(`${student.name} 'seleccionado'`)} />
+                            ))}
                         </List>
                     </SBody>}
                 <SForm onSubmit={cardInfo?.onSubmit ?? null}>
-                    <span>Agregar alumnos</span>
-                    <Select aria-label="Default select">
-                        <option value="" disabled selected>Seleccione un alumno</option>
+                    <span>{cardInfo?.addTitle}</span>
+                    <Select defaultValue={""}>
+                        <option value="" disabled>{cardInfo?.selectTitle}</option>
                         {cardInfo?.options?.map((option, index) => (
                             <option key={index} value={option.value}>
                                 {option.label}
