@@ -91,55 +91,7 @@ namespace profefolio.Controllers
 
         }
 
-        //Esta API va a quedar fuera de servicio, No implementar en el Front-End
-        [HttpGet]
-        [Route("{idMateria:int}")]
-        public async Task<ActionResult> GetByIdMateria(int idMateria)
-        {
-            var username = User.Identity.Name;
-            try
-            {
-                List<MateriaLista> query = (List<MateriaLista>)await _materiaListaService.GetDetalleClaseByIdMateriaAndUsername(username, idMateria);
-
-
-
-                var result = new ClaseDetallesDTO();
-
-                result.MateriaId = query[0].MateriaId;
-                result.ClaseId = query[0].ClaseId;
-                result.IdProfesores = query.ConvertAll(q => q.ProfesorId);
-
-                return Ok(result);
-            }
-            catch (FileNotFoundException)
-            {
-
-            }
-            return NotFound();
-
-
-        }
-        
-
-        //Esta API va a quedar fuera de servicio, no implementar
-        [HttpDelete]
-        [Route("{idmateria:int}/{idclase:int}")]
-        public async Task<ActionResult> Delete(int idmateria, int idclase)
-        {
-            var username = User.Identity.Name;
-            var listas = _materiaListaService.FilterByIdMateriaAndUserAndClass(idmateria, username, idclase);
-
-            foreach (var item in listas)
-            {
-                item.Deleted = true;
-                item.ModifiedBy = username;
-                item.Modified = DateTime.Now;
-                _materiaListaService.Edit(item);
-            }
-
-            await _materiaListaService.Save();
-            return Ok();
-        }
+    
 
         [HttpPut]
         [Route("{idClase:int}")]
