@@ -144,6 +144,9 @@ namespace profefolio.Controllers
 
                 foreach (var item in dto.IdListas.DistinctBy(m => m.IdProfesor))
                 {
+                    var p = await _profesorService.FindById(item.IdProfesor);
+
+                    if (p == null) { continue; }
                     var detalle = new MateriaLista
                     {
                         Id = item.IdDetalle,
