@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useId, useMemo, useState } from 'react'
+import React, { memo, useEffect, useId, useState } from 'react'
 import { Container, Item, ItemContainer, List, ListButton, SBody, SForm, SHeader, ScrollTable, Select } from '../../../../components/componentsStyles/StyledScrolleableList';
 import { RxReload } from 'react-icons/rx';
 import TextButton from '../../../../components/TextButton';
@@ -32,10 +32,7 @@ const TagProfesor = memo(({ id, nombre, state = "new", onClick = () => { } }) =>
     useEffect(() => {
         setType(bgColor(state))
     }, [state]);
-    const a = useMemo(() => {
-        console.log(nombre + state)
-        return nombre + state;
-    }, [nombre, state])
+
     return <>
         <TagTeacher className={`tag-teacher-${unicId}`}>
             <Item className='item-nombre-profe'>{nombre}</Item>
@@ -67,7 +64,7 @@ const TagProfesor = memo(({ id, nombre, state = "new", onClick = () => { } }) =>
 })
 
 const ListItem = memo(({ index, idMateria, nombre, profesores = [], type, onClick }) => {
-    const { setStatusMateria } = useClaseContext();
+    const { setStatusProfesorMateria } = useClaseContext();
 
     return <>
         <ItemContainer type={type} className={`item-container-${index}`}>
@@ -76,7 +73,7 @@ const ListItem = memo(({ index, idMateria, nombre, profesores = [], type, onClic
                 <div className={`profe-container-${index}`}>
                     <Item>Profesores:</Item>
                     {map(profesores, (e, i) => <TagProfesor key={i} id={e.id} nombre={`${e.nombre}${e.status}`} state={e.status} onClick={() => {
-                        setStatusMateria(idMateria, e.id, e.status === "new" ? "reload" : "new");
+                        setStatusProfesorMateria(idMateria, e.id, e.status === "new" ? "reload" : "new");
                     }
                     } />)}
                 </div>
@@ -106,57 +103,56 @@ const ListItem = memo(({ index, idMateria, nombre, profesores = [], type, onClic
     </>
 })
 const MateriasDeClase = () => {
-    const { getListaMaterias } = useClaseContext();
+    const { getListaMaterias, setStatusMateria } = useClaseContext();
 
-    let clasesList = {
+    let materiasList = {
         onSubmit: () => console.log("Guardado"),
         enabled: true,
         header: {
-            title: "Lista de Alumnos inscriptos",
+            title: "Lista de Materias de la Clase",
         },
-        addTitle: "Agregar alumnos",
-        selectTitle: "Seleccionar alumno",
+        addTitle: "Agregar Materias",
+        selectTitle: "Seleccionar Materia",
         options: [
-            { label: "Carlos", value: 1 },
-            { label: "Gabriela", value: 1 }
+            { label: "Guarani", value: 1 },
+            { label: "Lenguas", value: 2 }
         ],
         list: getListaMaterias()
     }
-    //console.log(clasesList.list)
     return <>
 
         <Container>
             <ScrollTable>
-                {clasesList?.header &&
+                {materiasList?.header &&
                     <SHeader>
-                        {clasesList?.header?.title}
+                        {materiasList?.header?.title}
                     </SHeader>}
-                {clasesList?.list &&
-                    <SBody background={clasesList?.background ?? "gray"}>
+                {materiasList?.list &&
+                    <SBody background={materiasList?.background ?? "gray"}>
                         <List>
-                            {clasesList?.list?.map((clase, index) => (
+                            {materiasList?.list?.map((materia, index) => (
                                 <ListItem key={index}
-                                    idMateria={clase.id}
+                                    idMateria={materia.id}
                                     index={index + 1}
-                                    nombre={clase.nombre}
-                                    profesores={clase.profesores}
-                                    type={clase.status}
-                                    onClick={() => console.log(`${clase.nombre} 'seleccionado'`)} />
+                                    nombre={materia.nombre}
+                                    profesores={materia.profesores}
+                                    type={materia.status}
+                                    onClick={() => {console.log(`${materia.nombre} 'seleccionado'`); setStatusMateria(materia.id, (materia.status === "new" ? "reload" : "new"));}} />
                             ))}
                         </List>
                     </SBody>}
-                <SForm onSubmit={clasesList?.onSubmit ?? null} >
-                    <span>{clasesList?.addTitle}</span>
+                <SForm onSubmit={materiasList?.onSubmit ?? null} >
+                    <span>{materiasList?.addTitle}</span>
                     <Select defaultValue={""}>
-                        <option value="" disabled>{clasesList?.selectTitle}</option>
-                        {clasesList?.options?.map((option, index) => (
+                        <option value="" disabled>{materiasList?.selectTitle}</option>
+                        {materiasList?.options?.map((option, index) => (
                             <option key={index} value={option.value}>
                                 {option.label}
                             </option>
                         ))}
                     </Select>
                     <div style={{ textAlign: 'right' }}>
-                        <TextButton buttonType={'save-changes'} enabled={clasesList?.enabled ?? false} />
+                        <TextButton buttonType={'save-changes'} enabled={materiasList?.enabled ?? false} />
                     </div>
                 </SForm>
             </ScrollTable>

@@ -27,7 +27,7 @@ export const ClaseProvider = ({ children }) => {
         return listaMaterias;
     }
 
-    const setStatusMateria = (idMateria, id, status) => {
+    const setStatusProfesorMateria = (idMateria, id, status) => {
         const index = listaMaterias.findIndex(a => a.id === idMateria)
         if (index >= 0) {
             const indexProf = listaMaterias[index].profesores.findIndex(a => a.id === id)
@@ -35,6 +35,15 @@ export const ClaseProvider = ({ children }) => {
                 listaMaterias[index].profesores[indexProf].status = status;
                 setListaMaterias([...listaMaterias])
             }
+        }
+    }
+
+    const setStatusMateria = (idMateria, status) => {
+        const index = listaMaterias.findIndex(a => a.id === idMateria)
+        if (index >= 0) {
+
+            listaMaterias[index].status = status;
+            setListaMaterias([...listaMaterias])
         }
     }
 
@@ -51,6 +60,7 @@ export const ClaseProvider = ({ children }) => {
         getClaseSelectedId,
         setClaseSelectedId,
         getListaMaterias,
+        setStatusProfesorMateria,
         setStatusMateria
     }
 
