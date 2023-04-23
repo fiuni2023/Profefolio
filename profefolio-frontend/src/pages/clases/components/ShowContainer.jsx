@@ -33,6 +33,9 @@ const ShowContainer = ({ data = {} }) => {
                     box-sizing: border-box;
                     padding: 1rem;
                 }
+                .scol-showclase > div{
+                    min-width: 100%;
+                }
                 
             `}
         </style>
