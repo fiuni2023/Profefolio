@@ -13,7 +13,7 @@ function ListItem({ index, name, lastName, document, type, onClick }) {
 }
 
 
-function Scrolleable({ studentsList }) {
+const Scrolleable = ({ studentsList }) => {
     return (
         <Container>
             <ScrollTable>

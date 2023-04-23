@@ -16,14 +16,14 @@ const getHover = (hover) => {
 
 //Ver como pasarle el alto disponible en el viewPort
 const ScrollTable = styled(Card)`
-    margin: 10px;
+    /*margin: 10px; Nota: comente esta linea porque al integrar este componente con los demas no quedaba alineado del todo este componente*/
     border-radius: 20px;
     border: none;
     box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.25);
     cursor: ${({ hover }) => getPointer(hover)};
     transition: all .3s ease-in-out;
     ${({ hover }) => getHover(hover)}
-    width: 500px; 
+    min-width: 100%; 
     height: 100%; 
 `;
 const SHeader = styled(Card.Header)`
@@ -57,7 +57,7 @@ const SBody = styled(Card.Body)`
 `;
 
 const Container = styled.div`
-  display: inline-block; 
+    display: inline-block;
 `;
 
 const SForm = styled.form`
@@ -90,9 +90,9 @@ const List = styled.ol`
 `;
 
 const Item = styled.li`
-  font-size: 1.1em;
-  font-weight: 500;
-  text-align: left;
+    font-size: 1.1em;
+    font-weight: 500;
+    text-align: left;
 `;
 
 const handleColorType = (props) => {
