@@ -30,7 +30,7 @@ namespace profefolio
         {
 
             
-            var query = await _adminReportService.GetPersonasConColegio(page, CantPerPage);
+            var query = await _adminReportService.GetPersonasConColegio(CantPerPage, page);
 
 
             var cantPages = (int)Math.Ceiling((double)await _adminReportService.Count(true) / CantPerPage);
@@ -59,7 +59,7 @@ namespace profefolio
         {
 
             
-            var query = await _adminReportService.GetPersonasSinColegio(page, CantPerPage);
+            var query = await _adminReportService.GetPersonasSinColegio(CantPerPage, page);
 
 
             var cantPages = (int)Math.Ceiling((double)await _adminReportService.Count(false) / CantPerPage);

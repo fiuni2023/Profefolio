@@ -49,7 +49,7 @@ namespace profefolio
                             .Where(p => !p.Deleted);
 
             var personas = await query
-                                .Skip(cantPerPage * (page - 1))
+                                .Skip(cantPerPage * page)
                                 .Take(cantPerPage)
                                 .ToListAsync();
 
