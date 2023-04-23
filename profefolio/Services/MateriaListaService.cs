@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using profefolio.Models;
 using profefolio.Models.Entities;
 using profefolio.Repository;
@@ -108,12 +109,22 @@ namespace profefolio.Services
 
         }
 
-        public MateriaLista Find(Func<MateriaLista, bool> predicate)
+        public MateriaLista Find(Func<MateriaLista, bool> func, string userlogged)
         {
-            var query = _db.MateriaListas
-                .Where(predicate)
-                .FirstOrDefault();
+            var colegio = _db.Colegios
+                .FirstOrDefault(c => c.personas.UserName.Equals(userlogged));
 
+            
+            if(colegio == null) throw new FileNotFoundException();
+            IEnumerable<MateriaLista> materiaListas = (IEnumerable<MateriaLista>)_db.Clases
+                .Include(c => c.MateriaListas)
+                .Where(c => !c.Deleted)
+                .Where(c => c.ColegioId == colegio.Id)
+                .Select(c => c.MateriaListas);
+
+
+            MateriaLista query = materiaListas.Where(func).FirstOrDefault();
+                
             return query;
             
         }

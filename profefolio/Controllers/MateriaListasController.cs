@@ -16,12 +16,14 @@ namespace profefolio.Controllers
         private readonly IPersona _profesorService;
         private readonly IMateria _materiaService;
         private readonly IClase _claseService;
+        private string _user;
         public MateriaListasController(IMateriaLista materiaListaService, IPersona profesorService, IMateria materiaService, IClase claseService)
         {
             _materiaListaService = materiaListaService;
             _profesorService = profesorService;
             _materiaService = materiaService;
             _claseService = claseService;
+            _user = User.Identity.Name;
         }
 
         [HttpPost]
@@ -29,8 +31,6 @@ namespace profefolio.Controllers
         {
             if (!ModelState.IsValid)
                 return Ok(dto);
-
-            var username = User.Identity.Name;
 
 
             foreach (var profes in dto.IdProfesores.Distinct())
@@ -45,7 +45,7 @@ namespace profefolio.Controllers
                     ProfesorId = profes,
                     MateriaId = dto.IdMateria,
                     Created = DateTime.Now,
-                    CreatedBy = username
+                    CreatedBy = _user
                 });
             }
 
@@ -167,7 +167,7 @@ namespace profefolio.Controllers
                             p.MateriaId == dto.IdMateria &&
                             item == p.ProfesorId &&
                             dto.IdClase == p.ClaseId
-                        );
+                        , _user);
 
                     if (detalle == null)
                     {

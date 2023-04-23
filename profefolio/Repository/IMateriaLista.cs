@@ -7,7 +7,7 @@ namespace profefolio.Repository
         IEnumerable<MateriaLista> FilterByIdMateriaAndUserAndClass(int idMateria, string createdBy, int idClase);
         Task<bool> IsUsedMateria(int idMateria);
         Task<IEnumerable<MateriaLista>> GetDetalleClaseByIdMateriaAndUsername(string username, int idMateria);
-        MateriaLista Find(Func<MateriaLista, bool> func);
+        MateriaLista Find(Func<MateriaLista, bool> func, string userLogged);
 
     }
 }
