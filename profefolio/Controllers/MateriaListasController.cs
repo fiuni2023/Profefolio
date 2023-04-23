@@ -82,6 +82,12 @@ namespace profefolio.Controllers
                         Id = p.MateriaId,
                         Materia = p.Materia.Nombre_Materia
                     }
+
+
+
+
+
+
                 });
 
 
@@ -89,7 +95,6 @@ namespace profefolio.Controllers
 
         }
 
-        //Esta API va a quedar fuera de servicio, No implementar en el Front-End
         [HttpGet]
         [Route("{idMateria:int}")]
         public async Task<ActionResult> GetByIdMateria(int idMateria)
@@ -117,9 +122,7 @@ namespace profefolio.Controllers
 
 
         }
-        
 
-        //Esta API va a quedar fuera de servicio, no implementar
         [HttpDelete]
         [Route("{idmateria:int}/{idclase:int}")]
         public async Task<ActionResult> Delete(int idmateria, int idclase)

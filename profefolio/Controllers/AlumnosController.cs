@@ -46,7 +46,7 @@ public class AlumnosController : ControllerBase
                 return BadRequest("Solo se aceptan valores F para femenino y M para masculino");
             }
             
-            var userId = User.Identity.Name;
+            var userId = User.Identity.GetUserId();
             var entity = _mapper.Map<Persona>(dto);
             entity.Deleted = false;
             entity.CreatedBy = userId;
@@ -146,7 +146,7 @@ public class AlumnosController : ControllerBase
             {
                 var persona = await _personasService.FindById(id);
             
-                var userId = User.Identity.Name;
+                var userId = User.Identity.GetUserId();
 
                 var existMail =await  _personasService.ExistMail(dto.Email);
 
