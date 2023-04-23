@@ -63,12 +63,30 @@ namespace profefolio.Controllers
             var query = _materiaListaService
                 .GetAll(0, 0)
                 .ToList()
-                .ConvertAll(p => new MateriaListDTO
+                .ConvertAll(p => new
                 {
                     Id = p.Id,
-                    IdProfesor = p.Profesor.Email,
-                    Clase = p.Clase.Nombre,
-                    Materia = p.Materia.Nombre_Materia,
+                    Profes = new
+                    {
+                        IdProfesor = p.ProfesorId,
+                        ProfesorMail = p.Profesor.Email,
+                    },
+                    Clase = new
+                    {
+                        ClaseName = p.Clase.Nombre,
+                        Id = p.ClaseId
+                    },
+                    Materia = new
+                    {
+                        Id = p.MateriaId,
+                        Materia = p.Materia.Nombre_Materia
+                    }
+
+
+
+
+
+
                 });
 
 
@@ -91,11 +109,7 @@ namespace profefolio.Controllers
 
                 result.MateriaId = query[0].MateriaId;
                 result.ClaseId = query[0].ClaseId;
-                result.Detalles = query.ConvertAll(q => new ClaseMateriaDetalle
-                {
-                    IdDetalle = q.Id,
-                    IdProfesor = q.ProfesorId
-                });
+                result.IdProfesores = query.ConvertAll(q => q.ProfesorId);
 
                 return Ok(result);
             }
@@ -142,23 +156,23 @@ namespace profefolio.Controllers
 
                 var detalles = new Collection<MateriaLista>();
 
-                foreach (var item in dto.IdListas.DistinctBy(m => m.IdProfesor))
+                foreach (var item in dto.IdProfesores.Distinct())
                 {
-                    var p = await _profesorService.FindById(item.IdProfesor);
+                    var p = await _profesorService.FindById(item);
 
                     if (p == null) { continue; }
                     var detalle = new MateriaLista
                     {
-                        Id = item.IdDetalle,
                         ClaseId = dto.IdClase,
                         MateriaId = dto.IdMateria,
-                        ProfesorId = item.IdProfesor
+                        ProfesorId = item
                     };
 
                     detalles.Add(detalle);
                 }
+                
 
-                clase.MateriaListas = Merge(clase.MateriaListas, detalles);
+                clase.MateriaListas = detalles;
 
 
 
@@ -172,34 +186,6 @@ namespace profefolio.Controllers
             }
 
 
-        }
-
-        private ICollection<MateriaLista> Merge(ICollection<MateriaLista> old, ICollection<MateriaLista> nuevo)
-        {
-            var union = old.Concat(nuevo);
-
-            // Agrupación por Id y selección del elemento más reciente
-            var merge = union.GroupBy(p => p.Id)
-                             .Select(g => g.OrderByDescending(p => p.Deleted)
-                                          .ThenByDescending(p => p == nuevo.FirstOrDefault(e => e.Id == p.Id))
-                                          .First());
-
-            // Actualización del arreglo1 con los valores de merge
-            var result = old.Select(p =>
-            {
-                var m = merge.FirstOrDefault(e => e.Id == p.Id);
-                return m != null ? m : new MateriaLista
-                {
-                    Id = p.Id,
-                    ClaseId = p.ClaseId,
-                    MateriaId = p.MateriaId,
-                    ProfesorId = p.ProfesorId
-                };
-            }).ToArray();
-
-
-
-            return (ICollection<MateriaLista>)result;
         }
 
     }

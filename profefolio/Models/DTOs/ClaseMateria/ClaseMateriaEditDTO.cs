@@ -5,6 +5,6 @@ namespace profefolio
         public int Id {get; set;}
         public int IdClase {get; set;}
         public int IdMateria {get; set;}
-        public List<ClaseMateriaDetalle> IdListas {get; set;}
+        public List<string > IdProfesores {get; set;}
     }
 }

@@ -11,5 +11,7 @@ namespace profefolio.Repository
 
         Task<IEnumerable<MateriaLista>> GetDetalleClaseByIdMateriaAndUsername(string username, int idMateria);
 
+        Task<IEnumerable<MateriaLista>> Filter(Predicate<MateriaLista> predicate);
+
     }
 }
