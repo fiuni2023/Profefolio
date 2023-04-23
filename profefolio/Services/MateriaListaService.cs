@@ -107,5 +107,15 @@ namespace profefolio.Services
             return query;
 
         }
+
+        public MateriaLista Find(Func<MateriaLista, bool> predicate)
+        {
+            var query = _db.MateriaListas
+                .Where(predicate)
+                .FirstOrDefault();
+
+            return query;
+            
+        }
     }
 }

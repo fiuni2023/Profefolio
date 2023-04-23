@@ -161,16 +161,34 @@ namespace profefolio.Controllers
                     var p = await _profesorService.FindById(item);
 
                     if (p == null) { continue; }
-                    var detalle = new MateriaLista
+
+                    var detalle = _materiaListaService.Find
+                        (p =>
+                            p.MateriaId == dto.IdMateria &&
+                            item == p.ProfesorId &&
+                            dto.IdClase == p.ClaseId
+                        );
+
+                    if (detalle == null)
                     {
-                        ClaseId = dto.IdClase,
-                        MateriaId = dto.IdMateria,
-                        ProfesorId = item
-                    };
+                        detalle = new MateriaLista
+                        {
+                            ClaseId = dto.IdClase,
+                            MateriaId = dto.IdMateria,
+                            ProfesorId = item
+                        };
+                    }
+                    else
+                    {
+                        detalle.ClaseId = dto.IdClase;
+                        detalle.MateriaId = dto.IdMateria;
+                        detalle.ProfesorId = item;
+                    }
 
                     detalles.Add(detalle);
+
                 }
-                
+
 
                 clase.MateriaListas = detalles;
 
