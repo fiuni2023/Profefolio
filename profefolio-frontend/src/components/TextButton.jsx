@@ -14,28 +14,39 @@ import StyledTextButton from './componentsStyles/StyledTextButton';
 */
 function TextButton({ buttonType, onClick, enabled }) {
   let text;
-  let type="button";
+  let type = "button";
+  let isEnabled = enabled;
   switch (buttonType) {
     case 'cancel':
       text = 'Cancelar';
       break;
     case 'accept':
       text = 'Aceptar';
+      type = "submit";
+      break;
+    case 'create':
+      text = 'Crear';
+      type = "submit";
+      break;
+    case 'save-changes':
+      text = 'Guardar Cambios';
+      type = "submit";
       break;
     case 'save':
       text = 'Guardar';
-      type="submit"; 
+      type = "submit";
       break;
     case 'confirm':
       text = 'Confirmar';
       break;
     default:
       text = null;
+      isEnabled = false;
   }
 
   return (
     <div style={{ display: 'inline-block', verticalAlign: 'middle' }}>
-      <StyledTextButton  type={type} buttonType={buttonType} enabled={enabled} onClick={onClick}>
+      <StyledTextButton type={type} buttonType={buttonType} enabled={isEnabled} onClick={onClick}>
         {text}
       </StyledTextButton>
     </div>

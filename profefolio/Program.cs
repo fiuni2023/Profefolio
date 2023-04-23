@@ -7,11 +7,9 @@ using System.Text;
 using profefolio.Models.Entities;
 using profefolio.Repository;
 using profefolio.Services;
-using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
 using log4net;
 using log4net.Config;
-using System.IO;
+using profefolio;
 
 var logRepository = LogManager.GetRepository(System.Reflection.Assembly.GetEntryAssembly());
 XmlConfigurator.Configure(logRepository, new FileInfo("log4net.config"));
@@ -75,6 +73,7 @@ builder.Services.AddScoped<IFullColegio, ColegiosFullService>();
 builder.Services.AddScoped<IRol, RolService>();
 builder.Services.AddScoped<IAuth, AuthService>();
 builder.Services.AddScoped<IMateriaLista, MateriaListaService>();
+builder.Services.AddScoped<IAdmin, AdminReportService>();
 
 var app = builder.Build();
 
