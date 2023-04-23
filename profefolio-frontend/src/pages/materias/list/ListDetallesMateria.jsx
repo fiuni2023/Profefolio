@@ -23,6 +23,8 @@ function ListDetallesMateria(props) {
 
   const [temporal, setTemporal] = useState('')
 
+  const [materias, setMaterias] = useState([]);
+
 
   const handleDeleteClick = () => {
     setShowConfirmDialog(true);
@@ -30,12 +32,16 @@ function ListDetallesMateria(props) {
 
   const handleConfirmDelete = () => {
     axios.delete(`${APILINK}/api/Materia/${id}`, {
+
       headers: {
         Authorization: `Bearer ${getToken()}`,
       }
     })
 
       .then(response => {
+
+        handleUpdate();
+        setMaterias(response.data);
         toast.success("Eliminado exitoso");
         setShowModal(false);
 
@@ -43,6 +49,7 @@ function ListDetallesMateria(props) {
 
       })
       .catch(error => {
+        toast.success("No se pudo eliminar");
         console.error(error);
       });
     setShowConfirmDialog(false);
@@ -95,6 +102,9 @@ function ListDetallesMateria(props) {
       })
         .then(response => {
           //triggerState(response.data)
+
+          setMaterias(response.data);
+
           handleUpdate();
 
 
@@ -102,6 +112,8 @@ function ListDetallesMateria(props) {
           setReadOnly(false)
           setShowModal(false)
           setNombreMateria("")
+
+          setReadOnly(true);
 
         })
         .catch(error => {

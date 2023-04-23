@@ -1,7 +1,6 @@
-import { Button, Col, Form, InputGroup, Row, Modal } from "react-bootstrap";
+import { Col, Form, Modal } from "react-bootstrap";
 import * as Yup from 'yup';
 import { Formik } from "formik";
-import { map } from "lodash";
 import { useEffect, useState } from "react";
 import useAxiosGet from "../../hooks/useAxiosGet";
 import { useGeneralContext } from "../../../../context/GeneralContext";
@@ -9,12 +8,15 @@ import FormAddCiclo from "./FormAddCiclo";
 import axios from "axios";
 import APILINK from "../../../../components/link";
 import { toast } from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
 import ModalContainer from "../../../../components/Modals";
+import TextButton from "../../../../components/TextButton";
+import { SContainer, SControl, SGroup, SLabel, SRow } from "../../../../components/componentsStyles/StyledForm";
+import { SHeader } from "../../../../components/componentsStyles/StyledModal";
+import { SpecialSelect } from "../../../../components/SpecialSelect.jsx";
+
 
 
 const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = false, triggerState = () => { }, handlePage = () => { } }) => {
-    const CREATE_CICLO = "___option____create____ciclo";
 
     // eslint-disable-next-line no-unused-vars
     const { getToken, cancan, verifyToken, getUserMail } = useGeneralContext();
@@ -27,12 +29,7 @@ const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = 
         setAddCiclos(!addCiclos)
     }
 
-    const validateSelect = (e) => {
-        if (CREATE_CICLO === e.target.value) {
-            onSetAddCiclos();
-            e.target.value = "";
-        }
-    }
+
 
     // eslint-disable-next-line no-unused-vars
     const [data, loading, error, setData] = useAxiosGet(`api/ciclo`, getToken());
@@ -52,7 +49,6 @@ const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = 
         setData([...data, ciclo])
     }
 
-    const nav = useNavigate()
 
     const schema = Yup.object().shape({
         nombre: Yup.string().required("Campo requerido").max(128, "La longitud maxima es de 128 caracteres"),
@@ -62,33 +58,6 @@ const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = 
     });
 
 
-    const actualizarClase = () => {
-        verifyToken()
-        const toastLoadig = toast.loading("Obteniendo Clase.");
-
-        if (!cancan("Administrador de Colegio")) {
-            nav("/")
-        } else {
-            //axios.get(`https://miapi.com/products?page=${page}&size=${size}`, {
-
-            colegio && axios.get(`${APILINK}/api/clase/page/${colegio?.id}/${0}`, {
-                headers: {
-                    Authorization: `Bearer ${getToken()}`,
-                }
-            })
-                .then(response => {
-                    triggerState(response.data.dataList);
-                    handlePage(response.data.next);
-                })
-                .catch(error => {
-                    //console.error(error);
-                    toast.dismiss(toastLoadig);
-                    toast.error(`Error recargue la pagina`);
-                });
-            toast.dismiss(toastLoadig);
-
-        }
-    }
 
     const handleSubmit = async (e) => {
         setIsSend(true);
@@ -108,21 +77,14 @@ const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = 
         })
 
         if (result.status === 200) {
-            //console.log("Result: ", result);
             setIsSend(false);
             handleClose(false);
 
-
-
             //actualizar lista de la tabla aqui
-            actualizarClase();
-
-
-
+            triggerState();
 
             toast.success("Guardado exitoso.");
         } else {
-            //console.log("Error: ", result.data)
             setIsSend(false);
             toast.error(`Error: ${result.data.error}`);
         }
@@ -135,12 +97,13 @@ const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = 
             handleClose={handleClose}
             backdrop="static"
             keyboard={false}
-            
+            className="modal-crear-clases"
+            size={"lg"}
         >
-            <Modal.Header closeButton className="modal-crear-clase">
+            <SHeader closeButton >
                 <Modal.Title>{title}</Modal.Title>
-            </Modal.Header>
-            <Modal.Body className="modal-crear-clase modal-body-create-clase">
+            </SHeader>
+            <Modal.Body >
 
 
 
@@ -166,85 +129,75 @@ const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = 
                         errors,
                         blur
                     }) => {
-                        return <Form noValidate onSubmit={handleSubmit} as={`${addCiclos ? "div" : "form"}`} >
+                        return <SContainer>
+                            <Form noValidate onSubmit={handleSubmit} as={`${addCiclos ? "div" : "form"}`} >
 
-                            <Row className="mb-3">
-                                <Form.Group as={Col} md="12" controlId="validationFormikNombre">
-                                    <Form.Label>Nombre</Form.Label>
-                                    <InputGroup hasValidation >
-                                        <Form.Control disabled={addCiclos || isSend}
-                                            type="text"
-                                            placeholder="Nombre"
-                                            aria-describedby="inputGroupPrepend"
-                                            name="nombre"
-                                            value={values.nombre}
-                                            onChange={handleChange}
-                                            onBlur={handleBlur}
-                                            isInvalid={!addCiclos && !!errors.nombre && touched.nombre}
+                                <SGroup as={Col} md={12} className="position-relative">
+                                    <SLabel>Nombre</SLabel>
+                                    <SControl disabled={addCiclos || isSend}
+                                        type="text"
+                                        placeholder="Nombre"
+                                        aria-describedby="inputGroupPrepend"
+                                        name="nombre"
+                                        value={values.nombre}
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                        isInvalid={!addCiclos && !!errors.nombre && touched.nombre}
 
-                                        />
-                                        {errors.nombre && touched.nombre && <Form.Control.Feedback type="invalid" tooltip>
-                                            {errors.nombre}
-                                        </Form.Control.Feedback>}
-                                    </InputGroup>
-                                </Form.Group>
+                                    />
+                                    {errors.nombre && touched.nombre && <Form.Control.Feedback type="invalid" tooltip>
+                                        {errors.nombre}
+                                    </Form.Control.Feedback>}
 
-                                <Form.Group as={Col} md="12" controlId="validationFormikTurno">
-                                    <Form.Label>Turno</Form.Label>
-                                    <InputGroup hasValidation >
-                                        <Form.Control disabled={addCiclos || isSend}
-                                            type="text"
-                                            placeholder="Turno"
-                                            aria-describedby="inputGroupPrepend"
-                                            name="turno"
-                                            value={values.turno}
-                                            onChange={handleChange}
-                                            onBlur={handleBlur}
-                                            isInvalid={!addCiclos && (!!errors.turno && touched.turno)}
-                                        />
-                                        {errors.turno && touched.turno && <Form.Control.Feedback type="invalid" tooltip>
-                                            {errors.turno}
-                                        </Form.Control.Feedback>}
-                                    </InputGroup>
-                                </Form.Group>
+                                </SGroup>
 
-                                {!addCiclos
-                                    ?
-                                    <Form.Group as={Col} md="12" controlId="validationFormikCiclo" >
-                                        <Form.Label>Ciclo</Form.Label>
 
-                                        <Form.Select aria-label="Default select" disabled={isSend}
-                                            name="ciclo"
-                                            value={values.ciclo}
-                                            onChange={(e) => {
-                                                validateSelect(e);
-                                                return handleChange(e);
-                                            }}
-                                            onBlur={handleBlur}
-                                            isInvalid={!!errors.ciclo && touched.ciclo}
-                                        >
-                                            <option value={""} disabled>Seleccione un Ciclo</option>
-                                            <option className="option-create-ciclo" value={CREATE_CICLO}>Crear Ciclo</option>
-                                            {map(data, (c) => <option key={c.id} value={c.id}>{c.nombre}</option>)}
-                                        </Form.Select>
+                                <SGroup as={Col} md={12} className="position-relative">
 
-                                    </Form.Group>
+                                    <SLabel>Turno</SLabel>
+                                    <SControl disabled={addCiclos || isSend}
+                                        type="text"
+                                        placeholder="Turno"
+                                        aria-describedby="inputGroupPrepend"
+                                        name="turno"
+                                        value={values.turno}
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                        isInvalid={!addCiclos && (!!errors.turno && touched.turno)}
+                                    />
+                                    {errors.turno && touched.turno && <Form.Control.Feedback type="invalid" tooltip>
+                                        {errors.turno}
+                                    </Form.Control.Feedback>}
+                                </SGroup>
 
-                                    :
-                                    <FormAddCiclo handleClose={onSetAddCiclos} handleChangeListCiclos={addCicloList} />
-                                }
 
-                            </Row>
 
-                            <Row className="mb-3">
-                                <Form.Group
+                                <SpecialSelect
+                                    name={"ciclo"}
+                                    textLabel={"Ciclo"}
+                                    className={""}
+                                    isSend={isSend} // estado para bloquear los input si es que se esta enviando datos del formulario principal 
+                                    inCreation={addCiclos} // estado para poder saber si el otro formulario esta activo
+                                    setInCreation={onSetAddCiclos}  // setea el estado de actividad del otro formulario
+                                    col={12}
+                                    values={values.ciclo}
+                                    handleChange={handleChange}
+                                    handleBlur={handleBlur}
+                                    errors={errors.ciclo}
+                                    touched={touched.ciclo}
+                                    data={data} // valores del select
+                                    specialOption="Crear Ciclo" //texto de la opcion que mostrara el otro formulario
+                                    alternativeForm={<FormAddCiclo handleClose={onSetAddCiclos} handleChangeListCiclos={addCicloList} />}
+                                />
+
+                                <SGroup
                                     as={Col}
-                                    md="12"
-                                    controlId="validationFormik103"
+                                    md={12}
                                     className="position-relative"
                                 >
-                                    <Form.Label>Año</Form.Label>
-                                    <Form.Control disabled={addCiclos || isSend}
+                                    <SLabel>Año</SLabel>
+                                    <SControl
+                                        disabled={addCiclos || isSend}
                                         type="number"
                                         placeholder="Año"
                                         name="anho"
@@ -258,78 +211,38 @@ const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = 
                                     {touched.anho && errors.anho && <Form.Control.Feedback type="invalid" tooltip>
                                         {errors.anho}
                                     </Form.Control.Feedback>}
-                                </Form.Group>
-                            </Row>
 
-                            <Row className="btn-save-contanier">
-                                <Col className="btn-save-subcontanier" md={4}>
-                                    <Button className="btn-save" type="submit" disabled={addCiclos || isSend}>Guardar</Button>
-                                </Col>
-                            </Row>
-                        </Form>
+                                </SGroup>
+                                {/* </SRow> */}
+
+                                <SRow>
+                                    <Col className="btn-container pe-2" md={10}>
+                                        <TextButton enabled={!(addCiclos || isSend)} buttonType='accept' />
+                                    </Col>
+                                    <Col className="btn-container" md={2}>
+                                        <TextButton enabled={!(addCiclos || isSend)} buttonType='cancel' onClick={handleClose} />
+                                    </Col>
+                                </SRow>
+                            </Form>
+                        </SContainer>
                     }}
                 </Formik>
-
-
-
-
 
             </Modal.Body>
 
         </ModalContainer>
-
+        
         <style jsx="true">
             {
                 `
-                    .btn-gestion-ciclo{
-                        display:flex;
-                        align-items: flex-end;
-                        justify-content: flex-end;
-                        column-gap: 8px;
-                    }
-                    .btn-icon-ciclo{
-                        font-size: 39px;
-                    }
-
-                    .btn-save-icon {
-                        color: #F0544F;
-                    }
-
-                    .btn-save {
-                        background: #F0544F;
-                        border: 1px solid #F0544F;
-                    }
-
-                    .btn-save:disabled {
-                        background: gray;
-                        border: 1px solid #F0544F;
-                    }
-
-                    .btn-save:hover {
-                        background: #F05418;
-                        border: 1px solid #F0544F;
-                    }
-
-                    .btn-cancel-icon {
-                        color: #FDF0D5;
-                    }
-                    .btn-save-contanier, .btn-save-subcontanier{
+                    .btn-container{
                         display: flex;
-                        justify-content: center;
+                        justify-content: flex-end;
                     }
-                    .option-create-ciclo{
-                        background: #e59c68;
-                        color: white;
-                    }
-                    .modal-crear-clase{
-                        background: #C6D8D3;
-                    }
-                    .modal-body-create-clase{
-                        border-radius: 0 0 10px 10px;
-                    }
-                `
+                ` 
             }
         </style>
+        
     </>
 }
 

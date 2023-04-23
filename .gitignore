@@ -12,9 +12,7 @@ profefolio/appsettings.json
 package-lock.json
 
 .vscode
-appsettings.json
+
+
 profefolio-frontend/src/components/link.js
-profefolio/appsettings.json
-.gitignore
-profefolio/.gitignore
-.gitignore
+profefolio-frontend/package-lock.json

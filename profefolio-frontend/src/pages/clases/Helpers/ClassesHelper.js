@@ -45,7 +45,7 @@ const updateClasse = async (id, body, token) => {
             },
 
         })
-    return result.status === 200 ? result : null
+    return result
 }
 
 const deleteClasse = async (id, token) => {

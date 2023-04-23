@@ -49,12 +49,12 @@ namespace TestProfefolio.Ciclo
                 HttpContext = new DefaultHttpContext() { User = user }
             };
 
-            service.Setup(a => a.ExisitOther(id, dto.Nombre)).ReturnsAsync(false);
+            service.Setup(a => a.ExisitOther(It.IsAny<int>(), It.IsAny<string>())).ReturnsAsync(false);
 
-            service.Setup(a => a.FindById(id)).ReturnsAsync(modelo);
+            service.Setup(a => a.FindById(It.IsAny<int>())).ReturnsAsync(modelo);
 
 
-            service.Setup(s => s.Edit(modelo)).Returns(modelo);
+            service.Setup(s => s.Edit(It.IsAny<profefolio.Models.Entities.Ciclo>())).Returns(modelo);
 
             service.Setup(a => a.Save()).Returns(Task.CompletedTask);
 
@@ -82,14 +82,6 @@ namespace TestProfefolio.Ciclo
                 Nombre = "Primero"
             };
 
-            profefolio.Models.Entities.Ciclo modelo = new profefolio.Models.Entities.Ciclo()
-            {
-                Id = 1,
-                Nombre = "Primero",
-                Created = DateTime.Now,
-                Deleted = false,
-                CreatedBy = "123456"
-            };
 
             var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
             {
@@ -101,14 +93,13 @@ namespace TestProfefolio.Ciclo
                 HttpContext = new DefaultHttpContext() { User = user }
             };
 
-            service.Setup(a => a.ExisitOther(id, dto.Nombre)).ReturnsAsync(true);
+            service.Setup(a => a.ExisitOther(It.IsAny<int>(), It.IsAny<string>())).ReturnsAsync(true);
 
             var result = await controller.Put(id, dto);
 
-            var resultBad = (BadRequestObjectResult)result;
+            var resultBad = Assert.IsType<BadRequestObjectResult>(result);
 
             Assert.Equal("Ya existe un Ciclo con ese nombre", resultBad.Value);
-            Assert.IsType<BadRequestObjectResult>(result);
         }
 
 
@@ -128,15 +119,6 @@ namespace TestProfefolio.Ciclo
                 Nombre = "Primero"
             };
 
-            profefolio.Models.Entities.Ciclo modelo = new profefolio.Models.Entities.Ciclo()
-            {
-                Id = 1,
-                Nombre = "Primero",
-                Created = DateTime.Now,
-                Deleted = false,
-                CreatedBy = "123456"
-            };
-
             var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
             {
             new Claim(ClaimTypes.Name, "user1")
@@ -147,16 +129,15 @@ namespace TestProfefolio.Ciclo
                 HttpContext = new DefaultHttpContext() { User = user }
             };
 
-            service.Setup(a => a.ExisitOther(id, dto.Nombre)).ReturnsAsync(false);
+            service.Setup(a => a.ExisitOther(It.IsAny<int>(), It.IsAny<string>())).ReturnsAsync(false);
 
-            service.Setup(a => a.FindById(id));
+            service.Setup(a => a.FindById(It.IsAny<int>()));
 
             var result = await controller.Put(id, dto);
 
-            var resultBad = (BadRequestObjectResult)result;
-
+            var resultBad = Assert.IsType<BadRequestObjectResult>(result);
             Assert.Equal("El Ciclo no encontrado", resultBad.Value);
-            Assert.IsType<BadRequestObjectResult>(result);
+            
 
         }
 
@@ -197,20 +178,18 @@ namespace TestProfefolio.Ciclo
                 HttpContext = new DefaultHttpContext() { User = user }
             };
 
-            service.Setup(a => a.ExisitOther(id, dto.Nombre)).ReturnsAsync(false);
+            service.Setup(a => a.ExisitOther(It.IsAny<int>(), It.IsAny<string>())).ReturnsAsync(false);
 
-            service.Setup(a => a.FindById(id)).ReturnsAsync(modelo);
+            service.Setup(a => a.FindById(It.IsAny<int>())).ReturnsAsync(modelo);
 
-            service.Setup(a => a.Edit(modelo)).Returns(modelo);
+            service.Setup(a => a.Edit(It.IsAny<profefolio.Models.Entities.Ciclo>())).Returns(modelo);
             
             service.Setup(a => a.Save()).ThrowsAsync(new Exception("Error durante el guardado"));
             
             var result = await controller.Put(id, dto);
 
-            var resultBad = (BadRequestObjectResult)result;
-
+            var resultBad = Assert.IsType<BadRequestObjectResult>(result);
             Assert.Equal("Error durante la edicion", resultBad.Value);
-            Assert.IsType<BadRequestObjectResult>(result);
 
         }
 
