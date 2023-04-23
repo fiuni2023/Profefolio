@@ -1,26 +1,114 @@
-import React from 'react'
+import React, { memo, useEffect, useId, useMemo, useState } from 'react'
 import { Container, Item, ItemContainer, List, ListButton, SBody, SForm, SHeader, ScrollTable, Select } from '../../../../components/componentsStyles/StyledScrolleableList';
 import { RxReload } from 'react-icons/rx';
 import TextButton from '../../../../components/TextButton';
-import {map} from "lodash"
+import { map } from "lodash"
+import styled from 'styled-components';
+import { useClaseContext } from '../../context/ClaseContext';
 
-const ListItem = ({index, nombre, profesores=[], type, onClick}) => {
-    return (
-        <ItemContainer type={type}>
+const TagTeacher = styled.div`
+    border-radius: 20px;
+    display: flex;
+    border: 1px solid black;
+    justify-content: space-around;
+`
+
+const TagProfesor = memo(({ id, nombre, state = "new", onClick = () => { } }) => {
+    const uid = useId();
+    const unicId = uid.substring(1, uid.length - 1)
+
+    const [type, setType] = useState("new");
+    const bgColor = (estado) => {
+        switch (`${estado.toLowerCase()}`) {
+            case "reload":
+                return "#F3E6AE";
+            case "new":
+                return "#D1F0E6";
+            default:
+                return "#C2C2C2";
+        }
+    }
+
+    useEffect(() => {
+        setType(bgColor(state))
+    }, [state]);
+    const a = useMemo(() => {
+        console.log(nombre + state)
+        return nombre + state;
+    }, [nombre, state])
+    return <>
+        <TagTeacher className={`tag-teacher-${unicId}`}>
+            <Item className='item-nombre-profe'>{nombre}</Item>
+            <ListButton onClick={onClick}>{state !== 'reload' ? 'X' : <RxReload style={{ fontSize: '24px' }} size={24} />}</ListButton>
+
+        </TagTeacher>
+        <style jsx="true">{
+            `
+            .item-nombre-profe{
+                padding-left: 5px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                max-width: calc(10rem - 24px)
+            }
+            .tag-teacher-${unicId}{
+                background-color: ${type};
+                padding: 0.2rem;
+                max-width: 10rem;
+                width: fit-content;
+            }
+            .btn-cancelar{
+                background-color: red;
+                min-width: 1rem;
+            }
+        `
+        }</style>
+    </>
+})
+
+const ListItem = memo(({ index, idMateria, nombre, profesores = [], type, onClick }) => {
+    const { setStatusMateria } = useClaseContext();
+
+    return <>
+        <ItemContainer type={type} className={`item-container-${index}`}>
             <div>
-            <Item>{index}- {nombre}</Item>
-            <div>
-                <span>Profesores: </span>
-                {map(profesores, (e, i) => <div key={i}>{e.nombre}</div>)}
-            </div>
+                <Item>{index}- {nombre}</Item>
+                <div className={`profe-container-${index}`}>
+                    <Item>Profesores:</Item>
+                    {map(profesores, (e, i) => <TagProfesor key={i} id={e.id} nombre={`${e.nombre}${e.status}`} state={e.status} onClick={() => {
+                        setStatusMateria(idMateria, e.id, e.status === "new" ? "reload" : "new");
+                    }
+                    } />)}
+                </div>
             </div>
 
             <ListButton onClick={onClick}>{type !== 'reload' ? 'X' : <RxReload style={{ fontSize: '24px' }} size={24} />}</ListButton>
         </ItemContainer>
-    )
-}
+
+        <style jsx="true">
+            {
+                `
+                    .item-container-${index}{
+                        min-height: 6rem;
+                        align-items: flex-start;
+                    }
+                    .profe-container-${index}{
+                        display: flex;
+                        flex-wrap: wrap;
+                        column-gap: 0.5rem;
+                        align-items: center;
+                        margin-bottom: 0.5rem;
+                        row-gap: 4px;
+                    }
+                `
+            }
+        </style>
+    </>
+})
 const MateriasDeClase = () => {
-    const clasesList = {
+    const { getListaMaterias } = useClaseContext();
+
+    let clasesList = {
         onSubmit: () => console.log("Guardado"),
         enabled: true,
         header: {
@@ -32,23 +120,11 @@ const MateriasDeClase = () => {
             { label: "Carlos", value: 1 },
             { label: "Gabriela", value: 1 }
         ],
-        list: [
-            { id: 1, nombre: "Matematicas", profesores: [{id: 1, nombre: "John Foe"}] },
-            { id: 2, nombre: "Matematicas", profesores: [{id: 2, nombre: "John Foe"}] },
-            { id: 3, nombre: "Matematicas", profesores: [{id: 3, nombre: "John Foe"}] },
-            { id: 4, nombre: "Matematicas", profesores: [{id: 4, nombre: "John Foe"}] },
-            { id: 5, nombre: "Matematicas", profesores: [{id: 5, nombre: "John Foe"}] },
-            { id: 6, nombre: "Matematicas", profesores: [{id: 6, nombre: "John Foe"}] },
-            { id: 7, nombre: "Matematicas", profesores: [{id: 7, nombre: "John Foe"}] },
-            { id: 8, nombre: "Matematicas", profesores: [{id: 8, nombre: "John Foe"}] },
-            { id: 9, nombre: "Matematicas", profesores: [{id: 9, nombre: "John Foe"}] },
-            { id: 10, nombre: "Matematicas", profesores: [{id: 10, nombre: "John Foe"}] },
-            { id: 11, nombre: "Matematicas", profesores: [{id: 11, nombre: "John Foe"}] },
-            { id: 12, nombre: "Matematicas", profesores: [{id: 12, nombre: "John Foe"}] },
-        ]
+        list: getListaMaterias()
     }
+    //console.log(clasesList.list)
     return <>
-        
+
         <Container>
             <ScrollTable>
                 {clasesList?.header &&
@@ -60,6 +136,7 @@ const MateriasDeClase = () => {
                         <List>
                             {clasesList?.list?.map((clase, index) => (
                                 <ListItem key={index}
+                                    idMateria={clase.id}
                                     index={index + 1}
                                     nombre={clase.nombre}
                                     profesores={clase.profesores}
@@ -84,7 +161,7 @@ const MateriasDeClase = () => {
                 </SForm>
             </ScrollTable>
         </Container>
-        
+
     </>
 }
 
