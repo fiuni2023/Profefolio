@@ -88,17 +88,17 @@ namespace TestProfefolio.Clase
                 PersonaId = "123456789"
             };
 
-            mapper.Setup(m => m.Map<profefolio.Models.Entities.Clase>(dto)).Returns(clase);
+            mapper.Setup(m => m.Map<profefolio.Models.Entities.Clase>(It.IsAny<ClaseDTO>())).Returns(clase);
 
-            cicloService.Setup(c => c.FindById(dto.CicloId)).ReturnsAsync(ciclo);
+            cicloService.Setup(c => c.FindById(It.IsAny<int>())).ReturnsAsync(ciclo);
 
-            colegioService.Setup(c => c.FindById(dto.ColegioId)).ReturnsAsync(colegio);
+            colegioService.Setup(c => c.FindById(It.IsAny<int>())).ReturnsAsync(colegio);
 
-            claseService.Setup(c => c.Add(clase)).ReturnsAsync(clase);
+            claseService.Setup(c => c.Add(It.IsAny<profefolio.Models.Entities.Clase>())).ReturnsAsync(clase);
 
             claseService.Setup(c => c.Save()).Returns(Task.CompletedTask);
 
-            mapper.Setup(m => m.Map<ClaseResultDTO>(clase)).Returns(claseResult);
+            mapper.Setup(m => m.Map<ClaseResultDTO>(It.IsAny<profefolio.Models.Entities.Clase>())).Returns(claseResult);
 
             var result = await controller.Post(dto);
 
@@ -204,9 +204,9 @@ namespace TestProfefolio.Clase
                 CreatedBy = "juan.perez@gmail.com"
             };
 
-            mapper.Setup(m => m.Map<profefolio.Models.Entities.Clase>(dto)).Returns(clase);
+            mapper.Setup(m => m.Map<profefolio.Models.Entities.Clase>(It.IsAny<ClaseDTO>())).Returns(clase);
 
-            cicloService.Setup(c => c.FindById(dto.CicloId));
+            cicloService.Setup(c => c.FindById(It.IsAny<int>()));
 
             var result = await controller.Post(dto);
 
@@ -270,11 +270,11 @@ namespace TestProfefolio.Clase
                 Nombre = "Primero"
             };
 
-            mapper.Setup(m => m.Map<profefolio.Models.Entities.Clase>(dto)).Returns(clase);
+            mapper.Setup(m => m.Map<profefolio.Models.Entities.Clase>(It.IsAny<ClaseDTO>())).Returns(clase);
 
-            cicloService.Setup(c => c.FindById(dto.CicloId)).ReturnsAsync(ciclo);
+            cicloService.Setup(c => c.FindById(It.IsAny<int>())).ReturnsAsync(ciclo);
 
-            colegioService.Setup(c => c.FindById(dto.ColegioId));
+            colegioService.Setup(c => c.FindById(It.IsAny<int>()));
 
             var result = await controller.Post(dto);
 
@@ -346,11 +346,11 @@ namespace TestProfefolio.Clase
                 PersonaId = "123456789"
             };
 
-            mapper.Setup(m => m.Map<profefolio.Models.Entities.Clase>(dto)).Returns(clase);
+            mapper.Setup(m => m.Map<profefolio.Models.Entities.Clase>(It.IsAny<ClaseDTO>())).Returns(clase);
 
-            cicloService.Setup(c => c.FindById(dto.CicloId)).ReturnsAsync(ciclo);
+            cicloService.Setup(c => c.FindById(It.IsAny<int>())).ReturnsAsync(ciclo);
 
-            colegioService.Setup(c => c.FindById(dto.ColegioId)).ReturnsAsync(colegio);
+            colegioService.Setup(c => c.FindById(It.IsAny<int>())).ReturnsAsync(colegio);
 
             var result = await controller.Post(dto);
 
@@ -434,17 +434,17 @@ namespace TestProfefolio.Clase
                 PersonaId = "123456789"
             };
 
-            mapper.Setup(m => m.Map<profefolio.Models.Entities.Clase>(dto)).Returns(clase);
+            mapper.Setup(m => m.Map<profefolio.Models.Entities.Clase>(It.IsAny<ClaseDTO>())).Returns(clase);
 
-            cicloService.Setup(c => c.FindById(dto.CicloId)).ReturnsAsync(ciclo);
+            cicloService.Setup(c => c.FindById(It.IsAny<int>())).ReturnsAsync(ciclo);
 
-            colegioService.Setup(c => c.FindById(dto.ColegioId)).ReturnsAsync(colegio);
+            colegioService.Setup(c => c.FindById(It.IsAny<int>())).ReturnsAsync(colegio);
 
-            claseService.Setup(c => c.Add(clase)).ReturnsAsync(clase);
+            claseService.Setup(c => c.Add(It.IsAny<profefolio.Models.Entities.Clase>())).ReturnsAsync(clase);
 
             claseService.Setup(c => c.Save()).ThrowsAsync(new Exception());;
 
-            mapper.Setup(m => m.Map<ClaseResultDTO>(clase)).Returns(claseResult);
+            mapper.Setup(m => m.Map<ClaseResultDTO>(It.IsAny<profefolio.Models.Entities.Clase>())).Returns(claseResult);
 
             var result = await controller.Post(dto);
 

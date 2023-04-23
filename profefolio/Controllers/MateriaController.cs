@@ -8,6 +8,7 @@ using profefolio.Models.Entities;
 using profefolio.Repository;
 using log4net;
 using profefolio.Helpers;
+using System.Security.Claims;
 
 namespace profefolio.Controllers
 {
@@ -17,12 +18,14 @@ namespace profefolio.Controllers
     {
         private static readonly ILog _log = LogManager.GetLogger(typeof(MateriaController));
         private readonly IMateria _materiaService;
+        private readonly IMateriaLista _materiaListaService;
         private static int _cantPorPag => Constantes.CANT_ITEMS_POR_PAGE;
         private readonly IMapper _mapper;
-        public MateriaController(IMateria materiaService, IMapper mapper)
+        public MateriaController(IMateria materiaService, IMapper mapper, IMateriaLista materiaLista)
         {
             _materiaService = materiaService;
             _mapper = mapper;
+            _materiaListaService = materiaLista;
         }
 
 
@@ -75,7 +78,7 @@ namespace profefolio.Controllers
             //verificar el modelo
             if (!ModelState.IsValid)
             {
-                 _log.Error("An error occurred in the put method");
+                _log.Error("An error occurred in the put method");
                 return BadRequest("Objeto No valido");
             }
             //verificar que no sea nulo
@@ -97,8 +100,8 @@ namespace profefolio.Controllers
             {
                 return BadRequest($"Ya existe una materia con el mismo nombre.");
             }
-            string userId = User.Identity.GetUserId();
-            p.ModifiedBy = userId;
+            var userEmail = User.FindFirstValue(ClaimTypes.Name);
+            p.ModifiedBy = userEmail;
             p.Deleted = false;
             p.Modified = DateTime.Now;
 
@@ -135,8 +138,8 @@ namespace profefolio.Controllers
             {
                 var p = _mapper.Map<Materia>(materia);
 
-                var userId = User.Identity.GetUserId();
-                p.ModifiedBy = userId;
+                var userEmail = User.FindFirstValue(ClaimTypes.Name);
+                p.ModifiedBy = userEmail;
                 p.Deleted = false;
                 var saved = await _materiaService.Add(p);
                 await _materiaService.Save();
@@ -154,16 +157,25 @@ namespace profefolio.Controllers
         [Authorize(Roles = "Administrador de Colegio")]
         public async Task<IActionResult> Delete(int id)
         {
+            
             var data = await _materiaService.FindById(id);
-
+            
             if (data == null)
             {
                 return NotFound();
             }
 
+            // se verifica que la materia no se este usando en la relacion de materia-clase
+            var isUsed = await _materiaListaService.IsUsedMateria(id);
+            if(isUsed){
+                return BadRequest("La materia no se puede eliminar porque que ya se esta usando.");
+            }
+            
+            var userEmail = User.FindFirstValue(ClaimTypes.Name);
+
             data.Modified = DateTime.Now;
             data.Deleted = true;
-            data.ModifiedBy = "Anonimous";
+            data.ModifiedBy = userEmail;
             _materiaService.Edit(data);
             await _materiaService.Save();
 

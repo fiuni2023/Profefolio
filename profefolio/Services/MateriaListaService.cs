@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using profefolio.Models;
 using profefolio.Models.Entities;
 using profefolio.Repository;
@@ -83,24 +84,57 @@ namespace profefolio.Services
         {
             return _db.MateriaListas.Where(d => !d.Deleted)
                 .Where(d => d.Id == idMateria)
-                .Where(d => d.CreatedBy.Equals(createdBy))
+                .Where(d => d.CreatedBy == null ? false : d.CreatedBy.Equals(createdBy))
                 .Where(d => d.ClaseId == idClase);
+        }
+
+
+        public async Task<bool> IsUsedMateria(int idMateria)
+        {
+            return await _db.MateriaListas.AnyAsync(d => d.MateriaId == idMateria);
         }
 
         public async Task<IEnumerable<MateriaLista>> GetDetalleClaseByIdMateriaAndUsername(string username, int idMateria)
         {
-            var query = await _db.Materias
-                .Include(m => m.MateriaListas)
-                .Where(m => !m.Deleted)
-                .Where(m => m.CreatedBy.Equals(username))
+            var query = await _db.MateriaListas
+                .Where(p => !p.Deleted)
+                .Where(p => p.CreatedBy == null ? false : p.CreatedBy.Equals(username))
+                .Where(p => p.MateriaId == idMateria).ToListAsync();
+
+            if(query.Count() < 1) 
+                throw new FileNotFoundException();
+
+
+            return query;
+
+        }
+
+        public async Task<MateriaLista> Find(int idClase, string idProfesor, int idMateria, string userLogged)
+        {
+            var colegio = _db.Colegios
+                .FirstOrDefault(c => c.personas.UserName.Equals(userLogged));
+
+            
+            if(colegio == null) throw new FileNotFoundException();
+
+            var clase = await _db.Clases
+                .Include(c => c.MateriaListas)
+                .Where(c => !c.Deleted)
+                .Where(c => c.ColegioId == colegio.Id)
+                .Where(c => c.Id == idClase)
                 .FirstOrDefaultAsync();
 
-            if (query == null) throw new FileNotFoundException();
+            if(clase == null) throw new FileNotFoundException();
 
-            return query.MateriaListas
-                .Where(l => !l.Deleted)
-                .Where(l => l.CreatedBy.Equals(username));
+            var materiaListas = clase.MateriaListas
+                .Where(p => p.ClaseId == idClase)
+                .Where(p => p.MateriaId == idMateria)
+                .Where(p => p.ProfesorId == idProfesor)
+                .FirstOrDefault();
 
+            return materiaListas;
+
+            
         }
     }
 }

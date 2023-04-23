@@ -1,26 +1,13 @@
 import React from "react";
 import { useGeneralContext } from "../../../../context/GeneralContext";
 import styles from "./index.module.css";
-import { Row, Col } from "react-bootstrap";
-import CategoryPanel from "./components/categoryPanel";
-import { useNavigate } from "react-router";
+import { Container } from "react-bootstrap";
 import Card from "../../../../components/Card";
-import { ExampleCard1 } from "../../../../components/Example Data/ExampleCards";
+import { Colegios, Administradores } from "./cards";
+import {DTitle, SRow} from "../../../../components/componentsStyles/StyledDashComponent"
 
-const AdminHome = () => {
-
-    const {getUserName} = useGeneralContext()
-    const nav = useNavigate()
-
-    return(
-        <div className={styles.HomeDiv}>
-            <Row className="mb-3">
-                <Col>
-                    <h3>Bienvenido,</h3>  
-                    <h3 className={`${styles.RubyText} mt-2 `}>{getUserName()}</h3>
-                </Col>
-            </Row>
-            <Row>
+/* 
+<Row>
                 <Col>
                     <CategoryPanel text="Administradores" handleClick={()=>{nav('/administrador/list')}}>
                         <div className ="d-flex flex-column"> 
@@ -46,10 +33,21 @@ const AdminHome = () => {
                     </CategoryPanel>
                 </Col>
             </Row>
-            <Row>
-                <Card cardInfo={ExampleCard1}></Card>
-            </Row>
-        </div>
+*/
+
+const AdminHome = () => {
+
+    const {getUserName} = useGeneralContext()
+
+    return(
+        <Container className={styles.HomeDiv}>
+             <DTitle>Bienvenido, {getUserName()}</DTitle>  
+            <SRow>
+                <Card cardInfo={Colegios}></Card>
+                <Card cardInfo={Administradores}></Card>
+            </SRow>
+            
+        </Container>
     )
 }
 
