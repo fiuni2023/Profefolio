@@ -55,7 +55,7 @@ public class AuthService : IAuth
        
         var authClaims = new List<Claim>()
         {
-            new Claim(ClaimTypes.Name, user.Id),
+            new Claim(ClaimTypes.Name, user.Email),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
         
