@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Col, Row, Form as RForm} from "react-bootstrap";
-import {SContainer, SRow, Info, SControl, SLabel, SSelect, SCheck, SGroup, SOption, SDOption} from "./componentsStyles/StyledForm";
+import { Col, Row, Form as RForm } from "react-bootstrap";
+import { SContainer, SRow, Info, SControl, SLabel, SSelect, SCheck, SGroup, SOption, SDOption } from "./componentsStyles/StyledForm";
 import IconButton from "./IconButton";
 import TextButton from "./TextButton";
 
@@ -62,131 +62,133 @@ form = {
 
 /**/
 
-function Form ({form}){
-    
-    const [inputs, setInputs] = useState(form?.inputs ?? null); 
-    const [buttons, setButtons] = useState(form?.buttons ??  null);
-    const [info, setInfo] = useState(form?.info ?? null); 
+function Form({ form }) {
+
+    const [inputs, setInputs] = useState(form?.inputs ?? null);
+    const [buttons, setButtons] = useState(form?.buttons ?? null);
+    const [info, setInfo] = useState(form?.info ?? null);
     const [validated, setValidated] = useState(false);
-    
+
     useEffect(() => {
         setInputs(form?.inputs ?? null);
         setButtons(form?.buttons ?? null);
         setInfo(form?.info ?? null);
-    } , [form])
+    }, [form])
 
     const handleSubmit = (event) => {
         const cform = event.currentTarget;
         if (cform.checkValidity() === false) {
             event.preventDefault();
             event.stopPropagation();
-        } 
-            form?.onSubmit?.action();
-            setValidated(true);       
-        
+        }
+        form?.onSubmit?.action(event);
+        setValidated(true);
+
     };
 
     return (
         <>
-        <SContainer>
-            <RForm id="My-form"  validated={validated} onSubmit={handleSubmit}>     
-                {info && <Info>{info}</Info>}
-                {inputs && <Row>{inputs.map((input, i) => {
-                    return (
-                        <Col key={input?.key ?? i} xs={input?.xs ?? 12} sm={input?.sm ?? 12} md={input?.md ?? 12} lg={input?.lg ?? 12} >
-                            <SGroup key={input?.key ?? i} >
-                                {input?.label && <SLabel key={input.label}>{input.label}{input?.required ? " *" : ""}</SLabel>}
-                                
-                                {input?.type && types.includes(input.type) && 
-                                    <SControl
-                                        id ={input?.key ?? i}
-                                        key={input?.key ?? i}
-                                        onChange={() => input?.onChange?.action() ?? null}
-                                        type= {input.type}
-                                        placeholder={input?.placeholder ?? ""} 
-                                        disabled={input?.disabled ?? false} 
-                                        readOnly={input?.disabled ?? false}
-                                        required={input?.required ?? false}
-                                        pattern={input?.type === "password" ? passRegx : null}
-                                        >      
-                                    </SControl>}
-                                {input?.type === "select" && 
-                                <div>
-                                    <SSelect 
-                                        id={input?.key ?? ""}
-                                        required={input?.required ?? false}
-                                        key={input?.key ?? ""}
-                                        disabled={input?.disabled ?? false} 
-                                        onChange={ () => input?.onChange?.action() ?? null}>
-                                            {input?.select?.default && <SDOption key="default" value="">{input?.select?.default}</SDOption>}
-                                            {input?.select?.options && input.select.options.map((option) => {
-                                                return ( <SOption key={`${option?.value ?? option?.id ?? i}`} value={option?.value ?? option?.id}>{option?.text ?? option?.nombre ?? "opcion"}</SOption> )
+            <SContainer>
+                <RForm id="My-form" validated={validated} onSubmit={handleSubmit}>
+                    {info && <Info>{info}</Info>}
+                    {inputs && <Row>{inputs.map((input, i) => {
+                        return (
+                            <Col key={input?.key ?? i} xs={input?.xs ?? 12} sm={input?.sm ?? 12} md={input?.md ?? 12} lg={input?.lg ?? 12} >
+                                <SGroup key={input?.key ?? i} >
+                                    {input?.label && <SLabel key={input.label}>{input.label}{input?.required ? " *" : ""}</SLabel>}
+
+                                    {input?.type && types.includes(input.type) &&
+                                        <SControl
+                                            id={input?.key ?? i}
+                                            key={input?.key ?? i}
+                                            value={input?.value}
+                                            onChange={(e) => input?.onChange?.action(e) ?? null}
+                                            type={input.type}
+                                            placeholder={input?.placeholder ?? ""}
+                                            disabled={input?.disabled ?? false}
+                                            readOnly={input?.disabled ?? false}
+                                            required={input?.required ?? false}
+                                            pattern={input?.type === "password" ? passRegx : null}
+                                        >
+                                        </SControl>}
+                                    {input?.type === "select" &&
+                                        <div>
+                                            <SSelect
+                                                id={input?.key ?? ""}
+                                                required={input?.required ?? false}
+                                                key={input?.key ?? ""}
+                                            value={input?.value}
+                                                disabled={input?.disabled ?? false}
+                                                onChange={(e) => input?.onChange?.action(e) ?? null}>
+                                                {input?.select?.default && <SDOption key="default" value="">{input?.select?.default}</SDOption>}
+                                                {input?.select?.options && input.select.options.map((option) => {
+                                                    return (<SOption key={`${option?.value ?? option?.id ?? i}`} value={option?.value ?? option?.id}>{option?.text ?? option?.nombre ?? "opcion"}</SOption>)
+                                                })}
+                                            </SSelect>
+                                            {input?.type && allinputs.includes(input.type) && input?.required &&
+                                                <RForm.Control.Feedback type="invalid" tooltip>
+                                                    {input?.invalidText ?? "Este campo es necesario"}
+                                                </RForm.Control.Feedback>
+                                            }
+                                        </div>
+                                    }
+
+                                    {input?.type && input?.key && checks.includes(input?.type) && input?.checks &&
+                                        <Row>
+                                            {input.checks.map((check) => {
+                                                return (
+                                                    <Col key={check?.id ?? ""} xs={check?.xs ?? "auto"} sm={check?.sm ?? "auto"} md={check?.md ?? "auto"} lg={check?.lg ?? "auto"}>
+                                                        <SCheck
+                                                            onChange={() => input?.onChange?.action ?? null}
+                                                            key={check?.id ?? ""}
+                                                            name={input.key}
+                                                            type={input.type}
+                                                            disabled={check?.disabled ?? false}
+                                                            id={check?.id}
+                                                            label={check?.label ?? ""}
+                                                            value={check?.value ?? 0}
+                                                            isInvalid={false}>
+                                                        </SCheck>
+                                                    </Col>
+                                                )
                                             })}
-                                    </SSelect>
-                                    {input?.type && allinputs.includes(input.type) && input?.required && 
-                                        <RForm.Control.Feedback type="invalid" tooltip> 
-                                            {input?.invalidText ?? "Este campo es necesario"} 
-                                        </RForm.Control.Feedback>
+                                        </Row>
+                                    }
+
+                                    {input?.text && <RForm.Text key="additional" muted>{input.text}</RForm.Text>}
+                                </SGroup>
+                            </Col>
+                        )
+                    })}</Row>}
+                    <SRow>
+                        {buttons && buttons.map((button, i) => {
+                            return (
+                                <div key={i}>
+                                    {button?.style === "icon" &&
+                                        <IconButton
+                                            key={i}
+                                            enabled={button?.enabled ?? false}
+                                            buttonType={button.type}
+                                            onClick={button.onclick.action}
+                                        ></IconButton>}
+                                    {button?.style === "text" &&
+                                        <TextButton
+                                            key={i}
+                                            enabled={button?.enabled ?? true}
+                                            buttonType={button.type}
+                                            onClick={!button.submit ? () => button.onclick.action() : null}
+                                        ></TextButton>
                                     }
                                 </div>
-                                }
-                                
-                                {input?.type && input?.key && checks.includes(input?.type) && input?.checks && 
-                                    <Row>
-                                        {input.checks.map((check) => {
-                                            return (
-                                                <Col key={check?.id ?? ""} xs={check?.xs ?? "auto"} sm={check?.sm ?? "auto"} md={check?.md ?? "auto"} lg={check?.lg ?? "auto"}>
-                                                    <SCheck
-                                                        onChange={ () => input?.onChange?.action ?? null}
-                                                        key={check?.id ?? ""}
-                                                        name={input.key}
-                                                        type={input.type}
-                                                        disabled={check?.disabled ?? false}
-                                                        id={check?.id}
-                                                        label={check?.label ?? ""}
-                                                        value={check?.value ?? 0}
-                                                        isInvalid={false}>
-                                                    </SCheck>
-                                                </Col>
-                                            )
-                                        })}
-                                    </Row>
-                                }
-
-                                {input?.text && <RForm.Text key="additional" muted>{input.text}</RForm.Text>}
-                            </SGroup>
-                        </Col>
-                    )
-                })}</Row>}
-                <SRow>
-                {buttons && buttons.map((button, i) => {
-                    return (
-                        <div key={i}>
-                            {button?.style === "icon" && 
-                                <IconButton
-                                    key={i} 
-                                    enabled={button?.enabled ?? false}
-                                    buttonType={button.type}
-                                    onClick={button.onclick.action}
-                                ></IconButton>}
-                            {button?.style === "text" && 
-                                <TextButton
-                                    key={i} 
-                                    enabled={button?.enabled ?? true}
-                                    buttonType={button.type}
-                                    onClick={!button.submit ? () => button.onclick.action() : null}
-                                ></TextButton>
-                            }
-                        </div>
-                    )
-                })}
-                </SRow>
-            </RForm> 
-        </SContainer>
+                            )
+                        })}
+                    </SRow>
+                </RForm>
+            </SContainer>
         </>
     )
 
 
 }
 
-export {Form};
+export { Form };
