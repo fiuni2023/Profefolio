@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { useGeneralContext } from '../../context/GeneralContext';
 import ModalCreateClase from './components/create/ModalCreateClase.jsx';
@@ -17,6 +17,7 @@ const Clases = () => {
     const [showModal, setShowModal] = useState(false);
 
 
+    const [triggerUpdate, setTriggerUpdate] = useState(true);
 
     const nav = useNavigate()
 
@@ -24,13 +25,7 @@ const Clases = () => {
     const [{ id: colegioId, nombre: colegioNombre }, loadingColegio, errorColegio, /* setColegio */] = useAxiosGet(`api/administrador/${getUserMail()}`, getToken());
 
 
-    useEffect(() => {
-        setColegio({
-            "id": colegioId,
-            "nombre": colegioNombre
-        });
-    }, [colegioId, colegioNombre, setColegio])
-
+    
     const handleShowModal = () => {
         setShowModal(true);
     }
@@ -48,20 +43,29 @@ const Clases = () => {
         }
     }, [cancan, verifyToken, nav])
 
-    useEffect(() => {
-        if (colegioId !== null) {
-            setTabla(<ClasesTable condFetch={condFetch} colegioId={colegioId} getToken={getToken} doChangeClase={doChangeClase} />);
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [colegioId, condFetch, getToken])
-
     const {setClaseSelectedId} = useClaseContext();
-
-    const doChangeClase= (data) => {
+    
+    const doChangeClase= useCallback((data) => {
         setClaseSelectedId(data.id)
         nav(`/clases/view/${data.id}`)
-    }
+    }, [nav, setClaseSelectedId])
+    
+    useEffect(() => {
+        if (colegioId !== null) {
+            setTabla(<ClasesTable condFetch={condFetch} colegioId={colegioId} getToken={getToken} doChangeClase={doChangeClase} triggerUpdate={triggerUpdate}/>);
+        }else if(colegioId && colegioNombre){
+            setColegio({
+                "id": colegioId,
+                "nombre": colegioNombre
+            });
+        }
+        
+    }, [colegioId, colegioNombre, condFetch, doChangeClase, getToken, setColegio, triggerUpdate])
 
+    const handleChangeTable = () => {
+        console.log("Creado")
+        setTriggerUpdate(!triggerUpdate)
+    }
 
     return <>
         
@@ -74,7 +78,7 @@ const Clases = () => {
                     <AiOutlinePlus size={"35px"} onClick={handleShowModal} />
                 </AddButton>
 
-                <ModalCreateClase title="Agregar Clase" handleClose={handelCloseModal} show={showModal} />
+                <ModalCreateClase title="Agregar Clase" handleClose={handelCloseModal} show={showModal} triggerState={handleChangeTable} />
 
             </MainContainer >
 
