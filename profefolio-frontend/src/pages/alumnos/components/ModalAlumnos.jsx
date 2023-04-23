@@ -2,27 +2,36 @@ import React, { useState, useEffect } from 'react'
 import axios from "axios";
 import { useGeneralContext } from "../../../context/GeneralContext";
 import APILINK from '../../../components/link';
-import Modal from '../../../components/Modal';
+import Modal from './Modal';
 import { toast } from 'react-hot-toast';
 
-function ModalColegios({ tituloModal, isOpen, disabled }) {
+function ModalAlumnos({ selectedData = false, tituloModal = "Alumnos", isOpen = false, disabled = true, triggerState = () => { }, handleClose = () => { } }) {
     const { getToken } = useGeneralContext()
     const [open, setOpen] = useState(isOpen ? isOpen : false);
     const [ModalTitle, setModalTitle] = useState(tituloModal ? tituloModal : "");
     const [isDisabled, setDisabled] = useState(disabled ? disabled : false);
 
+    const [nombre, setNombre] = useState(selectedData? selectedData.nombre :'')
+    const [apellido, setApellido] = useState(selectedData? selectedData.apellido :'')
+    const [fecha, setFecha] = useState(selectedData? selectedData.fecha :'')
+    const [email, setEmail] = useState(selectedData? selectedData.email :'')
+    const [direccion, setDireccion] = useState(selectedData? selectedData.direccion :'')
+    const [genero, setGenero] = useState(selectedData? selectedData.genero :'')
+    const [documento, setDocumento] = useState(selectedData? selectedData.genero :'')
+    const [tipoDocumento, setTipoD] = useState(selectedData? selectedData.tipoDocumento :'')
+
     useEffect(() => { setModalTitle(ModalTitle) }, [ModalTitle]);
     useEffect(() => { setOpen(isOpen) }, [isOpen]);
     useEffect(() => { setDisabled(disabled) }, [disabled]);
+
+    const handleNombreChange = (event) => {
+        const newValue = event.target.value;
+        console.log(newValue)
+        setNombre(newValue);
+        console.log(nombre)
+      };
+
     const handleSubmit = () => {
-        const nombre = document.getElementById("nombre").value;
-        const apellido = document.getElementById("apellido").value;
-        const fecha = document.getElementById("fecha").value;
-        const email = document.getElementById("email").value;
-        const direccion = document.getElementById("direccion").value;
-        const genero = document.getElementById("genero").value;
-        const documento = document.getElementById("documento").value;
-        const tipoDocumento = document.getElementById("tipoDocumento").value;
 
         let data = JSON.stringify({
             "nombre": nombre,
@@ -30,7 +39,7 @@ function ModalColegios({ tituloModal, isOpen, disabled }) {
             "nacimiento": fecha,
             "documento": documento,
             "genero": genero,
-            "direccion":direccion,
+            "direccion": direccion,
             "email": email,
             "documentoTipo": tipoDocumento
         });
@@ -49,6 +58,7 @@ function ModalColegios({ tituloModal, isOpen, disabled }) {
             .then(function (response) {
                 if (response.status >= 200) {
                     setOpen(false);
+                    triggerState(response.data);
                     toast.success("Guardado correctamente");
                 }
             })
@@ -69,15 +79,23 @@ function ModalColegios({ tituloModal, isOpen, disabled }) {
                 onSubmit: { action: handleSubmit },
                 inputs: [
                     {
-                        key: "nombre", label: "Nombre del Alumno",
-                        type: "text", placeholder: "Ingrese el nombre",
-                        disabled: isDisabled, required: true,
+                        key: "nombre",
+                        label: "Nombre del Alumno",
+                        type: "text",
+                        placeholder: "Ingrese el nombre",
+                        disabled: isDisabled,
+                        required: isDisabled || true,
+                        value: nombre,
+                        onChange: { action:  handleNombreChange},
                         invalidText: "Ingrese un nombre",
-                    },
+                    }
+                    ,
                     {
                         key: "apellido", label: "Apellido del Alumno",
                         type: "text", placeholder: "Ingrese el apellido",
                         disabled: isDisabled, required: true,
+                        value: apellido,
+                        onChange: (e)=> setApellido(e.target.value),
                         invalidText: "Ingrese un apellido",
                     },
                     {
@@ -85,23 +103,32 @@ function ModalColegios({ tituloModal, isOpen, disabled }) {
                         type: "date", placeholder: "Seleccione la fecha",
                         disabled: isDisabled,
                         required: true,
+                        value: fecha,
+                        onChange: (e)=> setFecha(e.target.value),
+                        max: new Date().toISOString().slice(0, 10),
                     },
                     {
                         key: "email", label: "Correo Electónico",
-                        type: "text", placeholder: "Ingrese correo electónico",
+                        type: "email", placeholder: "Ingrese correo electónico",
                         disabled: isDisabled, required: true,
+                        value: email,
+                        onChange: (e)=> setEmail(e.target.value),
                         invalidText: "Ingrese un correo electónico válido",
                     },
                     {
                         key: "direccion", label: "Dirrección",
                         type: "text", placeholder: "Ingrese la dirrección",
                         disabled: isDisabled,
+                        value: direccion,
+                        onChange: (e)=> setDireccion(e.target.value),
                     },
                     {
                         key: "genero", label: "Genero",
                         type: "select",
                         disabled: isDisabled, required: true,
                         invalidText: "Seleccione una opción",
+                        value: genero,
+                        onChange: (e)=> setGenero(e.target.value),
                         select: {
                             default: "Seleccione el género",
                             options: [
@@ -114,6 +141,7 @@ function ModalColegios({ tituloModal, isOpen, disabled }) {
                                     text: "Masculino"
                                 }
                             ],
+                            disabled: "Seleccione el género"
 
                         }
                     },
@@ -121,6 +149,8 @@ function ModalColegios({ tituloModal, isOpen, disabled }) {
                         key: "documento", label: "Documento",
                         type: "text", placeholder: "Ingrese el número de documento",
                         disabled: isDisabled, required: true,
+                        value: documento,
+                        onChange: { action: ((e)=> setDocumento(e.target.value))},
                         invalidText: "Ingrese un número",
                     },
                     {
@@ -128,6 +158,8 @@ function ModalColegios({ tituloModal, isOpen, disabled }) {
                         type: "select",
                         disabled: isDisabled, required: true,
                         invalidText: "Seleccione un Tipo",
+                        value: tipoDocumento,
+                        onChange: { action: ((e)=> setTipoD(e.target.value))},
                         select: {
                             default: "Seleccione un Tipo",
                             options: [
@@ -144,31 +176,36 @@ function ModalColegios({ tituloModal, isOpen, disabled }) {
                                     text: "Pasaporte"
                                 }
                             ],
+                            disabled: "Seleccione un Tipo"
 
                         }
                     },
                 ],
                 buttons: [
-                    {
-                        style: "text",
-                        type: "accept",
-                        submit: true,
-                    },
-                    {
-                        style: "text",
-                        type: "cancel",
-                        onclick: { action: (() => setOpen(false)) },
-                    },
+                    disabled ?
+                        {
+                            style: "icon",
+                            type: "edit",
+                            enabled: true,
+                            onclick: { action: ((e) => { e.preventDefault(); console.log("edit") }) },
+                            submit: false,
+                        }
+                        :
+                        {
+                            style: "text",
+                            type: "save",
+                            submit: true,
+                        }
                 ]
             }
         })
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [ ModalTitle, isDisabled ]);
+    }, [ModalTitle, isDisabled]);
 
     return (
         <>
-            <Modal isOpen={open} datosModal={datosModal}></Modal>
+            <Modal isOpen={open} datosModal={datosModal} handleClose={handleClose} ></Modal>
         </>
     )
 }
-export default ModalColegios;
+export default ModalAlumnos;
