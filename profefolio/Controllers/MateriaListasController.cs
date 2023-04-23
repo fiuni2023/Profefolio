@@ -31,6 +31,8 @@ namespace profefolio.Controllers
             if (!ModelState.IsValid)
                 return Ok(dto);
 
+            if(dto.IdProfesores.Count < 1) return BadRequest();
+
             var user = User.Identity.Name;
 
 
