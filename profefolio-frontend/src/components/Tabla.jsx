@@ -22,7 +22,7 @@ datosTabla = {
 function Tabla({datosTabla, selected}){
     return (
         <>
-        {datosTabla &&(
+        { (datosTabla?.filas) ? datosTabla &&(
             <Table  key = {datosTabla?.tituloTabla}
                     width={datosTabla?.tableWidth ? datosTabla.tableWidth : "100%"}>
                 {datosTabla?.titulos && (
@@ -44,13 +44,13 @@ function Tabla({datosTabla, selected}){
                                         onClick = {datosTabla?.clickable ? ()=>datosTabla.clickable?.action(fila?.fila) : null}>
                                             {fila?.datos.map((dato, indexDato) =>{
                                 return <TD
-                                key={dato.dato ? dato.dato : indexDato}>{dato?.dato}</TD>
+                                key={dato.dato ? `${dato.dato}${indexDato}` : indexDato}>{dato?.dato}</TD>
                             })}</TR>
                         })}
                     </Tbody>
                 )}
             </Table>
-        )}
+        ) : <span><b>No hay datos para mostrar.</b></span>}
         </>
     )
 
