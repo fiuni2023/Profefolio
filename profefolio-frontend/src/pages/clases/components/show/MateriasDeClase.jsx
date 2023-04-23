@@ -103,7 +103,13 @@ const ListItem = memo(({ index, idMateria, nombre, profesores = [], type, onClic
     </>
 })
 const MateriasDeClase = () => {
-    const { getListaMaterias, setStatusMateria } = useClaseContext();
+    const [optionSelected, setOptionSelected] = useState("");
+
+    const { getListaMaterias, setStatusMateria, getClaseSelectedId } = useClaseContext();
+
+    //pedir materias con clases 
+
+    // pedir materias normales 
 
     let materiasList = {
         onSubmit: () => console.log("Guardado"),
@@ -143,7 +149,7 @@ const MateriasDeClase = () => {
                     </SBody>}
                 <SForm onSubmit={materiasList?.onSubmit ?? null} >
                     <span>{materiasList?.addTitle}</span>
-                    <Select defaultValue={""}>
+                    <Select value={optionSelected} onChange={(e) => {setOptionSelected(e.target.value)}}>
                         <option value="" disabled>{materiasList?.selectTitle}</option>
                         {materiasList?.options?.map((option, index) => (
                             <option key={index} value={option.value}>
@@ -152,7 +158,7 @@ const MateriasDeClase = () => {
                         ))}
                     </Select>
                     <div style={{ textAlign: 'right' }}>
-                        <TextButton buttonType={'save-changes'} enabled={materiasList?.enabled ?? false} />
+                        <TextButton buttonType={'save-changes'} enabled={materiasList?.enabled ?? false} onClick={(e) => {e.preventDefault(); console.log(`Asigna la materia con id: ${optionSelected} a la clase con id: ${getClaseSelectedId()}`)}} />
                     </div>
                 </SForm>
             </ScrollTable>
