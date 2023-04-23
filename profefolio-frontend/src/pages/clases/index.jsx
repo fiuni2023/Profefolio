@@ -63,7 +63,6 @@ const Clases = () => {
     }, [colegioId, colegioNombre, condFetch, doChangeClase, getToken, setColegio, triggerUpdate])
 
     const handleChangeTable = () => {
-        console.log("Creado")
         setTriggerUpdate(!triggerUpdate)
     }
 

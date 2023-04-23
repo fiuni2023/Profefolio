@@ -61,19 +61,18 @@ const ClasesTable = ({ condFetch, colegioId, getToken, doChangeClase, triggerUpd
     )
 
 
-
     return <>
 
         <TableContainer>
             <Tabla datosTabla={classesTable} />
 
-            <ClasesPaginacion
+            {classesTable?.filas ? <ClasesPaginacion
                 currentPage={currentPage}
                 setCurrentPage={setCurrentPage}
                 nextPage={nextPage}
                 isLoading={isLoading}
                 error={error}
-            />
+            /> : ""}
 
 
 
