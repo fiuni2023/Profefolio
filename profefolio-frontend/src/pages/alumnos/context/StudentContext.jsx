@@ -13,7 +13,7 @@ export const StudentProvider = ({ children }) => {
     const studentFormik = useFormik({
         initialValues: {
             id: "",
-            nombre: "asd",
+            nombre: "nombre",
             apellido: "",
             nacimiento: new Date().toISOString(),
             documento: "",
@@ -46,15 +46,15 @@ export const StudentProvider = ({ children }) => {
     }
 
     const setSelectedStudent = (student) => {
-        studentFormik.setFieldValue("id", student.id)
-        studentFormik.setFieldValue("nombre", student.nombre)
-        studentFormik.setFieldValue("apellido", student.apellido)
-        studentFormik.setFieldValue("nacimiento", `${student.nacimiento.split("T")[0]}`)
-        studentFormik.setFieldValue("documento", student.documento)
-        studentFormik.setFieldValue("documentoTipo", student.documentoTipo)
-        studentFormik.setFieldValue("genero", getGenero(student.genero))
-        studentFormik.setFieldValue("direccion", student.direccion)
-        studentFormik.setFieldValue("email", student.email)
+            studentFormik.setFieldValue("id", student.id)
+            studentFormik.setFieldValue("nombre", student.nombre)
+            studentFormik.setFieldValue("apellido", student.apellido)
+            studentFormik.setFieldValue("nacimiento", student.nacimiento)
+            studentFormik.setFieldValue("documento", student.documento)
+            studentFormik.setFieldValue("documentoTipo", student.documentoTipo)
+            studentFormik.setFieldValue("genero", getGenero(student.genero))
+            studentFormik.setFieldValue("direccion", student.direccion)
+            studentFormik.setFieldValue("email", student.email)
     }
 
     const values = {
