@@ -16,14 +16,13 @@ namespace profefolio.Controllers
         private readonly IPersona _profesorService;
         private readonly IMateria _materiaService;
         private readonly IClase _claseService;
-        private string _user;
+        
         public MateriaListasController(IMateriaLista materiaListaService, IPersona profesorService, IMateria materiaService, IClase claseService)
         {
             _materiaListaService = materiaListaService;
             _profesorService = profesorService;
             _materiaService = materiaService;
             _claseService = claseService;
-            _user = User.Identity.Name;
         }
 
         [HttpPost]
@@ -31,6 +30,8 @@ namespace profefolio.Controllers
         {
             if (!ModelState.IsValid)
                 return Ok(dto);
+
+            var user = User.Identity.Name;
 
 
             foreach (var profes in dto.IdProfesores.Distinct())
@@ -45,7 +46,7 @@ namespace profefolio.Controllers
                     ProfesorId = profes,
                     MateriaId = dto.IdMateria,
                     Created = DateTime.Now,
-                    CreatedBy = _user
+                    CreatedBy = user
                 });
             }
 
@@ -150,6 +151,10 @@ namespace profefolio.Controllers
             {
                 return BadRequest();
             }
+
+            if(dto.IdProfesores.Count < 1) return BadRequest();
+
+            var user = User.Identity.Name;
             try
             {
                 var clase = await _claseService.FindById(idClase);
@@ -162,12 +167,7 @@ namespace profefolio.Controllers
 
                     if (p == null) { continue; }
 
-                    var detalle = _materiaListaService.Find
-                        (p =>
-                            p.MateriaId == dto.IdMateria &&
-                            item == p.ProfesorId &&
-                            dto.IdClase == p.ClaseId
-                        , _user);
+                    var detalle =await _materiaListaService.Find(dto.IdClase, item, dto.IdMateria, user);
 
                     if (detalle == null)
                     {
