@@ -7,7 +7,7 @@ import axios from 'axios';
 
 import StyleComponentBreadcrumb from '../../../components/StyleComponentBreadcrumb';
 
-import styles from  '../create/Index.module.css';
+import styles from '../create/Index.module.css';
 import APILINK from '../../../components/link.js';
 import { useNavigate } from 'react-router';
 
@@ -26,7 +26,7 @@ import ListDetallesMateria from './ListDetallesMateria';
 function ListarMaTerias() {
 
   const [materias, setMaterias] = useState([]);
-  
+  const [ciclos, setCiclos]= useState([]);
   const [showModal, setShowModal] = useState(false);
   const [id, setId] = useState(null);
   const [data, setData] = useState({})
@@ -34,34 +34,55 @@ function ListarMaTerias() {
 
   const [page, setPage] = useState(0);
 
-  const [totalPage, setTotalPage] = useState(1);
-    
-  const [next, setNext] = useState(false);
-  const isLastPage = page === totalPage -1;
-  const [currentPage, setCurrentPage] = useState(0);
+
+  
+  
 
   const nav = useNavigate()
 
   useEffect(() => {
     verifyToken()
-    if(!cancan("Administrador de Colegio")){
+    if (!cancan("Administrador de Colegio")) {
       nav("/")
-    }else{
+    } else {
       //axios.get(`https://miapi.com/products?page=${page}&size=${size}`, {
+
+      axios.get(`${APILINK}/api/Ciclo`, {
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+        }
+      })
+
+        .then(response => {
+          setCiclos(response.data.dataList);
+          console.log(ciclos);
+
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    }
+  }, [cancan, verifyToken, nav, getToken]);
+
   
+  useEffect(() => {
+    verifyToken()
+    if (!cancan("Administrador de Colegio")) {
+      nav("/")
+    } else {
+      //axios.get(`https://miapi.com/products?page=${page}&size=${size}`, {
+
       axios.get(`${APILINK}/api/Materia/page/${page}`, {
         headers: {
           Authorization: `Bearer ${getToken()}`,
         }
       })
-  
+
         .then(response => {
           setMaterias(response.data.dataList);
-          setTotalPage(response.data.totalPage);//Total de Paginas
-          setCurrentPage(response.data.currentPage);
-          setNext(response.data.next);
-      
-  
+          
+
+
 
         })
         .catch(error => {
@@ -70,30 +91,22 @@ function ListarMaTerias() {
     }
   }, [page, cancan, verifyToken, nav, getToken]);
 
-  const doFetch =(materia) =>{
+  
+
+  const doFetch = (materia) => {
     setMaterias([...materias, materia])
-}
+  }
 
 
-const btndetalles = (data) => {
-  setShowModal(true);
-  setId(data.id);
-  setData(data)
-};
-
-
-
-  const handlePrevClick = () => {
-    setPage(page - 1);
+  const btndetalles = (data) => {
+    setShowModal(true);
+    setId(data.id);
+    setData(data)
   };
 
 
-  const handleNextClick = () => {
 
-    if (!isLastPage) {
-      setPage(page + 1);
-    }
-  };
+  
 
   const modalOnHide = (bool) => {
     setShowModal(bool)
@@ -109,14 +122,14 @@ const btndetalles = (data) => {
     <>
 
       <div className="page">
-      <StyleComponentBreadcrumb nombre="Materias" />
+        <StyleComponentBreadcrumb nombre="Materias y Ciclos" />
 
 
         <PanelContainerBG>
 
 
           <div className={styles.container}>
-          
+
             <Tabla
               datosTabla={{
                 tituloTabla: 'Lista de materias',
@@ -133,48 +146,41 @@ const btndetalles = (data) => {
                 })),
               }}
               selected={id ?? '-'}
-/>
-        
+            />
 
-           
+
+
             <div >
 
 
-            <ListDetallesMateria showModal={showModal} setShowModal={modalOnHide} id={id} data={data}  triggerState={(materias)=>{setMaterias(materias)}} page={page} />
+              <ListDetallesMateria showModal={showModal} setShowModal={modalOnHide} id={id} data={data} triggerState={(materias) => { setMaterias(materias) }} />
 
-            <div>
-  </div>
+              <div>
+              </div>
 
-           
- 
-      </div>
 
-             
-     
-             
+
+            </div>
+
+
+
+
           </div>
 
+
           
-          <div className={styles.container}>
-
-          <Pagination className="justify-content-end">
-      <Pagination.Prev onClick={handlePrevClick} disabled={page === 0} />
-      <Pagination.Next onClick={handleNextClick} disabled={isLastPage} />
-    </Pagination>
-
-</div>
 
 
         </PanelContainerBG>
-         <footer>
+        <footer>
           <div className={styles.NButtonForSideA}>
-            <CreateModalMaterias title="My Modal" onClose={() => setShow(false)}  show={show}
-             triggerState={(materia)=>{doFetch(materia)}}>
+            <CreateModalMaterias title="My Modal" onClose={() => setShow(false)} show={show}
+              triggerState={(materia) => { doFetch(materia) }}>
             </CreateModalMaterias>
-            
+
           </div>
 
-     
+
 
         </footer>
 
