@@ -21,8 +21,10 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 import Profesor from "../profesor/index.jsx";
 import Clases from "../clases/index.jsx";
+import ShowClase from "../clases/pages/view/ShowClase.jsx";
 import Home from "../home/index.jsx";
 import TestPage from "../../components/TestPage.jsx";
+import { ClaseProvider } from "../clases/context/ClaseContext.jsx";
 
 const App = () => {
 
@@ -32,44 +34,48 @@ const App = () => {
                 <GeneralProvider>
                     <div className="page">
                         <Navbar />
-                        <div className="content">
-                            <SideBar />
-                            <Routes>
+                        <ClaseProvider>
+                            <div className="content">
+                                <SideBar />
+                                <Routes>
 
-                                <Route path="/" element={<Home />} />
-                                <Route path="/test" element={<TestPage />}/>
-                                <Route path="/pagina1" element={<Partidos />}>
-                                    <Route path="list" element={<PartidosList />} />
-                                    <Route path='create' element={<CreatePartidos />} />
-                                    <Route path="edit" element={<PartidosEdit />} />
-                                </Route>
+                                    <Route path="/" element={<Home />} />
+                                    <Route path="/test" element={<TestPage />} />
+                                    <Route path="/pagina1" element={<Partidos />}>
+                                        <Route path="list" element={<PartidosList />} />
+                                        <Route path='create' element={<CreatePartidos />} />
+                                        <Route path="edit" element={<PartidosEdit />} />
+                                    </Route>
 
-                                <Route path="/administrador" element={<Administrador />}>
-                                    <Route path="list" element={<ListAdministrador />} />
-                                </Route>
+                                    <Route path="/administrador" element={<Administrador />}>
+                                        <Route path="list" element={<ListAdministrador />} />
+                                    </Route>
 
-                                <Route path="/colegios/list" element={<ListarColegios />}>
-                                    
-                                </Route>
+                                    <Route path="/colegios/list" element={<ListarColegios />}>
+
+                                    </Route>
 
 
-                                <Route path="/profesor" element={<Profesor />}>
-                                    <Route path="list" element={<ProfesorList />} />
-                                </Route>
+                                    <Route path="/profesor" element={<Profesor />}>
+                                        <Route path="list" element={<ProfesorList />} />
+                                    </Route>
 
-                                <Route path="/profesor/create" element={<CreateProfesor />}>
-                                    <Route path="list" element={<CreateProfesor />} />
-                                </Route>
+                                    <Route path="/profesor/create" element={<CreateProfesor />}>
+                                        <Route path="list" element={<CreateProfesor />} />
+                                    </Route>
 
-                                <Route path="/clases" element={<Clases />}>
-                                </Route>
-                                
-                                <Route path="/materias" element={<ListarMaterias />}>
-                                    <Route path="list" element={<ListarMaterias />} />
-                                </Route>
-                                <Route path="/alumnos" element={<Alumnos/>}/>
-                            </Routes>
-                        </div>
+
+                                    <Route path="/clases" element={<Clases />}>
+                                    </Route>
+                                    <Route path="/clases/view/:idClase" element={<ShowClase />} />
+
+                                    <Route path="/materias" element={<ListarMaterias />}>
+                                        <Route path="list" element={<ListarMaterias />} />
+                                    </Route>
+                                    <Route path="/alumnos" element={<Alumnos />} />
+                                </Routes>
+                            </div>
+                        </ClaseProvider>
                     </div>
                 </GeneralProvider>
             </BrowserRouter>
