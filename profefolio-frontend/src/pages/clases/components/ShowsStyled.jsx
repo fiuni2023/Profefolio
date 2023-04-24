@@ -18,8 +18,15 @@ const SRowContainer = styled.div`
     background: #FFFFFF;
     box-shadow: 4px 4px 10px 5px rgba(0, 0, 0, 0.25);
     border-radius: 20px;
-    display: flex;
+    display: block;
     border: 1px solid gray;
-    min-height: 700px;
+    min-height: 500px;
 `
-export { ContainerBlock, STitle, SRowContainer };
+
+const SRowContainerHeader = styled.div`
+    border-bottom: 2px solid black;
+    padding: 0.5rem 1.5rem;
+`
+
+
+export { ContainerBlock, STitle, SRowContainer,SRowContainerHeader };

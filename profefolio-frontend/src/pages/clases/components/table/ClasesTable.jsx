@@ -6,10 +6,9 @@ import ClassesHelper from '../../Helpers/ClassesHelper'
 import { toast } from 'react-hot-toast'
 import ClasesPaginacion from './ClasesPaginacion'
 
-const ClasesTable = ({condFetch, colegioId, getToken, doChangeClase}) => {
+const ClasesTable = ({ condFetch, colegioId, getToken, doChangeClase, triggerUpdate }) => {
     const [currentPage, setCurrentPage] = useState(0);
     const [nextPage, setNextPage] = useState(false);
-    //const [page, setPage] = useState(0);
     const [classesTable, setClassesTable] = useState(
         {
             tituloTabla: "ClassesList",
@@ -17,23 +16,14 @@ const ClasesTable = ({condFetch, colegioId, getToken, doChangeClase}) => {
         }
     );
 
-    /* const handlePrevClick = () => {
-        page > 0 && setPage(page - 1);
-    };
-
-    const handleNextClick = () => {
-        nextPage && setPage(page + 1);
-    }; */
-
     const { isLoading, error } = useFetchEffect(
         () => {
             return ClassesHelper.getClassesPage(currentPage, colegioId, getToken())
         },
-        [currentPage, getToken, condFetch],
+        [currentPage, getToken, condFetch, triggerUpdate],
         {
             condition: condFetch,
             handleSuccess: (r) => {
-                //console.log(r)
                 setNextPage(r.data.next)
                 setClassesTable({
                     ...classesTable, clickable: { action: doChangeClase },
@@ -52,29 +42,41 @@ const ClasesTable = ({condFetch, colegioId, getToken, doChangeClase}) => {
                 })
             },
             handleError: (e) => {
-                toast.error(e.response.data)
+                let newText = "error";
+                if (typeof (e.response.data) === "string" && `${e.response.data}`.includes("No existe la pagina:")) {
+                    const text = e.response.data.trim().split(": ")
+                    const numPag = parseInt(text[1]) + 1;
+                    newText = `${text[0]} ${numPag}`;
+                    if (numPag === 1) {
+                        toast.error("No tiene Clases creadas todavia.")
+                    } else {
+                        toast.error(newText)
+                    }
+                } else {
+                    toast.error(e.response.data)
+                }
+
             }
         }
     )
 
 
-
     return <>
 
-                <TableContainer>
-                    <Tabla datosTabla={classesTable} />
-                    
-                        <ClasesPaginacion 
-                            currentPage={currentPage} 
-                            setCurrentPage={setCurrentPage} 
-                            nextPage={nextPage} 
-                            isLoading={isLoading} 
-                            error={error}
-                        />
+        <TableContainer>
+            <Tabla datosTabla={classesTable} />
 
-                    
-                    
-                </TableContainer >
+            {classesTable?.filas ? <ClasesPaginacion
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
+                nextPage={nextPage}
+                isLoading={isLoading}
+                error={error}
+            /> : ""}
+
+
+
+        </TableContainer >
 
     </>
 }
