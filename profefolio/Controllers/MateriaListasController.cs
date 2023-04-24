@@ -181,8 +181,26 @@ namespace profefolio.Controllers
             {
                 return NotFound();
             }
+        }
 
+        [HttpDelete]
+        [Route("{idClase:int}")]
+        public async Task<ActionResult> DeleteByIdClase(int idClase)
+        {
+            try
+            {
+                var user = User.Identity.Name;
 
+                await _materiaListaService.DeleteByIdClase(idClase, user);
+            } catch(FileNotFoundException e)
+            {
+                return NotFound();
+            } catch(BadHttpRequestException e)
+            {
+                return BadRequest();
+            }
+
+            return Ok();
         }
 
     }
