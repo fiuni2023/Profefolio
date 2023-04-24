@@ -11,37 +11,45 @@ function ModalAlumnos({ selectedData = false, tituloModal = "Alumnos", isOpen = 
     const [ModalTitle, setModalTitle] = useState(tituloModal ? tituloModal : "");
     const [isDisabled, setDisabled] = useState(disabled ? disabled : false);
 
-    const [nombre, setNombre] = useState(selectedData? selectedData.nombre :'')
-    const [apellido, setApellido] = useState(selectedData? selectedData.apellido :'')
-    const [fecha, setFecha] = useState(selectedData? selectedData.fecha :'')
-    const [email, setEmail] = useState(selectedData? selectedData.email :'')
-    const [direccion, setDireccion] = useState(selectedData? selectedData.direccion :'')
-    const [genero, setGenero] = useState(selectedData? selectedData.genero :'')
-    const [documento, setDocumento] = useState(selectedData? selectedData.genero :'')
-    const [tipoDocumento, setTipoD] = useState(selectedData? selectedData.tipoDocumento :'')
+    const initialData = {
+        nombre: "",
+        apellido: "",
+        nacimiento: new Date().toISOString().slice(0,10),
+        documento: "",
+        genero: "",
+        direccion: "",
+        email: "",
+        documentoTipo: ""
+    }
+    const [data, setData] = useState(selectedData || initialData)
+    console.log(selectedData)
 
     useEffect(() => { setModalTitle(ModalTitle) }, [ModalTitle]);
     useEffect(() => { setOpen(isOpen) }, [isOpen]);
     useEffect(() => { setDisabled(disabled) }, [disabled]);
+    useEffect(() => { setData(selectedData ? selectedData : initialData) }, [selectedData]);
 
-    const handleNombreChange = (event) => {
-        const newValue = event.target.value;
-        console.log(newValue)
-        setNombre(newValue);
-        console.log(nombre)
-      };
+    const handleChangeData = e => {
+        console.log(e.target.id)
+        console.log(e.target.value)
+        setData({
+            ...data,
+            [e.target.id]: e.target.value
+        })
+        console.log(data)
+    }
 
-    const handleSubmit = () => {
 
-        let data = JSON.stringify({
-            "nombre": nombre,
-            "apellido": apellido,
-            "nacimiento": fecha,
-            "documento": documento,
-            "genero": genero,
-            "direccion": direccion,
-            "email": email,
-            "documentoTipo": tipoDocumento
+    const handleSubmit = (e) => {
+        let submitData = JSON.stringify({
+            "nombre": data.nombre,
+            "apellido": data.apellido,
+            "nacimiento": data.fecha,
+            "documento": data.documento,
+            "genero": data.genero,
+            "direccion": data.direccion,
+            "email": data.email,
+            "documentoTipo": data.documentoTipo
         });
         let config = {
             method: 'post',
@@ -51,7 +59,7 @@ function ModalAlumnos({ selectedData = false, tituloModal = "Alumnos", isOpen = 
                 'Authorization': `Bearer ${getToken()}`,
                 'Content-Type': 'application/json'
             },
-            data: data
+            data: submitData
         };
 
         axios(config)
@@ -71,7 +79,6 @@ function ModalAlumnos({ selectedData = false, tituloModal = "Alumnos", isOpen = 
     }
 
     const [datosModal, setDatosModal] = useState(null);
-
     useEffect(() => {
         setDatosModal({
             header: ModalTitle,
@@ -85,8 +92,8 @@ function ModalAlumnos({ selectedData = false, tituloModal = "Alumnos", isOpen = 
                         placeholder: "Ingrese el nombre",
                         disabled: isDisabled,
                         required: isDisabled || true,
-                        value: nombre,
-                        onChange: { action:  handleNombreChange},
+                        value: data.nombre,
+                        onChange: { action: handleChangeData },
                         invalidText: "Ingrese un nombre",
                     }
                     ,
@@ -94,41 +101,40 @@ function ModalAlumnos({ selectedData = false, tituloModal = "Alumnos", isOpen = 
                         key: "apellido", label: "Apellido del Alumno",
                         type: "text", placeholder: "Ingrese el apellido",
                         disabled: isDisabled, required: true,
-                        value: apellido,
-                        onChange: (e)=> setApellido(e.target.value),
+                        value: data.apellido,
+                        onChange: { action: handleChangeData },
                         invalidText: "Ingrese un apellido",
                     },
                     {
                         key: "fecha", label: "Fecha de nacimiento",
-                        type: "date", placeholder: "Seleccione la fecha",
+                        type: "date",
                         disabled: isDisabled,
                         required: true,
-                        value: fecha,
-                        onChange: (e)=> setFecha(e.target.value),
-                        max: new Date().toISOString().slice(0, 10),
+                        value: data.fecha,
+                        onChange: { action: handleChangeData },
                     },
                     {
                         key: "email", label: "Correo Electónico",
                         type: "email", placeholder: "Ingrese correo electónico",
                         disabled: isDisabled, required: true,
-                        value: email,
-                        onChange: (e)=> setEmail(e.target.value),
+                        value: data.email,
+                        onChange: { action: handleChangeData },
                         invalidText: "Ingrese un correo electónico válido",
                     },
                     {
-                        key: "direccion", label: "Dirrección",
-                        type: "text", placeholder: "Ingrese la dirrección",
+                        key: "direccion", label: "Dirección",
+                        type: "text", placeholder: "Ingrese la dirección",
                         disabled: isDisabled,
-                        value: direccion,
-                        onChange: (e)=> setDireccion(e.target.value),
+                        value: data.direccion,
+                        onChange: { action: handleChangeData },
                     },
                     {
                         key: "genero", label: "Genero",
                         type: "select",
                         disabled: isDisabled, required: true,
                         invalidText: "Seleccione una opción",
-                        value: genero,
-                        onChange: (e)=> setGenero(e.target.value),
+                        value: data.genero,
+                        onChange: { action: handleChangeData },
                         select: {
                             default: "Seleccione el género",
                             options: [
@@ -149,17 +155,17 @@ function ModalAlumnos({ selectedData = false, tituloModal = "Alumnos", isOpen = 
                         key: "documento", label: "Documento",
                         type: "text", placeholder: "Ingrese el número de documento",
                         disabled: isDisabled, required: true,
-                        value: documento,
-                        onChange: { action: ((e)=> setDocumento(e.target.value))},
+                        value: data.documento,
+                        onChange: { action: handleChangeData },
                         invalidText: "Ingrese un número",
                     },
                     {
-                        key: "tipoDocumento", label: "Tipo de Documento",
+                        key: "documentoTipo", label: "Tipo de Documento",
                         type: "select",
                         disabled: isDisabled, required: true,
                         invalidText: "Seleccione un Tipo",
-                        value: tipoDocumento,
-                        onChange: { action: ((e)=> setTipoD(e.target.value))},
+                        value: data.tipoDocumento,
+                        onChange: { action: handleChangeData },
                         select: {
                             default: "Seleccione un Tipo",
                             options: [
@@ -182,12 +188,12 @@ function ModalAlumnos({ selectedData = false, tituloModal = "Alumnos", isOpen = 
                     },
                 ],
                 buttons: [
-                    disabled ?
+                    isDisabled ?
                         {
                             style: "icon",
                             type: "edit",
                             enabled: true,
-                            onclick: { action: ((e) => { e.preventDefault(); console.log("edit") }) },
+                            onclick: { action: ((e) => { e.preventDefault(); setDisabled(false) }) },
                             submit: false,
                         }
                         :
@@ -200,7 +206,7 @@ function ModalAlumnos({ selectedData = false, tituloModal = "Alumnos", isOpen = 
             }
         })
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [ModalTitle, isDisabled]);
+    }, [ModalTitle, isDisabled, data]);
 
     return (
         <>

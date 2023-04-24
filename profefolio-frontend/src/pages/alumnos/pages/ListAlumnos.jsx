@@ -75,7 +75,8 @@ const ListAlumnos = () => {
     }
 
     const doSelectStudent = (data) => {
-        setSelectedStudent(data.id)
+        console.log(data)
+        setSelectedStudent(data)
         setShowStudent(!showStudent)
     }
     const getPages = () => {
