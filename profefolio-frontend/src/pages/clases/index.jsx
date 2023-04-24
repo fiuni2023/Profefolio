@@ -8,12 +8,17 @@ import StyleComponentBreadcrumb from '../../components/StyleComponentBreadcrumb'
 import { AiOutlinePlus } from 'react-icons/ai';
 import ClasesTable from './components/table/ClasesTable';
 
+import ListDetallesClases from './components/create/ListDetallesClases';
+
 const Clases = () => {
 
     const { getToken, cancan, verifyToken, getUserMail } = useGeneralContext();
     const [condFetch, setCondFetch] = useState(false)
 
     const [showModal, setShowModal] = useState(false);
+
+
+    const [showModalList, setShowModalList] = useState(false);
 
     const nav = useNavigate()
 
@@ -49,7 +54,12 @@ const Clases = () => {
 
     
     const doChangeStudent = (data) => {
-        nav(`/clases/view/${data.id}`)
+       // nav(`/clases/view/${data.id}`)
+
+        setShowModalList(true);
+
+        alert(`entro, ${data.id}`);
+
     }
 
 
@@ -65,6 +75,8 @@ return <>
                 </AddButton>
 
                 <ModalCreateClase title="Agregar Clase" handleClose={handelCloseModal} show={showModal} />
+
+                <ListDetallesClases  title="Detalles Clase"  show={showModalList} />
 
             </MainContainer >
             
