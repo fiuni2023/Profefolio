@@ -7,7 +7,8 @@ import TextButton from "./TextButton";
 const types = ["text", "date", "password", "textarea", "email", "number"];
 const checks = ["checkbox", "radio", "switch"];
 const allinputs = ["text", "date", "password", "textarea", "select"];
-const passRegx = `^(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$`
+const passRegx = `^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[^\\w\\s]).{8,}$`;
+const mailRegx = `^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$`;
 
 /*  Formato del prop "form" es basicamente un objeto con un arreglo de inputs y un arreglo de botones 
 form = {
@@ -86,6 +87,18 @@ function Form({ form }) {
 
     };
 
+    const handleChange = (event, type, onchange) => {
+        if (type && type === "password"){
+            let id = event.target.id; 
+            let val = document.getElementById(id).value;
+            document.getElementById(id).value = val.toString().trim();
+        }
+        if (onchange){
+            onchange.action(event);
+        }
+    }
+
+
     return (
         <>
             <SContainer>
@@ -102,13 +115,15 @@ function Form({ form }) {
                                             id={input?.key ?? i}
                                             key={input?.key ?? i}
                                             value={input?.value}
-                                            onChange={(e) => input?.onChange?.action(e) ?? null}
+                                            onChange={(e) => handleChange(e, input.type, input?.onChange ?? null)}
+                                            maxLength={input?.type === "email" ? 256 : null}
+                                            max={input?.maxDate ? new Date().toISOString().slice(0, 10) : null}
                                             type={input.type}
                                             placeholder={input?.placeholder ?? ""}
                                             disabled={input?.disabled ?? false}
                                             readOnly={input?.disabled ?? false}
                                             required={input?.required ?? false}
-                                            pattern={input?.type === "password" ? passRegx : null}
+                                            pattern={input?.type === "password" ? passRegx : (input.type === "email" ? mailRegx : null)}
                                         >
                                         </SControl>}
                                     {input?.type === "select" &&
