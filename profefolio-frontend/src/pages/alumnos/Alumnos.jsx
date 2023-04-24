@@ -3,19 +3,23 @@ import { useGeneralContext } from '../../context/GeneralContext'
 import { AiOutlinePlus } from 'react-icons/ai'
 import { AddButton, MainContainer, TableContainer } from './styles/Styles'
 import StudentHelper from './helpers/StudentHelper'
-import { Pagination } from "react-bootstrap";
 import Tabla from '../../components/Tabla';
 import { toast } from "react-hot-toast";
 import { useNavigate } from 'react-router-dom';
 import { useFetchEffect } from '../../components/utils/useFetchEffect';
 import StyleComponentBreadcrumb from '../../components/StyleComponentBreadcrumb';
 import ModalAlumnos from './components/ModalAlumnos'
+import Paginations from '../../components/Paginations'
 
 const Alumnos = () => {
     const { getToken, cancan, verifyToken } = useGeneralContext()
     const [condFetch, setCondFetch] = useState(false)
     const [currentPage, setCurrentPage] = useState(0)
     const [next, setNext] = useState(true)
+    const [total_pages, setTotalPages] = useState(0)
+    const [selected_student, setSelectedStudent] = useState(null)
+
+
     const [datosTabla, setDatosTabla] = useState({
         tituloTabla: "studentsList",
         titulos: [{ titulo: "CI" }, { titulo: "Nombre" }, { titulo: "Fecha de nacimiento" }, { titulo: "Dirección" }]
@@ -37,10 +41,12 @@ const Alumnos = () => {
     }, [cancan, verifyToken, nav])
 
     const doChangeStudent = (data) => {
-        console.log("Seleccionado", data)
+        setSelectedStudent(data)
+        setShow(true)
+        console.log(selected_student)
     }
 
-    const { isLoading, error } = useFetchEffect(
+    const { doFetch } = useFetchEffect(
         () => {
             return StudentHelper.getStudentsPage(currentPage, getToken())
         },
@@ -49,6 +55,7 @@ const Alumnos = () => {
             condition: condFetch,
             handleSuccess: (r) => {
                 setNext(r.data.next)
+                setTotalPages(r.data.totalPage)
                 setDatosTabla({
                     ...datosTabla, clickable: { action: doChangeStudent },
                     filas: r.data.dataList.map((dato) => {
@@ -70,27 +77,10 @@ const Alumnos = () => {
         }
     )
     const [show, setShow] = useState(false);
-    // const [disabled, setDisabled] = useState(false);
-    // const [tituloModal, setTituloModal] = useState("Agregar Alumno")
-    const disabled =false;
-    const tituloModal="Agregar Alumno"
 
-    const openNew = () => {
-        setShow(!show);
-    }
-
-    const getPages = () => {
-        return (
-            <>
-                <Pagination.Prev disabled={currentPage <= 0} onClick={() => {
-                    setCurrentPage(currentPage - 1)
-                }} />
-                <Pagination.Item disabled >{currentPage + 1}</Pagination.Item>
-                <Pagination.Next disabled={!next || isLoading || error} onClick={() => {
-                    setCurrentPage(currentPage + 1)
-                }} />
-            </>
-        )
+    const handleHideModal = () => {
+        setSelectedStudent(null)
+        setShow(false)
     }
 
     return (
@@ -99,14 +89,12 @@ const Alumnos = () => {
                 <StyleComponentBreadcrumb nombre="Alumnos" />
                 <TableContainer>
                     <Tabla datosTabla={datosTabla} />
-                    <Pagination size="sm mt-3">
-                        {getPages()}
-                    </Pagination>
-                    <AddButton onClick={openNew}>
+                    <Paginations currentPage={currentPage} totalPage={total_pages} setCurrentPage={setCurrentPage} next={next}/>
+                    <AddButton onClick={()=>{setShow(true)}}>
                         <AiOutlinePlus size={"35px"} />
                     </AddButton>
                 </TableContainer >
-                <ModalAlumnos tituloModal={tituloModal} isOpen={show} disabled={disabled}></ModalAlumnos>  
+                <ModalAlumnos show={show} fetchFunc={doFetch} onHide={handleHideModal} selected_data={selected_student} />
             </MainContainer >
         </>
     )

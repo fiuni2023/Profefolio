@@ -165,14 +165,14 @@ function Form (form){
                                     key={i} 
                                     enabled={button?.enabled ?? false}
                                     buttonType={button.type}
-                                    onClick={button.onclick.action}
+                                    onClick={button.onclick?.action}
                                 ></IconButton>}
                             {button?.style === "text" && 
                                 <TextButton
                                     key={i} 
                                     enabled={button?.enabled ?? true}
                                     buttonType={button.type}
-                                    onClick={() => button.onclick.action() ?? null}
+                                    onClick={button.onclick?.action}
                                 ></TextButton>
                             }
                         </div>
