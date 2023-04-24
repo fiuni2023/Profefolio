@@ -80,33 +80,11 @@ namespace profefolio.Services
             GC.SuppressFinalize(this);
         }
 
-        public IEnumerable<MateriaLista> FilterByIdMateriaAndUserAndClass(int idMateria, string createdBy, int idClase)
-        {
-            return _db.MateriaListas.Where(d => !d.Deleted)
-                .Where(d => d.Id == idMateria)
-                .Where(d => d.CreatedBy == null ? false : d.CreatedBy.Equals(createdBy))
-                .Where(d => d.ClaseId == idClase);
-        }
-
+   
 
         public async Task<bool> IsUsedMateria(int idMateria)
         {
             return await _db.MateriaListas.AnyAsync(d => d.MateriaId == idMateria);
-        }
-
-        public async Task<IEnumerable<MateriaLista>> GetDetalleClaseByIdMateriaAndUsername(string username, int idMateria)
-        {
-            var query = await _db.MateriaListas
-                .Where(p => !p.Deleted)
-                .Where(p => p.CreatedBy == null ? false : p.CreatedBy.Equals(username))
-                .Where(p => p.MateriaId == idMateria).ToListAsync();
-
-            if(query.Count() < 1) 
-                throw new FileNotFoundException();
-
-
-            return query;
-
         }
 
         public async Task<MateriaLista> Find(int idClase, string idProfesor, int idMateria, string userLogged)
@@ -135,6 +113,16 @@ namespace profefolio.Services
             return materiaListas;
 
             
+        }
+
+        public Task<MateriaLista> FindByIdClase(int idClase, string user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<MateriaLista> DeleteByIdClase(int idClase, string user)
+        {
+            throw new NotImplementedException();
         }
     }
 }
