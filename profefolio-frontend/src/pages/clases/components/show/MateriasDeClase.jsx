@@ -125,7 +125,7 @@ const MateriasDeClase = () => {
      */
 
     useMemo(() => {
-        console.log("obtenido profes..")
+        //console.log("obtenido profes..")
         const response = ClassesService.getProfesoresParaClase(getToken());
         if (response !== null) {
             response.then((r) => {
@@ -151,7 +151,7 @@ const MateriasDeClase = () => {
 
     // pedir materias no asignadas a cla clase
     useMemo(() => {
-        console.log("obteniendo materias..")
+        //console.log("obteniendo materias..")
         MateriasService.getMateriaNoAssigned(getClaseSelectedId(), getToken()).then((response) => {
 
             if (response !== null) {
