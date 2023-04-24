@@ -143,5 +143,14 @@ namespace profefolio.Services
             }
 
         }
+
+        public async Task<List<Persona>> FindAllProfesoresOfColegio(int idColegio)
+        {
+            return await _context.Users
+                        .Where(p => !p.Deleted 
+                            && p.ColegiosProfesor
+                                .Any(pr => !pr.Deleted && pr.ColegioId == idColegio))
+                        .ToListAsync();
+        }
     }
 }
