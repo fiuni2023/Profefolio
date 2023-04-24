@@ -107,13 +107,18 @@ namespace profefolio.Controllers
                         Id = p.MateriaId,
                         Materia = p.Materia.Nombre_Materia
                     }
+
+
+
+
+
+
                 });
 
 
             return Ok(query);
 
         }
-
 
 
         [HttpPut]
