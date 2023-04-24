@@ -29,6 +29,24 @@ const StyledTextButton = styled.button`
             background-color: #5181D1;
           }
         `;
+      case 'create':
+        return `
+            background-color: #8DACE1;
+            color: #fff
+            ;&:hover {
+              background-color: #5181D1;
+            }
+          `;
+      case 'save-changes':
+        return `
+              background-color: #8DACE1;
+              color: #fff;
+              width: 200px;
+              height: 35px;
+              ;&:hover {
+                background-color: #5181D1;
+              }
+            `;
       case 'cancel':
         return `
           background-color: #E57BA4;
@@ -42,7 +60,6 @@ const StyledTextButton = styled.button`
         return `
           background-color: #59C8A4;
           color: #fff;
-
           &:hover {
             background-color: #24B787;
           }
@@ -69,7 +86,7 @@ const StyledTextButton = styled.button`
         return `
           background-color: #ccc;
           color: #333;
-
+          cursor: not-allowed;
           &:hover {
             background-color: #ddd;
           }

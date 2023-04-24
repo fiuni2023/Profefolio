@@ -67,6 +67,17 @@ namespace profefolio.Controllers
             return Ok(response);
         }
 
+        // get para obetner una lista de materias que no fueron asignadas a una clase
+        [HttpGet("NoAsignadas/{idClase:int}")]
+        [Authorize(Roles = "Administrador de Colegio")]
+        public async Task<ActionResult<List<MateriaResultDTO>>> GetMateriasNoAsignadas(int idClase)
+        {
+            // obtener la lista de relaciones de la clase en MateriaLista
+            var result = await _materiaService.FindAllUnsignedMaterias(idClase);
+
+            return Ok(_mapper.Map<List<MateriaResultDTO>>(result));
+        }
+
         // PUT: api/Materias/1
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         // 
@@ -78,7 +89,7 @@ namespace profefolio.Controllers
             //verificar el modelo
             if (!ModelState.IsValid)
             {
-                 _log.Error("An error occurred in the put method");
+                _log.Error("An error occurred in the put method");
                 return BadRequest("Objeto No valido");
             }
             //verificar que no sea nulo
@@ -100,8 +111,8 @@ namespace profefolio.Controllers
             {
                 return BadRequest($"Ya existe una materia con el mismo nombre.");
             }
-            string userId = User.Identity.GetUserId();
-            p.ModifiedBy = userId;
+            var userEmail = User.FindFirstValue(ClaimTypes.Name);
+            p.ModifiedBy = userEmail;
             p.Deleted = false;
             p.Modified = DateTime.Now;
 
@@ -138,8 +149,8 @@ namespace profefolio.Controllers
             {
                 var p = _mapper.Map<Materia>(materia);
 
-                var userId = User.Identity.GetUserId();
-                p.ModifiedBy = userId;
+                var userEmail = User.FindFirstValue(ClaimTypes.Name);
+                p.ModifiedBy = userEmail;
                 p.Deleted = false;
                 var saved = await _materiaService.Add(p);
                 await _materiaService.Save();

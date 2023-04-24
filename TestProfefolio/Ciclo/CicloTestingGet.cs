@@ -57,7 +57,7 @@ namespace TestProfefolio.Ciclo
 
             service.Setup(a => a.GetAll()).ReturnsAsync(ciclos.AsEnumerable());
 
-            mapper.Setup(m => m.Map<List<CicloResultDTO>>(ciclos)).Returns(resultDto);
+            mapper.Setup(m => m.Map<List<CicloResultDTO>>(It.IsAny<List<CicloResultDTO>>())).Returns(resultDto);
 
             var result = await controller.GetAll();
 
@@ -76,46 +76,12 @@ namespace TestProfefolio.Ciclo
             Mock<ICiclo> service = new Mock<ICiclo>();
             CicloController controller = new CicloController(mapper.Object, service.Object);
 
-
-            CicloResultDTO dto = new CicloResultDTO()
-            {
-                Id = 1,
-                Nombre = "Primero"
-            };
-
-            CicloResultDTO dto2 = new CicloResultDTO()
-            {
-                Id = 2,
-                Nombre = "Segundo"
-            };
-
-            profefolio.Models.Entities.Ciclo modelo = new profefolio.Models.Entities.Ciclo()
-            {
-                Id = 1,
-                Nombre = "Primero",
-                Created = DateTime.Now,
-                Deleted = false,
-                CreatedBy = "123456"
-            };
-            var modelo2 = modelo;
-            modelo2.Id = 2;
-            modelo2.Nombre = "Segundo";
-
-            List<profefolio.Models.Entities.Ciclo> ciclos = new List<profefolio.Models.Entities.Ciclo>(){
-            modelo, modelo2
-        };
-
-            List<CicloResultDTO> resultDto = new List<CicloResultDTO>(){
-            dto, dto2
-        };
-
             service.Setup(a => a.GetAll()).ThrowsAsync(new Exception("Error durante la busqueda"));
 
             var result = await controller.GetAll();
-            var r = (BadRequestObjectResult)result.Result;
 
-            Assert.IsType<BadRequestObjectResult>(result.Result);
-            Assert.Equal("Error durante la busqueda", r.Value);
+            var jsonResult = Assert.IsType<BadRequestObjectResult>(result.Result);
+            Assert.Equal("Error durante la busqueda", jsonResult.Value);
         }
     
     
@@ -154,8 +120,8 @@ namespace TestProfefolio.Ciclo
                 CreatedBy = "juan"
             };
 
-            service.Setup(a => a.FindById(id)).ReturnsAsync(modelo);
-            mapper.Setup(m => m.Map<CicloResultDTO>(modelo)).Returns(resultDTO);
+            service.Setup(a => a.FindById(It.IsAny<int>())).ReturnsAsync(modelo);
+            mapper.Setup(m => m.Map<CicloResultDTO>(It.IsAny<profefolio.Models.Entities.Ciclo>())).Returns(resultDTO);
 
             var result = await controller.Get(id);
 
@@ -183,7 +149,7 @@ namespace TestProfefolio.Ciclo
             Mock<ICiclo> service = new Mock<ICiclo>();
             CicloController controller = new CicloController(mapper.Object, service.Object);
 
-            service.Setup(a => a.FindById(id));
+            service.Setup(a => a.FindById(It.IsAny<int>()));
 
             var result = await controller.Get(id);
 
@@ -210,7 +176,7 @@ namespace TestProfefolio.Ciclo
             Mock<ICiclo> service = new Mock<ICiclo>();
             CicloController controller = new CicloController(mapper.Object, service.Object);
 
-            service.Setup(a => a.FindById(id)).ThrowsAsync(new Exception("Fallo la busqueda"));
+            service.Setup(a => a.FindById(It.IsAny<int>())).ThrowsAsync(new Exception("Fallo la busqueda"));
 
             var result = await controller.Get(id);
 

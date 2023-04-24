@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using profefolio.Models;
 using profefolio.Models.Entities;
 using profefolio.Repository;
@@ -106,6 +107,34 @@ namespace profefolio.Services
 
             return query;
 
+        }
+
+        public async Task<MateriaLista> Find(int idClase, string idProfesor, int idMateria, string userLogged)
+        {
+            var colegio = _db.Colegios
+                .FirstOrDefault(c => c.personas.UserName.Equals(userLogged));
+
+            
+            if(colegio == null) throw new FileNotFoundException();
+
+            var clase = await _db.Clases
+                .Include(c => c.MateriaListas)
+                .Where(c => !c.Deleted)
+                .Where(c => c.ColegioId == colegio.Id)
+                .Where(c => c.Id == idClase)
+                .FirstOrDefaultAsync();
+
+            if(clase == null) throw new FileNotFoundException();
+
+            var materiaListas = clase.MateriaListas
+                .Where(p => p.ClaseId == idClase)
+                .Where(p => p.MateriaId == idMateria)
+                .Where(p => p.ProfesorId == idProfesor)
+                .FirstOrDefault();
+
+            return materiaListas;
+
+            
         }
     }
 }

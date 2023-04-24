@@ -45,7 +45,7 @@ const updateClasse = async (id, body, token) => {
             },
 
         })
-    return result.status === 200 ? result : null
+    return result
 }
 
 const deleteClasse = async (id, token) => {
@@ -60,5 +60,17 @@ const deleteClasse = async (id, token) => {
     return result.status === 200 ? result : null
 }
 
-const ClassesService = { getClassesPage, getClassesById, createClasse, updateClasse, deleteClasse }
+const getProfesoresParaClase = async (token) => {
+    const result = await axios.get(`${APILINK}/api/profesor/misprofesores`,
+        {
+            headers: {
+                "Authorization": 'Bearer ' + token,
+                "Content-Type": "application/json"
+            },
+        })
+    return result.status === 200 ? result : null
+}
+
+
+const ClassesService = { getClassesPage, getClassesById, createClasse, updateClasse, deleteClasse, getProfesoresParaClase }
 export default ClassesService

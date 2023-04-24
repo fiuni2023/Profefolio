@@ -8,7 +8,6 @@ import FormAddCiclo from "./FormAddCiclo";
 import axios from "axios";
 import APILINK from "../../../../components/link";
 import { toast } from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
 import ModalContainer from "../../../../components/Modals";
 import TextButton from "../../../../components/TextButton";
 import { SContainer, SControl, SGroup, SLabel, SRow } from "../../../../components/componentsStyles/StyledForm";
@@ -50,7 +49,6 @@ const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = 
         setData([...data, ciclo])
     }
 
-    const nav = useNavigate()
 
     const schema = Yup.object().shape({
         nombre: Yup.string().required("Campo requerido").max(128, "La longitud maxima es de 128 caracteres"),
@@ -60,33 +58,6 @@ const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = 
     });
 
 
-    const actualizarClase = () => {
-        verifyToken()
-        const toastLoadig = toast.loading("Obteniendo Clase.");
-
-        if (!cancan("Administrador de Colegio")) {
-            nav("/")
-        } else {
-            //axios.get(`https://miapi.com/products?page=${page}&size=${size}`, {
-
-            colegio && axios.get(`${APILINK}/api/clase/page/${colegio?.id}/${0}`, {
-                headers: {
-                    Authorization: `Bearer ${getToken()}`,
-                }
-            })
-                .then(response => {
-                    triggerState(response.data.dataList);
-                    handlePage(response.data.next);
-                })
-                .catch(error => {
-                    //console.error(error);
-                    toast.dismiss(toastLoadig);
-                    toast.error(`Error recargue la pagina`);
-                });
-            toast.dismiss(toastLoadig);
-
-        }
-    }
 
     const handleSubmit = async (e) => {
         setIsSend(true);
@@ -106,21 +77,14 @@ const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = 
         })
 
         if (result.status === 200) {
-            //console.log("Result: ", result);
             setIsSend(false);
             handleClose(false);
 
-
-
             //actualizar lista de la tabla aqui
-            actualizarClase();
-
-
-
+            triggerState();
 
             toast.success("Guardado exitoso.");
         } else {
-            //console.log("Error: ", result.data)
             setIsSend(false);
             toast.error(`Error: ${result.data.error}`);
         }
