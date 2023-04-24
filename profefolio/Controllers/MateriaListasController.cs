@@ -64,7 +64,7 @@ namespace profefolio.Controllers
 
                 var p = await _profesorService.FindByIdAndRole(profes, "Profesor");
 
-                if (p == null) { continue; }
+                if (p == null) return BadRequest("Uno de los profesores que deseas agregar no existe");
                 await _materiaListaService.Add(new MateriaLista
                 {
                     ClaseId = dto.IdClase,
