@@ -1,40 +1,26 @@
 /* eslint-disable */
 import React, { useState, useEffect } from 'react';
 import { PanelContainerBG } from '../../profesor/components/LayoutAdmin';
-import CreateModal from '../create/CreateModalMaterias.jsx';
 import { useGeneralContext } from "../../../context/GeneralContext.jsx";
 import axios from 'axios';
-
+import TextButton from '../../../components/TextButton';
 import StyleComponentBreadcrumb from '../../../components/StyleComponentBreadcrumb';
-
+import { toast } from 'react-hot-toast';
 import styles from '../create/Index.module.css';
 import APILINK from '../../../components/link.js';
 import { useNavigate } from 'react-router';
-
-import Pagination from 'react-bootstrap/Pagination';
-
 import Tabla from '../../../components/Tabla';
-
-import CreateModalMaterias from '../create/CreateModalMaterias.jsx';
-
-import ListDetallesMateria from './ListDetallesMateria';
-
-
-
-
 
 function ListarMaTerias() {
 
   const [materias, setMaterias] = useState([]);
   const [ciclos, setCiclos] = useState([]);
-  const [showModal, setShowModal] = useState(false);
   const [id, setId] = useState(null);
   const [data, setData] = useState({})
   const { getToken, cancan, verifyToken } = useGeneralContext();
-
   const [page, setPage] = useState(0);
-
-
+  const [nombreCiclo, setNombreCiclo] = useState(null);
+  const [nombre_Materia, setNombreMateria] = useState('');
 
 
 
@@ -90,12 +76,63 @@ function ListarMaTerias() {
     }
   }, [page, cancan, verifyToken, nav, getToken]);
 
+  const handleSubmitMateria = () => {
+    console.log(nombre_Materia)
+    if (nombre_Materia === "") toast.error("revisa los datos, los campos deben ser completados")
+    else {
+      axios.post(`${APILINK}/api/Materia`, {
+        nombre_Materia,
+
+      }, {
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+        }
+      })
+        .then(response => {
+          toast.success("Guardado exitoso");
+          setNombreMateria("")
 
 
-  const doFetch = (materia) => {
-    setMaterias([...materias, materia])
-  }
+        })
+        .catch(error => {
+          if (typeof (error.response.data) === "string" ? true : false) {
+            toast.error(error.response.data)
+          } else {
+            toast.error(error.response.data?.errors.Password ? error.response.data?.errors.Password[0] : error.response.data?.errors.Email[0])
+          }
+        });
 
+    }
+    const handleSubmitCiclo = () => {
+      console.log(nombreCiclo)
+      if (nombreCiclo === "") toast.error("revisa los datos, los campos deben ser completados")
+      else {
+        axios.post(`${APILINK}/api/Clase`, {
+         nombreCiclo,
+  
+        }, {
+          headers: {
+            Authorization: `Bearer ${getToken()}`,
+          }
+        })
+          .then(response => {
+            toast.success("Guardado exitoso");
+            setNombreCiclo("")
+  
+  
+          })
+          .catch(error => {
+            if (typeof (error.response.data) === "string" ? true : false) {
+              toast.error(error.response.data)
+            } else {
+              toast.error(error.response.data?.errors.Password ? error.response.data?.errors.Password[0] : error.response.data?.errors.Email[0])
+            }
+          });
+  
+      }
+    }
+
+  };
 
   const btndetalles = (data) => {
     setShowModal(true);
@@ -103,19 +140,14 @@ function ListarMaTerias() {
     setData(data)
   };
 
-
-
-
-
-  const modalOnHide = (bool) => {
-    setShowModal(bool)
-    setData({})
-    setId(null)
+  const handleNombreMateria = (event) => {
+    setNombreMateria(event.target.value);
+   
   }
-
-
-  const [show, setShow] = useState(false);
-
+  const handleNombreCiclo = (event) => {
+    setNombreCiclo(event.target.value);
+    
+  }
 
   return (
     <>
@@ -130,9 +162,8 @@ function ListarMaTerias() {
             <div className={styles.container} id={styles.materiasTable}>
 
               <Tabla
-                
                 datosTabla={{
-                  tituloTabla: 'Lista de materias',
+                  tituloTabla: 'Lista de Materias',
                   titulos: [
                     { titulo: 'Materias' },
                   ],
@@ -147,6 +178,13 @@ function ListarMaTerias() {
                 }}
                 selected={id ?? '-'}
               />
+              <div>
+                <label>Agregar Materia</label>
+                <br />
+                <input className={styles.inputAdd} placeholder='Nombre de la materia' onChange={(event) => handleNombreMateria(event)} ></input>
+                <br />
+                <TextButton enabled={true} buttonType='save' onClick={() => handleSubmitMateria()} />
+              </div>
 
             </div>
 
@@ -160,40 +198,27 @@ function ListarMaTerias() {
                   ],
                   clickable: { action: btndetalles },
                   tableWidth: '80%',
-                  filas: materias.map((materia) => ({
-                    fila: materia,
+                  filas: ciclos.map((ciclo) => ({
+                    fila: ciclo,
                     datos: [
-                      { dato: materia.nombre_Materia },
+                      { dato: ciclo.nombre },
                     ],
                   })),
                 }}
                 selected={id ?? '-'}
               />
+              <div>
+                <label>Agregar Ciclo</label>
+                <br />
+                <input className={styles.inputAdd} placeholder='Nombre del Ciclo' onChange={(event)=>handleNombreCiclo(event)} ></input>
+                <TextButton enabled={true} buttonType='save' onClick={() => handleSubmitCiclo()} />
+              </div>
             </div>
           </div>
         </PanelContainerBG>
         <footer>
-          <div className={styles.NButtonForSideA}>
-            <CreateModalMaterias title="My Modal" onClose={() => setShow(false)} show={show}
-              triggerState={(materia) => { doFetch(materia) }}>
-            </CreateModalMaterias>
-
-          </div>
-
-
 
         </footer>
-
-
-
-
-
-
-
-
-
-
-
 
       </div>
 

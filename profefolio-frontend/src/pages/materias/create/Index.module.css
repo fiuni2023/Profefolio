@@ -34,15 +34,36 @@ td {
 
 .tableContainer {
   display: flex;
-  width: 100%;
-  
+
+
 }
-#materiasTable{
+
+#materiasTable {
   width: 80%;
+  overflow: hidden;
+  display: block;
+  margin-left: 7%;
 }
-.tablaMat{
+
+#ciclosTable {
+  overflow: hidden;
+  display: block;
+}
+
+.inputAdd {
+  background-color: #F5F5F5;
+  border-radius: 5px;
+  border-color: none;
+  border: none;
+  width: 80%;
+  height: 30px;
+  color: black;
+}
+
+.tablaMat {
   width: 100px;
 }
+
 .content {
   width: 100%;
   height: 100%;
