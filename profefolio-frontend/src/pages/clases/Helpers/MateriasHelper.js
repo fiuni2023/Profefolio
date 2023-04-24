@@ -15,7 +15,7 @@ const createMateria = async (body, token) => {
 }
 
 const getMateriaNoAssigned = async (idClase, token) => {
-    const result = await axios.post(`${APILINK}/api/materia/NoAsignadas/${idClase}`,
+    const result = await axios.get(`${APILINK}/api/materia/NoAsignadas/${idClase}`,
         {
             headers: {
                 "Authorization": 'Bearer ' + token,

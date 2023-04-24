@@ -1,10 +1,12 @@
-import React, { memo, useEffect, useId, useState } from 'react'
+import React, { memo, useEffect, useId, useMemo, useState } from 'react'
 import { Container, Item, ItemContainer, List, ListButton, SBody, SForm, SHeader, ScrollTable, Select } from '../../../../components/componentsStyles/StyledScrolleableList';
 import { RxReload } from 'react-icons/rx';
 import TextButton from '../../../../components/TextButton';
 import { map } from "lodash"
 import styled from 'styled-components';
 import { useClaseContext } from '../../context/ClaseContext';
+import MateriasService from "../../Helpers/MateriasHelper.js"
+import { useGeneralContext } from '../../../../context/GeneralContext';
 
 const TagTeacher = styled.div`
     border-radius: 20px;
@@ -104,12 +106,52 @@ const ListItem = memo(({ index, idMateria, nombre, profesores = [], type, onClic
 })
 const MateriasDeClase = () => {
     const [optionSelected, setOptionSelected] = useState("");
+    const [optionsMaterias, setOptionsMaterias] = useState([]);
 
-    const { getListaMaterias, setStatusMateria, getClaseSelectedId } = useClaseContext();
-
+    const { getListaMaterias, setStatusMateria, getClaseSelectedId, addMateriaToList } = useClaseContext();
+    const { getToken } = useGeneralContext()
+        ;
     //pedir materias con clases 
 
-    // pedir materias normales 
+
+    // pedir materias no asignadas a cla clase
+    useMemo(() => {
+        MateriasService.getMateriaNoAssigned(getClaseSelectedId(), getToken()).then((response) => {
+
+            if (response !== null) {
+                console.log(response.data)
+                setOptionsMaterias(map(response.data, (e, i) => ({
+                    label: e.nombre_Materia,
+                    value: e.id,
+                    status: "not_used"
+                })))
+            }
+            else {
+                setOptionsMaterias([])
+            }
+        }).catch((e) => {
+            setOptionsMaterias([])
+            console.log(e)
+        })
+
+    }, [getClaseSelectedId, getToken])
+
+    const handleSelectOptionMateria = (e) => {
+        e.preventDefault();  
+        setOptionSelected(e.target.value)
+        console.log(`Asigna la materia con id: ${e.target.value} a la clase con id: ${getClaseSelectedId()}`)
+
+        if (/^[0-9]+$/.test(e.target.value)) {
+            const index = optionsMaterias.findIndex(a => a.value === parseInt(e.target.value))
+            
+            addMateriaToList(optionsMaterias[index].label)
+            optionsMaterias[index].status = "selected";
+            
+            setOptionsMaterias([...optionsMaterias]);
+            //cargar a la lista de materias principal
+            setOptionSelected("")
+        }
+    }
 
     let materiasList = {
         onSubmit: () => console.log("Guardado"),
@@ -119,12 +161,10 @@ const MateriasDeClase = () => {
         },
         addTitle: "Agregar Materias",
         selectTitle: "Seleccionar Materia",
-        options: [
-            { label: "Guarani", value: 1 },
-            { label: "Lenguas", value: 2 }
-        ],
+        options: optionsMaterias,
         list: getListaMaterias()
     }
+
     return <>
 
         <Container>
@@ -143,22 +183,22 @@ const MateriasDeClase = () => {
                                     nombre={materia.nombre}
                                     profesores={materia.profesores}
                                     type={materia.status}
-                                    onClick={() => {console.log(`${materia.nombre} 'seleccionado'`); setStatusMateria(materia.id, (materia.status === "new" ? "reload" : "new"));}} />
+                                    onClick={() => { console.log(`${materia.nombre} 'seleccionado'`); setStatusMateria(materia.id, (materia.status === "new" ? "reload" : "new")); }} />
                             ))}
                         </List>
                     </SBody>}
                 <SForm onSubmit={materiasList?.onSubmit ?? null} >
                     <span>{materiasList?.addTitle}</span>
-                    <Select value={optionSelected} onChange={(e) => {setOptionSelected(e.target.value)}}>
+                    <Select value={optionSelected} onChange={(e) => { handleSelectOptionMateria(e) }}>
                         <option value="" disabled>{materiasList?.selectTitle}</option>
-                        {materiasList?.options?.map((option, index) => (
-                            <option key={index} value={option.value}>
+                        {map(materiasList?.options, (option, index) => (
+                            option.status === "not_used" && <option key={index} value={option.value}>
                                 {option.label}
                             </option>
                         ))}
                     </Select>
                     <div style={{ textAlign: 'right' }}>
-                        <TextButton buttonType={'save-changes'} enabled={materiasList?.enabled ?? false} onClick={(e) => {e.preventDefault(); console.log(`Asigna la materia con id: ${optionSelected} a la clase con id: ${getClaseSelectedId()}`)}} />
+                        <TextButton buttonType={'save-changes'} enabled={materiasList?.enabled ?? false} onClick={(e) => { "enviando..." }} />
                     </div>
                 </SForm>
             </ScrollTable>

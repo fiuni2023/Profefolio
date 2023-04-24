@@ -47,6 +47,16 @@ export const ClaseProvider = ({ children }) => {
         }
     }
 
+    const addMateriaToList = (nombre) => {
+        const newMateria = {
+            id: Date.now().toString(),
+            nombre,
+            status: "new",
+            profesores: []
+        }
+        setListaMaterias([...listaMaterias, newMateria])
+    }
+
     const getClaseSelectedId = () => {
         const json = localStorage.getItem("id-clase-selected")
         const value = JSON.parse(json);
@@ -61,7 +71,8 @@ export const ClaseProvider = ({ children }) => {
         setClaseSelectedId,
         getListaMaterias,
         setStatusProfesorMateria,
-        setStatusMateria
+        setStatusMateria,
+        addMateriaToList
     }
 
     return (
