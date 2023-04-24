@@ -1,8 +1,28 @@
-import React from 'react'
+import React, { useState } from 'react'
 import ScrolleableTable from '../../../../components/ScrolleableTable'
-
-const AlumnosInscriptos = () => {
-
+import StudentHelper from '../../../alumnos/helpers/StudentHelper'
+import { useFetchEffect } from '../../../../components/utils/useFetchEffect'
+import { useGeneralContext } from '../../../../context/GeneralContext';
+import { toast } from 'react-hot-toast';
+const AlumnosInscriptos = ({colegio}) => {
+    const [listaAlumnos, setListaAlumnos] = useState([])
+    const { getToken} = useGeneralContext();
+    const { loading } = useFetchEffect(
+        () => {
+            return StudentHelper.getStudentsPage(0, getToken())
+        },
+        [ getToken],
+        {
+            condition: true,
+            handleSuccess: (r) => {
+                setListaAlumnos(r.data.dataList)
+                console.log(r.data.dataList)
+            },
+            handleError: () => {
+                toast.error("No se pudieron obtener los alumnos. Intente recargar la página")
+            }
+        }
+    )
     const Alumnos = {
         onSubmit: () => console.log("Guardado"),
         enabled: true,
@@ -15,33 +35,10 @@ const AlumnosInscriptos = () => {
             { label: "Carlos", value: 1 },
             { label: "Gabriela", value: 1 }
         ],
-        list: [
-            { name: "John", lastName: "Apellido", document: "1.234.567", status: "" },
-            { name: "Mery", lastName: "Apellido", document: "1.234.567", status: "" },
-            { name: "Pepe", lastName: "Apellido", document: "1.234.567", status: "new" },
-            { name: "Laura", lastName: "Apellido", document: "1.234.567", status: "reload" },
-            { name: "Mery", lastName: "Apellido", document: "1.234.567", status: "" },
-            { name: "Pepe", lastName: "Apellido", document: "1.234.567", status: "" },
-            { name: "Laura", lastName: "Apellido", document: "1.234.567", status: "" },
-            { name: "Mery", lastName: "Apellido", document: "1.234.567", status: "" },
-            { name: "Mery", lastName: "Apellido", document: "1.234.567", status: "" },
-            { name: "Pepe", lastName: "Apellido", document: "1.234.567", status: "" },
-            { name: "Laura", lastName: "Apellido", document: "1.234.567", status: "" },
-            { name: "Mery", lastName: "Apellido", document: "1.234.567", status: "reload" },
-            { name: "Pepe", lastName: "Apellido", document: "1.234.567", status: "" },
-            { name: "Laura", lastName: "Apellido", document: "1.234.567", status: "" },
-            { name: "Mery", lastName: "Apellido", document: "1.234.567", status: "" },
-            { name: "Mery", lastName: "Apellido", document: "1.234.567", status: "" },
-            { name: "Pepe", lastName: "Apellido", document: "1.234.567", status: "" },
-            { name: "Laura", lastName: "Apellido", document: "1.234.567", status: "new" },
-            { name: "Mery", lastName: "Apellido", document: "1.234.567", status: "" },
-            { name: "Pepe", lastName: "Apellido", document: "1.234.567", status: "" },
-            { name: "Laura", lastName: "Apellido", document: "1.234.567", status: "" },
-            { name: "Mery", lastName: "Apellido", document: "1.234.567", status: "" }
-        ]
+        list: listaAlumnos
     }
     return <>
-        <ScrolleableTable studentsList={Alumnos} />
+        <ScrolleableTable isLoading={loading} studentsList={Alumnos} />
     </>
 
 }
