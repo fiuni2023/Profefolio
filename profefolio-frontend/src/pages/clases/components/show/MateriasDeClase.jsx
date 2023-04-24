@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useId, useMemo, useState } from 'react'
+import React, { memo, useEffect, useId, useMemo, useState } from 'react'
 import { Container, Item, ItemContainer, List, ListButton, SBody, SForm, SHeader, ScrollTable, Select } from '../../../../components/componentsStyles/StyledScrolleableList';
 import { RxReload } from 'react-icons/rx';
 import TextButton from '../../../../components/TextButton';
@@ -7,8 +7,6 @@ import styled from 'styled-components';
 import { useClaseContext } from '../../context/ClaseContext';
 import MateriasService from "../../Helpers/MateriasHelper.js"
 import { useGeneralContext } from '../../../../context/GeneralContext';
-import axios from 'axios';
-import APILINK from '../../../../components/link';
 import ClassesService from '../../Helpers/ClassesHelper';
 
 const TagTeacher = styled.div`
@@ -175,7 +173,7 @@ const MateriasDeClase = () => {
     }, [getClaseSelectedId, getToken])
 
 
-    
+
     const handleSelectOptionMateria = (e) => {
         e.preventDefault();
         setOptionSelected(e.target.value)
