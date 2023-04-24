@@ -67,6 +67,17 @@ namespace profefolio.Controllers
             return Ok(response);
         }
 
+        // get para obetner una lista de materias que no fueron asignadas a una clase
+        [HttpGet("NoAsignadas/{idClase:int}")]
+        [Authorize(Roles = "Administrador de Colegio")]
+        public async Task<ActionResult<List<MateriaResultDTO>>> GetMateriasNoAsignadas(int idClase)
+        {
+            // obtener la lista de relaciones de la clase en MateriaLista
+            var result = await _materiaService.FindAllUnsignedMaterias(idClase);
+
+            return Ok(_mapper.Map<List<MateriaResultDTO>>(result));
+        }
+
         // PUT: api/Materias/1
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         // 
