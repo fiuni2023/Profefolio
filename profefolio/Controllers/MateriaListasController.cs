@@ -16,7 +16,7 @@ namespace profefolio.Controllers
         private readonly IPersona _profesorService;
         private readonly IMateria _materiaService;
         private readonly IClase _claseService;
-        
+
         public MateriaListasController(IMateriaLista materiaListaService, IPersona profesorService, IMateria materiaService, IClase claseService)
         {
             _materiaListaService = materiaListaService;
@@ -29,9 +29,32 @@ namespace profefolio.Controllers
         public async Task<ActionResult> Post([FromBody] ClaseMateriaCreateDTO dto)
         {
             if (!ModelState.IsValid)
-                return Ok(dto);
+            {
+                return BadRequest(dto);
+            }
 
-            if(dto.IdProfesores.Count < 1) return BadRequest();
+
+            if (dto.IdProfesores.Count < 1)
+            {
+                return BadRequest("Debe incluir por lo menos un Id de un profesor");
+            }
+
+
+            var materia = _materiaService.FindById(dto.IdMateria);
+
+            if (materia == null)
+            {
+                return BadRequest("No se encontro el Id de la Materia");
+            }
+
+            var clase = _claseService.FindById(dto.IdClase);
+
+            if(clase == null)
+            {
+                return BadRequest("No se encontro la clase que desea asociar");
+            }
+
+
 
             var user = User.Identity.Name;
 
@@ -39,7 +62,7 @@ namespace profefolio.Controllers
             foreach (var profes in dto.IdProfesores.Distinct())
             {
 
-                var p = await _profesorService.FindById(profes);
+                var p = await _profesorService.FindByIdAndRole(profes, "Profesor");
 
                 if (p == null) { continue; }
                 await _materiaListaService.Add(new MateriaLista
@@ -91,7 +114,7 @@ namespace profefolio.Controllers
 
         }
 
-    
+
 
         [HttpPut]
         [Route("{idClase:int}")]
@@ -103,7 +126,7 @@ namespace profefolio.Controllers
                 return BadRequest();
             }
 
-            if(dto.IdProfesores.Count < 1) return BadRequest();
+            if (dto.IdProfesores.Count < 1) return BadRequest();
 
             var user = User.Identity.Name;
             try
@@ -118,7 +141,7 @@ namespace profefolio.Controllers
 
                     if (p == null) { continue; }
 
-                    var detalle =await _materiaListaService.Find(dto.IdClase, item, dto.IdMateria, user);
+                    var detalle = await _materiaListaService.Find(dto.IdClase, item, dto.IdMateria, user);
 
                     if (detalle == null)
                     {
