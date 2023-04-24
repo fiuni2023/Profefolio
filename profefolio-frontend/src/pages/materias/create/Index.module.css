@@ -10,10 +10,11 @@ footer {
 }
 
 .container {
-  display: flex;
+  height: 350px;
+  display: block;
   justify-content: center;
   align-items: center;
-  width: 50%;
+ 
 }
 
 th,
@@ -34,22 +35,45 @@ td {
 
 .tableContainer {
   display: flex;
-
+margin-left: 10%;
 
 }
 
 #materiasTable {
-  width: 80%;
-  overflow: hidden;
+  overflow-y: scroll;
   display: block;
   margin-left: 7%;
+  height: 320px;
+  
 }
 
 #ciclosTable {
-  overflow: hidden;
+  margin-left: 11%;
+  overflow-y: scroll;
   display: block;
+  height: 320px;
 }
+#containerCiclos{
+  width: 30%;
 
+}
+#containerMaterias{
+  width: 50%;
+
+}
+.divAdd{
+  margin-left: 8%;
+  width:650px;
+  margin-top: 4%;
+}
+.divAddCiclos{
+  margin-left: 12%;
+  width:370px;
+  margin-top: 6%;
+}
+.buttonGuardar{
+  margin-left: 20%;
+}
 .inputAdd {
   background-color: #F5F5F5;
   border-radius: 5px;

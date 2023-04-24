@@ -91,7 +91,8 @@ function ListarMaTerias() {
         .then(response => {
           toast.success("Guardado exitoso");
           setNombreMateria("")
-
+         
+          console.log(materias);
 
         })
         .catch(error => {
@@ -108,8 +109,8 @@ function ListarMaTerias() {
       if (nombreCiclo === "") toast.error("revisa los datos, los campos deben ser completados")
       else {
         axios.post(`${APILINK}/api/Clase`, {
-         nombreCiclo,
-  
+          nombreCiclo,
+
         }, {
           headers: {
             Authorization: `Bearer ${getToken()}`,
@@ -118,8 +119,8 @@ function ListarMaTerias() {
           .then(response => {
             toast.success("Guardado exitoso");
             setNombreCiclo("")
-  
-  
+            console.log(ciclos)
+
           })
           .catch(error => {
             if (typeof (error.response.data) === "string" ? true : false) {
@@ -128,7 +129,7 @@ function ListarMaTerias() {
               toast.error(error.response.data?.errors.Password ? error.response.data?.errors.Password[0] : error.response.data?.errors.Email[0])
             }
           });
-  
+
       }
     }
 
@@ -142,11 +143,11 @@ function ListarMaTerias() {
 
   const handleNombreMateria = (event) => {
     setNombreMateria(event.target.value);
-   
+
   }
   const handleNombreCiclo = (event) => {
     setNombreCiclo(event.target.value);
-    
+
   }
 
   return (
@@ -159,61 +160,65 @@ function ListarMaTerias() {
         <PanelContainerBG>
 
           <div className={styles.tableContainer}>
-            <div className={styles.container} id={styles.materiasTable}>
-
-              <Tabla
-                datosTabla={{
-                  tituloTabla: 'Lista de Materias',
-                  titulos: [
-                    { titulo: 'Materias' },
-                  ],
-                  clickable: { action: btndetalles },
-                  tableWidth: '80%',
-                  filas: materias.map((materia) => ({
-                    fila: materia,
-                    datos: [
-                      { dato: materia.nombre_Materia },
+            <div className={styles.container} id={styles.containerMaterias} >
+              <div id={styles.materiasTable}>
+                <Tabla
+                  datosTabla={{
+                    tituloTabla: 'Lista de Materias',
+                    titulos: [
+                      { titulo: 'Materias' },
                     ],
-                  })),
-                }}
-                selected={id ?? '-'}
-              />
-              <div>
+                    clickable: { action: btndetalles },
+                    tableWidth: '100%',
+                    filas: materias.map((materia) => ({
+                      fila: materia,
+                      datos: [
+                        { dato: materia.nombre_Materia },
+                      ],
+                    })),
+                  }}
+                  selected={id ?? '-'}
+                />
+              </div>
+              <div className={styles.divAdd}>
                 <label>Agregar Materia</label>
                 <br />
                 <input className={styles.inputAdd} placeholder='Nombre de la materia' onChange={(event) => handleNombreMateria(event)} ></input>
                 <br />
                 <TextButton enabled={true} buttonType='save' onClick={() => handleSubmitMateria()} />
               </div>
-
             </div>
 
-            <div className={styles.container} id={styles.ciclosTable}>
-
-              <Tabla
-                datosTabla={{
-                  tituloTabla: 'Lista de Ciclos',
-                  titulos: [
-                    { titulo: 'Ciclos' },
-                  ],
-                  clickable: { action: btndetalles },
-                  tableWidth: '80%',
-                  filas: ciclos.map((ciclo) => ({
-                    fila: ciclo,
-                    datos: [
-                      { dato: ciclo.nombre },
+            <div className={styles.container} id={styles.containerCiclos} >
+              <div id={styles.ciclosTable}>
+                <Tabla
+                  datosTabla={{
+                    tituloTabla: 'Lista de Ciclos',
+                    titulos: [
+                      { titulo: 'Ciclos' },
                     ],
-                  })),
-                }}
-                selected={id ?? '-'}
-              />
+                    clickable: { action: btndetalles },
+                    tableWidth: '100%',
+                    filas: materias.map((ciclo) => ({
+                      fila: ciclo,
+                      datos: [
+                        { dato: ciclo.nombre_Materia },
+                      ],
+                    })),
+                  }}
+                  selected={id ?? '-'}
+                />
+              </div>
               <div>
-                <label>Agregar Ciclo</label>
-                <br />
-                <input className={styles.inputAdd} placeholder='Nombre del Ciclo' onChange={(event)=>handleNombreCiclo(event)} ></input>
-                <TextButton enabled={true} buttonType='save' onClick={() => handleSubmitCiclo()} />
+                <div className={styles.divAddCiclos}>
+                  <label>Agregar Ciclo</label>
+                  <br />
+                  <input className={styles.inputAdd} placeholder='Nombre del Ciclo' onChange={(event) => handleNombreCiclo(event)} ></input>
+                  <TextButton enabled={true} buttonType='save' onClick={() => handleSubmitCiclo()} className={styles.buttonGuardar} />
+                </div>
               </div>
             </div>
+
           </div>
         </PanelContainerBG>
         <footer>
