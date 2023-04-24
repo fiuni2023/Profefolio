@@ -5,7 +5,7 @@ import { BiArrowBack } from "react-icons/bi"
 import ModalAgregarColegios from './AgregarColegios'
 import axios from "axios";
 import Paginations from "../../components/Paginations"
-import { useGeneralContext} from '../../context/GeneralContext'
+import { useGeneralContext } from '../../context/GeneralContext'
 
 import APILINK from "../../components/link";
 import ModalVerColegios from './ModalVerColegios'
@@ -23,9 +23,9 @@ function ListarColegios() {
   const [currentPage, setCurrentPage] = useState(0);
   const [colegios, setColegios] = useState([]);
   const [datoIdColegio, setDatoIdColegio] = useState('');
-  const [next, setNext]=useState(false);
-  const [totalPage, setTotalPage]=useState(0);
-
+  const [next, setNext] = useState(false);
+  const [totalPage, setTotalPage] = useState(0);
+  const [idAdmin, setIdAdmin] = useState(0);
   const [datosTabla, setDatosTabla] = useState({
     tituloTabla: "studentsList",
     titulos: [{ titulo: "Numero" }, { titulo: "Nombre" }, { titulo: "Administrador" }]
@@ -52,21 +52,21 @@ function ListarColegios() {
           setDatosTabla({
             ...datosTabla, clickable: { action: handleShow },
             filas: response.data.dataList.map((dato) => {
-                return {
-                    fila: dato,
-                    datos: [
-                        { dato: dato?.id ?? "" },
-                        { dato: dato?.nombre ?? "" },
-                        { dato: dato?.idAdmin? `${dato?.nombreAdministrador} ${dato?.apellido}` : "Sin Administrador" }]
-                }
+              return {
+                fila: dato,
+                datos: [
+                  { dato: dato?.id ?? "" },
+                  { dato: dato?.nombre ?? "" },
+                  { dato: dato?.idAdmin ? `${dato?.nombreAdministrador} ${dato?.apellido}` : "Sin Administrador" }]
+              }
             })
 
-        })
+          })
 
           setCurrentPage(response.data.currentPage);//Actualiza la pagina en donde estan los datos
           setNext(response.data.next);
           setTotalPage(response.data.totalPage)
-          
+
         })
         .catch(error => {
           toast.error(error);
@@ -75,7 +75,7 @@ function ListarColegios() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cancan, verifyToken, nav, currentPage, getToken]);
- 
+
   const doFetch = (colegio) => {
     setColegios([...colegios, colegio])
   }
@@ -106,7 +106,7 @@ function ListarColegios() {
 
         </div>
 
-        <ModalVerColegios datoIdColegio={datoIdColegio} show={show} setShow={setShow} disabled={disabled} setDisabled={setDisabled} triggerState={(colegio)=>{setColegios(colegio)}} page={currentPage} idAdministrador={idAdmin}></ModalVerColegios>
+        <ModalVerColegios datoIdColegio={datoIdColegio} show={show} setShow={setShow} disabled={disabled} setDisabled={setDisabled} triggerState={(colegio) => { setColegios(colegio) }} page={currentPage} idAdministrador={idAdmin}></ModalVerColegios>
         <ModalAgregarColegios triggerState={(colegio) => { doFetch(colegio) }} currentPage={currentPage}  ></ModalAgregarColegios>
       </div>
     </>)
