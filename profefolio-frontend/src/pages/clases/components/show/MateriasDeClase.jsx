@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useId, useMemo, useState } from 'react'
+import React, { memo, useCallback, useEffect, useId, useMemo, useState } from 'react'
 import { Container, Item, ItemContainer, List, ListButton, SBody, SForm, SHeader, ScrollTable, Select } from '../../../../components/componentsStyles/StyledScrolleableList';
 import { RxReload } from 'react-icons/rx';
 import TextButton from '../../../../components/TextButton';
@@ -7,6 +7,9 @@ import styled from 'styled-components';
 import { useClaseContext } from '../../context/ClaseContext';
 import MateriasService from "../../Helpers/MateriasHelper.js"
 import { useGeneralContext } from '../../../../context/GeneralContext';
+import axios from 'axios';
+import APILINK from '../../../../components/link';
+import ClassesService from '../../Helpers/ClassesHelper';
 
 const TagTeacher = styled.div`
     border-radius: 20px;
@@ -114,20 +117,35 @@ const MateriasDeClase = () => {
     const [optionSelected, setOptionSelected] = useState("");
     const [optionsMaterias, setOptionsMaterias] = useState([]);
 
-    const { getListaMaterias, setStatusMateria, getClaseSelectedId, addMateriaToList } = useClaseContext();
+    const { getListaMaterias, setStatusMateria, getClaseSelectedId, addMateriaToList, setProfesoresOptions } = useClaseContext();
     const { getToken } = useGeneralContext();
-    
+
+
     /**
      * 
      * Pedir profesores del colegio
      */
 
-    /* 
+    useMemo(() => {
+        console.log("obtenido profes..")
+        const response = ClassesService.getProfesoresParaClase(getToken());
+        if (response !== null) {
+            response.then((r) => {
+                setProfesoresOptions(r.data ?? [])
+            }).catch(e => {
+                console.log(e)
+                setProfesoresOptions([])
+            })
+        }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [getToken])
+
+
     
     
-    
+    /*    
     pedir materias con clases  
-    
     
     
     */
@@ -135,10 +153,11 @@ const MateriasDeClase = () => {
 
     // pedir materias no asignadas a cla clase
     useMemo(() => {
+        console.log("obteniendo materias..")
         MateriasService.getMateriaNoAssigned(getClaseSelectedId(), getToken()).then((response) => {
 
             if (response !== null) {
-                console.log(response.data)
+                //console.log(response.data)
                 setOptionsMaterias(map(response.data, (e, i) => ({
                     label: e.nombre_Materia,
                     value: e.id,
@@ -155,17 +174,19 @@ const MateriasDeClase = () => {
 
     }, [getClaseSelectedId, getToken])
 
+
+    
     const handleSelectOptionMateria = (e) => {
-        e.preventDefault();  
+        e.preventDefault();
         setOptionSelected(e.target.value)
         console.log(`Asigna la materia con id: ${e.target.value} a la clase con id: ${getClaseSelectedId()}`)
 
         if (/^[0-9]+$/.test(e.target.value)) {
             const index = optionsMaterias.findIndex(a => a.value === parseInt(e.target.value))
-            
+
             addMateriaToList(optionsMaterias[index].label)
             optionsMaterias[index].status = "selected";
-            
+
             setOptionsMaterias([...optionsMaterias]);
             //cargar a la lista de materias principal
             setOptionSelected("")
