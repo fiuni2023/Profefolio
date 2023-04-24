@@ -80,7 +80,7 @@ namespace profefolio.Services
             GC.SuppressFinalize(this);
         }
 
-   
+
 
         public async Task<bool> IsUsedMateria(int idMateria)
         {
@@ -92,8 +92,8 @@ namespace profefolio.Services
             var colegio = _db.Colegios
                 .FirstOrDefault(c => c.personas.UserName.Equals(userLogged));
 
-            
-            if(colegio == null) throw new FileNotFoundException();
+
+            if (colegio == null) throw new FileNotFoundException();
 
             var clase = await _db.Clases
                 .Include(c => c.MateriaListas)
@@ -102,7 +102,7 @@ namespace profefolio.Services
                 .Where(c => c.Id == idClase)
                 .FirstOrDefaultAsync();
 
-            if(clase == null) throw new FileNotFoundException();
+            if (clase == null) throw new FileNotFoundException();
 
             var materiaListas = clase.MateriaListas
                 .Where(p => p.ClaseId == idClase)
@@ -112,12 +112,33 @@ namespace profefolio.Services
 
             return materiaListas;
 
-            
+
         }
 
-        public Task<MateriaLista> FindByIdClase(int idClase, string user)
+        public async Task<IEnumerable<MateriaLista>> FindByIdClase(int idClase, string user)
         {
-            throw new NotImplementedException();
+            var colegio = await _db.Colegios
+                .Include(c => c.personas)
+                .Where(c => !c.Deleted)
+                .Where(c => c.personas.Email.Equals(user))
+                .FirstOrDefaultAsync();
+
+            if (colegio == null)
+            {
+                throw new BadHttpRequestException("Accion no valida");
+            }
+            var clase = await _db.Clases
+                .Include(c => c.MateriaListas)
+                .Where(c => !c.Deleted)
+                .Where(c => c.Id == idClase)
+                .FirstOrDefaultAsync();
+
+            if (clase == null || (colegio.Id != clase.ColegioId) || clase.MateriaListas == null)
+            {
+                throw new FileNotFoundException();
+            }
+
+            return clase.MateriaListas;
         }
 
         public Task<MateriaLista> DeleteByIdClase(int idClase, string user)
