@@ -48,13 +48,19 @@ const TagProfesor = memo(({ id, nombre, state = "new", onClick = () => { } }) =>
                 overflow: hidden;
                 text-overflow: ellipsis;
                 white-space: nowrap;
-                max-width: calc(10rem - 24px)
+                max-width: calc(10rem - 24px);
+                font-size: 15px;
+                display: flex;
+                align-items: center;
             }
             .tag-teacher-${unicId}{
                 background-color: ${type};
                 padding: 0.2rem;
                 max-width: 10rem;
                 width: fit-content;
+                height: 24px;
+                display: flex;
+                align-items: center;
             }
             .btn-cancelar{
                 background-color: red;
@@ -109,9 +115,22 @@ const MateriasDeClase = () => {
     const [optionsMaterias, setOptionsMaterias] = useState([]);
 
     const { getListaMaterias, setStatusMateria, getClaseSelectedId, addMateriaToList } = useClaseContext();
-    const { getToken } = useGeneralContext()
-        ;
-    //pedir materias con clases 
+    const { getToken } = useGeneralContext();
+    
+    /**
+     * 
+     * Pedir profesores del colegio
+     */
+
+    /* 
+    
+    
+    
+    pedir materias con clases  
+    
+    
+    
+    */
 
 
     // pedir materias no asignadas a cla clase
