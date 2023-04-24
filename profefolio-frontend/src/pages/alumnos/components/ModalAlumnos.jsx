@@ -4,7 +4,6 @@ import { useGeneralContext } from "../../../context/GeneralContext";
 import APILINK from '../../../components/link';
 import Modal from '../../../components/Modal';
 import { toast } from 'react-hot-toast';
-import { useFormik } from 'formik';
 
 function ModalAlumnos({
     show = false, 
@@ -15,22 +14,8 @@ function ModalAlumnos({
     const { getToken } = useGeneralContext()
     const disabled = false
 
-    const formik = useFormik({
-        initialValues:{
-            nombre: "",
-            apellido: "",
-            fecha: "",
-            email: "",
-            direccion: "",
-            genero: "",
-            documento: "",
-            tipoDocumento: ""
-            
-        }
-    })
-
     const handleCreateSubmit = () => {
-        const nombre = document.getElementById("nombre").value;
+        const nombre = document.getElementById("nombreAlu").value;
         const apellido = document.getElementById("apellido").value;
         const fecha = document.getElementById("fecha").value;
         const email = document.getElementById("email").value;
@@ -77,7 +62,7 @@ function ModalAlumnos({
     }
 
     const handleEditSubmit = () => {
-        const nombre = document.getElementById("nombre").value;
+        const nombre = document.getElementById("nombreAlu").value;
         const apellido = document.getElementById("apellido").value;
         const fecha = document.getElementById("fecha").value;
         const email = document.getElementById("email").value;
@@ -153,7 +138,7 @@ function ModalAlumnos({
     useEffect(()=>{
         if(selected_data){
             console.log(selected_data)
-            document.getElementById("nombre").value = selected_data.nombre
+            document.getElementById("nombreAlu").value = selected_data.nombre
             document.getElementById("apellido").value = selected_data.apellido
             document.getElementById("fecha").value = selected_data.nacimiento.split('T')[0]
             document.getElementById("email").value = selected_data.email
@@ -174,9 +159,9 @@ function ModalAlumnos({
                 onSubmit: selected_data? {action: handleEditSubmit}:{ action: handleCreateSubmit },
                 inputs: [
                     {
-                        key: "nombre", label: "Nombre del Alumno",
+                        key: "nombreAlu", label: "Nombre del Alumno",
                         type: "text", placeholder: "Ingrese el nombre",
-                        disabled: disabled, required: true, value: formik.values.nombre,
+                        disabled: disabled, required: true,
                         invalidText: "Ingrese un nombre",
                     },
                     {

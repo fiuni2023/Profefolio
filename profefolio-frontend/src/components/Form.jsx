@@ -45,7 +45,6 @@ form = {
                     label: label de la opcion
                 }
             ]
-
         }
     }], 
     
@@ -57,7 +56,6 @@ form = {
             enabled: cuando la opcion esta desactivada, por defecto es false
         }
     ]
-
 */
 
 
@@ -195,61 +193,11 @@ function Form({ form }) {
                                         ></TextButton>
                                     }
                                 </div>
-                                }
-                                
-                                {input?.type && input?.key && checks.includes(input?.type) && input?.checks && 
-                                    <Row>
-                                        {input.checks.map((check) => {
-                                            return (
-                                                <Col key={check?.id ?? ""} xs={check?.xs ?? "auto"} sm={check?.sm ?? "auto"} md={check?.md ?? "auto"} lg={check?.lg ?? "auto"}>
-                                                    <SCheck
-                                                        onChange={ () => input?.onChange?.action ?? null}
-                                                        key={check?.id ?? ""}
-                                                        name={input.key}
-                                                        type={input.type}
-                                                        disabled={check?.disabled ?? false}
-                                                        id={check?.id}
-                                                        label={check?.label ?? ""}
-                                                        value={check?.value ?? 0}
-                                                        isInvalid={false}>
-                                                    </SCheck>
-                                                </Col>
-                                            )
-                                        })}
-                                    </Row>
-                                }
-
-                                {input?.text && <RForm.Text key="additional" muted>{input.text}</RForm.Text>}
-                            </SGroup>
-                        </Col>
-                    )
-                })}</Row>}
-                <SRow>
-                {buttons && buttons.map((button, i) => {
-                    return (
-                        <div key={i}>
-                            {button?.style === "icon" && 
-                                <IconButton
-                                    key={i} 
-                                    enabled={button?.enabled ?? false}
-                                    buttonType={button.type}
-                                    onClick={button.onclick?.action}
-                                ></IconButton>}
-                            {button?.style === "text" && 
-                                <TextButton
-                                    key={i} 
-                                    enabled={button?.enabled ?? true}
-                                    buttonType={button.type}
-                                    onClick={button.onclick?.action}
-                                ></TextButton>
-                            }
-                        </div>
-                    )
-                })}
-                </SRow>
-            </RForm> 
-        </SContainer>
-
+                            )
+                        })}
+                    </SRow>
+                </RForm>
+            </SContainer>
         </>
     )
 
