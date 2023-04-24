@@ -26,7 +26,7 @@ import ListDetallesMateria from './ListDetallesMateria';
 function ListarMaTerias() {
 
   const [materias, setMaterias] = useState([]);
-  const [ciclos, setCiclos]= useState([]);
+  const [ciclos, setCiclos] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [id, setId] = useState(null);
   const [data, setData] = useState({})
@@ -35,8 +35,8 @@ function ListarMaTerias() {
   const [page, setPage] = useState(0);
 
 
-  
-  
+
+
 
   const nav = useNavigate()
 
@@ -55,7 +55,7 @@ function ListarMaTerias() {
 
         .then(response => {
           setCiclos(response.data.dataList);
-          console.log(ciclos);
+
 
         })
         .catch(error => {
@@ -64,7 +64,7 @@ function ListarMaTerias() {
     }
   }, [cancan, verifyToken, nav, getToken]);
 
-  
+
   useEffect(() => {
     verifyToken()
     if (!cancan("Administrador de Colegio")) {
@@ -80,8 +80,6 @@ function ListarMaTerias() {
 
         .then(response => {
           setMaterias(response.data.dataList);
-          
-
 
 
         })
@@ -91,7 +89,7 @@ function ListarMaTerias() {
     }
   }, [page, cancan, verifyToken, nav, getToken]);
 
-  
+
 
   const doFetch = (materia) => {
     setMaterias([...materias, materia])
@@ -106,7 +104,7 @@ function ListarMaTerias() {
 
 
 
-  
+
 
   const modalOnHide = (bool) => {
     setShowModal(bool)
@@ -127,50 +125,50 @@ function ListarMaTerias() {
 
         <PanelContainerBG>
 
+          <div className={styles.tableContainer}>
+            <div className={styles.container}>
 
-          <div className={styles.container}>
-
-            <Tabla
-              datosTabla={{
-                tituloTabla: 'Lista de materias',
-                titulos: [
-                  { titulo: 'Nombre Materia' },
-                ],
-                clickable: { action: btndetalles },
-                tableWidth: '50%',
-                filas: materias.map((materia) => ({
-                  fila: materia,
-                  datos: [
-                    { dato: materia.nombre_Materia },
+              <Tabla
+                datosTabla={{
+                  tituloTabla: 'Lista de materias',
+                  titulos: [
+                    { titulo: 'Materias' },
                   ],
-                })),
-              }}
-              selected={id ?? '-'}
-            />
-
-
-
-            <div >
-
-
-              <ListDetallesMateria showModal={showModal} setShowModal={modalOnHide} id={id} data={data} triggerState={(materias) => { setMaterias(materias) }} />
-
-              <div>
-              </div>
-
-
+                  clickable: { action: btndetalles },
+                  tableWidth: '50%',
+                  filas: materias.map((materia) => ({
+                    fila: materia,
+                    datos: [
+                      { dato: materia.nombre_Materia },
+                    ],
+                  })),
+                }}
+                selected={id ?? '-'}
+              />
 
             </div>
 
+            <div className={styles.container}>
 
-
-
+              <Tabla
+                datosTabla={{
+                  tituloTabla: 'Lista de Ciclos',
+                  titulos: [
+                    { titulo: 'Ciclos' },
+                  ],
+                  clickable: { action: btndetalles },
+                  tableWidth: '50%',
+                  filas: materias.map((materia) => ({
+                    fila: materia,
+                    datos: [
+                      { dato: materia.nombre_Materia },
+                    ],
+                  })),
+                }}
+                selected={id ?? '-'}
+              />
+            </div>
           </div>
-
-
-          
-
-
         </PanelContainerBG>
         <footer>
           <div className={styles.NButtonForSideA}>
