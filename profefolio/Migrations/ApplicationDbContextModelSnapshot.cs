@@ -50,29 +50,29 @@ namespace profefolio.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "90102b0c-351d-4a6c-8652-11ceeb521979",
-                            ConcurrencyStamp = "6130b0aa-fc3e-4303-ae9e-43029ff96068",
+                            Id = "def2285e-e683-44c8-85bc-bd8495619f02",
+                            ConcurrencyStamp = "5bf91e0b-83f6-4e15-b6f2-873027283730",
                             Name = "Master",
                             NormalizedName = "MASTER"
                         },
                         new
                         {
-                            Id = "90ee9255-8ec2-42e1-acb5-23536a074335",
-                            ConcurrencyStamp = "b2160811-c4da-41aa-82aa-a41c4ee5b2d5",
+                            Id = "1e6aae7c-e5a3-4015-ac78-63d2fbf3c2cb",
+                            ConcurrencyStamp = "024b9d84-7ab1-4d05-b9d3-08a703908666",
                             Name = "Alumno",
                             NormalizedName = "ALUMNO"
                         },
                         new
                         {
-                            Id = "16c49fa9-a5ef-4ca8-a9a7-b682f34b5a7d",
-                            ConcurrencyStamp = "ced34c5d-66f8-414a-bef6-3cee579b42d0",
+                            Id = "0cf95333-b7f6-41e3-9cd9-44f37fbd6fe0",
+                            ConcurrencyStamp = "f916936f-2cf6-4c62-93ee-bac7835b224c",
                             Name = "Profesor",
                             NormalizedName = "PROFESOR"
                         },
                         new
                         {
-                            Id = "02a87398-71f1-4ecd-9a26-3cae8f3e8e68",
-                            ConcurrencyStamp = "a8bbf26e-8f12-4bb4-8651-3c0f55956b28",
+                            Id = "1f796d7e-dfd3-4445-ba62-e4207cd87094",
+                            ConcurrencyStamp = "20e4f12e-716e-4646-875c-7139126eedd1",
                             Name = "Administrador de Colegio",
                             NormalizedName = "ADMINISTRADOR DE COLEGIO"
                         });
@@ -167,13 +167,13 @@ namespace profefolio.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "a4d22365-69b0-4863-b900-c47c46abdbeb",
-                            RoleId = "90102b0c-351d-4a6c-8652-11ceeb521979"
+                            UserId = "7c38e8f4-435f-44ad-9ef6-32c89c79ebe9",
+                            RoleId = "def2285e-e683-44c8-85bc-bd8495619f02"
                         },
                         new
                         {
-                            UserId = "862b82ff-66b2-4585-a57d-51d421c4ec1b",
-                            RoleId = "02a87398-71f1-4ecd-9a26-3cae8f3e8e68"
+                            UserId = "b3d66493-092f-48e8-8c58-4cba60b7b173",
+                            RoleId = "1f796d7e-dfd3-4445-ba62-e4207cd87094"
                         });
                 });
 
@@ -572,10 +572,10 @@ namespace profefolio.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "a4d22365-69b0-4863-b900-c47c46abdbeb",
+                            Id = "7c38e8f4-435f-44ad-9ef6-32c89c79ebe9",
                             AccessFailedCount = 0,
                             Apellido = "Torres",
-                            ConcurrencyStamp = "9d638471-5830-40e0-a48e-7c980a9a0b96",
+                            ConcurrencyStamp = "d70b5347-f11b-4328-a01f-559c5bb306b7",
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Deleted = false,
                             Email = "Carlos.Torres123@mail.com",
@@ -586,17 +586,17 @@ namespace profefolio.Migrations
                             Nacimiento = new DateTime(1999, 7, 10, 4, 0, 0, 0, DateTimeKind.Utc),
                             Nombre = "Carlos",
                             NormalizedEmail = "CARLOS.TORRES123@MAIL.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEH+Zj6u9hHk9m9fSiODKto3oBQA9NYNBU2NFpjp6QMM/JFsONEIMVzJoIpy/EBrNWg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEJjQ3k4NQJqwUHGUMCC7frT+yaZtCFcOmakh8VQe00931hxLshXkejo8QQRp841n3w==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "ff53ddb9-df88-4226-9f58-82659a960899",
+                            SecurityStamp = "a92c6c36-bdc1-4040-8793-15e8f6e13c99",
                             TwoFactorEnabled = false
                         },
                         new
                         {
-                            Id = "862b82ff-66b2-4585-a57d-51d421c4ec1b",
+                            Id = "b3d66493-092f-48e8-8c58-4cba60b7b173",
                             AccessFailedCount = 0,
                             Apellido = "Martinez",
-                            ConcurrencyStamp = "f55004c7-6e8a-416a-a90b-1533bb3bb8e4",
+                            ConcurrencyStamp = "0043b544-da64-42dc-bda1-cf9f8f51542a",
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Deleted = false,
                             Email = "Juan.Martinez123@mail.com",
@@ -607,9 +607,9 @@ namespace profefolio.Migrations
                             Nacimiento = new DateTime(1999, 7, 10, 4, 0, 0, 0, DateTimeKind.Utc),
                             Nombre = "Juan",
                             NormalizedEmail = "JUAN.MARTINEZ123@MAIL.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAECNf3u7R8HigPBl5RDb2d+PcEjqHwrcXc16qGhiYzdXgFZKaMwcJNLJRGUI2lqXQ2A==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEITdNTNe1E08kqUiIosQSk9t6Qw7hOyFou9NwVU49FlBaLYg0ZUSHMx4AS667IU7uA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "1b71d8a3-ca6a-4c5c-abac-e75d36d375ff",
+                            SecurityStamp = "00fafe8b-221d-4802-8b86-346027db8340",
                             TwoFactorEnabled = false
                         });
                 });

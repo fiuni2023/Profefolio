@@ -1,64 +1,77 @@
 footer {
-    position: fixed;
-    background-color: hwb(0 99% 0%);
-    color: rgb(245, 249, 249);
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 20px;
-    text-align: right;
-  }
-
-  .container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-   width: 50%;
-  }
-
-  th, td {
-    text-align: center;
-  }
-
-  .tableRow:hover {
-    background-color: #c7c4c4;
-  }
-
-  .page{
-    display: grid;
-    grid-template-rows: 5% 95%;
-    width: 100%;
-    height: 100vh;
+  position: fixed;
+  background-color: hwb(0 99% 0%);
+  color: rgb(245, 249, 249);
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20px;
+  text-align: right;
 }
-.tableContainer{
+
+.container {
   display: flex;
-}
-.content{
-    width: 100%;
-    height: 100%;
+  justify-content: center;
+  align-items: center;
+  width: 50%;
 }
 
-.NavbarA{
-    width: 100%;
-    height: 100%;
-    background-color:  #F0544F;
-    display: flex;
-    background-color: #F0544F;
+th,
+td {
+  text-align: center;
 }
-.NButtonForSideA{
-   /*width: 25%;*/
-   position: absolute;
-   bottom: 5px;
-   right : 5px;
+
+.tableRow:hover {
+  background-color: #c7c4c4;
 }
-.buttonNavBarA{
-    outline: none;
-    border: none;
-    background-color: #FFFFFF;
+
+.page {
+  display: grid;
+  grid-template-rows: 5% 95%;
+  width: 100%;
+  height: 100vh;
+}
+
+.tableContainer {
+  display: flex;
+  width: 100%;
+  
+}
+#materiasTable{
+  width: 80%;
+}
+.tablaMat{
+  width: 100px;
+}
+.content {
+  width: 100%;
+  height: 100%;
+}
+
+.NavbarA {
+  width: 100%;
+  height: 100%;
+  background-color: #F0544F;
+  display: flex;
+  background-color: #F0544F;
+}
+
+.NButtonForSideA {
+  /*width: 25%;*/
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+}
+
+.buttonNavBarA {
+  outline: none;
+  border: none;
+  background-color: #FFFFFF;
   /*  font-size: 50px;*/
-    color: #F0544F;
+  color: #F0544F;
 }
-.pag{
+
+.pag {
   outline: none;
   border: none;
   background-color: #FFFFFF;
@@ -66,21 +79,23 @@ footer {
   color: #F0544F;
 }
 
-.navbarmainAd{
-    width: 97.5%;
-    display: flex;
-    justify-content: space-between;
+.navbarmainAd {
+  width: 97.5%;
+  display: flex;
+  justify-content: space-between;
 }
 
-.CustomTable{
-    width: 30%;
-    border-spacing: 0px;
+.CustomTable {
+  width: 30%;
+  border-spacing: 0px;
 }
-.CustomTable>thead>tr>th{
-    border: 1px solid black;
-    padding-left: 5px;
+
+.CustomTable>thead>tr>th {
+  border: 1px solid black;
+  padding-left: 5px;
 }
-.CustomTable>tbody>tr>td{
-    text-align: center;
-    border: 1px solid black;
+
+.CustomTable>tbody>tr>td {
+  text-align: center;
+  border: 1px solid black;
 }

@@ -108,7 +108,7 @@ function ListarColegios() {
 
         <ModalVerColegios datoIdColegio={datoIdColegio} onClose={()=>{setDatoIdColegio(null)}} show={show} setShow={setShow} disabled={disabled} setDisabled={setDisabled} triggerState={(colegio) => { setColegios(colegio) }} page={currentPage}></ModalVerColegios>
 
-        <ModalAgregarColegios triggerState={(colegio) => { doFetch(colegio) }}  ></ModalAgregarColegios>
+        <ModalAgregarColegios triggerState={(colegio) => { doFetch(colegio) }} currentPage={currentPage}  ></ModalAgregarColegios>
       </div>
     </>)
 }

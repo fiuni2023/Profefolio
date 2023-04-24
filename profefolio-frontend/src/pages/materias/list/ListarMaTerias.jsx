@@ -57,6 +57,7 @@ function ListarMaTerias() {
           setCiclos(response.data.dataList);
 
 
+
         })
         .catch(error => {
           console.error(error);
@@ -120,22 +121,23 @@ function ListarMaTerias() {
     <>
 
       <div className="page">
-        <StyleComponentBreadcrumb nombre="Materias y Ciclos" />
+        <StyleComponentBreadcrumb nombre="Materias" />
 
 
         <PanelContainerBG>
 
           <div className={styles.tableContainer}>
-            <div className={styles.container}>
+            <div className={styles.container} id={styles.materiasTable}>
 
               <Tabla
+                
                 datosTabla={{
                   tituloTabla: 'Lista de materias',
                   titulos: [
                     { titulo: 'Materias' },
                   ],
                   clickable: { action: btndetalles },
-                  tableWidth: '50%',
+                  tableWidth: '80%',
                   filas: materias.map((materia) => ({
                     fila: materia,
                     datos: [
@@ -148,7 +150,7 @@ function ListarMaTerias() {
 
             </div>
 
-            <div className={styles.container}>
+            <div className={styles.container} id={styles.ciclosTable}>
 
               <Tabla
                 datosTabla={{
@@ -157,7 +159,7 @@ function ListarMaTerias() {
                     { titulo: 'Ciclos' },
                   ],
                   clickable: { action: btndetalles },
-                  tableWidth: '50%',
+                  tableWidth: '80%',
                   filas: materias.map((materia) => ({
                     fila: materia,
                     datos: [

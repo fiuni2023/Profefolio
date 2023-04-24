@@ -6,7 +6,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace profefolio.Migrations
 {
-    public partial class identity : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -324,12 +324,12 @@ namespace profefolio.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "MateriaLista",
+                name: "MateriaListas",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ProfesorId = table.Column<int>(type: "integer", nullable: false),
+                    ProfesorId = table.Column<string>(type: "text", nullable: false),
                     ClaseId = table.Column<int>(type: "integer", nullable: false),
                     MateriaId = table.Column<int>(type: "integer", nullable: false),
                     Deleted = table.Column<bool>(type: "boolean", nullable: false),
@@ -340,11 +340,23 @@ namespace profefolio.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MateriaLista", x => x.Id);
+                    table.PrimaryKey("PK_MateriaListas", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_MateriaLista_Clases_ClaseId",
+                        name: "FK_MateriaListas_AspNetUsers_ProfesorId",
+                        column: x => x.ProfesorId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_MateriaListas_Clases_ClaseId",
                         column: x => x.ClaseId,
                         principalTable: "Clases",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_MateriaListas_Materias_MateriaId",
+                        column: x => x.MateriaId,
+                        principalTable: "Materias",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -354,10 +366,10 @@ namespace profefolio.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "27df30ef-7db0-4e2f-9cc1-802159a49306", "aa986282-06e5-47ec-a00d-3420e123f0aa", "Administrador de Colegio", "ADMINISTRADOR DE COLEGIO" },
-                    { "63cd5cb2-fe1e-431c-a16d-400367961c4b", "842cdb42-e43a-41c8-95f6-c77e34123e62", "Alumno", "ALUMNO" },
-                    { "c1f74249-35f0-4666-b196-76e1cebd9872", "15b40514-fa74-4001-bd96-fc1c725f7f02", "Profesor", "PROFESOR" },
-                    { "e2ee620b-23d1-47b0-b116-4cb1a3e77896", "47deffce-466c-4788-a4b4-6f6e6e8e4040", "Master", "MASTER" }
+                    { "0cf95333-b7f6-41e3-9cd9-44f37fbd6fe0", "f916936f-2cf6-4c62-93ee-bac7835b224c", "Profesor", "PROFESOR" },
+                    { "1e6aae7c-e5a3-4015-ac78-63d2fbf3c2cb", "024b9d84-7ab1-4d05-b9d3-08a703908666", "Alumno", "ALUMNO" },
+                    { "1f796d7e-dfd3-4445-ba62-e4207cd87094", "20e4f12e-716e-4646-875c-7139126eedd1", "Administrador de Colegio", "ADMINISTRADOR DE COLEGIO" },
+                    { "def2285e-e683-44c8-85bc-bd8495619f02", "5bf91e0b-83f6-4e15-b6f2-873027283730", "Master", "MASTER" }
                 });
 
             migrationBuilder.InsertData(
@@ -365,8 +377,8 @@ namespace profefolio.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "Apellido", "ConcurrencyStamp", "Created", "CreatedBy", "Deleted", "Direccion", "Documento", "DocumentoTipo", "Email", "EmailConfirmed", "EsM", "LockoutEnabled", "LockoutEnd", "Modified", "ModifiedBy", "Nacimiento", "Nombre", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "e7fcfdba-8419-4239-92a3-f425aa62de49", 0, "Martinez", "db46308c-fb6b-420f-ad63-854332dbcc04", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, null, null, null, "Juan.Martinez123@mail.com", false, true, false, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, new DateTime(1999, 7, 10, 4, 0, 0, 0, DateTimeKind.Utc), "Juan", "JUAN.MARTINEZ123@MAIL.COM", null, "AQAAAAEAACcQAAAAELZh9zdQwhgWclr1xNC5vWHWtH1mOYVAg1QuaHHld1gAjeh6MEPGDMH6v7RKGF63sQ==", null, false, "db6c291c-e079-48a2-bbbd-0d2b581f032a", false, null },
-                    { "edb72cd3-6181-4aae-9568-b69c60ce1796", 0, "Torres", "d9bb947e-7a38-4fac-b1c1-570fd1cdb7e5", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, null, null, null, "Carlos.Torres123@mail.com", false, true, false, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, new DateTime(1999, 7, 10, 4, 0, 0, 0, DateTimeKind.Utc), "Carlos", "CARLOS.TORRES123@MAIL.COM", null, "AQAAAAEAACcQAAAAEOVF8cEkB1XggIlVfx4YG/hgHC29wKELjKhMYDS3dQmICjaH1LmzICSk9WG2DMHpAA==", null, false, "df5b278e-7490-4541-9305-fad1fc843c2c", false, null }
+                    { "7c38e8f4-435f-44ad-9ef6-32c89c79ebe9", 0, "Torres", "d70b5347-f11b-4328-a01f-559c5bb306b7", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, null, null, null, "Carlos.Torres123@mail.com", false, true, false, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, new DateTime(1999, 7, 10, 4, 0, 0, 0, DateTimeKind.Utc), "Carlos", "CARLOS.TORRES123@MAIL.COM", null, "AQAAAAEAACcQAAAAEJjQ3k4NQJqwUHGUMCC7frT+yaZtCFcOmakh8VQe00931hxLshXkejo8QQRp841n3w==", null, false, "a92c6c36-bdc1-4040-8793-15e8f6e13c99", false, null },
+                    { "b3d66493-092f-48e8-8c58-4cba60b7b173", 0, "Martinez", "0043b544-da64-42dc-bda1-cf9f8f51542a", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, null, null, null, "Juan.Martinez123@mail.com", false, true, false, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, new DateTime(1999, 7, 10, 4, 0, 0, 0, DateTimeKind.Utc), "Juan", "JUAN.MARTINEZ123@MAIL.COM", null, "AQAAAAEAACcQAAAAEITdNTNe1E08kqUiIosQSk9t6Qw7hOyFou9NwVU49FlBaLYg0ZUSHMx4AS667IU7uA==", null, false, "00fafe8b-221d-4802-8b86-346027db8340", false, null }
                 });
 
             migrationBuilder.InsertData(
@@ -374,8 +386,8 @@ namespace profefolio.Migrations
                 columns: new[] { "RoleId", "UserId" },
                 values: new object[,]
                 {
-                    { "27df30ef-7db0-4e2f-9cc1-802159a49306", "e7fcfdba-8419-4239-92a3-f425aa62de49" },
-                    { "e2ee620b-23d1-47b0-b116-4cb1a3e77896", "edb72cd3-6181-4aae-9568-b69c60ce1796" }
+                    { "def2285e-e683-44c8-85bc-bd8495619f02", "7c38e8f4-435f-44ad-9ef6-32c89c79ebe9" },
+                    { "1f796d7e-dfd3-4445-ba62-e4207cd87094", "b3d66493-092f-48e8-8c58-4cba60b7b173" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -428,7 +440,8 @@ namespace profefolio.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Colegios_PersonaId",
                 table: "Colegios",
-                column: "PersonaId");
+                column: "PersonaId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_ColegiosAlumnos_ColegioId",
@@ -451,9 +464,19 @@ namespace profefolio.Migrations
                 column: "PersonaId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MateriaLista_ClaseId",
-                table: "MateriaLista",
+                name: "IX_MateriaListas_ClaseId",
+                table: "MateriaListas",
                 column: "ClaseId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MateriaListas_MateriaId",
+                table: "MateriaListas",
+                column: "MateriaId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MateriaListas_ProfesorId",
+                table: "MateriaListas",
+                column: "ProfesorId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -480,16 +503,16 @@ namespace profefolio.Migrations
                 name: "ColegiosProfesors");
 
             migrationBuilder.DropTable(
-                name: "MateriaLista");
-
-            migrationBuilder.DropTable(
-                name: "Materias");
+                name: "MateriaListas");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "Clases");
+
+            migrationBuilder.DropTable(
+                name: "Materias");
 
             migrationBuilder.DropTable(
                 name: "Ciclos");
