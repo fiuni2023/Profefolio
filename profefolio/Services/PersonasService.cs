@@ -210,14 +210,14 @@ public class PersonasService : IPersona
             .Where(p => !p.Deleted && p.Id.Equals(id))
             .FirstOrDefaultAsync();
 
-        if(null == query || !(await _userManager.IsInRoleAsync(query, role)))
+        if (null == query || !(await _userManager.IsInRoleAsync(query, role)))
         {
             throw new FileNotFoundException();
         }
 
         return query;
 
-        
+
 
     }
 
@@ -228,7 +228,7 @@ public class PersonasService : IPersona
             .FirstOrDefaultAsync();
 
 
-        if(query == null || (!(await _userManager.IsInRoleAsync(query, role))))
+        if (query == null || (!(await _userManager.IsInRoleAsync(query, role))))
         {
             return false;
         }
@@ -243,19 +243,20 @@ public class PersonasService : IPersona
         return true;
     }
 
-    public async Task<Persona?> FindByDocumento(string documento = "", string role = "")
+    public async Task<Persona?> FindByDocumentoAndRole(string documento = "", string role = "")
     {
-        var persona = await _userManager.Users.Where(a => !a.Deleted 
-                && a.Documento != null 
+        var persona = await _userManager.Users.Where(a => !a.Deleted
+                && a.Documento != null
                 && documento.Equals(a.Documento)).FirstOrDefaultAsync();
-        if(persona == null){
-            throw new FileNotFoundException("El usuario no esta registrado");
+        if (persona != null)
+        {
+            var tieneRol = await _userManager.IsInRoleAsync(persona, role);
+            if (tieneRol)
+            {
+                return persona;
+            }
         }
-        var tieneRol = await _userManager.IsInRoleAsync(persona, role);
-        if(tieneRol){
-            return persona;
-        }
-        return null;
 
+        return null;
     }
 }

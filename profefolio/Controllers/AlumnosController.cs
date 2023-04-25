@@ -28,31 +28,40 @@ public class AlumnosController : ControllerBase
         _rolService = rolService;
     }
 
-        [HttpPost]
-        public async Task<ActionResult<PersonaResultDTO>> Post([FromBody]AlumnoCreateDTO dto)
+    [HttpPost]
+    public async Task<ActionResult<PersonaResultDTO>> Post([FromBody] AlumnoCreateDTO dto)
+    {
+        if (!ModelState.IsValid)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+            return BadRequest(ModelState);
+        }
 
-            if (dto.Nacimiento > DateTime.Now)
-            {
-                return BadRequest("El nacimiento no puede ser mayor a la fecha de hoy");
-            }
+        if (dto.Nacimiento > DateTime.Now)
+        {
+            return BadRequest("El nacimiento no puede ser mayor a la fecha de hoy");
+        }
 
-            if (!(dto.Genero.Equals("M") || dto.Genero.Equals("F")))
-            {
-                return BadRequest("Solo se aceptan valores F para femenino y M para masculino");
-            }
-            
-            var userId = User.Identity.GetUserId();
-            var entity = _mapper.Map<Persona>(dto);
-            entity.Deleted = false;
-            entity.CreatedBy = userId;
+        if (!(dto.Genero.Equals("M") || dto.Genero.Equals("F")))
+        {
+            return BadRequest("Solo se aceptan valores F para femenino y M para masculino");
+        }
+
+
+        var userId = User.Identity.GetUserId();
+        var entity = _mapper.Map<Persona>(dto);
+        entity.Deleted = false;
+        entity.CreatedBy = userId;
 
         try
         {
+            // verificar que no exista el alumno
+            var alumno = await _personasService.FindByDocumentoAndRole(dto.Documento, "Alumno");
+            if (alumno != null)
+            {
+                // si ya existe el alumno creado
+                return new CustomStatusResult<PersonaResultDTO>(230, _mapper.Map<PersonaResultDTO>(alumno));
+            }    
+
             var saved = await _personasService.CreateUser(entity, $"{dto.Email}.Mm123");
 
             if (await _rolService.AsignToUser("Alumno", saved))
@@ -63,143 +72,145 @@ public class AlumnosController : ControllerBase
             Console.WriteLine(e.Message);
             return BadRequest(e.Message);
         }
-        
-            return BadRequest($"Error al crear al Usuario ${dto.Email}");
-        
-        }
-        [Authorize(Roles = "Administrador de Colegio,Profesor")]
-        [HttpGet]
-        [Route("page/{page:int}")]
-        public async Task<ActionResult<DataListDTO<AlumnoGetDTO>>> Get(int page)
+
+        return BadRequest($"Error al crear al Usuario ${dto.Email}");
+
+    }
+
+
+    [Authorize(Roles = "Administrador de Colegio,Profesor")]
+    [HttpGet]
+    [Route("page/{page:int}")]
+    public async Task<ActionResult<DataListDTO<AlumnoGetDTO>>> Get(int page)
+    {
+
+        var query = await _personasService
+            .FilterByRol(page, CantPerPage, rol);
+
+        var cantPages = (int)Math.Ceiling((double)await _personasService.CountByRol(rol) / CantPerPage);
+
+        var result = new DataListDTO<AlumnoGetDTO>();
+
+        if (page >= cantPages)
         {
-            
-            var query = await _personasService
-                .FilterByRol(page, CantPerPage, rol);
-
-            var cantPages = (int)Math.Ceiling((double) await _personasService.CountByRol(rol)/ CantPerPage);
-
-            var result = new DataListDTO<AlumnoGetDTO>();
-
-            if(page >= cantPages) 
-            {
-                return BadRequest($"No existe la pagina: {page} ");
-            }
-
-            var enumerable = query as Persona[] ?? query.ToArray();
-            result.CantItems = enumerable.Length;
-            result.CurrentPage = page;
-            result.Next = result.CurrentPage + 1 < cantPages;
-            result.DataList = _mapper.Map<List<AlumnoGetDTO>>(enumerable.ToList());
-            result.TotalPage = cantPages;
-            return Ok(result);
+            return BadRequest($"No existe la pagina: {page} ");
         }
-        [Authorize(Roles = "Administrador de Colegio,Profesor")]
-        [HttpGet]
-        [Route("id/{id}")]
-        public async Task<ActionResult<AlumnoGetDTO>> Get(string id)
+
+        var enumerable = query as Persona[] ?? query.ToArray();
+        result.CantItems = enumerable.Length;
+        result.CurrentPage = page;
+        result.Next = result.CurrentPage + 1 < cantPages;
+        result.DataList = _mapper.Map<List<AlumnoGetDTO>>(enumerable.ToList());
+        result.TotalPage = cantPages;
+        return Ok(result);
+    }
+    [Authorize(Roles = "Administrador de Colegio,Profesor")]
+    [HttpGet]
+    [Route("id/{id}")]
+    public async Task<ActionResult<AlumnoGetDTO>> Get(string id)
+    {
+        try
         {
-            try
-            {
-                var persona = await _personasService.FindById(id);
-                return Ok(_mapper.Map<AlumnoGetDTO>(persona));
-            }
-            catch (FileNotFoundException e)
-            {
-                Console.WriteLine(e.Message);
+            var persona = await _personasService.FindById(id);
+            return Ok(_mapper.Map<AlumnoGetDTO>(persona));
+        }
+        catch (FileNotFoundException e)
+        {
+            Console.WriteLine(e.Message);
 
+        }
+
+        return NotFound();
+    }
+
+    [HttpDelete]
+    [Route("{id}")]
+    public async Task<ActionResult> Delete(string id)
+    {
+        return await _personasService.DeleteByUserAndRole(id, rol) ? Ok() : NotFound();
+    }
+
+
+    [HttpPut]
+    [Route("{id}")]
+    public async Task<ActionResult<AlumnoGetDTO>> Put(string id, [FromBody] AlumnoEditDTO dto)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        if (dto.Nacimiento > DateTime.Now)
+        {
+            return BadRequest("El nacimiento no puede ser mayor a la fecha de hoy");
+        }
+
+        if (!(dto.Genero.Equals("M") || dto.Genero.Equals("F")))
+        {
+            return BadRequest("Solo se aceptan valores F para femenino y M para masculino");
+        }
+
+        if (!id.Equals(dto.Id))
+            return BadRequest("No valido");
+
+        try
+        {
+            var persona = await _personasService.FindById(id);
+
+            var userId = User.Identity.GetUserId();
+
+            var existMail = await _personasService.ExistMail(dto.Email);
+
+            var isEqual = dto.Email.Equals(persona.Email);
+
+            if (!isEqual && existMail)
+            {
+                return BadRequest($"Ya existe el email '{dto.Email}', intente con otro");
             }
 
+            MapOldToNew(persona, dto, userId);
+
+            if ((!persona.Email.Equals(dto.Email)) && await _personasService.ExistMail(dto.Email))
+            {
+                return BadRequest("El email nuevo que queres actualizar ya existe");
+            }
+
+
+
+            var query = await _personasService.EditProfile(persona);
+
+            return Ok(_mapper.Map<AlumnoGetDTO>(query));
+        }
+        catch (BadHttpRequestException e)
+        {
+            Console.WriteLine(e.Message);
+            return BadRequest(e.Message);
+        }
+        catch (FileNotFoundException e)
+        {
+            Console.WriteLine(e.Message);
             return NotFound();
         }
-        
-        [HttpDelete]
-        [Route("{id}")]
-        public async Task<ActionResult> Delete(string id)
-        {
-            return await _personasService.DeleteByUserAndRole(id, rol) ? Ok() : NotFound();
-        }
-        
-        
-        [HttpPut]
-        [Route("{id}")]
-        public async Task<ActionResult<AlumnoGetDTO>> Put(string id, [FromBody] AlumnoEditDTO dto)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-        
-            if (dto.Nacimiento > DateTime.Now)
-            {
-                return BadRequest("El nacimiento no puede ser mayor a la fecha de hoy");
-            }
 
-            if (!(dto.Genero.Equals("M") || dto.Genero.Equals("F")))
-            {
-                return BadRequest("Solo se aceptan valores F para femenino y M para masculino");
-            }
+    }
 
-            if (!id.Equals(dto.Id))
-                return BadRequest("No valido");
 
-            try
-            {
-                var persona = await _personasService.FindById(id);
-            
-                var userId = User.Identity.GetUserId();
-
-                var existMail =await  _personasService.ExistMail(dto.Email);
-
-                var isEqual = dto.Email.Equals(persona.Email);
-
-                if (!isEqual && existMail)
-                {
-                    return BadRequest($"Ya existe el email '{dto.Email}', intente con otro");
-                }
-            
-                MapOldToNew(persona, dto, userId);
-
-                if ((!persona.Email.Equals(dto.Email)) && await _personasService.ExistMail(dto.Email))
-                {
-                    return BadRequest("El email nuevo que queres actualizar ya existe");
-                }
-            
-            
-            
-                var query = await _personasService.EditProfile(persona);
-
-                return Ok(_mapper.Map<AlumnoGetDTO>(query));
-            }
-            catch (BadHttpRequestException e)
-            {
-                Console.WriteLine(e.Message);
-                return BadRequest(e.Message);
-            }
-            catch (FileNotFoundException e)
-            {
-                Console.WriteLine(e.Message);
-                return NotFound();
-            }
-
-        }
-        
-        
-        private static void MapOldToNew(Persona persona, AlumnoEditDTO dto, string userId)
-        {
-            persona.Nombre = dto.Nombre;
-            persona.Apellido = dto.Apellido;
-            persona.Email = dto.Email;
-            persona.EsM = dto.Genero.Equals("M");
-            persona.Nacimiento = dto.Nacimiento;
-            persona.Documento = dto.Documento;
-            persona.Direccion = dto.Direccion;
-            persona.Modified = DateTime.Now;
-            persona.DocumentoTipo = dto.DocumentoTipo;
-            persona.ModifiedBy = userId;
-            persona.UserName = dto.Email;
-            persona.NormalizedUserName = dto.Email.ToUpper();
-            persona.NormalizedEmail = dto.Email.ToUpper();
-        }
+    private static void MapOldToNew(Persona persona, AlumnoEditDTO dto, string userId)
+    {
+        persona.Nombre = dto.Nombre;
+        persona.Apellido = dto.Apellido;
+        persona.Email = dto.Email;
+        persona.EsM = dto.Genero.Equals("M");
+        persona.Nacimiento = dto.Nacimiento;
+        persona.Documento = dto.Documento;
+        persona.Direccion = dto.Direccion;
+        persona.Modified = DateTime.Now;
+        persona.DocumentoTipo = dto.DocumentoTipo;
+        persona.ModifiedBy = userId;
+        persona.UserName = dto.Email;
+        persona.NormalizedUserName = dto.Email.ToUpper();
+        persona.NormalizedEmail = dto.Email.ToUpper();
+    }
 
 
 }
