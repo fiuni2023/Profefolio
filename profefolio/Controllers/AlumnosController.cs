@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Security.Claims;
+using AutoMapper;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,18 +19,20 @@ public class AlumnosController : ControllerBase
     private readonly IPersona _personasService;
     private readonly IMapper _mapper;
     private readonly IRol _rolService;
+    private readonly IColegiosAlumnos _colAlumnosService;
     private static int CantPerPage => Constantes.CANT_ITEMS_POR_PAGE;
     const string rol = "Alumno";
 
-    public AlumnosController(IPersona personasService, IMapper mapper, IRol rolService)
+    public AlumnosController(IPersona personasService, IMapper mapper, IRol rolService, IColegiosAlumnos colAlumnosService)
     {
         _personasService = personasService;
         _mapper = mapper;
         _rolService = rolService;
+        _colAlumnosService = colAlumnosService;
     }
 
     [HttpPost]
-    public async Task<ActionResult<PersonaResultDTO>> Post([FromBody] AlumnoCreateDTO dto)
+    public async Task<ActionResult<AlumnoGetDTO>> Post([FromBody] AlumnoCreateDTO dto)
     {
         if (!ModelState.IsValid)
         {
@@ -51,21 +54,36 @@ public class AlumnosController : ControllerBase
         var entity = _mapper.Map<Persona>(dto);
         entity.Deleted = false;
         entity.CreatedBy = userId;
+        var adminEmail = User.FindFirstValue(ClaimTypes.Name);
 
         try
         {
+            var adminColegio = await _personasService.FindByEmail(adminEmail);
+
             // verificar que no exista el alumno
             var alumno = await _personasService.FindByDocumentoAndRole(dto.Documento, "Alumno");
             if (alumno != null)
             {
                 // si ya existe el alumno creado
-                return new CustomStatusResult<PersonaResultDTO>(230, _mapper.Map<PersonaResultDTO>(alumno));
-            }    
+                return new CustomStatusResult<AlumnoGetDTO>(230, _mapper.Map<AlumnoGetDTO>(alumno));
+            }
+
+            // obtener el administrador de colegio
+
 
             var saved = await _personasService.CreateUser(entity, $"{dto.Email}.Mm123");
 
-            if (await _rolService.AsignToUser("Alumno", saved))
+            if (await _rolService.AsignToUser("Alumno", saved)){
+                // se agrega el alumno al colegio del administrador
+                await _colAlumnosService.Add(new ColegiosAlumnos(){
+                    ColegioId = adminColegio.Colegio.Id,
+                    CreatedBy = adminEmail,
+                    Created = DateTime.Now,
+                    PersonaId = saved.Id
+                });
+                
                 return Ok(_mapper.Map<AlumnoGetDTO>(saved));
+            }
         }
         catch (BadHttpRequestException e)
         {
