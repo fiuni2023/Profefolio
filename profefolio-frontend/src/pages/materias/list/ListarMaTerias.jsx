@@ -149,6 +149,9 @@ function ListarMaTerias() {
     setNombreCiclo(event.target.value);
 
   }
+  const doFetch = (materia) => {
+    setColegios([...materias, materia])
+  }
 
   return (
     <>
@@ -173,6 +176,7 @@ function ListarMaTerias() {
                     filas: materias.map((materia) => ({
                       fila: materia,
                       datos: [
+                        {dato: materia.id},
                         { dato: materia.nombre_Materia },
                       ],
                     })),
@@ -202,6 +206,7 @@ function ListarMaTerias() {
                     filas: materias.map((ciclo) => ({
                       fila: ciclo,
                       datos: [
+                        {dato: ciclo.id},
                         { dato: ciclo.nombre_Materia },
                       ],
                     })),
