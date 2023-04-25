@@ -9,6 +9,10 @@ import MateriasService from "../../Helpers/MateriasHelper.js"
 import { useGeneralContext } from '../../../../context/GeneralContext';
 import ClassesService from '../../Helpers/ClassesHelper';
 
+import BtnAdd from '../create/BtnAdd';
+
+
+
 const TagTeacher = styled.div`
     border-radius: 20px;
     display: flex;
@@ -81,6 +85,10 @@ const ListItem = memo(({ index, idMateria, nombre, profesores = [], type, onClic
                 <Item>{index}- {nombre}</Item>
                 <div className={`profe-container-${index}`}>
                     <Item>Profesores:</Item>
+
+
+                   
+                    <BtnAdd />
                     {map(profesores, (e, i) => <TagProfesor key={i} id={e.id} nombre={`${e.nombre}${e.status}`} state={e.status} onClick={() => {
                         setStatusProfesorMateria(idMateria, e.id, e.status === "new" ? "reload" : "new");
                     }

@@ -1,7 +1,6 @@
 /* eslint-disable */
 import React, { useState, useEffect } from 'react';
 import { PanelContainerBG } from '../../profesor/components/LayoutAdmin';
-import CreateModal from '../create/CreateModalMaterias.jsx';
 import { useGeneralContext } from "../../../context/GeneralContext.jsx";
 import axios from 'axios';
 
