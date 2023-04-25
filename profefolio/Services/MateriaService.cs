@@ -27,7 +27,7 @@ public class MateriaService : IMateria
             .Where(p => !p.Deleted && p.Nombre_Materia == n)
             .FirstOrDefaultAsync();
     }
-     public async Task<Materia> FindByNameMateriaId(string n, int id)
+    public async Task<Materia> FindByNameMateriaId(string n, int id)
     {
         return await _dbContext.Materias
             .Where(p => !p.Deleted && p.Nombre_Materia == n && p.Id != id)
@@ -89,5 +89,14 @@ public class MateriaService : IMateria
          .Where(p => !p.Deleted)
          .Skip(page * cantPorPag)
          .Take(cantPorPag);
+    }
+
+    public async Task<List<Materia>> FindAllUnsignedMaterias(int idClase)
+    {
+        return await _dbContext.Materias
+                .Where(m => !m.Deleted
+                    && m.MateriaListas.Where(ml => ml.ClaseId != idClase)
+                    .Count() == 0)
+                .ToListAsync();
     }
 }
