@@ -49,12 +49,12 @@ public class AlumnosController : ControllerBase
             return BadRequest("Solo se aceptan valores F para femenino y M para masculino");
         }
 
+        var adminEmail = User.FindFirstValue(ClaimTypes.Name);
 
-        var userId = User.Identity.GetUserId();
+
         var entity = _mapper.Map<Persona>(dto);
         entity.Deleted = false;
-        entity.CreatedBy = userId;
-        var adminEmail = User.FindFirstValue(ClaimTypes.Name);
+        entity.CreatedBy = adminEmail;
 
         try
         {
@@ -81,6 +81,7 @@ public class AlumnosController : ControllerBase
                     Created = DateTime.Now,
                     PersonaId = saved.Id
                 });
+                await _colAlumnosService.Save();
                 
                 return Ok(_mapper.Map<AlumnoGetDTO>(saved));
             }
