@@ -110,6 +110,7 @@ function Form({ form }) {
 
                                     {input?.type && types.includes(input.type) &&
                                         <SControl
+                                            autoComplete="on"
                                             id={input?.key ?? i}
                                             key={input?.key ?? i}
                                             value={input?.value}
