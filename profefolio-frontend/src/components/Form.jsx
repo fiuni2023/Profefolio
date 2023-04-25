@@ -45,7 +45,6 @@ form = {
                     label: label de la opcion
                 }
             ]
-
         }
     }], 
     
@@ -57,7 +56,6 @@ form = {
             enabled: cuando la opcion esta desactivada, por defecto es false
         }
     ]
-
 */
 
 
