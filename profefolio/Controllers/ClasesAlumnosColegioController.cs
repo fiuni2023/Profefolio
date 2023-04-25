@@ -127,17 +127,17 @@ namespace profefolio.Controllers
                         var relacion = await _clasesAlumnosColegioService.FindById(element.Id);
                         if (relacion == null)
                         {
-                            throw new Exception("El elemento que quiere eliminar no existe");
+                            throw new FileLoadException("El elemento que quiere eliminar no existe");
                         }
 
                         if (relacion.ClaseId != claseId)
                         {
-                            throw new Exception("El elemento que quiere eliminar no pertenece a la Clase");
+                            throw new FileLoadException("El elemento que quiere eliminar no pertenece a la Clase");
                         }
 
                         if (relacion.Clase == null || relacion.Clase.Colegio == null || "${adminEmail}".Equals(relacion.Clase.Colegio.personas.Email))
                         {
-                            throw new Exception("El elemento que quiere eliminar no pertenece al Colegio");
+                            throw new FileLoadException("El elemento que quiere eliminar no pertenece al Colegio");
                         }
 
                         if (true)
@@ -158,22 +158,23 @@ namespace profefolio.Controllers
                         var colegioAlumno = await _colegiosAlumnosService.FindById(element.ColegioAlumnoId);
                         if (colegioAlumno == null)
                         {
-                            throw new Exception("El Identificador del Alumno dentro del Colegio no fue encontrado.");
+                            throw new FileLoadException("El Identificador del Alumno dentro del Colegio no fue encontrado.");
                         }
 
 
                         // se valida que tanto el alumno en el colegio y la clase sean del colegio donde se encuentra el administrador
                         if (!adminEmail.Equals(colegioAlumno.Colegio.personas.Email))
                         {
-                            throw new Exception("No pude matipular datos ajenos a su institucion, la Clase o el Alumno no es de su propiedad.");
+                            throw new FileLoadException("No pude matipular datos ajenos a su institucion, la Clase o el Alumno no es de su propiedad.");
                         }
 
                         // se valida que ya no se haya agregado el alumno a la clase
                         if (await _clasesAlumnosColegioService.Exist(claseId, element.ColegioAlumnoId))
                         {
-                            throw new Exception("Ya se tiene registrado el alumno en la clase");
+                            throw new FileLoadException("Ya se tiene registrado el alumno en la clase");
                         }
-                        var dto = new ClasesAlumnosColegioDTO(){
+                        var dto = new ClasesAlumnosColegioDTO()
+                        {
                             ClaseId = claseId,
                             ColegioAlumnoId = element.ColegioAlumnoId
                         };
@@ -189,6 +190,12 @@ namespace profefolio.Controllers
                 await _clasesAlumnosColegioService.Save();
 
                 return NoContent();
+            }
+            catch (FileLoadException e)
+            {
+                Console.WriteLine($"{e}");
+                return BadRequest(e);
+
             }
             catch (Exception e)
             {
