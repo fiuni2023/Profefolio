@@ -242,4 +242,20 @@ public class PersonasService : IPersona
 
         return true;
     }
+
+    public async Task<Persona?> FindByDocumento(string documento = "", string role = "")
+    {
+        var persona = await _userManager.Users.Where(a => !a.Deleted 
+                && a.Documento != null 
+                && documento.Equals(a.Documento)).FirstOrDefaultAsync();
+        if(persona == null){
+            throw new FileNotFoundException("El usuario no esta registrado");
+        }
+        var tieneRol = await _userManager.IsInRoleAsync(persona, role);
+        if(tieneRol){
+            return persona;
+        }
+        return null;
+
+    }
 }
