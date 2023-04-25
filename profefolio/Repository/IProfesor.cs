@@ -10,6 +10,6 @@ namespace profefolio.Repository
     public interface IProfesor : IRepository<Persona>
     {
         Task<(ColegioProfesorResultOfCreatedDTO? resultado, Exception? ex)> Add(Persona p, string password, string rol, int idColegio);
-        
+        Task<List<Persona>> FindAllProfesoresOfColegio(int idColegio);
     }
 }
