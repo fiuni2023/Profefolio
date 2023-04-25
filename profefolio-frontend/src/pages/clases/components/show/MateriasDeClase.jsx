@@ -1,3 +1,4 @@
+
 import React, { memo, useEffect, useId, useMemo, useState } from 'react'
 import { Container, Item, ItemContainer, List, ListButton, SBody, SForm, SHeader, ScrollTable, Select } from '../../../../components/componentsStyles/StyledScrolleableList';
 import { RxReload } from 'react-icons/rx';
@@ -10,6 +11,8 @@ import { useGeneralContext } from '../../../../context/GeneralContext';
 import ClassesService from '../../Helpers/ClassesHelper';
 
 import BtnAdd from '../create/BtnAdd';
+
+import { GrAddCircle } from 'react-icons/gr'
 
 
 
@@ -86,9 +89,12 @@ const ListItem = memo(({ index, idMateria, nombre, profesores = [], type, onClic
                 <div className={`profe-container-${index}`}>
                     <Item>Profesores:</Item>
 
+                    
+                    <ListButton onClick={onClick} >
+                                    <GrAddCircle style={{ fontSize: '24px', color: '#C2C2C2' }} size={32} />
+                                    </ListButton>
 
-                   
-                    <BtnAdd />
+
                     {map(profesores, (e, i) => <TagProfesor key={i} id={e.id} nombre={`${e.nombre}${e.status}`} state={e.status} onClick={() => {
                         setStatusProfesorMateria(idMateria, e.id, e.status === "new" ? "reload" : "new");
                     }
