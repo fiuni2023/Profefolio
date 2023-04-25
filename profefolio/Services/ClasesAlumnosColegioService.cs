@@ -44,12 +44,21 @@ namespace profefolio.Services
             throw new NotImplementedException();
         }
 
+        public async Task<bool> Exist(int ClaseId, int ColegioAlumnoId)
+        {
+            return await _context.ClasesAlumnosColegios
+                .AnyAsync(a => !a.Deleted
+                && a.ClaseId == ClaseId
+                && a.ColegiosAlumnosId == ColegioAlumnoId);
+        }
+
         public async Task<ClasesAlumnosColegio> FindById(int id)
         {
             return await _context.ClasesAlumnosColegios
                     .Where(a => !a.Deleted && a.Id == id)
                     .Include(a => a.Clase)
                     .Include(a => a.ColegiosAlumnos)
+                    .Include(a => a.ColegiosAlumnos.Persona)
                     .FirstOrDefaultAsync();
         }
 

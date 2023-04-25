@@ -39,6 +39,8 @@ namespace profefolio.Controllers
 
             try
             {
+
+
                 // verificar si existe la clase con el Id de dto
                 var clase = await _claseService.FindById(dto.ClaseId);
                 if (clase == null)
@@ -55,10 +57,15 @@ namespace profefolio.Controllers
 
                 // se valida que tanto el alumno en el colegio y la clase sean del colegio donde se encuentra el administrador
                 if (clase.Colegio != null
-                    && adminEmail.Equals(colegioAlumno.Colegio.personas.Email)
-                    && adminEmail.Equals(clase.Colegio.personas.Email))
+                    && (!adminEmail.Equals(colegioAlumno.Colegio.personas.Email)
+                    || !adminEmail.Equals(clase.Colegio.personas.Email)))
                 {
-                    return BadRequest("No pude matipular datos ajenos a su institucion");
+                    return BadRequest("No pude matipular datos ajenos a su institucion, la Clase o el Alumno no es de su propiedad.");
+                }
+                
+                // se valida que ya no se haya agregado el alumno a la clase
+                if(await _clasesAlumnosColegioService.Exist(dto.ClaseId, dto.ColegioAlumnoId)){
+                    return BadRequest("Ya se tiene registrado el alumno en la clase");
                 }
 
                 var model = _mapper.Map<ClasesAlumnosColegio>(dto);
@@ -66,10 +73,17 @@ namespace profefolio.Controllers
                 model.Created = DateTime.Now;
                 model.CreatedBy = adminEmail;
 
-                var result = await _clasesAlumnosColegioService.Add(model);
+                var relacion = await _clasesAlumnosColegioService.Add(model);
                 await _clasesAlumnosColegioService.Save();
 
-                return Ok(_mapper.Map<ClasesAlumnosColegioDTOResult>(result));
+                Console.WriteLine($"ID RELACION: {relacion.Id}");
+                
+                var result = await _clasesAlumnosColegioService.FindById(relacion.Id);
+                Console.WriteLine($"RESULT : {result != null}");
+                
+                var resultMapped = _mapper.Map<ClasesAlumnosColegioDTOResult>(result);
+                return Ok(resultMapped);
+            
             }
             catch (Exception e)
             {

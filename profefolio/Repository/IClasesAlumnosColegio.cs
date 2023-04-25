@@ -8,6 +8,6 @@ namespace profefolio.Repository
 {
     public interface IClasesAlumnosColegio : IRepository<ClasesAlumnosColegio>
     {
-        
+        Task<bool> Exist(int ClaseId, int ColegioA);
     }
 }
