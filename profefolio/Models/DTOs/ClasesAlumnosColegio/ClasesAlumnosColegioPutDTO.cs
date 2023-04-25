@@ -9,14 +9,11 @@ namespace profefolio.Models.DTOs.ClasesAlumnosColegio
 {
     public class ClasesAlumnosColegioPutDTO: DataDTO
     {
-        [Required(ErrorMessage = "El campo de Clase es necesario")]
-        public int ClaseId { get; set; }
-
         [Required(ErrorMessage = "El campo de Alumno de Colegio es necesario")]
         public int ColegioAlumnoId { get; set; }
 
         [Required(ErrorMessage = "El campo de Clase es necesario")]
-        [RegularExpression(@"^[NnDd]$", ErrorMessage = "El estado tiene que ser N(new) o D(deleted)")]
+        [RegularExpression(@"^[ND]$", ErrorMessage = "El estado tiene que ser N(new) o D(deleted)")]
         public char Estado { get; set; }
     }
 }
