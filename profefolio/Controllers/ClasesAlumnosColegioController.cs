@@ -10,11 +10,11 @@ namespace profefolio.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ClasesAlumnosColegio : ControllerBase
+    public class ClasesAlumnosColegioController : ControllerBase
     {
         private IClasesAlumnosColegio _clasesAlumnosColegioService;
         private IMapper _mapper;
-        public ClasesAlumnosColegio(IMapper mapper, IClasesAlumnosColegio clasesAlumnosColegio)
+        public ClasesAlumnosColegioController(IMapper mapper, IClasesAlumnosColegio clasesAlumnosColegio)
         {
             _mapper = mapper;
             _clasesAlumnosColegioService = clasesAlumnosColegio;
