@@ -6,7 +6,7 @@ const H1 = styled.h1`
     font-style: normal;
     font-weight: 600;
     font-size: 1.8em;
-    color: #ffffff;
+    color: #000000;
 `;
 
 const Text = styled.div`
