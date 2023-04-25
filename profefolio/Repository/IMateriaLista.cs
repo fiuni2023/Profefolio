@@ -6,7 +6,7 @@ namespace profefolio.Repository
     {
         Task<bool> IsUsedMateria(int idMateria);
         Task<MateriaLista> Find(int idClase, string idProfesor, int idMateria, string userLogged);
-        Task<IEnumerable<MateriaLista>> FindByIdClase(int idClase, string user);
+        Task<List<MateriaLista>> FindByIdClase(int idClase, string user);
         Task<bool> DeleteByIdClase(int idClase, string user);
 
     }

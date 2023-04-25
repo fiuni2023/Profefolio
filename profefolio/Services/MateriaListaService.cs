@@ -115,7 +115,7 @@ namespace profefolio.Services
 
         }
 
-        public async Task<IEnumerable<MateriaLista>> FindByIdClase(int idClase, string user)
+        public async Task<List<MateriaLista>> FindByIdClase(int idClase, string user)
         {
             var colegio = await _db.Colegios
                 .Include(c => c.personas)
@@ -138,7 +138,7 @@ namespace profefolio.Services
                 throw new FileNotFoundException();
             }
 
-            return clase.MateriaListas;
+            return clase.MateriaListas.ToList();
         }
 
         public async Task<bool> DeleteByIdClase(int idClase, string user)
