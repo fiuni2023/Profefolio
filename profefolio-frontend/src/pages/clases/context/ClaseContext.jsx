@@ -75,6 +75,12 @@ export const ClaseProvider = ({ children }) => {
 
     const setProfesoresOptions = (profes) =>{
         setProfesoresOption(profes)
+    
+    const setColegioId = (colegioId) => {
+        localStorage.setItem("id-colegio", colegioId)
+    }
+    const getColegioId = () => {
+        if (localStorage.getItem('id-colegio') ? true : false) return JSON.parse(localStorage.getItem('id-colegio'))
     }
 
     const values = {
@@ -85,7 +91,9 @@ export const ClaseProvider = ({ children }) => {
         setStatusMateria,
         addMateriaToList,
         getProfesoresOption,
-        setProfesoresOptions
+        setProfesoresOptions,
+        setColegioId,
+        getColegioId
     }
 
     return (
