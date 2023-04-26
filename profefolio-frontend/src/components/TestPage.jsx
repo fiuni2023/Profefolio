@@ -7,7 +7,7 @@ import styled from 'styled-components'
 import { Container} from 'react-bootstrap'
 import { Separator } from './componentsStyles/StyledDashComponent'
 import { SRow } from './componentsStyles/StyledForm'
-import { colegios, clases, materias, infoClase } from '../pages/home/dashboards/profeHome/cards'
+import { colegios, clases, materias, infoClase } from './Example Data/ExampleCards'
 import Card from './Card'
 import ScrollListAlumnosExample from './Example Data/ScrollListAlumnosExample'
 
