@@ -60,6 +60,18 @@ namespace profefolio.Services
                     && ca.PersonaId.Equals(idAlumno));
         }
 
+        public async Task<IEnumerable<ColegiosAlumnos>> FindAllByAdminEmail(int page, int cantPorPag, string adminEmail)
+        {
+            return await _context.ColegiosAlumnos
+                    .Where(a => !a.Deleted 
+                        && adminEmail.Equals(a.Colegio.personas.Email))
+                    .OrderByDescending(ca => ca.Id)
+                    .Skip(page * cantPorPag)
+                    .Take(cantPorPag)
+                    .Include(a => a.Persona)
+                    .ToListAsync();
+        }
+
         public async Task<IEnumerable<ColegiosAlumnos>> FindAllByIdColegio(int page, int cantPorPag, int idColegio)
         {
             return await _context.ColegiosAlumnos
