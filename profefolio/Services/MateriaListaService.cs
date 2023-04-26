@@ -204,6 +204,7 @@ namespace profefolio.Services
                 .Include(c => c.personas)
                 .Where(c => !c.Deleted)
                 .Where(c => c.personas != null)
+                .Where(c => !c.personas.Deleted)
                 .Where(c => c.personas.Email != null)
                 .Where(c => c.personas.Email.Equals(user))
                 .FirstOrDefaultAsync();
