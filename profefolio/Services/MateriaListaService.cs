@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using profefolio.Models;
+using profefolio.Models.DTOs.ClaseMateria;
 using profefolio.Models.Entities;
 using profefolio.Repository;
 
@@ -80,13 +81,6 @@ namespace profefolio.Services
             GC.SuppressFinalize(this);
         }
 
-        public IEnumerable<MateriaLista> FilterByIdMateriaAndUserAndClass(int idMateria, string createdBy, int idClase)
-        {
-            return _db.MateriaListas.Where(d => !d.Deleted)
-                .Where(d => d.Id == idMateria)
-                .Where(d => d.CreatedBy == null ? false : d.CreatedBy.Equals(createdBy))
-                .Where(d => d.ClaseId == idClase);
-        }
 
 
         public async Task<bool> IsUsedMateria(int idMateria)
@@ -94,28 +88,13 @@ namespace profefolio.Services
             return await _db.MateriaListas.AnyAsync(d => d.MateriaId == idMateria);
         }
 
-        public async Task<IEnumerable<MateriaLista>> GetDetalleClaseByIdMateriaAndUsername(string username, int idMateria)
-        {
-            var query = await _db.MateriaListas
-                .Where(p => !p.Deleted)
-                .Where(p => p.CreatedBy == null ? false : p.CreatedBy.Equals(username))
-                .Where(p => p.MateriaId == idMateria).ToListAsync();
-
-            if(query.Count() < 1) 
-                throw new FileNotFoundException();
-
-
-            return query;
-
-        }
-
         public async Task<MateriaLista> Find(int idClase, string idProfesor, int idMateria, string userLogged)
         {
             var colegio = _db.Colegios
                 .FirstOrDefault(c => c.personas.UserName.Equals(userLogged));
 
-            
-            if(colegio == null) throw new FileNotFoundException();
+
+            if (colegio == null) throw new FileNotFoundException();
 
             var clase = await _db.Clases
                 .Include(c => c.MateriaListas)
@@ -124,7 +103,7 @@ namespace profefolio.Services
                 .Where(c => c.Id == idClase)
                 .FirstOrDefaultAsync();
 
-            if(clase == null) throw new FileNotFoundException();
+            if (clase == null) throw new FileNotFoundException();
 
             var materiaListas = clase.MateriaListas
                 .Where(p => p.ClaseId == idClase)
@@ -134,7 +113,149 @@ namespace profefolio.Services
 
             return materiaListas;
 
-            
+
+        }
+
+        public async Task<List<MateriaLista>> FindByIdClase(int idClase, string user)
+        {
+            var colegio = await _db.Colegios
+                .Include(c => c.personas)
+                .Where(c => !c.Deleted)
+                .Where(c => c.personas.Email.Equals(user))
+                .FirstOrDefaultAsync();
+
+            if (colegio == null)
+            {
+                throw new BadHttpRequestException("Accion no valida");
+            }
+            var clase = await _db.Clases
+                .Include(c => c.MateriaListas)
+                .Where(c => !c.Deleted)
+                .Where(c => c.Id == idClase)
+                .FirstOrDefaultAsync();
+
+            if (clase == null || (colegio.Id != clase.ColegioId) || clase.MateriaListas == null)
+            {
+                throw new FileNotFoundException();
+            }
+
+            return clase.MateriaListas.ToList();
+        }
+
+        public async Task<bool> DeleteByIdClase(int idClase, string user)
+        {
+            var colegio = await _db.Colegios
+                .Include(c => c.personas)
+                .Where(c => !c.Deleted)
+                .Where(c => c.personas.Email.Equals(user))
+                .FirstOrDefaultAsync();
+
+            if (colegio == null)
+            {
+                throw new BadHttpRequestException("Accion no valida");
+            }
+            var clase = await _db.Clases
+                .Include(c => c.MateriaListas)
+                .Where(c => !c.Deleted)
+                .Where(c => c.Id == idClase)
+                .FirstOrDefaultAsync();
+
+            if (clase == null || (colegio.Id != clase.ColegioId) || clase.MateriaListas == null)
+            {
+                throw new FileNotFoundException();
+            }
+
+            foreach (var item in clase.MateriaListas)
+            {
+                try
+                {
+                    _db.MateriaListas.Remove(item);
+                }
+                catch (Exception e)
+                {
+                    return false;
+                }
+
+            }
+
+            return true;
+        }
+
+        public async Task<bool> SaveMateriaLista(ClaseMateriaCreateDTO dto, string user)
+        {
+            var materia = await _db.Materias
+                .FirstOrDefaultAsync(c => !c.Deleted && dto.IdMateria == c.Id);
+
+
+            if (materia == null)
+            {
+                throw new BadHttpRequestException("Materia no valida");
+            }
+
+            var clase = await _db.Clases
+                .FirstOrDefaultAsync(c => !c.Deleted && c.Id == dto.IdClase);
+
+            if (clase == null)
+            {
+                throw new BadHttpRequestException("clase no valida");
+            }
+
+            var colegio = await _db.Colegios
+                .Include(c => c.personas)
+                .Where(c => !c.Deleted)
+                .Where(c => c.personas != null)
+                .Where(c => !c.personas.Deleted)
+                .Where(c => c.personas.Email != null)
+                .Where(c => c.personas.Email.Equals(user))
+                .FirstOrDefaultAsync();
+
+            if (colegio == null || colegio.Id != clase.Id)
+            {
+                throw new BadHttpRequestException("Accion no valida");
+            }
+
+            foreach (var item in dto.IdProfesores)
+            {
+                var p = await _db.Users
+                    .FirstOrDefaultAsync(x => !x.Deleted && x.Id.Equals(item));
+
+                if (p == null)
+                {
+                    throw new BadHttpRequestException("Profesor no valido");
+                }
+
+                var rol = await _db.Roles
+                    .FirstOrDefaultAsync(r => r.Name.Equals("Profesor"));
+
+                bool esProfesor = await _db.UserRoles
+                    .Where(ur => ur.UserId.Equals(p.Id) && ur.RoleId.Equals(rol.Id))
+                    .CountAsync() > 0;
+
+                if(!(esProfesor))
+                {
+                    throw new BadHttpRequestException("Profesor no valido");
+                }
+
+                await _db.MateriaListas.AddAsync(new MateriaLista
+                {
+                    ClaseId = dto.IdClase,
+                    ProfesorId = item,
+                    MateriaId = dto.IdMateria,
+                    Created = DateTime.Now,
+                    CreatedBy = user
+                });
+                try
+                {
+                    await this.Save();
+                }
+                catch (Exception e)
+                {
+                    return false;
+                }
+
+
+            }
+            return true;
         }
     }
 }

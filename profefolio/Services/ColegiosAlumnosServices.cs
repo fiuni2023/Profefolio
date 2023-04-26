@@ -32,6 +32,11 @@ namespace profefolio.Services
                             .CountAsync(ca => !ca.Deleted && ca.ColegioId == idColegio);
         }
 
+        public async Task<int> Count(string adminEmail)
+        {
+            return await _context.ColegiosAlumnos.CountAsync(a => !a.Deleted && adminEmail.Equals(a.Colegio.personas.Email));
+        }
+
         public int Count()
         {
             throw new NotImplementedException();
@@ -60,18 +65,48 @@ namespace profefolio.Services
                     && ca.PersonaId.Equals(idAlumno));
         }
 
+        public async Task<IEnumerable<ColegiosAlumnos>> FindAllByAdminEmail(int page, int cantPorPag, string adminEmail)
+        {
+            return await _context.ColegiosAlumnos
+                    .Where(a => !a.Deleted
+                        && adminEmail.Equals(a.Colegio.personas.Email))
+                    .OrderByDescending(ca => ca.Id)
+                    .Skip(page * cantPorPag)
+                    .Take(cantPorPag)
+                    .Include(a => a.Persona)
+                    .ToListAsync();
+        }
+
+
         public async Task<IEnumerable<ColegiosAlumnos>> FindAllByIdColegio(int page, int cantPorPag, int idColegio)
         {
             return await _context.ColegiosAlumnos
                     .Where(ca => !ca.Deleted && ca.ColegioId == idColegio)
                     .OrderByDescending(ca => ca.Id)
                     .Skip(page * cantPorPag)
-                    .Take(page).ToListAsync();
+                    .Take(page)
+                    .Include(a => a.Persona)
+                    .ToListAsync();
+        }
+
+        public async Task<IEnumerable<ColegiosAlumnos>> FindAllNoAssignedToClaseByEmailAdminAndIdClase(string adminEmail, int idClase)
+        {
+            return await _context.ColegiosAlumnos
+                            .Where(ca => !ca.Deleted
+                                && ca.Colegio.personas.Email.Equals(adminEmail)
+                                && (ca.ClasesAlumnosColegios == null
+                                    || !ca.ClasesAlumnosColegios.Any()
+                                    || ca.ClasesAlumnosColegios.Any(a => !a.Deleted && a.ClaseId != idClase)))
+                            .Include(a => a.Persona)
+                            .ToListAsync();
         }
 
         public async Task<ColegiosAlumnos> FindById(int id)
         {
-            return await _context.ColegiosAlumnos.FirstOrDefaultAsync(ca => !ca.Deleted && ca.Id == id);
+            return await _context.ColegiosAlumnos
+                .Include(a => a.Colegio)
+                .Include(a => a.Colegio.personas)
+                .FirstOrDefaultAsync(ca => !ca.Deleted && ca.Id == id);
         }
 
         public IEnumerable<ColegiosAlumnos> GetAll(int page, int cantPorPag)
