@@ -43,6 +43,19 @@ namespace profefolio.Helpers.Mappers
                     opt => opt.MapFrom(v => v.Persona.Direccion))
                 .ForMember(dest => dest.Email,
                     opt => opt.MapFrom(v => v.Persona.Email));
+
+
+            CreateMap<ColegiosAlumnos, ColegioAlumnoToSelectDTO>()
+            .ForMember(dest => dest.AlumnoId,
+                opt => opt.MapFrom(v => v.Persona.Id))
+            .ForMember(dest => dest.ColegioAlumnoId,
+                opt => opt.MapFrom(v => v.Id))
+            .ForMember(dest => dest.Nombre,
+                opt => opt.MapFrom(v => v.Persona.Nombre))
+            .ForMember(dest => dest.Apellido,
+                opt => opt.MapFrom(v => v.Persona.Apellido))
+            .ForMember(dest => dest.Documento,
+                opt => opt.MapFrom(v => v.Persona.Documento));
         }
     }
 }

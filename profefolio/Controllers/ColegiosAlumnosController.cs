@@ -71,7 +71,31 @@ namespace profefolio.Controllers
             {
                 Console.WriteLine($"{e}");
                 return BadRequest("Error durante la obtencion de los Alumnos.");
+            }
+        }
 
+        [HttpGet("NoAssignedAlumnos/{claseId:int}")]
+        [Authorize(Roles = "Administrador de Colegio")]
+        public async Task<ActionResult<List<ColegioAlumnoToSelectDTO>>> GetAll(int claseId)
+        {
+            var adminEmail = User.FindFirstValue(ClaimTypes.Name);
+            try
+            {
+                var listAlumnosColegio = await _cAlumnosService.FindAllNoAssignedToClaseByEmailAdminAndIdClase(adminEmail, claseId);
+
+                if (listAlumnosColegio == null)
+                {
+                    BadRequest("No se encontraron alumnos para la clase");
+                }
+
+                var result = _mapper.Map<List<ColegioAlumnoToSelectDTO>>(listAlumnosColegio);
+                return Ok(result);
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"{ex}");
+                return BadRequest("Error durarnte la obtencion de alumnos de la clase");
             }
         }
 
