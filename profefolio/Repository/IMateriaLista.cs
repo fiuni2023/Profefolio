@@ -1,4 +1,5 @@
-﻿using profefolio.Models.Entities;
+﻿using profefolio.Models.DTOs.ClaseMateria;
+using profefolio.Models.Entities;
 
 namespace profefolio.Repository
 {
@@ -8,6 +9,8 @@ namespace profefolio.Repository
         Task<MateriaLista> Find(int idClase, string idProfesor, int idMateria, string userLogged);
         Task<List<MateriaLista>> FindByIdClase(int idClase, string user);
         Task<bool> DeleteByIdClase(int idClase, string user);
+
+        Task<bool> SaveMateriaLista(ClaseMateriaCreateDTO dto, string user);
 
     }
 }
