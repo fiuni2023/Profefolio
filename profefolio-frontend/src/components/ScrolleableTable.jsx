@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ScrollTable, SBody, SHeader, SForm, Container, Select, Item, List, ItemContainer, ListButton } from "./componentsStyles/StyledScrolleableList";
 import TextButton from './TextButton';
 import { RxReload } from 'react-icons/rx';
@@ -13,7 +13,12 @@ function ListItem({ index, name, lastName, document, type, onClick }) {
 }
 
 
-const Scrolleable = ({ studentsList }) => {
+const Scrolleable = ({ studentsList, isLoading = true }) => {
+    useEffect(() => {
+      
+    console.log(studentsList)
+    }, [studentsList])
+    
     return (
         <Container>
             <ScrollTable>
@@ -23,17 +28,19 @@ const Scrolleable = ({ studentsList }) => {
                     </SHeader>}
                 {studentsList?.list &&
                     <SBody background={studentsList?.background ?? "gray"}>
-                        <List>
+                        {isLoading ? <p>Cargando lista de alumnos</p>
+                        :<List>
                             {studentsList?.list?.map((student, index) => (
                                 <ListItem key={index}
                                     index={index + 1}
-                                    name={student.name}
-                                    lastName={student.lastName}
-                                    document={student.document}
+                                    id={student.id}
+                                    name={student.nombre}
+                                    lastName={student.apellido}
+                                    document={student.documento}
                                     type={student.status}
                                     onClick={() => console.log(`${student.name} 'seleccionado'`)} />
                             ))}
-                        </List>
+                        </List>}
                     </SBody>}
                 <SForm onSubmit={studentsList?.onSubmit ?? null} >
                     <span>{studentsList?.addTitle}</span>
