@@ -23,7 +23,7 @@ td {
 }
 
 .tableRow:hover {
-  background-color: #c7c4c4;
+  background-color: #C8BFD9;
 }
 
 .page {
@@ -72,7 +72,7 @@ margin-left: 10%;
 .divAddCiclos{
   margin-left: 12%;
   width:370px;
-  margin-top: 6%;
+  margin-top: 7%;
 }
 .buttonGuardar{
   margin-left: 45%;

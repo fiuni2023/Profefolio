@@ -1,5 +1,5 @@
 /* eslint-disable */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useFetch } from 'react';
 import { PanelContainerBG } from '../../profesor/components/LayoutAdmin';
 import { useGeneralContext } from "../../../context/GeneralContext.jsx";
 import axios from 'axios';
@@ -30,47 +30,29 @@ function ListarMaTerias() {
     if (!cancan("Administrador de Colegio")) {
       nav("/")
     } else {
-    let config = {
-      method: 'get',
-      maxBodyLength: Infinity,
-      url: `${APILINK}/api/Ciclo`,
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${getToken()}`,
-        },
-      
-    };
-
-    axios.request(config)
-      .then((response) => {
-        console.log(response.data);
-        setCiclos(response.data)
-        console.log(ciclos)
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    }
-
-   /*  verifyToken()
-    if (!cancan("Administrador de Colegio")) {
-      nav("/")
-    } else {
-      axios.get('https://localhost:7063/api/Ciclo', {
+      let config = {
+        method: 'get',
+        maxBodyLength: Infinity,
+        url: `${APILINK}/api/Ciclo`,
         headers: {
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${getToken()}`,
-        }
-      })
+        },
 
-        .then(response => {
-          setCiclos(response.data.dataList);
-          console.log(ciclos)
+      };
+
+      axios.request(config)
+        .then((response) => {
+          
+          setCiclos(response.data)
+          
         })
-        .catch(error => {
-          toast.error(error.response.data);
+        .catch((error) => {
+          toast.error(error)
         });
     }
-    */
+
+    
   }
 
 
@@ -89,9 +71,7 @@ function ListarMaTerias() {
       })
 
         .then(response => {
-          console.log(response.data.dataList)
           setMaterias(response.data.dataList);
-          console.log(typeof(materias))
         })
         .catch(error => {
           toast.error(error);
@@ -101,13 +81,15 @@ function ListarMaTerias() {
   }
 
   useEffect(() => {
+    
     getMaterias();
     getCiclos();
+    
 
   }, [page, cancan, verifyToken, nav, getToken]);
 
   const handleSubmitMateria = () => {
-    console.log(nombre_Materia)
+   
     if (nombre_Materia === "") toast.error("revisa los datos, los campos deben ser completados")
     else {
       axios.post(`${APILINK}/api/Materia`, {
@@ -122,8 +104,6 @@ function ListarMaTerias() {
           toast.success("Guardado exitoso");
           setNombreMateria("")
 
-          console.log(materias);
-
         })
         .catch(error => {
           if (typeof (error.response.data) === "string" ? true : false) {
@@ -137,11 +117,10 @@ function ListarMaTerias() {
   }
 
   const handleSubmitCiclo = () => {
-    console.log(nombreCiclo)
     if (nombreCiclo === "") toast.error("revisa los datos, los campos deben ser completados")
     else {
       axios.post(`${APILINK}/api/Ciclo`, {
-        nombreCiclo,
+        "nombre": nombreCiclo,
 
       }, {
         headers: {
@@ -151,7 +130,6 @@ function ListarMaTerias() {
         .then(response => {
           toast.success("Guardado exitoso");
           setNombreCiclo("")
-
           console.log(ciclos);
 
         })
@@ -183,7 +161,7 @@ function ListarMaTerias() {
 
   }
   const doFetch = (materia) => {
-    setColegios([...materias, materia])
+    setMaterias([...materias, materia])
   }
 
   return (
@@ -232,7 +210,7 @@ function ListarMaTerias() {
 
             <div className={styles.container} id={styles.containerCiclos} >
               <div id={styles.ciclosTable}>
-              <Tabla
+                <Tabla
                   datosTabla={{
                     tituloTabla: 'Lista de Ciclos',
                     titulos: [
@@ -245,13 +223,13 @@ function ListarMaTerias() {
                       datos: [
                         { dato: materia.id },
                         { dato: materia.nombre },
-                        { dato: "X" },
+                        { dato: "X"},
                       ],
                     })),
                   }}
                   selected={id ?? '-'}
                 />
-                
+
               </div>
               <div>
                 <div className={styles.divAddCiclos}>
