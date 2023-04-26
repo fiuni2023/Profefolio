@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using profefolio.Models.DTOs.ClasesAlumnosColegio;
 using profefolio.Models.Entities;
@@ -28,6 +29,7 @@ namespace profefolio.Controllers
         }
 
         [HttpGet("{idClase:int}")]
+        [Authorize(Roles = "Administrador de Colegio,Profesor")]
         public async Task<ActionResult<List<ClaseAlumnosColegiosInfoAlumnoDTO>>> GetAll(int idClase)
         {
             try
@@ -37,7 +39,7 @@ namespace profefolio.Controllers
 
                 var clasesAlumnosColegio = await _clasesAlumnosColegioService.FindAllByClaseIdAndAdminEmail(idClase, adminEmail);
 
-                if (clasesAlumnosColegio == null)
+                if (clasesAlumnosColegio == null || !clasesAlumnosColegio.Any())
                 {
                     return BadRequest("No se encontraron Alumnos relacionados a la Clase");
                 }
@@ -51,6 +53,7 @@ namespace profefolio.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Administrador de Colegio,Profesor")]
         public async Task<ActionResult<ClasesAlumnosColegioDTOResult>> PostWithIdAlumnoInColegio([FromBody] ClasesAlumnosColegioDTO dto)
         {
             if (!ModelState.IsValid)
@@ -113,6 +116,7 @@ namespace profefolio.Controllers
         }
 
         [HttpPut]
+        [Authorize(Roles = "Administrador de Colegio,Profesor")]
         public async Task<ActionResult> PutList([FromBody] ClaseAlumnosColegioLitPutDTO dtoList)
         {
             if (!ModelState.IsValid)
