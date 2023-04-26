@@ -150,6 +150,7 @@ function ListarMaTerias() {
     setShowModal(true);
     setId(data.id);
     setData(data)
+    console.log(data)
   };
 
   const handleNombreMateria = (event) => {
