@@ -26,14 +26,37 @@ function ListarMaTerias() {
 
   const nav = useNavigate()
 
-  useEffect(() => {
-    verifyToken()
+  const getCiclos = () => {
     if (!cancan("Administrador de Colegio")) {
       nav("/")
     } else {
-      //axios.get(`https://miapi.com/products?page=${page}&size=${size}`, {
+    let config = {
+      method: 'get',
+      maxBodyLength: Infinity,
+      url: `${APILINK}/api/Ciclo`,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${getToken()}`,
+        },
+      
+    };
 
-      axios.get(`${APILINK}/api/Ciclo`, {
+    axios.request(config)
+      .then((response) => {
+        console.log(response.data);
+        setCiclos(response.data)
+        console.log(ciclos)
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    }
+
+   /*  verifyToken()
+    if (!cancan("Administrador de Colegio")) {
+      nav("/")
+    } else {
+      axios.get('https://localhost:7063/api/Ciclo', {
         headers: {
           Authorization: `Bearer ${getToken()}`,
         }
@@ -41,18 +64,18 @@ function ListarMaTerias() {
 
         .then(response => {
           setCiclos(response.data.dataList);
-
-
-
+          console.log(ciclos)
         })
         .catch(error => {
-          console.error(error);
+          toast.error(error.response.data);
         });
     }
-  }, [cancan, verifyToken, nav, getToken]);
+    */
+  }
 
 
-  useEffect(() => {
+
+  const getMaterias = () => {
     verifyToken()
     if (!cancan("Administrador de Colegio")) {
       nav("/")
@@ -66,14 +89,21 @@ function ListarMaTerias() {
       })
 
         .then(response => {
+          console.log(response.data.dataList)
           setMaterias(response.data.dataList);
-
-
+          console.log(typeof(materias))
         })
         .catch(error => {
-          console.error(error);
+          toast.error(error);
         });
     }
+
+  }
+
+  useEffect(() => {
+    getMaterias();
+    getCiclos();
+
   }, [page, cancan, verifyToken, nav, getToken]);
 
   const handleSubmitMateria = () => {
@@ -91,7 +121,7 @@ function ListarMaTerias() {
         .then(response => {
           toast.success("Guardado exitoso");
           setNombreMateria("")
-         
+
           console.log(materias);
 
         })
@@ -104,36 +134,39 @@ function ListarMaTerias() {
         });
 
     }
-    const handleSubmitCiclo = () => {
-      console.log(nombreCiclo)
-      if (nombreCiclo === "") toast.error("revisa los datos, los campos deben ser completados")
-      else {
-        axios.post(`${APILINK}/api/Clase`, {
-          nombreCiclo,
+  }
 
-        }, {
-          headers: {
-            Authorization: `Bearer ${getToken()}`,
-          }
+  const handleSubmitCiclo = () => {
+    console.log(nombreCiclo)
+    if (nombreCiclo === "") toast.error("revisa los datos, los campos deben ser completados")
+    else {
+      axios.post(`${APILINK}/api/Ciclo`, {
+        nombreCiclo,
+
+      }, {
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+        }
+      })
+        .then(response => {
+          toast.success("Guardado exitoso");
+          setNombreCiclo("")
+
+          console.log(ciclos);
+
         })
-          .then(response => {
-            toast.success("Guardado exitoso");
-            setNombreCiclo("")
-            console.log(ciclos)
+        .catch(error => {
+          if (typeof (error.response.data) === "string" ? true : false) {
+            toast.error(error.response.data)
+          } else {
+            toast.error(error.response.data?.errors.Password ? error.response.data?.errors.Password[0] : error.response.data?.errors.Email[0])
+          }
+        });
 
-          })
-          .catch(error => {
-            if (typeof (error.response.data) === "string" ? true : false) {
-              toast.error(error.response.data)
-            } else {
-              toast.error(error.response.data?.errors.Password ? error.response.data?.errors.Password[0] : error.response.data?.errors.Email[0])
-            }
-          });
-
-      }
     }
+  }
 
-  };
+
 
   const btndetalles = (data) => {
     setShowModal(true);
@@ -176,8 +209,9 @@ function ListarMaTerias() {
                     filas: materias.map((materia) => ({
                       fila: materia,
                       datos: [
-                        {dato: materia.id},
+                        { dato: materia.id },
                         { dato: materia.nombre_Materia },
+                        { dato: "X" },
                       ],
                     })),
                   }}
@@ -185,17 +219,20 @@ function ListarMaTerias() {
                 />
               </div>
               <div className={styles.divAdd}>
-                <label>Agregar Materia</label>
+                <label className={styles.label}>Agregar Materia</label>
                 <br />
                 <input className={styles.inputAdd} placeholder='Nombre de la materia' onChange={(event) => handleNombreMateria(event)} ></input>
                 <br />
-                <TextButton enabled={true} buttonType='save' onClick={() => handleSubmitMateria()} />
+                <div className={styles.buttonGuardarMateria}>
+                  <TextButton enabled={true} buttonType='save' onClick={() => handleSubmitMateria()} />
+
+                </div>
               </div>
             </div>
 
             <div className={styles.container} id={styles.containerCiclos} >
               <div id={styles.ciclosTable}>
-                <Tabla
+              <Tabla
                   datosTabla={{
                     tituloTabla: 'Lista de Ciclos',
                     titulos: [
@@ -203,23 +240,28 @@ function ListarMaTerias() {
                     ],
                     clickable: { action: btndetalles },
                     tableWidth: '100%',
-                    filas: materias.map((ciclo) => ({
-                      fila: ciclo,
+                    filas: ciclos.map((materia) => ({
+                      fila: materia,
                       datos: [
-                        {dato: ciclo.id},
-                        { dato: ciclo.nombre_Materia },
+                        { dato: materia.id },
+                        { dato: materia.nombre },
+                        { dato: "X" },
                       ],
                     })),
                   }}
                   selected={id ?? '-'}
                 />
+                
               </div>
               <div>
                 <div className={styles.divAddCiclos}>
-                  <label>Agregar Ciclo</label>
+                  <label className={styles.label}>Agregar Ciclo</label>
                   <br />
                   <input className={styles.inputAdd} placeholder='Nombre del Ciclo' onChange={(event) => handleNombreCiclo(event)} ></input>
-                  <TextButton enabled={true} buttonType='save' onClick={() => handleSubmitCiclo()} className={styles.buttonGuardar} />
+                  <div className={styles.buttonGuardar}>
+                    <TextButton enabled={true} buttonType='save' onClick={() => handleSubmitCiclo()} />
+
+                  </div>
                 </div>
               </div>
             </div>

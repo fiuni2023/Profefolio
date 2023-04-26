@@ -46,7 +46,10 @@ margin-left: 10%;
   height: 320px;
   
 }
-
+::placeholder { color: black; }
+.label{
+  font-size: medium;
+}
 #ciclosTable {
   margin-left: 11%;
   overflow-y: scroll;
@@ -72,7 +75,10 @@ margin-left: 10%;
   margin-top: 6%;
 }
 .buttonGuardar{
-  margin-left: 20%;
+  margin-left: 45%;
+}
+.buttonGuardarMateria{
+  margin-left: 60%;
 }
 .inputAdd {
   background-color: #F5F5F5;
