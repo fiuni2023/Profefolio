@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useEffect, useState } from "react";
 import styles from './ListarColegios.module.css';
 import { useNavigate } from "react-router-dom";
