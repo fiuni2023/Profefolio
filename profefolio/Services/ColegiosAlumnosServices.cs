@@ -32,6 +32,11 @@ namespace profefolio.Services
                             .CountAsync(ca => !ca.Deleted && ca.ColegioId == idColegio);
         }
 
+        public async Task<int> Count(string adminEmail)
+        {
+            return await _context.ColegiosAlumnos.CountAsync(a => !a.Deleted && adminEmail.Equals(a.Colegio.personas.Email));
+        }
+
         public int Count()
         {
             throw new NotImplementedException();
