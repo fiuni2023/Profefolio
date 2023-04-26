@@ -12,7 +12,7 @@ const Paginations = ({ totalPage, currentPage, setCurrentPage, next }) => {
 
     };
 
-   
+
 
     return (<>
 

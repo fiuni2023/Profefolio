@@ -5,10 +5,11 @@ import ShowContainer from '../../components/ShowContainer';
 import InfoClase from '../../components/show/InfoClase';
 import AlumnosInscriptos from '../../components/show/AlumnosInscriptos';
 import MateriasDeClase from '../../components/show/MateriasDeClase';
+import { useClaseContext } from '../../context/ClaseContext';
 
 const ShowClase = () => {
     const { idClase } = useParams();
-
+    const { getColegioId} = useClaseContext();
     /**
      * TO DO
      * Validar logeo
@@ -19,7 +20,7 @@ const ShowClase = () => {
         title: `Nombre de clase ${idClase}`,
         componentes: [
             <InfoClase/>,
-            <AlumnosInscriptos/>,
+            <AlumnosInscriptos colegio={getColegioId()}/>,
             <MateriasDeClase/>
         ]
     };

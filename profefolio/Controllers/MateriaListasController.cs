@@ -49,7 +49,7 @@ namespace profefolio.Controllers
 
             var clase = _claseService.FindById(dto.IdClase);
 
-            if(clase == null)
+            if (clase == null)
             {
                 return BadRequest("No se encontro la clase que desea asociar");
             }
@@ -107,11 +107,6 @@ namespace profefolio.Controllers
                         Id = p.MateriaId,
                         Materia = p.Materia.Nombre_Materia
                     }
-
-
-
-
-
 
                 });
 
@@ -181,11 +176,60 @@ namespace profefolio.Controllers
             {
                 return NotFound();
             }
-
-
         }
 
-    }
+        [HttpDelete]
+        [Route("{idClase:int}")]
+        public async Task<ActionResult> DeleteByIdClase(int idClase)
+        {
+            try
+            {
+                var user = User.Identity.Name;
+
+                await _materiaListaService.DeleteByIdClase(idClase, user);
+            }
+            catch (FileNotFoundException e)
+            {
+                return NotFound();
+            }
+            catch (BadHttpRequestException e)
+            {
+                return BadRequest();
+            }
+
+            return Ok();
+        }
+
+        [HttpGet]
+        [Route("{idClase:int}")]
+        public async Task<ActionResult<ClaseDetallesDTO>> Get(int idClase)
+        {
+            try 
+            {
+                var user = User.Identity.Name;
+                var result = await _materiaListaService.FindByIdClase(idClase, user);
+
+                var response = new ClaseDetallesDTO();
+
+                response.IdProfesores = result.ConvertAll(c => c.ProfesorId);
+                response.ClaseId = idClase;
+                response.MateriaId = result[0].ClaseId;
+                return Ok(response);
+                
+            }
+            catch(BadHttpRequestException e)
+            {
+                Console.WriteLine(e.Message);
+                return BadRequest();
+            }
+            catch(FileNotFoundException e)
+            {
+                Console.WriteLine(e.Message);
+                return NotFound();
+            }
+        }
+
+}
 
 
 

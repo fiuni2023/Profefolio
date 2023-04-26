@@ -39,6 +39,9 @@ function TextButton({ buttonType, onClick, enabled }) {
     case 'confirm':
       text = 'Confirmar';
       break;
+    case "danger":
+      text = 'Borrar'
+      break;
     default:
       text = null;
       isEnabled = false;
