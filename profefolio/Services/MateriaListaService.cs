@@ -214,7 +214,7 @@ namespace profefolio.Services
                 throw new BadHttpRequestException("Accion no valida");
             }
 
-            foreach (var item in dto.IdProfesores)
+            foreach (var item in dto.IdProfesores.Distinct())
             {
                 var p = await _db.Users
                     .FirstOrDefaultAsync(x => !x.Deleted && x.Id.Equals(item));
