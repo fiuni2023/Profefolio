@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace profefolio.Models.DTOs.ClasesAlumnosColegio
 {
-    public class ClasesAlumnosColegioPutDTO: DataDTO
+    public class ClasesAlumnosColegioPutDTO
     {
         [Required(ErrorMessage = "El campo de Alumno de Colegio es necesario")]
         public int ColegioAlumnoId { get; set; }
