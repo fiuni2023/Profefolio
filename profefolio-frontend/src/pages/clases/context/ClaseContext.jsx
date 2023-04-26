@@ -73,9 +73,9 @@ export const ClaseProvider = ({ children }) => {
         return profesoresOption.filter(a => !(profesFilter.find(b => b.id === a.id)))
     }
 
-    const setProfesoresOptions = (profes) =>{
+    const setProfesoresOptions = (profes) => {
         setProfesoresOption(profes)
-    
+    }
     const setColegioId = (colegioId) => {
         localStorage.setItem("id-colegio", colegioId)
     }
