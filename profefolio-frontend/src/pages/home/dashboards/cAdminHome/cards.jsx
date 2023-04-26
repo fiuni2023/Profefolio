@@ -58,7 +58,6 @@ const Materias = {
     body: {
         title: "Ultimas Materias/Ciclos",
         table: {
-            tableWidth: "50%",
             small: true, 
             titulos: [ {titulo: "Nombre"} ], 
             filas: [
@@ -70,7 +69,6 @@ const Materias = {
             ]
         },
         table2: {
-            tableWidth: "50%",
             small: true, 
             titulos: [ {titulo: "Ciclo"}], 
             filas: [
