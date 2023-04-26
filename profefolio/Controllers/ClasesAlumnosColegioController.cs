@@ -75,10 +75,7 @@ namespace profefolio.Controllers
                 var relacion = await _clasesAlumnosColegioService.Add(model);
                 await _clasesAlumnosColegioService.Save();
 
-                Console.WriteLine($"ID RELACION: {relacion.Id}");
-
                 var result = await _clasesAlumnosColegioService.FindById(relacion.Id);
-                Console.WriteLine($"RESULT : {result != null}");
 
                 var resultMapped = _mapper.Map<ClasesAlumnosColegioDTOResult>(result);
                 return Ok(resultMapped);
@@ -124,18 +121,13 @@ namespace profefolio.Controllers
                 {
                     if (element.Estado == 'D')
                     {
-                        var relacion = await _clasesAlumnosColegioService.FindById(element.Id);
+                        var relacion = await _clasesAlumnosColegioService.FindByClaseIdAndColegioAlumnoId(claseId, element.ColegioAlumnoId);
                         if (relacion == null)
                         {
                             throw new FileLoadException("El elemento que quiere eliminar no existe");
                         }
 
-                        if (relacion.ClaseId != claseId)
-                        {
-                            throw new FileLoadException("El elemento que quiere eliminar no pertenece a la Clase");
-                        }
-
-                        if (relacion.Clase == null || relacion.Clase.Colegio == null || "${adminEmail}".Equals(relacion.Clase.Colegio.personas.Email))
+                        if (relacion.Clase == null || relacion.Clase.Colegio == null || $"{adminEmail + 6}".Equals(relacion.Clase.Colegio.personas.Email))
                         {
                             throw new FileLoadException("El elemento que quiere eliminar no pertenece al Colegio");
                         }
