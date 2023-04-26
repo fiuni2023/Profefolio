@@ -16,7 +16,7 @@ namespace profefolio.Controllers
         private readonly IPersona _profesorService;
         private readonly IMateria _materiaService;
         private readonly IClase _claseService;
-        
+
         public MateriaListasController(IMateriaLista materiaListaService, IPersona profesorService, IMateria materiaService, IClase claseService)
         {
             _materiaListaService = materiaListaService;
@@ -29,7 +29,32 @@ namespace profefolio.Controllers
         public async Task<ActionResult> Post([FromBody] ClaseMateriaCreateDTO dto)
         {
             if (!ModelState.IsValid)
-                return Ok(dto);
+            {
+                return BadRequest(dto);
+            }
+
+
+            if (dto.IdProfesores.Count < 1)
+            {
+                return BadRequest("Debe incluir por lo menos un Id de un profesor");
+            }
+
+
+            var materia = _materiaService.FindById(dto.IdMateria);
+
+            if (materia == null)
+            {
+                return BadRequest("No se encontro el Id de la Materia");
+            }
+
+            var clase = _claseService.FindById(dto.IdClase);
+
+            if (clase == null)
+            {
+                return BadRequest("No se encontro la clase que desea asociar");
+            }
+
+
 
             var user = User.Identity.Name;
 
@@ -37,9 +62,9 @@ namespace profefolio.Controllers
             foreach (var profes in dto.IdProfesores.Distinct())
             {
 
-                var p = await _profesorService.FindById(profes);
+                var p = await _profesorService.FindByIdAndRole(profes, "Profesor");
 
-                if (p == null) { continue; }
+                if (p == null) return BadRequest("Uno de los profesores que deseas agregar no existe");
                 await _materiaListaService.Add(new MateriaLista
                 {
                     ClaseId = dto.IdClase,
@@ -83,11 +108,6 @@ namespace profefolio.Controllers
                         Materia = p.Materia.Nombre_Materia
                     }
 
-
-
-
-
-
                 });
 
 
@@ -95,52 +115,6 @@ namespace profefolio.Controllers
 
         }
 
-        [HttpGet]
-        [Route("{idMateria:int}")]
-        public async Task<ActionResult> GetByIdMateria(int idMateria)
-        {
-            var username = User.Identity.Name;
-            try
-            {
-                List<MateriaLista> query = (List<MateriaLista>)await _materiaListaService.GetDetalleClaseByIdMateriaAndUsername(username, idMateria);
-
-
-
-                var result = new ClaseDetallesDTO();
-
-                result.MateriaId = query[0].MateriaId;
-                result.ClaseId = query[0].ClaseId;
-                result.IdProfesores = query.ConvertAll(q => q.ProfesorId);
-
-                return Ok(result);
-            }
-            catch (FileNotFoundException)
-            {
-
-            }
-            return NotFound();
-
-
-        }
-
-        [HttpDelete]
-        [Route("{idmateria:int}/{idclase:int}")]
-        public async Task<ActionResult> Delete(int idmateria, int idclase)
-        {
-            var username = User.Identity.Name;
-            var listas = _materiaListaService.FilterByIdMateriaAndUserAndClass(idmateria, username, idclase);
-
-            foreach (var item in listas)
-            {
-                item.Deleted = true;
-                item.ModifiedBy = username;
-                item.Modified = DateTime.Now;
-                _materiaListaService.Edit(item);
-            }
-
-            await _materiaListaService.Save();
-            return Ok();
-        }
 
         [HttpPut]
         [Route("{idClase:int}")]
@@ -152,7 +126,7 @@ namespace profefolio.Controllers
                 return BadRequest();
             }
 
-            if(dto.IdProfesores.Count < 1) return BadRequest();
+            if (dto.IdProfesores.Count < 1) return BadRequest();
 
             var user = User.Identity.Name;
             try
@@ -167,7 +141,7 @@ namespace profefolio.Controllers
 
                     if (p == null) { continue; }
 
-                    var detalle =await _materiaListaService.Find(dto.IdClase, item, dto.IdMateria, user);
+                    var detalle = await _materiaListaService.Find(dto.IdClase, item, dto.IdMateria, user);
 
                     if (detalle == null)
                     {
@@ -202,11 +176,60 @@ namespace profefolio.Controllers
             {
                 return NotFound();
             }
-
-
         }
 
-    }
+        [HttpDelete]
+        [Route("{idClase:int}")]
+        public async Task<ActionResult> DeleteByIdClase(int idClase)
+        {
+            try
+            {
+                var user = User.Identity.Name;
+
+                await _materiaListaService.DeleteByIdClase(idClase, user);
+            }
+            catch (FileNotFoundException e)
+            {
+                return NotFound();
+            }
+            catch (BadHttpRequestException e)
+            {
+                return BadRequest();
+            }
+
+            return Ok();
+        }
+
+        [HttpGet]
+        [Route("{idClase:int}")]
+        public async Task<ActionResult<ClaseDetallesDTO>> Get(int idClase)
+        {
+            try 
+            {
+                var user = User.Identity.Name;
+                var result = await _materiaListaService.FindByIdClase(idClase, user);
+
+                var response = new ClaseDetallesDTO();
+
+                response.IdProfesores = result.ConvertAll(c => c.ProfesorId);
+                response.ClaseId = idClase;
+                response.MateriaId = result[0].ClaseId;
+                return Ok(response);
+                
+            }
+            catch(BadHttpRequestException e)
+            {
+                Console.WriteLine(e.Message);
+                return BadRequest();
+            }
+            catch(FileNotFoundException e)
+            {
+                Console.WriteLine(e.Message);
+                return NotFound();
+            }
+        }
+
+}
 
 
 

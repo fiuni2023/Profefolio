@@ -71,7 +71,10 @@ namespace profefolio.Services
 
         public async Task<ColegiosAlumnos> FindById(int id)
         {
-            return await _context.ColegiosAlumnos.FirstOrDefaultAsync(ca => !ca.Deleted && ca.Id == id);
+            return await _context.ColegiosAlumnos
+                .Include(a => a.Colegio)
+                .Include(a => a.Colegio.personas)
+                .FirstOrDefaultAsync(ca => !ca.Deleted && ca.Id == id);
         }
 
         public IEnumerable<ColegiosAlumnos> GetAll(int page, int cantPorPag)

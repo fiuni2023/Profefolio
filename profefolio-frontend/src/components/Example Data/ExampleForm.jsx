@@ -28,8 +28,17 @@ const FormExample =  {
           key: "fecha", label: "Fecha",
           type: "date", placeholder: "Seleccione la fecha",
           disabled: false,
+          maxDate: false,
           required: true,
         },
+        {
+            xs: 6, sm: 6, md: 6, lg: 6,
+            key: "fecha", label: "Fecha",
+            type: "date", placeholder: "Seleccione la fecha",
+            maxDate: true, 
+            disabled: false,
+            required: true,
+          },
         {
             key: "select-ex", label: "Opciones",
             type: "select", 
