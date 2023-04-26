@@ -68,7 +68,7 @@ namespace profefolio.Services
         public async Task<IEnumerable<ColegiosAlumnos>> FindAllByAdminEmail(int page, int cantPorPag, string adminEmail)
         {
             return await _context.ColegiosAlumnos
-                    .Where(a => !a.Deleted 
+                    .Where(a => !a.Deleted
                         && adminEmail.Equals(a.Colegio.personas.Email))
                     .OrderByDescending(ca => ca.Id)
                     .Skip(page * cantPorPag)
@@ -77,22 +77,25 @@ namespace profefolio.Services
                     .ToListAsync();
         }
 
+
         public async Task<IEnumerable<ColegiosAlumnos>> FindAllByIdColegio(int page, int cantPorPag, int idColegio)
         {
             return await _context.ColegiosAlumnos
                     .Where(ca => !ca.Deleted && ca.ColegioId == idColegio)
                     .OrderByDescending(ca => ca.Id)
                     .Skip(page * cantPorPag)
-                    .Take(page).ToListAsync();
+                    .Take(page)
+                    .Include(a => a.Persona)
+                    .ToListAsync();
         }
 
         public async Task<IEnumerable<ColegiosAlumnos>> FindAllNoAssignedToClaseByEmailAdminAndIdClase(string adminEmail, int idClase)
         {
             return await _context.ColegiosAlumnos
-                            .Where(ca => !ca.Deleted 
+                            .Where(ca => !ca.Deleted
                                 && ca.Colegio.personas.Email.Equals(adminEmail)
-                                && (ca.ClasesAlumnosColegios == null 
-                                    || !ca.ClasesAlumnosColegios.Any() 
+                                && (ca.ClasesAlumnosColegios == null
+                                    || !ca.ClasesAlumnosColegios.Any()
                                     || ca.ClasesAlumnosColegios.Any(a => !a.Deleted && a.ClaseId != idClase)))
                             .Include(a => a.Persona)
                             .ToListAsync();
