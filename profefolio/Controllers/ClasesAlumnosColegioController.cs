@@ -27,6 +27,29 @@ namespace profefolio.Controllers
             _colegiosAlumnosService = colegiosAlumnos;
         }
 
+        [HttpGet("{idClase:int}")]
+        public async Task<ActionResult<List<ClaseAlumnosColegiosInfoAlumnoDTO>>> GetAll(int idClase)
+        {
+            try
+            {
+                // obtenemos del token el email del admin
+                var adminEmail = User.FindFirstValue(ClaimTypes.Name);
+
+                var clasesAlumnosColegio = await _clasesAlumnosColegioService.FindAllByClaseIdAndAdminEmail(idClase, adminEmail);
+
+                if (clasesAlumnosColegio == null)
+                {
+                    return BadRequest("No se encontraron Alumnos relacionados a la Clase");
+                }
+                return Ok(_mapper.Map<List<ClaseAlumnosColegiosInfoAlumnoDTO>>(clasesAlumnosColegio));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"{e}");
+                return BadRequest("Error durante la obtencion de los Alumnos de la Clase");
+            }
+        }
+
         [HttpPost]
         public async Task<ActionResult<ClasesAlumnosColegioDTOResult>> PostWithIdAlumnoInColegio([FromBody] ClasesAlumnosColegioDTO dto)
         {
