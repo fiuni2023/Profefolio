@@ -74,8 +74,9 @@ namespace profefolio.Services
             return await _context.ColegiosAlumnos
                             .Where(ca => !ca.Deleted 
                                 && ca.Colegio.personas.Email.Equals(adminEmail)
-                                || (ca.ClasesAlumnosColegios == null 
-                                && ca.ClasesAlumnosColegios.Any(a => !a.Deleted && a.ClaseId != idClase)))
+                                && (ca.ClasesAlumnosColegios == null 
+                                    || !ca.ClasesAlumnosColegios.Any() 
+                                    || ca.ClasesAlumnosColegios.Any(a => !a.Deleted && a.ClaseId != idClase)))
                             .Include(a => a.Persona)
                             .ToListAsync();
         }

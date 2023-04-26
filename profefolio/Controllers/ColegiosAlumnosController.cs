@@ -30,7 +30,7 @@ namespace profefolio.Controllers
             _personaService = personaService;
         }
 
-        [HttpGet("{claseId:int}")]
+        [HttpGet("NoAssignedAlumnos/{claseId:int}")]
         [Authorize(Roles = "Administrador de Colegio")]
         public async Task<ActionResult<List<ColegioAlumnoToSelectDTO>>> GetAll(int claseId)
         {
