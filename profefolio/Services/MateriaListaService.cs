@@ -231,6 +231,11 @@ namespace profefolio.Services
                     .Where(ur => ur.UserId.Equals(p.Id) && ur.RoleId.Equals(rol.Id))
                     .CountAsync() > 0;
 
+                if(!(esProfesor))
+                {
+                    throw new BadHttpRequestException("Profesor no valido");
+                }
+
                 await _db.MateriaListas.AddAsync(new MateriaLista
                 {
                     ClaseId = dto.IdClase,
