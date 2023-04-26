@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace profefolio.Models.DTOs.ColegiosAlumnos
 {
-    public class ColegioAlumnoListPage
+    public class ColegioAlumnoListPageDTO
     {
         public string Id { get; set; }
         public string Documento { get; set; }
@@ -13,7 +13,7 @@ namespace profefolio.Models.DTOs.ColegiosAlumnos
         public string Apellido { get; set; }
         public DateTime FechaNacimiento { get; set; }
         public string Direccion { get; set; }
-        public string Correo { get; set; }
+        public string Email { get; set; }
 
     }
 }
