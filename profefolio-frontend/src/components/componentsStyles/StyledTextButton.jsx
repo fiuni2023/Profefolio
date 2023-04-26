@@ -66,12 +66,22 @@ const StyledTextButton = styled.button`
         `;
       case 'confirm':
         return `
-            background-color: #F0544F;
-            color: #fff;
-            &:hover {
-              background-color: #A32A26;
-            }
-          `;
+          background-color: #F0544F;
+          color: #fff;
+  
+          &:hover {
+            background-color: #A32A26;
+          }
+        `;
+      case 'danger':
+        return `
+          background-color: #F01F18;
+          color: #fff;
+  
+          &:hover {
+            background-color: #EB231C;
+          }
+        `;
       default:
         return `
           background-color: #ccc;

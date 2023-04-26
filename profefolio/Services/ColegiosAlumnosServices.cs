@@ -69,9 +69,24 @@ namespace profefolio.Services
                     .Take(page).ToListAsync();
         }
 
+        public async Task<IEnumerable<ColegiosAlumnos>> FindAllNoAssignedToClaseByEmailAdminAndIdClase(string adminEmail, int idClase)
+        {
+            return await _context.ColegiosAlumnos
+                            .Where(ca => !ca.Deleted 
+                                && ca.Colegio.personas.Email.Equals(adminEmail)
+                                && (ca.ClasesAlumnosColegios == null 
+                                    || !ca.ClasesAlumnosColegios.Any() 
+                                    || ca.ClasesAlumnosColegios.Any(a => !a.Deleted && a.ClaseId != idClase)))
+                            .Include(a => a.Persona)
+                            .ToListAsync();
+        }
+
         public async Task<ColegiosAlumnos> FindById(int id)
         {
-            return await _context.ColegiosAlumnos.FirstOrDefaultAsync(ca => !ca.Deleted && ca.Id == id);
+            return await _context.ColegiosAlumnos
+                .Include(a => a.Colegio)
+                .Include(a => a.Colegio.personas)
+                .FirstOrDefaultAsync(ca => !ca.Deleted && ca.Id == id);
         }
 
         public IEnumerable<ColegiosAlumnos> GetAll(int page, int cantPorPag)

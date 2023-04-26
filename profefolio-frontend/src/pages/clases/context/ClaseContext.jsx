@@ -8,6 +8,7 @@ export const useClaseContext = () => {
 }
 
 export const ClaseProvider = ({ children }) => {
+    const [profesoresOption, setProfesoresOption] = useState();
     const [listaMaterias, setListaMaterias] = useState([
         { id: 1, nombre: "Matematicas", status: "reload", profesores: [{ id: 1, nombre: "John Foe", status: "new" }, { id: 21, nombre: "Juan Foe", status: "new" }] },
         { id: 2, nombre: "Matematicas", status: "reload", profesores: [{ id: 1, nombre: "John Foe", status: "new" }, { id: 21, nombre: "Juan Foe", status: "new" }] },
@@ -47,6 +48,16 @@ export const ClaseProvider = ({ children }) => {
         }
     }
 
+    const addMateriaToList = (nombre) => {
+        const newMateria = {
+            id: Date.now().toString(),
+            nombre,
+            status: "new",
+            profesores: []
+        }
+        setListaMaterias([...listaMaterias, newMateria])
+    }
+
     const getClaseSelectedId = () => {
         const json = localStorage.getItem("id-clase-selected")
         const value = JSON.parse(json);
@@ -56,7 +67,15 @@ export const ClaseProvider = ({ children }) => {
     const setClaseSelectedId = (id) => {
         localStorage.setItem("id-clase-selected", id)
     }
-    
+
+    const getProfesoresOption = (profesFilter = []) => {
+        //se filtra los profes a partir de un array de profes
+        return profesoresOption.filter(a => !(profesFilter.find(b => b.id === a.id)))
+    }
+
+    const setProfesoresOptions = (profes) => {
+        setProfesoresOption(profes)
+    }
     const setColegioId = (colegioId) => {
         localStorage.setItem("id-colegio", colegioId)
     }
@@ -70,6 +89,9 @@ export const ClaseProvider = ({ children }) => {
         getListaMaterias,
         setStatusProfesorMateria,
         setStatusMateria,
+        addMateriaToList,
+        getProfesoresOption,
+        setProfesoresOptions,
         setColegioId,
         getColegioId
     }
