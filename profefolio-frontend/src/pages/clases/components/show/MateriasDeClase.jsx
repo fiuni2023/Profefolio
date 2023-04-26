@@ -13,50 +13,29 @@ import ClassesService from '../../Helpers/ClassesHelper';
 
 import { GrAddCircle } from 'react-icons/gr'
 
-const StyledSelect = styled.select`
-    background-color: #C2C2C2;
-    padding-left: 5px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    max-width: calc(10rem - 24px);
-    font-size: 15px;
-    display: flex;
-    align-items: center;
-
+const TagNombreSelect = styled.div`
+    border-radius: 20px;
+    justify-content: space-around;
 `;
 
-const selectNombre = styled.div`
-    padding-left: 5px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    max-width: calc(10rem - 24px);
-    font-size: 15px;
-    display: flex;
-    align-items: center;
-    `;
 const TagSelect = styled.select`
     background-color: #C2C2C2;
     padding: 0.2rem;
-    max-width: 10rem;
-    width: fit-content;+
-    height: 24px;
-    display: flex;
+    width: fit-content;
+    height: 30px;
     align-items: center;
-
-    border-radius: 20px;
-    display: flex;
-    border: 1px solid black;
+    border-radius: 15px;
     justify-content: space-around;
-    `;
+`;
 
 const TagTeacher = styled.div`
-    border-radius: 20px;
-    display: flex;
-    border: 1px solid black;
-    justify-content: space-around;
-`
+border-radius: 20px;
+display: flex;
+border: 1px solid black;
+justify-content: space-around;
+`;
+
+
 
 const TagProfesor = memo(({ id, nombre, state = "new", onClick = () => { } }) => {
     const uid = useId();
@@ -151,7 +130,7 @@ const ListItem = memo(({ index, idMateria, nombre, profesores = [], type, onClic
 
                     {isSelectOpen ? (
 
-                        <selectNombre>
+                        <TagNombreSelect>
                     <TagSelect>
                         {profesores.map((profesor) => (
                         <option key={profesor.id} value={profesor.id}>
@@ -160,7 +139,7 @@ const ListItem = memo(({ index, idMateria, nombre, profesores = [], type, onClic
                         ))}
                     </TagSelect>
 
-                    </selectNombre>
+                    </TagNombreSelect>
                     ) : null}
 
 
