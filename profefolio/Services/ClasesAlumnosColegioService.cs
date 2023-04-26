@@ -52,6 +52,17 @@ namespace profefolio.Services
                 && a.ColegiosAlumnosId == ColegioAlumnoId);
         }
 
+        public async Task<ClasesAlumnosColegio?> FindByClaseIdAndColegioAlumnoId(int ClaseId, int ColegioAlumnoId)
+        {
+            return await _context.ClasesAlumnosColegios
+                .Include(a => a.Clase)
+                .Include(a => a.Clase.Colegio)
+                .Include(a => a.Clase.Colegio.personas)
+                .FirstOrDefaultAsync(a => !a.Deleted
+                && a.ClaseId == ClaseId
+                && a.ColegiosAlumnosId == ColegioAlumnoId);
+        }
+
         public async Task<ClasesAlumnosColegio> FindById(int id)
         {
             return await _context.ClasesAlumnosColegios
