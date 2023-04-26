@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using profefolio.Models;
+using profefolio.Models.DTOs.ClaseMateria;
 using profefolio.Models.Entities;
 using profefolio.Repository;
 
@@ -177,6 +178,173 @@ namespace profefolio.Services
 
             }
 
+            return true;
+        }
+
+        public async Task<bool> SaveMateriaLista(ClaseMateriaCreateDTO dto, string user)
+        {
+            var materia = await _db.Materias
+                .FirstOrDefaultAsync(c => !c.Deleted && dto.IdMateria == c.Id);
+
+
+            if (materia == null)
+            {
+                throw new BadHttpRequestException("Materia no valida");
+            }
+
+            var clase = await _db.Clases
+                .FirstOrDefaultAsync(c => !c.Deleted && c.Id == dto.IdClase);
+
+            if (clase == null)
+            {
+                throw new BadHttpRequestException("clase no valida");
+            }
+
+            var colegio = await _db.Colegios
+                .Include(c => c.personas)
+                .Where(c => !c.Deleted)
+                .Where(c => c.personas != null)
+                .Where(c => !c.personas.Deleted)
+                .Where(c => c.personas.Email != null)
+                .Where(c => c.personas.Email.Equals(user))
+                .FirstOrDefaultAsync();
+
+            if (colegio == null || colegio.Id != clase.Id)
+            {
+                throw new BadHttpRequestException("Accion no valida");
+            }
+
+            foreach (var item in dto.IdProfesores.Distinct())
+            {
+                var p = await _db.Users
+                    .FirstOrDefaultAsync(x => !x.Deleted && x.Id.Equals(item));
+
+                if (p == null)
+                {
+                    throw new BadHttpRequestException("Profesor no valido");
+                }
+
+                var rol = await _db.Roles
+                    .FirstOrDefaultAsync(r => r.Name.Equals("Profesor"));
+
+                bool esProfesor = await _db.UserRoles
+                    .Where(ur => ur.UserId.Equals(p.Id) && ur.RoleId.Equals(rol.Id))
+                    .CountAsync() > 0;
+
+                if (!(esProfesor))
+                {
+                    throw new BadHttpRequestException("Profesor no valido");
+                }
+
+                await _db.MateriaListas.AddAsync(new MateriaLista
+                {
+                    ClaseId = dto.IdClase,
+                    ProfesorId = item,
+                    MateriaId = dto.IdMateria,
+                    Created = DateTime.Now,
+                    CreatedBy = user
+                });
+                try
+                {
+                    await this.Save();
+                }
+                catch (Exception e)
+                {
+                    return false;
+                }
+
+
+            }
+            return true;
+        }
+
+        public async Task<bool> EditMateriaLista(ClaseMateriaEditDTO dto, string user)
+        {
+            var materia = await _db.Materias
+                .FirstOrDefaultAsync(c => !c.Deleted && dto.IdMateria == c.Id);
+
+
+            if (materia == null)
+            {
+                throw new BadHttpRequestException("Materia no valida");
+            }
+
+            var clase = await _db.Clases
+                .FirstOrDefaultAsync(c => !c.Deleted && c.Id == dto.IdClase);
+
+            if (clase == null)
+            {
+                throw new BadHttpRequestException("clase no valida");
+            }
+
+            var colegio = await _db.Colegios
+                .Include(c => c.personas)
+                .Where(c => !c.Deleted)
+                .Where(c => c.personas != null)
+                .Where(c => !c.personas.Deleted)
+                .Where(c => c.personas.Email != null)
+                .Where(c => c.personas.Email.Equals(user))
+                .FirstOrDefaultAsync();
+
+            if (colegio == null || colegio.Id != clase.Id)
+            {
+                throw new BadHttpRequestException("Accion no valida");
+            }
+
+            foreach (var item in dto.IdProfesores.Distinct())
+            {
+                var p = await _db.Users
+                    .FirstOrDefaultAsync(x => !x.Deleted && x.Id.Equals(item));
+
+                if (p == null)
+                {
+                    throw new BadHttpRequestException("Profesor no valido");
+                }
+
+                var rol = await _db.Roles
+                    .FirstOrDefaultAsync(r => r.Name.Equals("Profesor"));
+
+                bool esProfesor = await _db.UserRoles
+                    .Where(ur => ur.UserId.Equals(p.Id) && ur.RoleId.Equals(rol.Id))
+                    .CountAsync() > 0;
+
+                if (!(esProfesor))
+                {
+                    throw new BadHttpRequestException("Profesor no valido");
+                }
+                var listaDetalle = await Find(dto.IdClase, item, dto.IdMateria, user);
+
+                if (listaDetalle == null)
+                {
+                    await _db.MateriaListas.AddAsync(new MateriaLista
+                    {
+                        ClaseId = dto.IdClase,
+                        ProfesorId = item,
+                        MateriaId = dto.IdMateria,
+                        Created = DateTime.Now,
+                        CreatedBy = user
+                    });
+                }
+                else
+                {
+                    listaDetalle.ClaseId = dto.IdClase;
+                    listaDetalle.MateriaId = dto.IdMateria;
+                    listaDetalle.ProfesorId = item;
+                    listaDetalle.ModifiedBy = "user";
+                    listaDetalle.Modified = DateTime.Now;
+                }
+
+                try
+                {
+                    await this.Save();
+                }
+                catch (Exception e)
+                {
+                    return false;
+                }
+
+
+            }
             return true;
         }
     }
