@@ -3,6 +3,7 @@ import {SCard, SBody, SHeader, STitle, SCol, TwoCol, FirstCol, SecondCol, Single
 import Tabla from './Tabla';
 import { useNavigate } from 'react-router';
 import { HiClock } from 'react-icons/hi';
+import Chart from 'chart.js/auto';
 
 
 
@@ -10,6 +11,13 @@ function Card({cardInfo}){
     const nav = useNavigate();
     const handleClick = (goto) => {
         nav(goto);
+    }
+    const generateChart = (info) => {
+        setTimeout(()=>{
+            new Chart(
+                document.getElementById(info.id),
+                info.config);
+        },100)
     }
     return (
         <SCol xs={cardInfo?.xs ?? 12} sm={cardInfo?.sm ?? 12} md={cardInfo?.md ?? 6} lg={cardInfo?.lg ?? 4}>
@@ -46,6 +54,7 @@ function Card({cardInfo}){
                             {cardInfo?.body?.schedule?.secondary && <SecondaryCol>{cardInfo?.body?.schedule?.secondary}</SecondaryCol>}
                         </ThreeCol> 
                         }
+                        {cardInfo?.body?.graph && cardInfo?.body?.graph?.id && <div><canvas id={cardInfo.body.graph.id}>{generateChart(cardInfo.body.graph)}</canvas></div>}
                     </SBody>}
             </SCard>
         </SCol>
