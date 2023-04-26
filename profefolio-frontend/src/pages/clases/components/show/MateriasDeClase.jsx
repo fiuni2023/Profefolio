@@ -13,7 +13,43 @@ import ClassesService from '../../Helpers/ClassesHelper';
 
 import { GrAddCircle } from 'react-icons/gr'
 
+const StyledSelect = styled.select`
+    background-color: #C2C2C2;
+    padding-left: 5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: calc(10rem - 24px);
+    font-size: 15px;
+    display: flex;
+    align-items: center;
 
+`;
+
+const selectNombre = styled.div`
+    padding-left: 5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: calc(10rem - 24px);
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    `;
+const TagSelect = styled.select`
+    background-color: #C2C2C2;
+    padding: 0.2rem;
+    max-width: 10rem;
+    width: fit-content;+
+    height: 24px;
+    display: flex;
+    align-items: center;
+
+    border-radius: 20px;
+    display: flex;
+    border: 1px solid black;
+    justify-content: space-around;
+    `;
 
 const TagTeacher = styled.div`
     border-radius: 20px;
@@ -64,7 +100,7 @@ const TagProfesor = memo(({ id, nombre, state = "new", onClick = () => { } }) =>
                 background-color: ${type};
                 padding: 0.2rem;
                 max-width: 10rem;
-                width: fit-content;
+                width: fit-content;+
                 height: 24px;
                 display: flex;
                 align-items: center;
@@ -114,13 +150,17 @@ const ListItem = memo(({ index, idMateria, nombre, profesores = [], type, onClic
                     </ListButton>
 
                     {isSelectOpen ? (
-                    <Select>
+
+                        <selectNombre>
+                    <TagSelect>
                         {profesores.map((profesor) => (
                         <option key={profesor.id} value={profesor.id}>
                             {profesor.nombre}
                         </option>
                         ))}
-                    </Select>
+                    </TagSelect>
+
+                    </selectNombre>
                     ) : null}
 
 
