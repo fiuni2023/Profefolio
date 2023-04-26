@@ -30,19 +30,19 @@ namespace profefolio.Helpers.Mappers
 
             CreateMap<ColegiosAlumnos, ColegioAlumnoListPageDTO>()
                 .ForMember(dest => dest.Id, 
-                    opt => opt.MapFrom(v => v.Colegio.personas.Id))
+                    opt => opt.MapFrom(v => v.Persona.Id))
                 .ForMember(dest => dest.Documento, 
-                    opt => opt.MapFrom(v => v.Colegio.personas.Documento))
+                    opt => opt.MapFrom(v => v.Persona.Documento))
                 .ForMember(dest => dest.Nombre, 
-                    opt => opt.MapFrom(v => v.Colegio.personas.Nombre))
+                    opt => opt.MapFrom(v => v.Persona.Nombre))
                 .ForMember(dest => dest.Apellido, 
-                    opt => opt.MapFrom(v => v.Colegio.personas.Apellido))
+                    opt => opt.MapFrom(v => v.Persona.Apellido))
                 .ForMember(dest => dest.FechaNacimiento, 
-                    opt => opt.MapFrom(v => v.Colegio.personas.Nacimiento))
+                    opt => opt.MapFrom(v => v.Persona.Nacimiento))
                 .ForMember(dest => dest.Direccion, 
-                    opt => opt.MapFrom(v => v.Colegio.personas.Direccion))
+                    opt => opt.MapFrom(v => v.Persona.Direccion))
                 .ForMember(dest => dest.Email, 
-                    opt => opt.MapFrom(v => v.Colegio.personas.Email));
+                    opt => opt.MapFrom(v => v.Persona.Email));
         }
     }
 }
