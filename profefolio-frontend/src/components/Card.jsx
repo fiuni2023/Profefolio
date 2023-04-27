@@ -28,7 +28,7 @@ function Card({cardInfo}){
                 {cardInfo?.body && 
                     <SBody background={cardInfo?.background ?? "gray"}>
                         {cardInfo?.body?.title && <STitle>{cardInfo.body.title}</STitle>}
-                        <TwoCol>
+                        <TwoCol> 
                             {cardInfo?.body?.table && <Tabla datosTabla={cardInfo?.body?.table}></Tabla>}
                             {cardInfo?.body?.table2 && <Tabla datosTabla={cardInfo?.body?.table2}></Tabla>}
                         </TwoCol>
