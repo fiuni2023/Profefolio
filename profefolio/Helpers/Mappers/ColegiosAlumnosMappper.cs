@@ -31,7 +31,7 @@ namespace profefolio.Helpers.Mappers
             CreateMap<ColegiosAlumnos, ColegioAlumnoToSelectDTO>()
             .ForMember(dest => dest.AlumnoId,
                 opt => opt.MapFrom(v => v.Persona.Id))
-            .ForMember(dest => dest.ColegioAlumnoId,
+            .ForMember(dest => dest.Id,
                 opt => opt.MapFrom(v => v.Id))
             .ForMember(dest => dest.Nombre,
                 opt => opt.MapFrom(v => v.Persona.Nombre))
