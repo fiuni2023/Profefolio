@@ -8,10 +8,11 @@ import APILINK from '../../components/link';
 import { useNavigate } from "react-router-dom";
 import { toast } from 'react-hot-toast';
 
+
 function ModalVerColegios(props) {
 
-  const { datoIdColegio, setShow, show, disabled, setDisabled, onClose, triggerState, page } = props;
-  
+  const { datoIdColegio, setShow, show, disabled, setDisabled, triggerState, page, idAdministrador } = props;
+
   const handleClose = () => {
     setNombre("");
     setIdAdmin("");
@@ -26,6 +27,7 @@ function ModalVerColegios(props) {
   const [administradores, setAdministradores] = useState([]);
   // eslint-disable-next-line no-unused-vars
   const [idAdmin, setIdAdmin] = useState("");
+  const [nuevoNombreColegio, setNuevoNombre]=useState("");
 
 
   //Lamada de los datos del colegio
@@ -48,15 +50,15 @@ function ModalVerColegios(props) {
         axios(config)
           .then(function (response) {
             setColegio(response.data); //Guarda los datos
-            console.log(response.data);
-
+            console.log(colegio);
             // eslint-disable-next-line no-unused-vars
-            const { apellido, direccion, documento, documentoTipo, genero, id, nacimiento, nombre, nombreAdministrador, telefono } = response.data;
+            const { apellido, direccion, documento, documentoTipo, genero, id,idAdmin, nacimiento, nombre, nombreAdministrador, telefono } = response.data;
             setNombre(nombre);
             setApellidoAdministrador(apellido);
             setNombreAdministrador(nombreAdministrador);
+            setIdAdmin(idAdmin);
             setDisabled(true);
-
+            console.log(idAdmin)
 
 
           })
@@ -99,43 +101,55 @@ function ModalVerColegios(props) {
     setDisabled(false);
   }
 
-  const handleSubmit = () => {
-    console.log(idAdmin);
-    // eslint-disable-next-line no-mixed-operators, eqeqeq
+  const putBack=()=>{
+    axios.put(`${APILINK}/api/Colegios/${datoIdColegio}`, {
+      "nombre":nuevoNombreColegio,
+      "personaId":idAdmin
 
-    console.log(typeof (idAdmin));
+    }, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+      }
+    })
+      .then(response => {
+        setColegio("");
+        toast.success("Editado exitoso");
+        handleClose(false);
+        handleUpdate();
+        setNombre("");
+        setIdAdmin("");
+        setApellidoAdministrador("");
+        setNombreAdministrador("");
+
+      })
+      .catch(error => {
+        if (typeof (error.response.data) === "string" ? true : false) {
+          toast.error(error.response.data)
+        } else {
+          toast.error(error.response.data?.errors.Email[0])
+        }
+      });
+
+  
+  }
+
+
+  const handleSubmit = () => {
+    console.log(idAdmin, "id submit");
+    // eslint-disable-next-line no-mixed-operators, eqeqeq
 
     if (nombre === "" || idAdmin === "")
       toast.error("revisa los datos, los campos deben ser completados")
+    if (nuevoNombreColegio===nombre && idAdmin===idAdministrador ) {
+      toast.error("No hay modificaciones")
+    } 
+    if(nuevoNombreColegio===nombre){
+      putBack();
+    }
+
     else {
-      axios.put(`${APILINK}/api/Colegios/${datoIdColegio}`, {
-        "nombre": nombre,
-        "personaId": idAdmin
-
-      }, {
-        headers: {
-          Authorization: `Bearer ${getToken()}`,
-        }
-      })
-        .then(response => {
-          setColegio("");
-          toast.success("Editado exitoso");
-          handleClose(false);
-          handleUpdate();
-          setNombre("");
-          setIdAdmin("");
-          setApellidoAdministrador("");
-          setNombreAdministrador("");
-
-        })
-        .catch(error => {
-          if (typeof (error.response.data) === "string" ? true : false) {
-            toast.error(error.response.data)
-          } else {
-            toast.error(error.response.data?.errors.Email[0])
-          }
-        });
-
+      putBack();
+      
     }
 
   }
@@ -195,10 +209,7 @@ function ModalVerColegios(props) {
   const [apellido, setApellidoAdministrador] = useState(colegio.apellido || "");
   const [showModal2, setShowModal2] = useState(false);
 
-  const handleCloseModal2 = () => {
-    onClose()
-    setShowModal2(false)
-  };
+  const handleCloseModal2 = () => setShowModal2(false);
   const handleShowModal2 = () => setShowModal2(true);
   return (
 
@@ -242,7 +253,7 @@ function ModalVerColegios(props) {
 
                     type="text"
                     defaultValue={nombre}
-                    onChange={event => setNombre(event.target.value)}
+                    onChange={event => setNuevoNombre(event.target.value)}
                   //placeholder={profesor.nombre} 
                   />
                 }
@@ -257,8 +268,8 @@ function ModalVerColegios(props) {
                   />
 
                   : <div>
-                    <Form.Select aria-label="Default select example" defaultValue={idAdmin} onChange={event => handleIDAdmin(event)}>
-                      <option disabled >{nombreAdministrador} {apellido}</option>
+                    <Form.Select aria-label="Default select example"  onChange={event => handleIDAdmin(event)}>
+                      <option value={idAdmin} >{nombreAdministrador} {apellido}</option>
                       {administradores.map((administrador) =>
                         <option key={administrador.id} value={administrador.id}>{administrador.nombre} {administrador.apellido}</option>
                       )}

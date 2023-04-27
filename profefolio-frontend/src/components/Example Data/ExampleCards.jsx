@@ -68,6 +68,7 @@ const colegios = [
     
 ]
 
+
 const clases = [
     {   xs: 12, sm:12, md: 6, lg:3,
         background: "orange",
@@ -92,6 +93,8 @@ const clases = [
         }
     },
 ]
+
+
 
 const materias = [
     {   xs: 12, sm:12, md: 6, lg:3,
@@ -118,6 +121,7 @@ const materias = [
         }
     },
 ]
+
 
 const infoClase = [
     {   xs: 12, sm:12, md: 6, lg:3,
@@ -199,4 +203,5 @@ const graficos = [
 
 
 
-export {ExampleCard1, ExampleCard2, colegios, clases, materias, infoClase, graficos};
+
+export {ExampleCard1, ExampleCard2, infoClase, materias, clases, colegios, graficos};
