@@ -68,10 +68,9 @@ const AlumnosInscriptos = () => {
     }
 
     const handleRestoreStudent = (idAlumno) => {
-        const index = listaAlumnos.findIndex(student => student.id === idAlumno);
+        const index = nuevaListaAlumnos.findIndex(student => student.id === idAlumno);
         const newStudent = listaAlumnos.findIndex(student => student.id === idAlumno)<0;
         const updatedAlumno = [...nuevaListaAlumnos];
-
         updatedAlumno[index] = {
             ...updatedAlumno[index],
             status: newStudent ? 'N' : ''
@@ -80,6 +79,10 @@ const AlumnosInscriptos = () => {
         console.log(nuevaListaAlumnos)
     }
 
+    const handleStudent = (idAlumno, status) => {
+        status === 'D' ? handleRestoreStudent(idAlumno)
+        : handleDeleteStudent(idAlumno)
+    }
     const handleSelectOption = (event) => {
         const index = alumnosSelect.findIndex(option => option.alumnoId === event.target.value);
         const selectedStudent = { ...alumnosSelect[index], status: 'N' };
@@ -93,8 +96,7 @@ const AlumnosInscriptos = () => {
             loadingSelect={loadingSelect}
             studentsList={Alumnos}
             handleSelectOption={handleSelectOption}
-            handleDeleteStudent={handleDeleteStudent} 
-            handleRestoreStudent={handleRestoreStudent}/>
+            handleStudent={handleStudent}/>
     </>
 
 }
