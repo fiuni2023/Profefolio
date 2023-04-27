@@ -81,9 +81,12 @@ public class PersonasService : IPersona
             throw new BadHttpRequestException("El email al cual quiere registrarse ya existe");
         }
 
-        if (await ExistDoc(user))
+        if(!(await _userManager.IsInRoleAsync(user, "Administrador de Colegio")))
         {
-            throw new BadHttpRequestException($"El usuario con doc {user.Documento} ya existe");
+            if(await ExistDoc(user))
+            {
+                throw new BadHttpRequestException($"Ya existe el user con el CI {user.Documento}");
+            }
         }
 
         await _userManager.CreateAsync(user, password);
