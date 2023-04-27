@@ -44,18 +44,6 @@ const AlumnosInscriptos = () => {
             }
         }
     )
-    const Alumnos = {
-        onSubmit: () => console.log("Guardado"),
-        enabled: true,
-        header: {
-            title: "Lista de Alumnos inscriptos",
-        },
-        addTitle: "Agregar alumnos",
-        selectTitle: "Seleccionar alumno",
-        list: nuevaListaAlumnos,
-        options: alumnosSelect
-    }
-
     const handleDeleteStudent = (idAlumno) => {
         const index = nuevaListaAlumnos.findIndex(student => student.id === idAlumno);
         const updatedAlumno = [...nuevaListaAlumnos];
@@ -69,7 +57,7 @@ const AlumnosInscriptos = () => {
 
     const handleRestoreStudent = (idAlumno) => {
         const index = nuevaListaAlumnos.findIndex(student => student.id === idAlumno);
-        const newStudent = listaAlumnos.findIndex(student => student.id === idAlumno)<0;
+        const newStudent = listaAlumnos.findIndex(student => student.id === idAlumno) < 0;
         const updatedAlumno = [...nuevaListaAlumnos];
         updatedAlumno[index] = {
             ...updatedAlumno[index],
@@ -81,7 +69,7 @@ const AlumnosInscriptos = () => {
 
     const handleStudent = (idAlumno, status) => {
         status === 'D' ? handleRestoreStudent(idAlumno)
-        : handleDeleteStudent(idAlumno)
+            : handleDeleteStudent(idAlumno)
     }
     const handleSelectOption = (event) => {
         const index = alumnosSelect.findIndex(option => option.alumnoId === event.target.value);
@@ -90,13 +78,59 @@ const AlumnosInscriptos = () => {
         setNuevaListaAlumnos([...nuevaListaAlumnos, selectedStudent]);
         setAlumnosSelect([...alumnosSelect.slice(0, index), ...alumnosSelect.slice(index + 1)]);
     };
+
+    const handleSubmit = (e) => {
+        e.preventDefault()
+        const list = []
+        for (let index = 0; index < nuevaListaAlumnos.length; index++) {
+            let alumno = nuevaListaAlumnos[index];
+            if (alumno.status === 'N') list.push({ "colegioAlumnoId": alumno.id, "estado": "N" })
+            else if (alumno.status === 'D') list.push({ "colegioAlumnoId": alumno.id, "estado": "D" })
+        }
+        const body = {
+            "claseId": 3,
+            "listaAlumnos": list,
+        }
+        console.log(body)
+
+        // const { loading: enviandoDatos } = useFetchEffect(
+        //     () => {
+        //         return StudentHelper.updateStudentsList(body, getToken())
+        //     },
+        //     [getToken],
+        //     {
+        //         condition: true,
+        //         handleSuccess: (r) => {
+        //             setListaAlumnos(r.data)
+        //             setNuevaListaAlumnos(r.data)
+        //             console.log(r.data)
+        //         },
+        //         handleError: () => {
+        //             toast.error("No se pudieron obtener los alumnos de la clase. Intente recargar la página")
+        //         }
+        //     }
+        // )
+    }
+
+    const Alumnos = {
+        onSubmit: handleSubmit,
+        enabled: true,
+        header: {
+            title: "Lista de Alumnos inscriptos",
+        },
+        addTitle: "Agregar alumnos",
+        selectTitle: "Seleccionar alumno",
+        list: nuevaListaAlumnos,
+        options: alumnosSelect
+    }
+
     return <>
         <ScrolleableTable
             isLoading={loading}
             loadingSelect={loadingSelect}
             studentsList={Alumnos}
             handleSelectOption={handleSelectOption}
-            handleStudent={handleStudent}/>
+            handleStudent={handleStudent} />
     </>
 
 }

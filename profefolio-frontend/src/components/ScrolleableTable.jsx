@@ -35,12 +35,11 @@ const Scrolleable = ({ studentsList, isLoading = true, handleSelectOption = () =
                                     {studentsList?.list?.map((student, index) => (
                                         <ListItem key={index}
                                             index={index + 1}
-                                            id={student.alumnoId}
+                                            id={student.id}
                                             name={student.nombre}
                                             lastName={student.apellido}
                                             document={student.documento}
                                             type={student.status}
-                                            value={student.id}
                                             onClick={() => handleStudent(student.id, student.status)} />
                                     ))}
                                 </List>}
