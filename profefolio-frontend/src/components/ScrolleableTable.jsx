@@ -5,15 +5,15 @@ import { RxReload } from 'react-icons/rx';
 
 function ListItem({ index, name, lastName, document, type, onClick }) {
     return (
-        <ItemContainer type={type}>
+        <ItemContainer type={type == 'N' ? 'new' : type === 'D' ? 'reload' : '' }>
             <Item>{index}- {lastName} {name} - {document}</Item>
-            <ListButton onClick={onClick}>{type !== 'reload' ? 'X' : <RxReload style={{ fontSize: '24px' }} size={24} />}</ListButton>
+            <ListButton onClick={onClick}>{type !== 'D' ? 'X' : <RxReload style={{ fontSize: '24px' }} size={24} />}</ListButton>
         </ItemContainer>
     )
 }
 
 
-const Scrolleable = ({ studentsList, isLoading = true, handleSelectOption =()=>{}}) => {
+const Scrolleable = ({ studentsList, isLoading = true, handleSelectOption =()=>{}, handleDeleteStudent = ()=>{}}) => {
 
     useEffect(() => {
       
@@ -35,12 +35,13 @@ const Scrolleable = ({ studentsList, isLoading = true, handleSelectOption =()=>{
                             {studentsList?.list?.map((student, index) => (
                                 <ListItem key={index}
                                     index={index + 1}
-                                    // id={student.alumnoId}
+                                    id={student.alumnoId}
                                     name={student.nombre}
-                                    // lastName={student.apellido}
-                                    // document={student.documento}
-                                    // type={student.status}
-                                    onClick={() => console.log(`${student.name} 'seleccionado'`)} />
+                                    lastName={student.apellido}
+                                    document={student.documento}
+                                    type={student.status}
+                                    value={student.id}
+                                    onClick={()=>handleDeleteStudent(student.id)} />
                             ))}
                         </List>}
                     </SBody>}
