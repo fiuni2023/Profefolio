@@ -52,6 +52,28 @@ namespace profefolio.Services
                 && a.ColegiosAlumnosId == ColegioAlumnoId);
         }
 
+        public async Task<List<ClasesAlumnosColegio>?> FindAllByClaseIdAndAdminEmail(int ClaseId, string adminEmail = "")
+        {
+            return await _context.ClasesAlumnosColegios
+                .Where(a => !a.Deleted
+                && a.ClaseId == ClaseId
+                && adminEmail.Equals(a.Clase.Colegio.personas.Email))
+                .Include(a => a.ColegiosAlumnos)
+                .Include(a => a.ColegiosAlumnos.Persona)
+                .ToListAsync();
+        }
+
+        public async Task<ClasesAlumnosColegio?> FindByClaseIdAndColegioAlumnoId(int ClaseId, int ColegioAlumnoId)
+        {
+            return await _context.ClasesAlumnosColegios
+                .Include(a => a.Clase)
+                .Include(a => a.Clase.Colegio)
+                .Include(a => a.Clase.Colegio.personas)
+                .FirstOrDefaultAsync(a => !a.Deleted
+                && a.ClaseId == ClaseId
+                && a.ColegiosAlumnosId == ColegioAlumnoId);
+        }
+
         public async Task<ClasesAlumnosColegio> FindById(int id)
         {
             return await _context.ClasesAlumnosColegios

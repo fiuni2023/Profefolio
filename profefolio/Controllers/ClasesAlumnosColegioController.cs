@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using profefolio.Models.DTOs.ClasesAlumnosColegio;
 using profefolio.Models.Entities;
@@ -27,7 +28,32 @@ namespace profefolio.Controllers
             _colegiosAlumnosService = colegiosAlumnos;
         }
 
+        [HttpGet("{idClase:int}")]
+        [Authorize(Roles = "Administrador de Colegio,Profesor")]
+        public async Task<ActionResult<List<ClaseAlumnosColegiosInfoAlumnoDTO>>> GetAll(int idClase)
+        {
+            try
+            {
+                // obtenemos del token el email del admin
+                var adminEmail = User.FindFirstValue(ClaimTypes.Name);
+
+                var clasesAlumnosColegio = await _clasesAlumnosColegioService.FindAllByClaseIdAndAdminEmail(idClase, adminEmail);
+
+                if (clasesAlumnosColegio == null || !clasesAlumnosColegio.Any())
+                {
+                    return BadRequest("No se encontraron Alumnos relacionados a la Clase");
+                }
+                return Ok(_mapper.Map<List<ClaseAlumnosColegiosInfoAlumnoDTO>>(clasesAlumnosColegio));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"{e}");
+                return BadRequest("Error durante la obtencion de los Alumnos de la Clase");
+            }
+        }
+
         [HttpPost]
+        [Authorize(Roles = "Administrador de Colegio,Profesor")]
         public async Task<ActionResult<ClasesAlumnosColegioDTOResult>> PostWithIdAlumnoInColegio([FromBody] ClasesAlumnosColegioDTO dto)
         {
             if (!ModelState.IsValid)
@@ -75,10 +101,7 @@ namespace profefolio.Controllers
                 var relacion = await _clasesAlumnosColegioService.Add(model);
                 await _clasesAlumnosColegioService.Save();
 
-                Console.WriteLine($"ID RELACION: {relacion.Id}");
-
                 var result = await _clasesAlumnosColegioService.FindById(relacion.Id);
-                Console.WriteLine($"RESULT : {result != null}");
 
                 var resultMapped = _mapper.Map<ClasesAlumnosColegioDTOResult>(result);
                 return Ok(resultMapped);
@@ -93,6 +116,7 @@ namespace profefolio.Controllers
         }
 
         [HttpPut]
+        [Authorize(Roles = "Administrador de Colegio,Profesor")]
         public async Task<ActionResult> PutList([FromBody] ClaseAlumnosColegioLitPutDTO dtoList)
         {
             if (!ModelState.IsValid)
@@ -120,24 +144,22 @@ namespace profefolio.Controllers
                 }
 
                 var claseId = dtoList.ClaseId;
-                dtoList.ListaAlumnos.ForEach(async (element) =>
+
+                foreach (var element in dtoList.ListaAlumnos)
                 {
                     if (element.Estado == 'D')
                     {
-                        var relacion = await _clasesAlumnosColegioService.FindById(element.Id);
+                        var relacion = await _clasesAlumnosColegioService.FindByClaseIdAndColegioAlumnoId(claseId, element.ColegioAlumnoId);
                         if (relacion == null)
                         {
-                            throw new FileLoadException("El elemento que quiere eliminar no existe");
+                            _clasesAlumnosColegioService.Dispose();
+                            return BadRequest("El elemento que quiere eliminar no existe");
                         }
 
-                        if (relacion.ClaseId != claseId)
+                        if (relacion.Clase == null || relacion.Clase.Colegio == null || $"{adminEmail + 6}".Equals(relacion.Clase.Colegio.personas.Email))
                         {
-                            throw new FileLoadException("El elemento que quiere eliminar no pertenece a la Clase");
-                        }
-
-                        if (relacion.Clase == null || relacion.Clase.Colegio == null || "${adminEmail}".Equals(relacion.Clase.Colegio.personas.Email))
-                        {
-                            throw new FileLoadException("El elemento que quiere eliminar no pertenece al Colegio");
+                            _clasesAlumnosColegioService.Dispose();
+                            return BadRequest("El elemento que quiere eliminar no pertenece al Colegio");
                         }
 
                         if (true)
@@ -158,20 +180,24 @@ namespace profefolio.Controllers
                         var colegioAlumno = await _colegiosAlumnosService.FindById(element.ColegioAlumnoId);
                         if (colegioAlumno == null)
                         {
-                            throw new FileLoadException("El Identificador del Alumno dentro del Colegio no fue encontrado.");
+                            _clasesAlumnosColegioService.Dispose();
+
+                            return BadRequest("El Identificador del Alumno dentro del Colegio no fue encontrado.");
                         }
 
 
                         // se valida que tanto el alumno en el colegio y la clase sean del colegio donde se encuentra el administrador
                         if (!adminEmail.Equals(colegioAlumno.Colegio.personas.Email))
                         {
-                            throw new FileLoadException("No pude matipular datos ajenos a su institucion, la Clase o el Alumno no es de su propiedad.");
+                            _clasesAlumnosColegioService.Dispose();
+                            return BadRequest("No pude matipular datos ajenos a su institucion, la Clase o el Alumno no es de su propiedad.");
                         }
 
                         // se valida que ya no se haya agregado el alumno a la clase
                         if (await _clasesAlumnosColegioService.Exist(claseId, element.ColegioAlumnoId))
                         {
-                            throw new FileLoadException("Ya se tiene registrado el alumno en la clase");
+                            _clasesAlumnosColegioService.Dispose();
+                            return BadRequest("Ya se tiene registrado el alumno en la clase");
                         }
                         var dto = new ClasesAlumnosColegioDTO()
                         {
@@ -186,19 +212,14 @@ namespace profefolio.Controllers
 
                         await _clasesAlumnosColegioService.Add(model);
                     }
-                });
+                };
                 await _clasesAlumnosColegioService.Save();
 
                 return NoContent();
             }
-            catch (FileLoadException e)
-            {
-                Console.WriteLine($"{e}");
-                return BadRequest(e);
-
-            }
             catch (Exception e)
             {
+                _clasesAlumnosColegioService.Dispose();
                 Console.WriteLine($"{e}");
                 return BadRequest("Error inesperado durante la actualizacion");
             }
