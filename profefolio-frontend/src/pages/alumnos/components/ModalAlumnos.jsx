@@ -156,7 +156,7 @@ function ModalAlumnos({
         setDatosModal({
             header: selected_data? deleting? "ELIMINAR ALUMNO?" : "Editar Alumno" : "Agregar Alumno",
             form: {
-                onSubmit: selected_data? {action: handleEditSubmit}:{ action: handleCreateSubmit },
+                onSubmit: {action: ()=>{}},
                 inputs: [
                     {
                         key: "nombreAlu", label: "Nombre del Alumno",
@@ -249,7 +249,7 @@ function ModalAlumnos({
                         {
                             style: "text",
                             type: "save",
-                            submit: true
+                            onclick: {action: ()=>{handleEditSubmit()}}
                         },
                     ]
                     :
@@ -270,7 +270,7 @@ function ModalAlumnos({
                     {
                         style: "text",
                         type: "accept",
-                        submit: true,
+                        onclick: {action: ()=>{handleCreateSubmit()}}
                     },
                 ]
             }

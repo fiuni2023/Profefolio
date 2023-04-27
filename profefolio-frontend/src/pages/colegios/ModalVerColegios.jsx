@@ -8,9 +8,7 @@ import APILINK from '../../components/link';
 import { useNavigate } from "react-router-dom";
 import { toast } from 'react-hot-toast';
 
-function ModalVerColegios(props) {
-
-  const { datoIdColegio, setShow, show, disabled, setDisabled, onClose, triggerState, page } = props;
+function ModalVerColegios({ datoColegio, setShow, show, disabled, setDisabled, onClose, triggerState, page }) {
   
   const handleClose = () => {
     setNombre("");
@@ -18,7 +16,6 @@ function ModalVerColegios(props) {
     setApellidoAdministrador("");
     setNombreAdministrador("");
     setShow(false);
-
   }
   const [colegio, setColegio] = useState([""]);
   const { getToken, verifyToken, cancan } = useGeneralContext();
@@ -38,37 +35,11 @@ function ModalVerColegios(props) {
       if (!cancan("Master")) {
         nav("/")
       } else {
-        let config = {
-          method: 'get',
-          url: `${APILINK}/api/ColegiosFull/${datoIdColegio}`,
-          headers: {
-            'Authorization': `Bearer ${getToken()}`
-          }
-        };
-        axios(config)
-          .then(function (response) {
-            setColegio(response.data); //Guarda los datos
-            console.log(response.data);
-
-            // eslint-disable-next-line no-unused-vars
-            const { apellido, direccion, documento, documentoTipo, genero, id, nacimiento, nombre, nombreAdministrador, telefono } = response.data;
-            setNombre(nombre);
-            setApellidoAdministrador(apellido);
-            setNombreAdministrador(nombreAdministrador);
-            setDisabled(true);
-
-
-
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
+        handleEdit();
       }
-      handleEdit();
     }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cancan, verifyToken, nav, getToken, datoIdColegio])
+  }, [cancan, verifyToken, nav, getToken, datoColegio])
   //Llamada para obtener los datos de admninistradores
   const handleGetAdmin = () => {
     verifyToken()
@@ -84,6 +55,7 @@ function ModalVerColegios(props) {
       };
       axios(config)
         .then(function (response) {
+          console.log(response)
           setAdministradores(response.data);
 
         })
@@ -108,7 +80,7 @@ function ModalVerColegios(props) {
     if (nombre === "" || idAdmin === "")
       toast.error("revisa los datos, los campos deben ser completados")
     else {
-      axios.put(`${APILINK}/api/Colegios/${datoIdColegio}`, {
+      axios.put(`${APILINK}/api/Colegios/${datoColegio.id}`, {
         "nombre": nombre,
         "personaId": idAdmin
 
@@ -169,7 +141,7 @@ function ModalVerColegios(props) {
   //Eliminar colegio
   const handleDelete = (id) => {
 
-    axios.delete(`${APILINK}/api/Colegios/${datoIdColegio}`, {
+    axios.delete(`${APILINK}/api/Colegios/${datoColegio.id}`, {
       headers: {
         Authorization: `Bearer ${getToken()}`,
       }
