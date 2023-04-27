@@ -1,5 +1,5 @@
 import React from 'react';
-import {Table, Thead, Tbody, TR, TH, TD} from "./componentsStyles/StyledTable"; 
+import {Table, Thead, Tbody, TR, TH, TD, ScrollTable} from "./componentsStyles/StyledTable"; 
 
 
 /*Estructura del datosTabla todos los campos son opcionales
@@ -23,33 +23,35 @@ function Tabla({datosTabla, selected}){
     return (
         <>
         { (datosTabla?.filas) ? datosTabla &&(
-            <Table  key = {datosTabla?.tituloTabla}
-                    width={datosTabla?.tableWidth ? datosTabla.tableWidth : "100%"}>
-                {datosTabla?.titulos && (
-                    <Thead small={datosTabla?.small ?? false}  background={datosTabla?.colorHeader ? datosTabla.ColorHeader : "#DDDDDD"}><TR key="thead">
-                        {datosTabla.titulos.map((titulo, index) => {
-                            return (
-                                <TH key={titulo?.titulo}>{titulo?.titulo}</TH>
-                            );
-                        })}
-                    </TR></Thead>
-                )}
-                {datosTabla?.filas && (
-                    <Tbody small={datosTabla?.small ?? false}>               
-                        {datosTabla.filas.map((fila, index)=>{
-                            return <TR  small={datosTabla?.small ?? false}
-                                        key = {index} 
-                                        selected={fila?.fila?.id === selected ? true : false} 
-                                        clickable={datosTabla?.clickable ? true : false}
-                                        onClick = {datosTabla?.clickable ? ()=>datosTabla.clickable?.action(fila?.fila) : null}>
-                                            {fila?.datos.map((dato, indexDato) =>{
-                                return <TD
-                                key={dato.dato ? `${dato.dato}${indexDato}` : indexDato}>{dato?.dato}</TD>
-                            })}</TR>
-                        })}
-                    </Tbody>
-                )}
-            </Table>
+            <ScrollTable>
+                <Table  key = {datosTabla?.tituloTabla}
+                        width={datosTabla?.tableWidth ? datosTabla.tableWidth : "100%"}>
+                    {datosTabla?.titulos && (
+                        <Thead small={datosTabla?.small ?? false}  background={datosTabla?.colorHeader ? datosTabla.ColorHeader : "#DDDDDD"}><TR key="thead">
+                            {datosTabla.titulos.map((titulo, index) => {
+                                return (
+                                    <TH key={titulo?.titulo}>{titulo?.titulo}</TH>
+                                    );
+                                })}
+                        </TR></Thead>
+                    )}
+                    {datosTabla?.filas && (
+                        <Tbody small={datosTabla?.small ?? false}>               
+                            {datosTabla.filas.map((fila, index)=>{
+                                return <TR  small={datosTabla?.small ?? false}
+                                key = {index} 
+                                selected={fila?.fila?.id === selected ? true : false} 
+                                clickable={datosTabla?.clickable ? true : false}
+                                onClick = {datosTabla?.clickable ? ()=>datosTabla.clickable?.action(fila?.fila) : null}>
+                                                {fila?.datos.map((dato, indexDato) =>{
+                                                    return <TD
+                                                    key={dato.dato ? `${dato.dato}${indexDato}` : indexDato}>{dato?.dato}</TD>
+                                                })}</TR>
+                                            })}
+                        </Tbody>
+                    )}
+                </Table>
+            </ScrollTable>
         ) : <span><b>No hay datos para mostrar.</b></span>}
         </>
     )
