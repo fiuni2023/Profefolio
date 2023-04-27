@@ -91,6 +91,11 @@ public class AlumnosController : ControllerBase
             Console.WriteLine(e.Message);
             return BadRequest(e.Message);
         }
+        catch(FileNotFoundException e)
+        {
+            return NotFound();
+        }
+
 
         return BadRequest($"Error al crear al Usuario ${dto.Email}");
 
