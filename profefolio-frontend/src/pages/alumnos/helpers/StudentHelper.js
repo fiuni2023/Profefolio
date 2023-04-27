@@ -21,6 +21,16 @@ const getAllClassStudents = async (idClase, token) => {
     return result.status === 200 ? result : null
 }
 
+const getAllNotClassStudents = async (idClase, token) => {
+    const result = await axios.get(`${APILINK}/api/ColegiosAlumnos/NoAssignedAlumnos/${idClase}`,
+        {
+            headers: {
+                Authorization: 'Bearer ' + token
+            }
+        })
+    return result.status === 200 ? result : null
+}
+
 const createStudent = async (body, token) => {
     const result = await axios.post(`${APILINK}/api/alumnos`,
         body,
@@ -59,5 +69,5 @@ const deleteStudent = async (id, token) => {
     return result.status === 200 ? result : null
 }
 
-const StudentsService = { getStudentsPage, createStudent, updateStudent, deleteStudent, getAllClassStudents }
+const StudentsService = { getStudentsPage, getAllNotClassStudents, createStudent, updateStudent, deleteStudent, getAllClassStudents }
 export default StudentsService
