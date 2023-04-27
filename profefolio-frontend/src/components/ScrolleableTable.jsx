@@ -49,7 +49,7 @@ const Scrolleable = ({ studentsList, isLoading = true, handleSelectOption = () =
                     <Select defaultValue={""} onChange={handleSelectOption}>
                         <option value="" disabled>{studentsList?.selectTitle}</option>
                         {studentsList?.options?.map((option, index) => (
-                            <option key={index} value={option.alumnoId}>
+                            <option key={index} value={option.id}>
                                 {option.apellido} {option.nombre} - {option.documento}
                             </option>
                         ))}

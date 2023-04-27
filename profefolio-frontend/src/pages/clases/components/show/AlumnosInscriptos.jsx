@@ -21,7 +21,6 @@ const AlumnosInscriptos = () => {
             handleSuccess: (r) => {
                 setListaAlumnos(r.data)
                 setNuevaListaAlumnos(r.data)
-                console.log(r.data)
             },
             handleError: () => {
                 toast.error("No se pudieron obtener los alumnos de la clase. Intente recargar la página")
@@ -37,7 +36,6 @@ const AlumnosInscriptos = () => {
             condition: true,
             handleSuccess: (r) => {
                 setAlumnosSelect(r.data)
-                console.log(r.data)
             },
             handleError: () => {
                 toast.error("No se pudieron obtener los alumnos para seleccionar. Intente recargar la página")
@@ -52,7 +50,6 @@ const AlumnosInscriptos = () => {
             status: 'D'
         };
         setNuevaListaAlumnos(updatedAlumno);
-        console.log(nuevaListaAlumnos)
     }
 
     const handleRestoreStudent = (idAlumno) => {
@@ -64,7 +61,6 @@ const AlumnosInscriptos = () => {
             status: newStudent ? 'N' : ''
         };
         setNuevaListaAlumnos(updatedAlumno);
-        console.log(nuevaListaAlumnos)
     }
 
     const handleStudent = (idAlumno, status) => {
@@ -72,14 +68,13 @@ const AlumnosInscriptos = () => {
             : handleDeleteStudent(idAlumno)
     }
     const handleSelectOption = (event) => {
-        const index = alumnosSelect.findIndex(option => option.alumnoId === event.target.value);
+        const index = alumnosSelect.findIndex(alumno => alumno.id.toString() === event.target.value);
         const selectedStudent = { ...alumnosSelect[index], status: 'N' };
-        console.log(selectedStudent)
         setNuevaListaAlumnos([...nuevaListaAlumnos, selectedStudent]);
         setAlumnosSelect([...alumnosSelect.slice(0, index), ...alumnosSelect.slice(index + 1)]);
+        event.target.value="";
     };
-
-    const handleSubmit = (e) => {
+    const useHandleSubmit = (e) => {
         e.preventDefault()
         const list = []
         for (let index = 0; index < nuevaListaAlumnos.length; index++) {
@@ -92,15 +87,15 @@ const AlumnosInscriptos = () => {
             "listaAlumnos": list,
         }
         console.log(body)
-
-        // const { loading: enviandoDatos } = useFetchEffect(
-        //     () => {
+        // const { doFetch } = useFetchEffect(
+        //     (body) => {
         //         return StudentHelper.updateStudentsList(body, getToken())
         //     },
         //     [getToken],
         //     {
         //         condition: true,
         //         handleSuccess: (r) => {
+        //             toast.success("Los datos fueron enviados correctamente.")
         //             setListaAlumnos(r.data)
         //             setNuevaListaAlumnos(r.data)
         //             console.log(r.data)
@@ -110,10 +105,10 @@ const AlumnosInscriptos = () => {
         //         }
         //     }
         // )
+        
     }
-
     const Alumnos = {
-        onSubmit: handleSubmit,
+        onSubmit: useHandleSubmit,
         enabled: true,
         header: {
             title: "Lista de Alumnos inscriptos",
@@ -130,7 +125,8 @@ const AlumnosInscriptos = () => {
             loadingSelect={loadingSelect}
             studentsList={Alumnos}
             handleSelectOption={handleSelectOption}
-            handleStudent={handleStudent} />
+            handleStudent={handleStudent} 
+            handleSubmit={useHandleSubmit}/>
     </>
 
 }
