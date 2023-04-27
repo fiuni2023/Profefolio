@@ -45,7 +45,6 @@ form = {
                     label: label de la opcion
                 }
             ]
-
         }
     }], 
     
@@ -57,7 +56,6 @@ form = {
             enabled: cuando la opcion esta desactivada, por defecto es false
         }
     ]
-
 */
 
 
@@ -112,6 +110,7 @@ function Form({ form }) {
 
                                     {input?.type && types.includes(input.type) &&
                                         <SControl
+                                            autoComplete="on"
                                             id={input?.key ?? i}
                                             key={input?.key ?? i}
                                             value={input?.value}

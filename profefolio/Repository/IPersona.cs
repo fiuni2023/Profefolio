@@ -19,6 +19,6 @@ public interface IPersona : IRepository<Persona>
     Task<IList<string>> GetRolesPersona(Persona user);
     Task<Persona> FindByIdAndRole(string id, string role);
     Task<bool> DeleteByUserAndRole(string id, string role);
-    
+    Task<Persona?> FindByDocumentoAndRole(string documento, string role);    
 
 }
