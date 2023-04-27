@@ -72,5 +72,27 @@ const getProfesoresParaClase = async (token) => {
 }
 
 
-const ClassesService = { getClassesPage, getClassesById, createClasse, updateClasse, deleteClasse, getProfesoresParaClase }
+
+const getProfesores = (token) => {
+
+    
+    return axios.get(`${APILINK}/api/profesor/misprofesores`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      }
+    })
+    .then(response => {
+      return response.data;
+    })
+    .catch(error => {
+      console.error(error);
+      return [];
+    });
+  }
+  
+  
+
+
+
+const ClassesService = { getClassesPage, getClassesById, createClasse, updateClasse, deleteClasse, getProfesoresParaClase ,getProfesores}
 export default ClassesService

@@ -39,6 +39,8 @@ const Table = styled.table`
         tr:last-child td:last-child {
             border-bottom-right-radius: 20px;
         };
+
+
     `;
 const Thead = styled.thead`
         background: ${props => props.background};
@@ -87,4 +89,9 @@ const TD = styled.td`
         border-top: 1px #C2C2C2 solid;
     `;
 
-export {Table, Thead, Tbody, TR, TH, TD};    
+const ScrollTable = styled.div`
+    overflow: auto; 
+    width: 100%;
+`;    
+
+export {Table, Thead, Tbody, TR, TH, TD, ScrollTable};    
