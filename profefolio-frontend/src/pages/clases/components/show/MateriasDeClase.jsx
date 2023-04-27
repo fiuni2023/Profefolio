@@ -13,6 +13,12 @@ import ClassesService from '../../Helpers/ClassesHelper';
 
 import { GrAddCircle } from 'react-icons/gr'
 
+
+
+
+  
+
+
 const TagNombreSelect = styled.div`
     border-radius: 20px;
     justify-content: space-around;
@@ -100,12 +106,12 @@ const TagProfesor = memo(({ id, nombre, state = "new", onClick = () => { } }) =>
 
   
 
-const ListItem = memo(({ index, idMateria, nombre, profesores = [], type, onClick }) => {
+const ListItem = memo(({ index, idMateria, nombre, profesores = [] ,profeProfesor = [], type, onClick }) => {
     const { setStatusProfesorMateria } = useClaseContext();
 
     const [isSelectOpen, setIsSelectOpen] = useState(false);
 
-    const handleSelectOpen = () => {
+    const handleSelectOpenProfesores = () => {
         setIsSelectOpen(true);
 
         console.log('entroooo');
@@ -121,18 +127,22 @@ const ListItem = memo(({ index, idMateria, nombre, profesores = [], type, onClic
 
                 <ListButton >
                             <GrAddCircle
-                                    onClick={handleSelectOpen}
+                                    onClick={handleSelectOpenProfesores}
                                     style={{ fontSize: "24px", color: "#C2C2C2" }}
                                     size={32}
         />
 
                     </ListButton>
+aaa
+                    {profesores.map((profesor) => (
+    <li key={profesor.id}>{profesor.nombre}</li>
+  ))}
 
                     {isSelectOpen ? (
 
                         <TagNombreSelect>
                     <TagSelect>
-                        {profesores.map((profesor) => (
+                        {profeProfesor.map((profesor) => (
                         <option key={profesor.id} value={profesor.id}>
                             {profesor.nombre}
                         </option>
@@ -177,6 +187,8 @@ const MateriasDeClase = () => {
     const [optionSelected, setOptionSelected] = useState("");
     const [optionsMaterias, setOptionsMaterias] = useState([]);
 
+    const [profeProfesor, setProfeProfesor] = useState([]);
+
    
       
 
@@ -190,9 +202,37 @@ const MateriasDeClase = () => {
      * Pedir profesores del colegio
      */
 
-    useMemo(() => {
+
+
+//trae profesores 
+
+useMemo(() => {
+   
+    const response = ClassesService.getProfesores(getToken());
+  
+    console.log('response22',response)
+    if (response !== null) {
+      response.then((dataList) => {
+        setProfeProfesor(dataList ?? []);
+
+        console.log('aaa',setProfeProfesor(dataList ?? []));
+      }).catch(e => {
+        console.log(e)
+        setProfeProfesor([]);
+      })
+    }
+  
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [getToken]);
+  
+
+    
+
+   useMemo(() => {
         //console.log("obtenido profes..")
         const response = ClassesService.getProfesoresParaClase(getToken());
+
+        console.log('response',response)
         if (response !== null) {
             response.then((r) => {
                 setProfesoresOptions(r.data ?? [])
@@ -203,9 +243,7 @@ const MateriasDeClase = () => {
         }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [getToken])
-
-
+    }, [getToken]) 
     
     
     /*    
@@ -287,7 +325,9 @@ const MateriasDeClase = () => {
                                     index={index + 1}
                                     nombre={materia.nombre}
                                     profesores={materia.profesores}
+                                    profeProfesor={profeProfesor}
                                     type={materia.status}
+
                                     onClick={() => { console.log(`${materia.nombre} 'seleccionado'`); setStatusMateria(materia.id, (materia.status === "new" ? "reload" : "new")); }}
                                     
                                    
