@@ -2,7 +2,7 @@ import axios from "axios";
 import APILINK from "../../../components/link";
 
 const getStudentsPage = async (page, token)=>{
-    const result = await axios.get(`${APILINK}/api/alumnos/page/${page}`,
+    const result = await axios.get(`${APILINK}/api/ColegiosAlumnos/page/${page}`,
     {
         headers:{
             Authorization: 'Bearer ' + token
