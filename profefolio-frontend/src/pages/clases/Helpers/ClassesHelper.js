@@ -71,14 +71,18 @@ const getProfesoresParaClase = async (token) => {
     return result.status === 200 ? result : null
 }
 
+
+
 const getProfesores = (token) => {
-    return axios.get(`${APILINK}/api/profesor/page/0`, {
+
+    
+    return axios.get(`${APILINK}/api/profesor/misprofesores`, {
       headers: {
         Authorization: `Bearer ${token}`,
       }
     })
     .then(response => {
-      return response.data.dataList;
+      return response.data;
     })
     .catch(error => {
       console.error(error);

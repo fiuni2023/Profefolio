@@ -1,4 +1,4 @@
-
+/* eslint-disable */
 import React, { memo, useEffect, useId, useMemo, useState } from 'react'
 import { Container, Item, ItemContainer, List, ListButton, SBody, SForm, SHeader, ScrollTable, Select } from '../../../../components/componentsStyles/StyledScrolleableList';
 import { RxReload } from 'react-icons/rx';
@@ -114,7 +114,6 @@ const ListItem = memo(({ index, idMateria, nombre, profesores = [] ,profeProfeso
     const handleSelectOpenProfesores = () => {
         setIsSelectOpen(true);
 
-        console.log('entroooo');
       };
 
 
@@ -136,7 +135,7 @@ const ListItem = memo(({ index, idMateria, nombre, profesores = [] ,profeProfeso
 
                     {isSelectOpen ? (
 
-                        <TagNombreSelect>
+                <TagNombreSelect>
                     <TagSelect>
                         {profeProfesor.map((profesor) => (
                         <option key={profesor.id} value={profesor.id}>
@@ -145,8 +144,9 @@ const ListItem = memo(({ index, idMateria, nombre, profesores = [] ,profeProfeso
                         ))}
                     </TagSelect>
 
-                    </TagNombreSelect>
+                </TagNombreSelect>
                     ) : null}
+
 
 
                     {map(profesores, (e, i) => <TagProfesor key={i} id={e.id} nombre={`${e.nombre}${e.status}`} state={e.status} onClick={() => {
@@ -185,10 +185,6 @@ const MateriasDeClase = () => {
 
     const [profeProfesor, setProfeProfesor] = useState([]);
 
-   
-      
-
-
     const { getListaMaterias, setStatusMateria, getClaseSelectedId, addMateriaToList, setProfesoresOptions } = useClaseContext();
     const { getToken } = useGeneralContext();
 
@@ -206,14 +202,12 @@ useMemo(() => {
    
     const response = ClassesService.getProfesores(getToken());
   
-    console.log('response22',response)
     if (response !== null) {
       response.then((dataList) => {
         setProfeProfesor(dataList ?? []);
 
-        console.log('aaa',setProfeProfesor(dataList ?? []));
       }).catch(e => {
-        console.log(e)
+
         setProfeProfesor([]);
       })
     }
@@ -227,8 +221,6 @@ useMemo(() => {
    useMemo(() => {
         //console.log("obtenido profes..")
         const response = ClassesService.getProfesoresParaClase(getToken());
-
-        console.log('response',response)
         if (response !== null) {
             response.then((r) => {
                 setProfesoresOptions(r.data ?? [])
@@ -251,11 +243,9 @@ useMemo(() => {
 
     // pedir materias no asignadas a cla clase
     useMemo(() => {
-        //console.log("obteniendo materias..")
         MateriasService.getMateriaNoAssigned(getClaseSelectedId(), getToken()).then((response) => {
 
             if (response !== null) {
-                //console.log(response.data)
                 setOptionsMaterias(map(response.data, (e, i) => ({
                     label: e.nombre_Materia,
                     value: e.id,
