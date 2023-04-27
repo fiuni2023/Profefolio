@@ -10,7 +10,7 @@ footer {
 }
 
 .container {
-  height: 350px;
+  height: 80%;
   display: block;
   justify-content: center;
   align-items: center;
@@ -91,6 +91,12 @@ td {
   width: 370px;
 
 }
+.divEditMateria {
+  margin-left: 7%;
+  width: 650px;
+
+
+}
 
 .buttonGuardar {
   margin-left: 45%;
@@ -99,6 +105,11 @@ td {
 .buttonsCiclo {
   margin-top: 2%;
   margin-left: 9%;
+  display: flex;
+}
+.buttonsMateria {
+  margin-top: 2%;
+  margin-left: 40%;
   display: flex;
 }
 
