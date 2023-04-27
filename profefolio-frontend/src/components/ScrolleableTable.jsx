@@ -13,7 +13,8 @@ function ListItem({ index, name, lastName, document, type, onClick }) {
 }
 
 
-const Scrolleable = ({ studentsList, isLoading = true}) => {
+const Scrolleable = ({ studentsList, isLoading = true, handleSelectOption =()=>{}}) => {
+
     useEffect(() => {
       
     console.log(studentsList)
@@ -34,21 +35,21 @@ const Scrolleable = ({ studentsList, isLoading = true}) => {
                             {studentsList?.list?.map((student, index) => (
                                 <ListItem key={index}
                                     index={index + 1}
-                                    id={student.id}
+                                    // id={student.alumnoId}
                                     name={student.nombre}
-                                    lastName={student.apellido}
-                                    document={student.documento}
-                                    type={student.status}
+                                    // lastName={student.apellido}
+                                    // document={student.documento}
+                                    // type={student.status}
                                     onClick={() => console.log(`${student.name} 'seleccionado'`)} />
                             ))}
                         </List>}
                     </SBody>}
                 <SForm onSubmit={studentsList?.onSubmit ?? null} >
                     <span>{studentsList?.addTitle}</span>
-                    <Select defaultValue={""}>
+                    <Select defaultValue={""} onChange={handleSelectOption}>
                         <option value="" disabled>{studentsList?.selectTitle}</option>
                         {studentsList?.options?.map((option, index) => (
-                            <option key={index} value={option}>
+                            <option key={index} value={option.alumnoId}>
                                 {option.apellido} {option.nombre} - {option.documento}
                             </option>
                         ))}

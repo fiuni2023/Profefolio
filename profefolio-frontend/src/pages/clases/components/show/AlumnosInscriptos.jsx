@@ -8,17 +8,18 @@ import { useClaseContext } from '../../context/ClaseContext';
 const AlumnosInscriptos = () => {
     const [listaAlumnos, setListaAlumnos] = useState([])
     const [alumnosSelect, setAlumnosSelect] = useState([])
-    const { getClaseSelectedId} = useClaseContext();
-    const { getToken} = useGeneralContext();
+    const { getClaseSelectedId } = useClaseContext();
+    const { getToken } = useGeneralContext();
     const { loading } = useFetchEffect(
         () => {
-            return StudentHelper.getAllClassStudents( getClaseSelectedId(), getToken())
+            return StudentHelper.getAllClassStudents(getClaseSelectedId(), getToken())
         },
-        [ getToken],
+        [getToken],
         {
             condition: true,
             handleSuccess: (r) => {
-                setListaAlumnos(r.data.dataList)
+                setListaAlumnos(r.data)
+                console.log(r.data)
             },
             handleError: () => {
                 toast.error("No se pudieron obtener los alumnos de la clase. Intente recargar la página")
@@ -27,9 +28,9 @@ const AlumnosInscriptos = () => {
     )
     const { loadingSelect } = useFetchEffect(
         () => {
-            return StudentHelper.getAllNotClassStudents( getClaseSelectedId(), getToken())
+            return StudentHelper.getAllNotClassStudents(getClaseSelectedId(), getToken())
         },
-        [ getToken],
+        [getToken],
         {
             condition: true,
             handleSuccess: (r) => {
@@ -52,8 +53,21 @@ const AlumnosInscriptos = () => {
         list: listaAlumnos,
         options: alumnosSelect
     }
+    
+    const handleSelectOption = (event) => {
+        const index = alumnosSelect.findIndex(option => option.alumnoId === event.target.value);
+        console.log(index)
+        const selectedStudent = {...alumnosSelect[index], status: 'N' };
+        console.log(selectedStudent)
+        setListaAlumnos([...listaAlumnos, selectedStudent]);
+        setAlumnosSelect([...alumnosSelect.slice(0, index), ...alumnosSelect.slice(index+1)]);
+      };
     return <>
-        <ScrolleableTable isLoading={loading} loadingSelect={loadingSelect} studentsList={Alumnos} />
+        <ScrolleableTable
+            isLoading={loading}
+            loadingSelect={loadingSelect}
+            studentsList={Alumnos}
+            handleSelectOption={handleSelectOption} />
     </>
 
 }
