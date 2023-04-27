@@ -81,9 +81,12 @@ public class PersonasService : IPersona
             throw new BadHttpRequestException("El email al cual quiere registrarse ya existe");
         }
 
-        if (await ExistDoc(user))
+        if (!(await _userManager.IsInRoleAsync(user, "Administrador de Colegio")))
         {
-            throw new BadHttpRequestException($"El usuario con doc {user.Documento} ya existe");
+            if (await ExistDoc(user))
+            {
+                throw new BadHttpRequestException($"Ya existe el user con el CI {user.Documento}");
+            }
         }
 
         await _userManager.CreateAsync(user, password);
@@ -95,6 +98,30 @@ public class PersonasService : IPersona
 
     public async Task<Persona> EditProfile(Persona p)
     {
+        var personaDb = await
+             _userManager.Users
+             .FirstOrDefaultAsync(o => !o.Deleted && o.Id.Equals(p.Id));
+
+        if (personaDb == null)
+        {
+            throw new FileNotFoundException();
+        }
+
+        if(! await _userManager.IsInRoleAsync(p, "Administrador de Colegio"))
+        {
+            var existOtherMail = await _userManager.Users
+                .Where(x => !x.Deleted)
+                .Where(x => !x.Id.Equals(p.Id))
+                .Where(x => x.Documento.Equals(p.Documento) && x.DocumentoTipo.Equals(p.DocumentoTipo))
+                .CountAsync() > 0;
+
+                if(existOtherMail)
+                {
+                    throw new BadHttpRequestException($"El user con el Id {p.Id} ya existe");
+                }
+        }
+
+        
         await _userManager.UpdateAsync(p);
         var query = await _userManager.Users
             .Where(x => !x.Deleted && x.Email.Equals(p.Email))
