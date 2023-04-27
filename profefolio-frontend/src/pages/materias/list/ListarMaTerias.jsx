@@ -152,13 +152,11 @@ function ListarMaTerias() {
   const btndetallesCiclo = (data) => {
     setId(dataCiclo.id);
     setDataCiclo(data);
-    console.log(dataCiclo);
     setDetallesCiclo(true);
   };
   const btndetallesMateria = (data) => {
     setId(data.id);
     setData(data);
-    console.log(data);
     setDetallesMateria(true);
   };
 
@@ -187,7 +185,6 @@ function ListarMaTerias() {
     setNombreNuevoMateria(event.target.value);
   }
   const handleEditCiclo = () => {
-    console.log(nombreNuevoCiclo)
     if (nombreNuevoCiclo === null || nombreNuevoCiclo === "") {
       toast.error("Favor rellenar el campo correctamente")
     }
@@ -205,7 +202,7 @@ function ListarMaTerias() {
           setNombreNuevoCiclo("")
           setDetallesCiclo(false);
           getCiclos();
-          console.log(ciclos);
+          
 
 
         })
@@ -221,7 +218,7 @@ function ListarMaTerias() {
 
   }
   const handleEditMateria = () => {
-    console.log(nombreNuevoMateria)
+    
     if (nombreNuevoMateria === null || nombreNuevoCiclo === "") {
       toast.error("Favor rellenar el campo correctamente")
     }
