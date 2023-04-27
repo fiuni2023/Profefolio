@@ -133,10 +133,6 @@ const ListItem = memo(({ index, idMateria, nombre, profesores = [] ,profeProfeso
         />
 
                     </ListButton>
-aaa
-                    {profesores.map((profesor) => (
-    <li key={profesor.id}>{profesor.nombre}</li>
-  ))}
 
                     {isSelectOpen ? (
 
