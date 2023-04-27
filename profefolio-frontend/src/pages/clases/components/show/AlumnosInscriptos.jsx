@@ -49,10 +49,6 @@ const AlumnosInscriptos = () => {
         },
         addTitle: "Agregar alumnos",
         selectTitle: "Seleccionar alumno",
-        options: [
-            { label: "Carlos", value: 1 },
-            { label: "Gabriela", value: 1 }
-        ],
         list: listaAlumnos,
         options: alumnosSelect
     }
