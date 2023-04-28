@@ -58,7 +58,6 @@ const Materias = {
     body: {
         title: "Ultimas Materias/Ciclos",
         table: {
-            tableWidth: "50%",
             small: true, 
             titulos: [ {titulo: "Nombre"} ], 
             filas: [
@@ -70,7 +69,6 @@ const Materias = {
             ]
         },
         table2: {
-            tableWidth: "50%",
             small: true, 
             titulos: [ {titulo: "Ciclo"}], 
             filas: [
@@ -108,6 +106,21 @@ const Clases = {
     }
 }
 
+
+const data1 = {
+    labels : ["1er Grado", "2do Grado", "3er Grado", "4to Grado", "5to Grado", "6to Grado", "7mo Grado"],
+    datasets : [{
+        label: "Turno Mañana",
+        backgroundColor: "#31BA8D",
+        data: [45,50,38,40,35,27,52]
+    }, {
+        label: "Turno Tarde",
+        backgroundColor: "#5181D1",
+        data: [35,50,48,30,30,29,32]
+    }]
+};
+
+
 const Stats = {
     xs: 12, sm:12, md: 12, lg:12,
     background: "gray",
@@ -117,10 +130,13 @@ const Stats = {
     },
     body: {
         graph: {
-            
+            id: 'alumnosXturno',
+            config: {
+                type: 'bar',
+                data: data1, 
+            }
         }
     }
 }
-
 
 export {Alumnos, Profesores, Materias, Clases, Stats};

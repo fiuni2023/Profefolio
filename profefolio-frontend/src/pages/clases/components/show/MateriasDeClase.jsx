@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { memo, useEffect, useId, useMemo, useState } from 'react'
 import { Container, Item, ItemContainer, List, ListButton, SBody, SForm, SHeader, ScrollTable, Select } from '../../../../components/componentsStyles/StyledScrolleableList';
 import { RxReload } from 'react-icons/rx';
@@ -9,12 +10,33 @@ import MateriasService from "../../Helpers/MateriasHelper.js"
 import { useGeneralContext } from '../../../../context/GeneralContext';
 import ClassesService from '../../Helpers/ClassesHelper';
 
-const TagTeacher = styled.div`
+
+import { GrAddCircle } from 'react-icons/gr'
+
+
+const TagNombreSelect = styled.div`
     border-radius: 20px;
-    display: flex;
-    border: 1px solid black;
     justify-content: space-around;
-`
+`;
+
+const TagSelect = styled.select`
+    background-color: #C2C2C2;
+    padding: 0.2rem;
+    width: fit-content;
+    height: 30px;
+    align-items: center;
+    border-radius: 15px;
+    justify-content: space-around;
+`;
+
+const TagTeacher = styled.div`
+border-radius: 20px;
+display: flex;
+border: 1px solid black;
+justify-content: space-around;
+`;
+
+
 
 const TagProfesor = memo(({ id, nombre, state = "new", onClick = () => { } }) => {
     const uid = useId();
@@ -58,7 +80,7 @@ const TagProfesor = memo(({ id, nombre, state = "new", onClick = () => { } }) =>
                 background-color: ${type};
                 padding: 0.2rem;
                 max-width: 10rem;
-                width: fit-content;
+                width: fit-content;+
                 height: 24px;
                 display: flex;
                 align-items: center;
@@ -72,23 +94,140 @@ const TagProfesor = memo(({ id, nombre, state = "new", onClick = () => { } }) =>
     </>
 })
 
-const ListItem = memo(({ index, idMateria, nombre, profesores = [], type, onClick }) => {
+
+
+const TagProfesorSeleccionado=memo(({ profesorId, profesores ,onClick = () => { }}) =>{
+    const profesor = profesores.find((profesor) => profesor.id === profesorId);
+    return <>
+
+        <TagTeacher className={`tag-teacher-${unicId}`}>
+        <Item className='item-nombre-profe'>{profesor && profesor.nombre}</Item>
+
+        </TagTeacher>
+
+        <style jsx="true">{
+            `
+            .item-nombre-profe{
+                padding-left: 5px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                max-width: calc(10rem - 24px);
+                font-size: 15px;
+                display: flex;
+                align-items: center;
+            }
+            .tag-teacher-${unicId}{
+                background-color: #F3E6AE;
+                padding: 0.2rem;
+                max-width: 10rem;
+                width: fit-content;+
+                height: 24px;
+                display: flex;
+                align-items: center;
+            }
+            .btn-cancelar{
+                background-color: red;
+                min-width: 1rem;
+            }
+        `
+        }</style>
+
+      
+      </>
+  })
+  
+
+  
+
+const ListItem = memo(({ index, idMateria, nombre, profesores = [] ,profeProfesor = [], type, onClick }) => {
     const { setStatusProfesorMateria } = useClaseContext();
+
+    const [isSelectOpen, setIsSelectOpen] = useState(false);
+
+    const [idProfesorSeleccionado, setIdProfesorSeleccionado] = useState(null);
+
+ 
+
+    const seleccionarProfesor = (e) => {
+        setIdProfesorSeleccionado(e.target.value);
+      };
+      
+
+
+    const handleSelectOpenProfesores = () => {
+        setIsSelectOpen(true);
+
+      };
+
+     
+    
+
 
     return <>
         <ItemContainer type={type} className={`item-container-${index}`}>
             <div>
-                <Item>{index}- {nombre}</Item>
+            <Item>{index}- {nombre}</Item>
                 <div className={`profe-container-${index}`}>
                     <Item>Profesores:</Item>
-                    {map(profesores, (e, i) => <TagProfesor key={i} id={e.id} nombre={`${e.nombre}${e.status}`} state={e.status} onClick={() => {
+
+                <ListButton >
+                            <GrAddCircle
+                                    onClick={handleSelectOpenProfesores}
+                                    style={{ fontSize: "24px", color: "#C2C2C2" }}
+                                    size={32}
+        />
+
+                    </ListButton>
+
+{isSelectOpen && (
+  <TagNombreSelect>
+    <TagSelect onChange={seleccionarProfesor}>
+      {profeProfesor.map((profesor) => (
+        <option key={profesor.id} value={profesor.id}>
+          {profesor.nombre}
+        </option>
+      ))}
+    </TagSelect>
+  </TagNombreSelect>
+)}
+
+{map(profeProfesor, (e, i) => (
+  
+    <TagProfesor
+      id={e.id}
+      nombre={`${e.nombre}${e.status}`}
+      state={e.status}
+      onClick={() => setIdProfesorSeleccionado(e.id)}
+    />
+
+
+    
+))}
+
+
+
+
+<TagNombreSelect>
+
+{idProfesorSeleccionado && (
+        <div>{profeProfesor.find((profesor) => profesor.id === idProfesorSeleccionado).nombre}
+        </div>
+        )}
+        </TagNombreSelect>
+
+
+
+  {/* Este es un comentario en React 
+         {map(profesores, (e, i) => <TagProfesor key={i} id={e.id} nombre={`${e.nombre}${e.status}`} state={e.status} onClick={() => {
                         setStatusProfesorMateria(idMateria, e.id, e.status === "new" ? "reload" : "new");
                     }
                     } />)}
+*/}
                 </div>
             </div>
 
-            <ListButton onClick={onClick}>{type !== 'reload' ? 'X' : <RxReload style={{ fontSize: '24px' }} size={24} />}</ListButton>
+            <ListButton onClick={onClick}>{type !== 'reload' ? 'X' : <RxReload style={{ fontSize: '24px' }} size={24} />} </ListButton>
         </ItemContainer>
 
         <style jsx="true">
@@ -115,6 +254,8 @@ const MateriasDeClase = () => {
     const [optionSelected, setOptionSelected] = useState("");
     const [optionsMaterias, setOptionsMaterias] = useState([]);
 
+    const [profeProfesor, setProfeProfesor] = useState([]);
+
     const { getListaMaterias, setStatusMateria, getClaseSelectedId, addMateriaToList, setProfesoresOptions } = useClaseContext();
     const { getToken } = useGeneralContext();
 
@@ -124,7 +265,31 @@ const MateriasDeClase = () => {
      * Pedir profesores del colegio
      */
 
-    useMemo(() => {
+
+
+//trae profesores 
+
+useMemo(() => {
+   
+    const response = ClassesService.getProfesores(getToken());
+  
+    if (response !== null) {
+      response.then((dataList) => {
+        setProfeProfesor(dataList ?? []);
+
+      }).catch(e => {
+
+        setProfeProfesor([]);
+      })
+    }
+  
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [getToken]);
+  
+
+    
+
+   useMemo(() => {
         //console.log("obtenido profes..")
         const response = ClassesService.getProfesoresParaClase(getToken());
         if (response !== null) {
@@ -137,9 +302,7 @@ const MateriasDeClase = () => {
         }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [getToken])
-
-
+    }, [getToken]) 
     
     
     /*    
@@ -151,11 +314,9 @@ const MateriasDeClase = () => {
 
     // pedir materias no asignadas a cla clase
     useMemo(() => {
-        //console.log("obteniendo materias..")
         MateriasService.getMateriaNoAssigned(getClaseSelectedId(), getToken()).then((response) => {
 
             if (response !== null) {
-                //console.log(response.data)
                 setOptionsMaterias(map(response.data, (e, i) => ({
                     label: e.nombre_Materia,
                     value: e.id,
@@ -211,6 +372,7 @@ const MateriasDeClase = () => {
                     <SHeader>
                         {materiasList?.header?.title}
                     </SHeader>}
+
                 {materiasList?.list &&
                     <SBody background={materiasList?.background ?? "gray"}>
                         <List>
@@ -220,11 +382,19 @@ const MateriasDeClase = () => {
                                     index={index + 1}
                                     nombre={materia.nombre}
                                     profesores={materia.profesores}
+                                    profeProfesor={profeProfesor}
                                     type={materia.status}
-                                    onClick={() => { console.log(`${materia.nombre} 'seleccionado'`); setStatusMateria(materia.id, (materia.status === "new" ? "reload" : "new")); }} />
+
+                                    onClick={() => { console.log(`${materia.nombre} 'seleccionado'`); setStatusMateria(materia.id, (materia.status === "new" ? "reload" : "new")); }}
+                                    
+                                   
+                                  
+                                      />
                             ))}
                         </List>
                     </SBody>}
+
+        
                 <SForm onSubmit={materiasList?.onSubmit ?? null} >
                     <span>{materiasList?.addTitle}</span>
                     <Select value={optionSelected} onChange={(e) => { handleSelectOptionMateria(e) }}>
