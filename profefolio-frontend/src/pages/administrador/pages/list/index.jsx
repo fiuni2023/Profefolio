@@ -4,7 +4,7 @@ import { HiArrowLeft } from 'react-icons/hi'
 import { AiOutlinePlus } from 'react-icons/ai'
 // import { Table } from "../../../../components/Table";
 import  Tabla  from "../../../../components/Tabla";
-import LACreateModal from "../../components/CreateModal";
+// import LACreateModal from "../../components/CreateModal";
 import { useGeneralContext } from "../../../../context/GeneralContext";
 import { Pagination } from "react-bootstrap";
 import { toast } from "react-hot-toast";
@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import AdminService from "../../../../sevices/administrador";
 import { useAdminContext } from "../../context/AdminContext";
 import LAEditPanel from "../../components/EditPanel";
+import ModalAdmin from "../../components/AdminModal";
 
 const ListAdministrador = () => {
     const {getToken, cancan, verifyToken} = useGeneralContext()
@@ -88,9 +89,15 @@ const ListAdministrador = () => {
         )
     }
 
+    const handleHide = () => {
+        setShowCreateModal(!showCreateModal)
+        doFetch(true)
+    }
+
     return (
         <>
-            <LACreateModal show={showCreateModal} handleClose={()=>{setShowCreateModal(!showCreateModal) }} triggerState={()=>{doFetch(true)}} />
+            {/* <LACreateModal show={showCreateModal} handleClose={()=>{setShowCreateModal(!showCreateModal) }} triggerState={()=>{doFetch(true)}} /> */}
+            <ModalAdmin show={showCreateModal} onHide={handleHide}  />
             <div className={styles.GridContainer}>
                 <div className={styles.LANavbar}> 
                     <HiArrowLeft size={"20px"} onClick={()=>nav("/")}/>
