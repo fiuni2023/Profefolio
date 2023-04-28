@@ -43,13 +43,21 @@ const AlumnosInscriptos = () => {
         }
     )
     const handleDeleteStudent = (idAlumno) => {
-        const index = nuevaListaAlumnos.findIndex(student => student.id === idAlumno);
-        const updatedAlumno = [...nuevaListaAlumnos];
-        updatedAlumno[index] = {
-            ...updatedAlumno[index],
-            status: 'D'
-        };
-        setNuevaListaAlumnos(updatedAlumno);
+        let index = listaAlumnos.findIndex(alumno => alumno.id === idAlumno);
+        if (index === -1) {
+            index = nuevaListaAlumnos.findIndex(student => student.id === idAlumno);
+            const deletedStudent = nuevaListaAlumnos[index];
+            setAlumnosSelect([...alumnosSelect, deletedStudent]);
+            setNuevaListaAlumnos([...nuevaListaAlumnos.slice(0, index), ...nuevaListaAlumnos.slice(index + 1)]);
+        } else {
+            index = nuevaListaAlumnos.findIndex(student => student.id === idAlumno);
+            const updatedAlumno = [...nuevaListaAlumnos];
+            updatedAlumno[index] = {
+                    ...updatedAlumno[index],
+                    status: 'D'
+                };
+                setNuevaListaAlumnos(updatedAlumno);
+            }
     }
 
     const handleRestoreStudent = (idAlumno) => {
@@ -76,23 +84,23 @@ const AlumnosInscriptos = () => {
     };
     const useHandleSubmit = (e) => {
         e.preventDefault()
-        let list= []
+        let list = []
         for (let index = 0; index < nuevaListaAlumnos.length; index++) {
             let alumno = nuevaListaAlumnos[index];
             if (alumno.status === 'N') {
-                list=[...list, { colegioAlumnoId: alumno.id, estado: "N" }]
+                list = [...list, { colegioAlumnoId: alumno.id, estado: "N" }]
             }
             else if (alumno.status === 'D') {
-                list=[...list,{ colegioAlumnoId: alumno.id, estado: "D" }]
+                list = [...list, { colegioAlumnoId: alumno.id, estado: "D" }]
             }
         }
-        const body={ "claseId": getClaseSelectedId(), "listaAlumnos": list }
+        const body = { "claseId": getClaseSelectedId(), "listaAlumnos": list }
         StudentHelper.updateStudentsList(body, getToken())
-            .then(()=>{
+            .then(() => {
                 toast.success("Los datos fueron enviados correctamente.")
                 window.location.reload()
             })
-            .catch(()=>{
+            .catch(() => {
                 toast.error("No se pudieron guardar los cambios. Intente de nuevo o recargue la página.")
             })
     }
@@ -107,7 +115,7 @@ const AlumnosInscriptos = () => {
         list: nuevaListaAlumnos,
         options: alumnosSelect
     }
-    
+
     return <>
         <ScrolleableTable
             isLoading={loading}
