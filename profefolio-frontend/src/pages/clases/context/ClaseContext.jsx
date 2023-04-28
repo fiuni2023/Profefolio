@@ -1,7 +1,12 @@
 import React, { useContext, useState } from "react";
 import { createContext } from "react";
 
+
+
+
 const ClaseContext = createContext();
+
+
 
 export const useClaseContext = () => {
     return useContext(ClaseContext)
@@ -23,6 +28,11 @@ export const ClaseProvider = ({ children }) => {
         { id: 11, nombre: "Matematicas", status: "new", profesores: [{ id: 11, nombre: "John Foe", status: "new" }] },
         { id: 12, nombre: "Matematicas", status: "new", profesores: [{ id: 12, nombre: "John Foe", status: "new" }] },
     ]);
+
+
+
+    
+
 
     const getListaMaterias = () => {
         return listaMaterias;

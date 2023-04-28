@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useEffect, useState } from "react";
 import styles from './ListarColegios.module.css';
 import { useNavigate } from "react-router-dom";
@@ -97,7 +98,6 @@ function ListarColegios() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage, fetch_data]);
 
-
   const [show, setShow] = useState(false);
 
   const handleShow = (dato) => {
@@ -134,7 +134,6 @@ function ListarColegios() {
         </AddButton>
         {/* <ModalVerColegios datoColegio={datoColegio} onClose={()=>{setDatoColegio(null)}} show={show} setShow={setShow} disabled={disabled} setDisabled={setDisabled} triggerState={() => { setFetchData((before)=>[before]) }} page={currentPage}></ModalVerColegios>
         <ModalAgregarColegios triggerState={() => { setFetchData((before)=>[before]) }}  ></ModalAgregarColegios> */}
-
         <ModalColegio show={show} onHide={handleHide} administrators={administrators} selected_data={datoColegio} fetchFunc={doFetch} />
       </div>
     </>)

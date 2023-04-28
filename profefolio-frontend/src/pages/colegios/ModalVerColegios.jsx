@@ -9,7 +9,6 @@ import { useNavigate } from "react-router-dom";
 import { toast } from 'react-hot-toast';
 
 function ModalVerColegios({ datoColegio, setShow, show, disabled, setDisabled, onClose, triggerState, page }) {
-  
   const handleClose = () => {
     setNombre("");
     setIdAdmin("");
@@ -23,6 +22,7 @@ function ModalVerColegios({ datoColegio, setShow, show, disabled, setDisabled, o
   const [administradores, setAdministradores] = useState([]);
   // eslint-disable-next-line no-unused-vars
   const [idAdmin, setIdAdmin] = useState("");
+  const [nuevoNombreColegio, setNuevoNombre]=useState("");
 
 
   //Lamada de los datos del colegio
@@ -71,11 +71,42 @@ function ModalVerColegios({ datoColegio, setShow, show, disabled, setDisabled, o
     setDisabled(false);
   }
 
-  const handleSubmit = () => {
-    console.log(idAdmin);
-    // eslint-disable-next-line no-mixed-operators, eqeqeq
+  const putBack=()=>{
+    axios.put(`${APILINK}/api/Colegios/${datoIdColegio}`, {
+      "nombre":nuevoNombreColegio,
+      "personaId":idAdmin
 
-    console.log(typeof (idAdmin));
+    }, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+      }
+    })
+      .then(response => {
+        setColegio("");
+        toast.success("Editado exitoso");
+        handleClose(false);
+        handleUpdate();
+        setNombre("");
+        setIdAdmin("");
+        setApellidoAdministrador("");
+        setNombreAdministrador("");
+
+      })
+      .catch(error => {
+        if (typeof (error.response.data) === "string" ? true : false) {
+          toast.error(error.response.data)
+        } else {
+          toast.error(error.response.data?.errors.Email[0])
+        }
+      });
+
+  
+  }
+
+
+  const handleSubmit = () => {
+    console.log(idAdmin, "id submit");
+    // eslint-disable-next-line no-mixed-operators, eqeqeq
 
     if (nombre === "" || idAdmin === "")
       toast.error("revisa los datos, los campos deben ser completados")
@@ -108,6 +139,9 @@ function ModalVerColegios({ datoColegio, setShow, show, disabled, setDisabled, o
           }
         });
 
+    else {
+      putBack();
+      
     }
 
   }
@@ -167,10 +201,7 @@ function ModalVerColegios({ datoColegio, setShow, show, disabled, setDisabled, o
   const [apellido, setApellidoAdministrador] = useState(colegio.apellido || "");
   const [showModal2, setShowModal2] = useState(false);
 
-  const handleCloseModal2 = () => {
-    onClose()
-    setShowModal2(false)
-  };
+  const handleCloseModal2 = () => setShowModal2(false);
   const handleShowModal2 = () => setShowModal2(true);
   return (
 
@@ -214,7 +245,7 @@ function ModalVerColegios({ datoColegio, setShow, show, disabled, setDisabled, o
 
                     type="text"
                     defaultValue={nombre}
-                    onChange={event => setNombre(event.target.value)}
+                    onChange={event => setNuevoNombre(event.target.value)}
                   //placeholder={profesor.nombre} 
                   />
                 }
@@ -229,8 +260,8 @@ function ModalVerColegios({ datoColegio, setShow, show, disabled, setDisabled, o
                   />
 
                   : <div>
-                    <Form.Select aria-label="Default select example" defaultValue={idAdmin} onChange={event => handleIDAdmin(event)}>
-                      <option disabled >{nombreAdministrador} {apellido}</option>
+                    <Form.Select aria-label="Default select example"  onChange={event => handleIDAdmin(event)}>
+                      <option value={idAdmin} >{nombreAdministrador} {apellido}</option>
                       {administradores.map((administrador) =>
                         <option key={administrador.id} value={administrador.id}>{administrador.nombre} {administrador.apellido}</option>
                       )}

@@ -33,9 +33,9 @@ public class MateriaService : IMateria
             .Where(p => !p.Deleted && p.Nombre_Materia == n && p.Id != id)
             .FirstOrDefaultAsync();
     }
-    public IEnumerable<Materia> GetAll()
+    public async Task<List<Materia>> GetAll()
     {
-        return _dbContext.Materias.Where(p => p.Deleted);
+        return await _dbContext.Materias.Where(p => !p.Deleted).ToListAsync();
     }
 
     public Materia Edit(Materia t)

@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace profefolio.Models.DTOs.ColegiosAlumnos
+namespace profefolio.Models.DTOs.ClasesAlumnosColegio
 {
-    public class ColegioAlumnoToSelectDTO : DataDTO
+    public class ClaseAlumnosColegiosInfoAlumnoDTO
     {
-        public string AlumnoId { get; set; }
+        public int Id { get; set; }
         public string Nombre { get; set; }
         public string Apellido { get; set; }
         public string Documento { get; set; }
-
+        
     }
 }

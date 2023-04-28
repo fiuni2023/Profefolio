@@ -28,56 +28,25 @@ namespace profefolio.Controllers
         [HttpPost]
         public async Task<ActionResult> Post([FromBody] ClaseMateriaCreateDTO dto)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(dto);
-            }
-
-
-            if (dto.IdProfesores.Count < 1)
-            {
-                return BadRequest("Debe incluir por lo menos un Id de un profesor");
-            }
-
-
-            var materia = _materiaService.FindById(dto.IdMateria);
-
-            if (materia == null)
-            {
-                return BadRequest("No se encontro el Id de la Materia");
-            }
-
-            var clase = _claseService.FindById(dto.IdClase);
-
-            if (clase == null)
-            {
-                return BadRequest("No se encontro la clase que desea asociar");
-            }
-
-
-
             var user = User.Identity.Name;
-
-
-            foreach (var profes in dto.IdProfesores.Distinct())
+            try
             {
-
-                var p = await _profesorService.FindByIdAndRole(profes, "Profesor");
-
-                if (p == null) return BadRequest("Uno de los profesores que deseas agregar no existe");
-                await _materiaListaService.Add(new MateriaLista
-                {
-                    ClaseId = dto.IdClase,
-                    ProfesorId = profes,
-                    MateriaId = dto.IdMateria,
-                    Created = DateTime.Now,
-                    CreatedBy = user
-                });
+                var query = await _materiaListaService.SaveMateriaLista(dto, user);
+                if (query) return Ok();
             }
-
-            await _materiaListaService.Save();
-
-            return Ok();
+            catch (FileNotFoundException e)
+            {
+                return NotFound();
+            }
+            catch (BadHttpRequestException e)
+            {
+                return BadRequest(e.Message);
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                return Unauthorized();
+            }
+            return BadRequest("Error al ejecutar la secuencia de intrucciones");
         }
 
 
@@ -120,62 +89,26 @@ namespace profefolio.Controllers
         [Route("{idClase:int}")]
         public async Task<ActionResult> Put(int idClase, [FromBody] ClaseMateriaEditDTO dto)
         {
-
-            if (idClase != dto.IdClase)
-            {
-                return BadRequest();
-            }
-
-            if (dto.IdProfesores.Count < 1) return BadRequest();
-
             var user = User.Identity.Name;
             try
             {
-                var clase = await _claseService.FindById(idClase);
-
-                var detalles = new Collection<MateriaLista>();
-
-                foreach (var item in dto.IdProfesores.Distinct())
-                {
-                    var p = await _profesorService.FindById(item);
-
-                    if (p == null) { continue; }
-
-                    var detalle = await _materiaListaService.Find(dto.IdClase, item, dto.IdMateria, user);
-
-                    if (detalle == null)
-                    {
-                        detalle = new MateriaLista
-                        {
-                            ClaseId = dto.IdClase,
-                            MateriaId = dto.IdMateria,
-                            ProfesorId = item
-                        };
-                    }
-                    else
-                    {
-                        detalle.ClaseId = dto.IdClase;
-                        detalle.MateriaId = dto.IdMateria;
-                        detalle.ProfesorId = item;
-                    }
-
-                    detalles.Add(detalle);
-
-                }
-
-
-                clase.MateriaListas = detalles;
-
-
-
-                _claseService.Edit(clase);
-                await _claseService.Save();
-                return Ok();
+                var query = await _materiaListaService.EditMateriaLista(dto, user);
+                if (query) return Ok();
             }
             catch (FileNotFoundException e)
             {
                 return NotFound();
             }
+            catch (BadHttpRequestException e)
+            {
+                return BadRequest(e.Message);
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                return Unauthorized();
+            }
+            return BadRequest("Error al ejecutar la secuencia de intrucciones");
+
         }
 
         [HttpDelete]
@@ -204,7 +137,7 @@ namespace profefolio.Controllers
         [Route("{idClase:int}")]
         public async Task<ActionResult<ClaseDetallesDTO>> Get(int idClase)
         {
-            try 
+            try
             {
                 var user = User.Identity.Name;
                 var result = await _materiaListaService.FindByIdClase(idClase, user);
@@ -215,21 +148,21 @@ namespace profefolio.Controllers
                 response.ClaseId = idClase;
                 response.MateriaId = result[0].ClaseId;
                 return Ok(response);
-                
+
             }
-            catch(BadHttpRequestException e)
+            catch (BadHttpRequestException e)
             {
                 Console.WriteLine(e.Message);
                 return BadRequest();
             }
-            catch(FileNotFoundException e)
+            catch (FileNotFoundException e)
             {
                 Console.WriteLine(e.Message);
                 return NotFound();
             }
         }
 
-}
+    }
 
 
 
