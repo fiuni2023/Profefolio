@@ -15,7 +15,7 @@ const AlumnosInscriptos = () => {
         () => {
             return StudentHelper.getAllClassStudents(getClaseSelectedId(), getToken())
         },
-        [getToken],
+        [],
         {
             condition: true,
             handleSuccess: (r) => {
@@ -27,11 +27,11 @@ const AlumnosInscriptos = () => {
             }
         }
     )
-    const { loadingSelect } = useFetchEffect(
+    const { loading: loadingSelect } = useFetchEffect(
         () => {
             return StudentHelper.getAllNotClassStudents(getClaseSelectedId(), getToken())
         },
-        [getToken],
+        [],
         {
             condition: true,
             handleSuccess: (r) => {
@@ -76,7 +76,6 @@ const AlumnosInscriptos = () => {
     };
     const useHandleSubmit = (e) => {
         e.preventDefault()
-        console.log("x")
         let list= []
         for (let index = 0; index < nuevaListaAlumnos.length; index++) {
             let alumno = nuevaListaAlumnos[index];
@@ -88,7 +87,6 @@ const AlumnosInscriptos = () => {
             }
         }
         const body={ "claseId": getClaseSelectedId(), "listaAlumnos": list }
-        console.log(body)
         StudentHelper.updateStudentsList(body, getToken())
             .then(()=>{
                 toast.success("Los datos fueron enviados correctamente.")
