@@ -6,7 +6,6 @@ import { useGeneralContext } from '../../../../context/GeneralContext';
 import { toast } from 'react-hot-toast';
 import { useClaseContext } from '../../context/ClaseContext';
 const AlumnosInscriptos = () => {
-    const [call, setCall] = useState(false)
     const [listaAlumnos, setListaAlumnos] = useState([])
     const [nuevaListaAlumnos, setNuevaListaAlumnos] = useState([])
     const [alumnosSelect, setAlumnosSelect] = useState([])
@@ -75,26 +74,6 @@ const AlumnosInscriptos = () => {
         setAlumnosSelect([...alumnosSelect.slice(0, index), ...alumnosSelect.slice(index + 1)]);
         event.target.value = "";
     };
-    const [body, setBody] = useState([])
-    const { doFetch } = useFetchEffect(
-        () => {
-            return StudentHelper.updateStudentsList(body, getToken())
-        },
-        [getToken],
-        {
-            condition: call,
-            handleSuccess: (r) => {
-                toast.success("Los datos fueron enviados correctamente.")
-                setListaAlumnos(r.data)
-                setNuevaListaAlumnos(r.data)
-                console.log(r.data)
-            },
-            handleError: (r) => {
-                console.log(r)
-                toast.error("No se pudieron guardar los cambios. Intente de nuevo o recargue la página.")
-            }
-        }
-    )
     const useHandleSubmit = (e) => {
         let list= []
         e.preventDefault()
@@ -112,10 +91,19 @@ const AlumnosInscriptos = () => {
             }
             console.log(list)
         }
-        setBody({ "claseId": getClaseSelectedId(), "listaAlumnos": list })
-        setCall(true)
+        const body={ "claseId": getClaseSelectedId(), "listaAlumnos": list }
         console.log(body)
-        doFetch()
+        StudentHelper.updateStudentsList(body, getToken())
+            .then((r)=>{
+                toast.success("Los datos fueron enviados correctamente.")
+                // setListaAlumnos(r.data)
+                // setNuevaListaAlumnos(r.data)
+                console.log(r.data)
+            })
+            .catch((error)=>{
+                console.log(error)
+                toast.error("No se pudieron guardar los cambios. Intente de nuevo o recargue la página.")
+            })
     }
     const Alumnos = {
         onSubmit: useHandleSubmit,
