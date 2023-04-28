@@ -43,6 +43,7 @@ function ModalAdmin({
         AdminService.createAdmin(data, getToken())
                 .then(r => {
                     toast.success("creado con exito!!")
+                    fetchFunc()
                     handleHide()
                 })
                 .catch(error => {
@@ -65,7 +66,7 @@ function ModalAdmin({
 
     useEffect(() => {
         setDatosModal({
-            header: selected_data ? deleting ? "ELIMINAR COLEGIO?" : "Editar Colegio" : "Agregar Colegio",
+            header: selected_data ? deleting ? "ELIMINAR ADMINISTRADOR?" : "Editar Administrador" : "Agregar Administrador",
             form: {
                 onSubmit: { action: () => { } },
                 inputs: [
