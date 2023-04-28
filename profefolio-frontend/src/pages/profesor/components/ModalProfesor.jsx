@@ -127,7 +127,6 @@ function ModalProfesor({
 
     useEffect(() => {
         if (selected_data) {
-            console.log(selected_data)
             document.getElementById("nombre").value = selected_data.nombre;
             document.getElementById("apellido").value = selected_data.apellido;
             document.getElementById("fecha").value = selected_data.nacimiento.split("T")[0];

@@ -78,7 +78,6 @@ function Profesores() {
 
 
 const btndetalles = (data) => {
-  console.log(data)
   setSelectedData(data)
   setShow(true);
 };
