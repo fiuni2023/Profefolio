@@ -6,6 +6,7 @@ import { useGeneralContext } from '../../../../context/GeneralContext';
 import { toast } from 'react-hot-toast';
 import { useClaseContext } from '../../context/ClaseContext';
 const AlumnosInscriptos = () => {
+    const [call, setCall] = useState(false)
     const [listaAlumnos, setListaAlumnos] = useState([])
     const [nuevaListaAlumnos, setNuevaListaAlumnos] = useState([])
     const [alumnosSelect, setAlumnosSelect] = useState([])
@@ -74,38 +75,47 @@ const AlumnosInscriptos = () => {
         setAlumnosSelect([...alumnosSelect.slice(0, index), ...alumnosSelect.slice(index + 1)]);
         event.target.value="";
     };
+    const { doFetch } = useFetchEffect(
+        (body) => {
+            return StudentHelper.updateStudentsList(body, getToken())
+        },
+        [getToken],
+        {
+            condition: call,
+            handleSuccess: (r) => {
+                toast.success("Los datos fueron enviados correctamente.")
+                setListaAlumnos(r.data)
+                setNuevaListaAlumnos(r.data)
+                console.log(r.data)
+            },
+            handleError: (r) => {
+                console.log(r)
+                toast.error("No se pudieron guardar los cambios. Intente de nuevo o recargue la página.")
+            }
+        }
+    )
+    const [list, setList] = useState([])
     const useHandleSubmit = (e) => {
         e.preventDefault()
-        const list = []
         for (let index = 0; index < nuevaListaAlumnos.length; index++) {
             let alumno = nuevaListaAlumnos[index];
-            if (alumno.status === 'N') list.push({ "colegioAlumnoId": alumno.id, "estado": "N" })
-            else if (alumno.status === 'D') list.push({ "colegioAlumnoId": alumno.id, "estado": "D" })
+            if (alumno.status === 'N'){
+                let data = { "colegioAlumnoId": alumno.id, "estado": "N" }
+                setList([...list, data])
+            } 
+            else if (alumno.status === 'D'){
+                let data = { "colegioAlumnoId": alumno.id, "estado": "D" }
+                setList([...list, data])
+            } 
+            console.log(list)
         }
         const body = {
             "claseId": 3,
             "listaAlumnos": list,
         }
         console.log(body)
-        // const { doFetch } = useFetchEffect(
-        //     (body) => {
-        //         return StudentHelper.updateStudentsList(body, getToken())
-        //     },
-        //     [getToken],
-        //     {
-        //         condition: true,
-        //         handleSuccess: (r) => {
-        //             toast.success("Los datos fueron enviados correctamente.")
-        //             setListaAlumnos(r.data)
-        //             setNuevaListaAlumnos(r.data)
-        //             console.log(r.data)
-        //         },
-        //         handleError: () => {
-        //             toast.error("No se pudieron obtener los alumnos de la clase. Intente recargar la página")
-        //         }
-        //     }
-        // )
-        
+        setCall(true)
+        doFetch(body)
     }
     const Alumnos = {
         onSubmit: useHandleSubmit,

@@ -15,11 +15,6 @@ function ListItem({ index, name, lastName, document, type, onClick }) {
 
 const Scrolleable = ({ studentsList, isLoading = true, handleSelectOption = () => { }, handleStudent = () => { }}) => {
 
-    useEffect(() => {
-
-        console.log(studentsList)
-    }, [studentsList])
-
     return (
         <Container>
             <ScrollTable>
