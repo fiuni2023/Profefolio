@@ -6,7 +6,7 @@ import { AiOutlinePlus } from 'react-icons/ai'
 import  Tabla  from "../../../../components/Tabla";
 // import LACreateModal from "../../components/CreateModal";
 import { useGeneralContext } from "../../../../context/GeneralContext";
-import { Pagination } from "react-bootstrap";
+import Paginations from '../../../../components/Paginations';
 import { toast } from "react-hot-toast";
 import { useFetchEffect } from "../../../../components/utils/useFetchEffect";
 import { useNavigate } from "react-router-dom";
@@ -23,6 +23,7 @@ const ListAdministrador = () => {
     //const [admins, setAdmins] = useState([])
     const [currentPage, setCurrentPage] = useState(0)
     const [next, setNext] = useState(true)
+    const [totalPage, setTotalPage] = useState(0)
     const [condFetch, setCondFetch] = useState(false)
     const [datosTabla, setDatosTabla] = useState({
         tituloTabla: "adminsList", 
@@ -48,7 +49,7 @@ const ListAdministrador = () => {
         setShowAdmin(true)
     }
     
-    const { isLoading, error, doFetch } = useFetchEffect(
+    const { doFetch } = useFetchEffect(
         ()=>{
             return AdminService.getList(currentPage, getToken())
         }, 
@@ -56,8 +57,10 @@ const ListAdministrador = () => {
         {
             condition: condFetch,
             handleSuccess: (r)=>{
+                console.log(r.data)
                 //setAdmins(r.data.dataList)
                 setNext(r.data.next)
+                setTotalPage(r.data.totalPage)
                 setDatosTabla({...datosTabla,   clickable: {action: doChangeAdmin},
                                                 filas: r.data.dataList.map((dato)=> {return {fila: dato, 
                                                     datos:[ 
@@ -74,20 +77,6 @@ const ListAdministrador = () => {
             }
         }
     )
-
-    const getPages = () => {
-        return (
-            <>
-                <Pagination.Prev disabled={currentPage<=0} onClick={()=>{
-                    setCurrentPage(currentPage-1)
-                }} />
-                <Pagination.Item disabled >{currentPage + 1}</Pagination.Item>
-                <Pagination.Next disabled={!next || isLoading || error} onClick={()=>{
-                    setCurrentPage(currentPage+1)
-                }}/>
-            </>
-        )
-    }
 
     const handleHide = () => {
         setShowCreateModal(!showCreateModal)
@@ -131,9 +120,7 @@ const ListAdministrador = () => {
 
                     
 
-                    <Pagination size="sm mt-3">
-                        {getPages()}
-                    </Pagination>
+                    <Paginations totalPage={totalPage} currentPage={currentPage} setCurrentPage={setCurrentPage} next={next} />
                     <div className={styles.LAAddButton} onClick={()=>{setShowCreateModal(!showCreateModal)}}>
                         <AiOutlinePlus size={"35px"}/>
                     </div>
