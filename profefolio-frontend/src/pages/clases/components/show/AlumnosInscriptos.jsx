@@ -76,30 +76,26 @@ const AlumnosInscriptos = () => {
     };
     const useHandleSubmit = (e) => {
         e.preventDefault()
+        console.log("x")
         let list= []
         for (let index = 0; index < nuevaListaAlumnos.length; index++) {
             let alumno = nuevaListaAlumnos[index];
             if (alumno.status === 'N') {
-                let data = { colegioAlumnoId: alumno.id, estado: "N" }
-                console.log("entro 1")
-                list=[...list, data]
+                list=[...list, { colegioAlumnoId: alumno.id, estado: "N" }]
             }
             else if (alumno.status === 'D') {
-                let data = { colegioAlumnoId: alumno.id, estado: "D" }
-                console.log("entro 2")
-                list=[...list, data]
+                list=[...list,{ colegioAlumnoId: alumno.id, estado: "D" }]
             }
-            console.log(list)
         }
         const body={ "claseId": getClaseSelectedId(), "listaAlumnos": list }
         console.log(body)
         StudentHelper.updateStudentsList(body, getToken())
             .then((r)=>{
                 toast.success("Los datos fueron enviados correctamente.")
-                setListaAlumnos(r.data)
-                setNuevaListaAlumnos(r.data)
-                console.log(r.data)
-                window.location.reload()
+                // setListaAlumnos(r.data)
+                // setNuevaListaAlumnos(r.data)
+                console.log(r)
+                // window.location.reload()
             })
             .catch((error)=>{
                 console.log(error)
