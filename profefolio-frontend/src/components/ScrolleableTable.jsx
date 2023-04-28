@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { ScrollTable, SBody, SHeader, SForm, Container, Select, Item, List, ItemContainer, ListButton } from "./componentsStyles/StyledScrolleableList";
 import TextButton from './TextButton';
 import { RxReload } from 'react-icons/rx';
@@ -13,12 +13,7 @@ function ListItem({ index, name, lastName, document, type, onClick }) {
 }
 
 
-const Scrolleable = ({ studentsList, isLoading = true, handleSelectOption = () => { }, handleStudent = () => { }}) => {
-
-    useEffect(() => {
-
-        console.log(studentsList)
-    }, [studentsList])
+const Scrolleable = ({ studentsList, isLoading = true, handleSelectOption = () => { }, handleStudent = () => { } }) => {
 
     return (
         <Container>
@@ -27,7 +22,7 @@ const Scrolleable = ({ studentsList, isLoading = true, handleSelectOption = () =
                     <SHeader>
                         {studentsList?.header?.title}
                     </SHeader>}
-                {studentsList?.list &&
+                {!isLoading && studentsList?.list &&
                     <SBody background={studentsList?.background ?? "gray"}>
                         {isLoading ? <p>Cargando lista de alumnos</p>
                             : studentsList.list.length === 0 ? <p>No hay alumnos para mostrar</p>
@@ -35,12 +30,11 @@ const Scrolleable = ({ studentsList, isLoading = true, handleSelectOption = () =
                                     {studentsList?.list?.map((student, index) => (
                                         <ListItem key={index}
                                             index={index + 1}
-                                            id={student.alumnoId}
+                                            id={student.id}
                                             name={student.nombre}
                                             lastName={student.apellido}
                                             document={student.documento}
                                             type={student.status}
-                                            value={student.id}
                                             onClick={() => handleStudent(student.id, student.status)} />
                                     ))}
                                 </List>}
@@ -50,7 +44,7 @@ const Scrolleable = ({ studentsList, isLoading = true, handleSelectOption = () =
                     <Select defaultValue={""} onChange={handleSelectOption}>
                         <option value="" disabled>{studentsList?.selectTitle}</option>
                         {studentsList?.options?.map((option, index) => (
-                            <option key={index} value={option.alumnoId}>
+                            <option key={index} value={option.id}>
                                 {option.apellido} {option.nombre} - {option.documento}
                             </option>
                         ))}
@@ -62,6 +56,7 @@ const Scrolleable = ({ studentsList, isLoading = true, handleSelectOption = () =
             </ScrollTable>
         </Container>
     )
+
 }
 
 export default Scrolleable; 

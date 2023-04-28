@@ -15,37 +15,89 @@ const AlumnosInscriptos = () => {
         () => {
             return StudentHelper.getAllClassStudents(getClaseSelectedId(), getToken())
         },
-        [getToken],
+        [],
         {
             condition: true,
             handleSuccess: (r) => {
                 setListaAlumnos(r.data)
                 setNuevaListaAlumnos(r.data)
-                console.log(r.data)
             },
             handleError: () => {
                 toast.error("No se pudieron obtener los alumnos de la clase. Intente recargar la página")
             }
         }
     )
-    const { loadingSelect } = useFetchEffect(
+    const { loading: loadingSelect } = useFetchEffect(
         () => {
             return StudentHelper.getAllNotClassStudents(getClaseSelectedId(), getToken())
         },
-        [getToken],
+        [],
         {
             condition: true,
             handleSuccess: (r) => {
                 setAlumnosSelect(r.data)
-                console.log(r.data)
             },
             handleError: () => {
                 toast.error("No se pudieron obtener los alumnos para seleccionar. Intente recargar la página")
             }
         }
     )
+    const handleDeleteStudent = (idAlumno) => {
+        const index = nuevaListaAlumnos.findIndex(student => student.id === idAlumno);
+        const updatedAlumno = [...nuevaListaAlumnos];
+        updatedAlumno[index] = {
+            ...updatedAlumno[index],
+            status: 'D'
+        };
+        setNuevaListaAlumnos(updatedAlumno);
+    }
+
+    const handleRestoreStudent = (idAlumno) => {
+        const index = nuevaListaAlumnos.findIndex(student => student.id === idAlumno);
+        const newStudent = listaAlumnos.findIndex(student => student.id === idAlumno) < 0;
+        const updatedAlumno = [...nuevaListaAlumnos];
+        updatedAlumno[index] = {
+            ...updatedAlumno[index],
+            status: newStudent ? 'N' : ''
+        };
+        setNuevaListaAlumnos(updatedAlumno);
+    }
+
+    const handleStudent = (idAlumno, status) => {
+        status === 'D' ? handleRestoreStudent(idAlumno)
+            : handleDeleteStudent(idAlumno)
+    }
+    const handleSelectOption = (event) => {
+        const index = alumnosSelect.findIndex(alumno => alumno.id.toString() === event.target.value);
+        const selectedStudent = { ...alumnosSelect[index], status: 'N' };
+        setNuevaListaAlumnos([...nuevaListaAlumnos, selectedStudent]);
+        setAlumnosSelect([...alumnosSelect.slice(0, index), ...alumnosSelect.slice(index + 1)]);
+        event.target.value = "";
+    };
+    const useHandleSubmit = (e) => {
+        e.preventDefault()
+        let list= []
+        for (let index = 0; index < nuevaListaAlumnos.length; index++) {
+            let alumno = nuevaListaAlumnos[index];
+            if (alumno.status === 'N') {
+                list=[...list, { colegioAlumnoId: alumno.id, estado: "N" }]
+            }
+            else if (alumno.status === 'D') {
+                list=[...list,{ colegioAlumnoId: alumno.id, estado: "D" }]
+            }
+        }
+        const body={ "claseId": getClaseSelectedId(), "listaAlumnos": list }
+        StudentHelper.updateStudentsList(body, getToken())
+            .then(()=>{
+                toast.success("Los datos fueron enviados correctamente.")
+                window.location.reload()
+            })
+            .catch(()=>{
+                toast.error("No se pudieron guardar los cambios. Intente de nuevo o recargue la página.")
+            })
+    }
     const Alumnos = {
-        onSubmit: () => console.log("Guardado"),
+        onSubmit: useHandleSubmit,
         enabled: true,
         header: {
             title: "Lista de Alumnos inscriptos",
@@ -55,48 +107,15 @@ const AlumnosInscriptos = () => {
         list: nuevaListaAlumnos,
         options: alumnosSelect
     }
-
-    const handleDeleteStudent = (idAlumno) => {
-        const index = nuevaListaAlumnos.findIndex(student => student.id === idAlumno);
-        const updatedAlumno = [...nuevaListaAlumnos];
-        updatedAlumno[index] = {
-            ...updatedAlumno[index],
-            status: 'D'
-        };
-        setNuevaListaAlumnos(updatedAlumno);
-        console.log(nuevaListaAlumnos)
-    }
-
-    const handleRestoreStudent = (idAlumno) => {
-        const index = nuevaListaAlumnos.findIndex(student => student.id === idAlumno);
-        const newStudent = listaAlumnos.findIndex(student => student.id === idAlumno)<0;
-        const updatedAlumno = [...nuevaListaAlumnos];
-        updatedAlumno[index] = {
-            ...updatedAlumno[index],
-            status: newStudent ? 'N' : ''
-        };
-        setNuevaListaAlumnos(updatedAlumno);
-        console.log(nuevaListaAlumnos)
-    }
-
-    const handleStudent = (idAlumno, status) => {
-        status === 'D' ? handleRestoreStudent(idAlumno)
-        : handleDeleteStudent(idAlumno)
-    }
-    const handleSelectOption = (event) => {
-        const index = alumnosSelect.findIndex(option => option.alumnoId === event.target.value);
-        const selectedStudent = { ...alumnosSelect[index], status: 'N' };
-        console.log(selectedStudent)
-        setNuevaListaAlumnos([...nuevaListaAlumnos, selectedStudent]);
-        setAlumnosSelect([...alumnosSelect.slice(0, index), ...alumnosSelect.slice(index + 1)]);
-    };
+    
     return <>
         <ScrolleableTable
             isLoading={loading}
             loadingSelect={loadingSelect}
             studentsList={Alumnos}
             handleSelectOption={handleSelectOption}
-            handleStudent={handleStudent}/>
+            handleStudent={handleStudent}
+            handleSubmit={useHandleSubmit} />
     </>
 
 }

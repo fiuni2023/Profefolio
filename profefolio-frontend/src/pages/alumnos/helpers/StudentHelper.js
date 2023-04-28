@@ -68,6 +68,18 @@ const deleteStudent = async (id, token) => {
         })
     return result.status === 200 ? result : null
 }
+const updateStudentsList = async (body, token) => {
+    const result = await axios.put(`${APILINK}/api/ClasesAlumnosColegio`,
+        body,
+        {
+            headers: {
+                "Authorization": 'Bearer ' + token,
+                "Content-Type": "application/json"
+            },
 
-const StudentsService = { getStudentsPage, getAllNotClassStudents, createStudent, updateStudent, deleteStudent, getAllClassStudents }
+        })
+    return result.status === 200 ? result : null
+}
+
+const StudentsService = { getStudentsPage, getAllNotClassStudents, createStudent, updateStudent, deleteStudent, getAllClassStudents, updateStudentsList }
 export default StudentsService
