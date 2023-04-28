@@ -67,14 +67,14 @@ function ListarMaTerias() {
     } else {
       //https://localhost:7063/api/Materia
 
-      axios.get(`${APILINK}/api/Materia/page/${page}`, {
+      axios.get(`${APILINK}/api/Materia`, {
         headers: {
           Authorization: `Bearer ${getToken()}`,
         }
       })
 
         .then(response => {
-          setMaterias(response.data.dataList);
+          setMaterias(response.data);
         })
         .catch(error => {
           toast.error(error);
