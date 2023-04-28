@@ -1,4 +1,5 @@
-import React from 'react'
+import React, {useMemo, useState } from 'react'
+
 import { useParams } from 'react-router-dom';
 
 import ShowContainer from '../../components/ShowContainer';
@@ -7,9 +8,34 @@ import AlumnosInscriptos from '../../components/show/AlumnosInscriptos';
 import MateriasDeClase from '../../components/show/MateriasDeClase';
 import { useClaseContext } from '../../context/ClaseContext';
 
+import ClassesService from '../../Helpers/ClassesHelper';
+import { useGeneralContext } from '../../../../context/GeneralContext';
+
 const ShowClase = () => {
     const { idClase } = useParams();
     const { getColegioId} = useClaseContext();
+
+    const { getToken } = useGeneralContext();
+
+    const [nombreClase, setNombreClase] = useState("");
+
+
+    useMemo(() => {
+        const response = ClassesService.getClassesByIdNombre(idClase, getToken())
+
+        console.log('response',response)
+      
+        if (response !== null) {
+          response.then((r) => {
+            setNombreClase(r) // Modifica aquí para mostrar solo el nombre de la clase
+
+            console.log(' setNombreClase(r.data)', r)
+          }).catch(e => {
+            console.log(e)
+            setNombreClase()
+          })
+        }
+      }, [idClase, getToken, setNombreClase])
     /**
      * TO DO
      * Validar logeo
@@ -17,7 +43,7 @@ const ShowClase = () => {
 
     // contiene el titulo que tendra la pagina y la lista de componentes a mostrar
     const componentes = {
-        title: `Nombre de clase ${idClase}`,
+        title: `Nombre de clase ${nombreClase}`,
         componentes: [
             <InfoClase/>,
             <AlumnosInscriptos colegio={getColegioId()}/>,
