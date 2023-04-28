@@ -11,6 +11,25 @@ const getClassesPage = async (page, idColegio, token) => {
     return result.status === 200 ? result : null
 }
 
+const getClassesByIdNombre = async (id, token) => {
+    try {
+      const result = await axios.get(`${APILINK}/api/clase/${id}`, {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      });
+      if (result.status === 200) {
+        const { nombre } = result.data; // Suponemos que la respuesta de tu API es un objeto con el nombre de la clase
+        return nombre;
+      } else {
+        return null;
+      }
+    } catch (error) {
+      console.error("Error al obtener la clase: ", error);
+      return null;
+    }
+  };
+
 const getClassesById = async (id, token) => {
     const result = await axios.get(`${APILINK}/api/clase/${id}`,
         {
@@ -94,5 +113,5 @@ const getProfesores = (token) => {
 
 
 
-const ClassesService = { getClassesPage, getClassesById, createClasse, updateClasse, deleteClasse, getProfesoresParaClase ,getProfesores}
+const ClassesService = { getClassesPage, getClassesByIdNombre,getClassesById, createClasse, updateClasse, deleteClasse, getProfesoresParaClase ,getProfesores}
 export default ClassesService

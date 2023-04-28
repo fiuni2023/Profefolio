@@ -14,11 +14,6 @@ import ClassesService from '../../Helpers/ClassesHelper';
 import { GrAddCircle } from 'react-icons/gr'
 
 
-
-
-  
-
-
 const TagNombreSelect = styled.div`
     border-radius: 20px;
     justify-content: space-around;
@@ -101,8 +96,47 @@ const TagProfesor = memo(({ id, nombre, state = "new", onClick = () => { } }) =>
 
 
 
+const TagProfesorSeleccionado=memo(({ profesorId, profesores ,onClick = () => { }}) =>{
+    const profesor = profesores.find((profesor) => profesor.id === profesorId);
+    return <>
 
+        <TagTeacher className={`tag-teacher-${unicId}`}>
+        <Item className='item-nombre-profe'>{profesor && profesor.nombre}</Item>
 
+        </TagTeacher>
+
+        <style jsx="true">{
+            `
+            .item-nombre-profe{
+                padding-left: 5px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                max-width: calc(10rem - 24px);
+                font-size: 15px;
+                display: flex;
+                align-items: center;
+            }
+            .tag-teacher-${unicId}{
+                background-color: #F3E6AE;
+                padding: 0.2rem;
+                max-width: 10rem;
+                width: fit-content;+
+                height: 24px;
+                display: flex;
+                align-items: center;
+            }
+            .btn-cancelar{
+                background-color: red;
+                min-width: 1rem;
+            }
+        `
+        }</style>
+
+      
+      </>
+  })
+  
 
   
 
@@ -111,10 +145,23 @@ const ListItem = memo(({ index, idMateria, nombre, profesores = [] ,profeProfeso
 
     const [isSelectOpen, setIsSelectOpen] = useState(false);
 
+    const [idProfesorSeleccionado, setIdProfesorSeleccionado] = useState(null);
+
+ 
+
+    const seleccionarProfesor = (e) => {
+        setIdProfesorSeleccionado(e.target.value);
+      };
+      
+
+
     const handleSelectOpenProfesores = () => {
         setIsSelectOpen(true);
 
       };
+
+     
+    
 
 
     return <>
@@ -133,26 +180,50 @@ const ListItem = memo(({ index, idMateria, nombre, profesores = [] ,profeProfeso
 
                     </ListButton>
 
-                    {isSelectOpen ? (
+{isSelectOpen && (
+  <TagNombreSelect>
+    <TagSelect onChange={seleccionarProfesor}>
+      {profeProfesor.map((profesor) => (
+        <option key={profesor.id} value={profesor.id}>
+          {profesor.nombre}
+        </option>
+      ))}
+    </TagSelect>
+  </TagNombreSelect>
+)}
 
-                <TagNombreSelect>
-                    <TagSelect>
-                        {profeProfesor.map((profesor) => (
-                        <option key={profesor.id} value={profesor.id}>
-                            {profesor.nombre}
-                        </option>
-                        ))}
-                    </TagSelect>
-
-                </TagNombreSelect>
-                    ) : null}
+{map(profeProfesor, (e, i) => (
+  
+    <TagProfesor
+      id={e.id}
+      nombre={`${e.nombre}${e.status}`}
+      state={e.status}
+      onClick={() => setIdProfesorSeleccionado(e.id)}
+    />
 
 
+    
+))}
 
-                    {map(profesores, (e, i) => <TagProfesor key={i} id={e.id} nombre={`${e.nombre}${e.status}`} state={e.status} onClick={() => {
+
+
+
+<TagNombreSelect>
+
+{idProfesorSeleccionado && (
+        <div>{profeProfesor.find((profesor) => profesor.id === idProfesorSeleccionado).nombre}
+        </div>
+        )}
+        </TagNombreSelect>
+
+
+
+  {/* Este es un comentario en React 
+         {map(profesores, (e, i) => <TagProfesor key={i} id={e.id} nombre={`${e.nombre}${e.status}`} state={e.status} onClick={() => {
                         setStatusProfesorMateria(idMateria, e.id, e.status === "new" ? "reload" : "new");
                     }
                     } />)}
+*/}
                 </div>
             </div>
 

@@ -107,7 +107,7 @@ const AlumnosInscriptos = () => {
         list: nuevaListaAlumnos,
         options: alumnosSelect
     }
-
+    
     return <>
         <ScrolleableTable
             isLoading={loading}
