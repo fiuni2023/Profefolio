@@ -73,10 +73,11 @@ const AlumnosInscriptos = () => {
         const selectedStudent = { ...alumnosSelect[index], status: 'N' };
         setNuevaListaAlumnos([...nuevaListaAlumnos, selectedStudent]);
         setAlumnosSelect([...alumnosSelect.slice(0, index), ...alumnosSelect.slice(index + 1)]);
-        event.target.value="";
+        event.target.value = "";
     };
+    const [body, setBody] = useState([])
     const { doFetch } = useFetchEffect(
-        (body) => {
+        () => {
             return StudentHelper.updateStudentsList(body, getToken())
         },
         [getToken],
@@ -94,28 +95,27 @@ const AlumnosInscriptos = () => {
             }
         }
     )
-    const [list, setList] = useState([])
     const useHandleSubmit = (e) => {
+        let list= []
         e.preventDefault()
         for (let index = 0; index < nuevaListaAlumnos.length; index++) {
             let alumno = nuevaListaAlumnos[index];
-            if (alumno.status === 'N'){
-                let data = { "colegioAlumnoId": alumno.id, "estado": "N" }
-                setList([...list, data])
-            } 
-            else if (alumno.status === 'D'){
-                let data = { "colegioAlumnoId": alumno.id, "estado": "D" }
-                setList([...list, data])
-            } 
+            if (alumno.status === 'N') {
+                let data = { colegioAlumnoId: alumno.id, estado: "N" }
+                console.log("entro 1")
+                list=[...list, data]
+            }
+            else if (alumno.status === 'D') {
+                let data = { colegioAlumnoId: alumno.id, estado: "D" }
+                console.log("entro 2")
+                list=[...list, data]
+            }
             console.log(list)
         }
-        const body = {
-            "claseId": 3,
-            "listaAlumnos": list,
-        }
-        console.log(body)
+        setBody({ "claseId": getClaseSelectedId(), "listaAlumnos": list })
         setCall(true)
-        doFetch(body)
+        console.log(body)
+        doFetch()
     }
     const Alumnos = {
         onSubmit: useHandleSubmit,
@@ -135,8 +135,8 @@ const AlumnosInscriptos = () => {
             loadingSelect={loadingSelect}
             studentsList={Alumnos}
             handleSelectOption={handleSelectOption}
-            handleStudent={handleStudent} 
-            handleSubmit={useHandleSubmit}/>
+            handleStudent={handleStudent}
+            handleSubmit={useHandleSubmit} />
     </>
 
 }
