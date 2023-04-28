@@ -16,6 +16,8 @@ import StyleComponentBreadcrumb from '../../components/StyleComponentBreadcrumb.
 import Tabla from '../../components/Tabla.jsx';
 import styled from 'styled-components';
 import { AiOutlinePlus } from 'react-icons/ai';
+import ModalProfesor from './components/ModalProfesor.jsx';
+import Paginations from '../../components/Paginations.jsx';
 
 
 
@@ -24,9 +26,10 @@ function Profesores() {
 
   const [profesores, setProfesores] = useState([]);
   
-  const [showModal, setShowModal] = useState(false);
-  const [id, setId] = useState(null);
+  const [selected_data, setSelectedData] = useState(null);
   const { getToken, cancan, verifyToken } = useGeneralContext();
+
+  const [fetch_data, setFetchData ] = useState([])
 
   const [page, setPage] = useState(0);
 
@@ -66,17 +69,17 @@ function Profesores() {
           console.error(error);
         });
     }
-  }, [page, cancan, verifyToken, nav, getToken]);
+  }, [page, cancan, verifyToken, nav, getToken, fetch_data]);
 
- const doFetch =(profesor) =>{
-    setProfesores([...profesores, profesor])
+ const doFetch =() =>{
+    setFetchData((before)=>[before])
 }
  
 
 
-const btndetalles = (id) => {
-  setShowModal(true);
-  setId(id);
+const btndetalles = (data) => {
+  setSelectedData(data)
+  setShow(true);
 };
 
 
@@ -94,6 +97,12 @@ const btndetalles = (id) => {
 
 
   const [show, setShow] = useState(false);
+
+  const handleHide = () => {
+    setShow(false)
+    doFetch()
+    setSelectedData(null)
+  }
 
 
   return (
@@ -138,10 +147,10 @@ const btndetalles = (id) => {
                   ],
                 })),
               }}
-/>
+            />
 
-           
-            <ListDetallesProfesor showModal={showModal} setShowModal={setShowModal} id={id}  triggerState={(profesor)=>{setProfesores(profesor)}} page={page} />
+           <Paginations totalPage={totalPage} currentPage={currentPage} setCurrentPage={setCurrentPage} next={next} />
+            {/* <ListDetallesProfesor showModal={showModal} setShowModal={setShowModal} id={id}  triggerState={(profesor)=>{setProfesores(profesor)}} page={page} /> */}
 
             <AddButton onClick={()=>setShow(true)}>
               <AiOutlinePlus size={"35px"} />
@@ -152,32 +161,13 @@ const btndetalles = (id) => {
            
         
       </div>
-
-             
-     
-             
-                        
-            <nav aria-label="Page navigation example">
-              <ul className="pagination justify-content-end">
-                <li className="page-item disabled">
-
-              
-                  <button className="btn page-item btn-sm" onClick={handlePrevClick} disabled={page === 0}>Anterior</button>
-                </li>
-                <li className="page-item">
-                 
-                <button className="btn page-item btn-sm" onClick={handleNextClick}  disabled={isLastPage} >
-                          Siguiente
-                        </button>
-                </li>
-              </ul>
-            </nav>
  
           </div>
           
-          <CreateModal title="My Modal" onHide={() => setShow(false)}  show={show}
-             triggerState={(profesor)=>{doFetch(profesor)}}/>
+          {/* <CreateModal title="My Modal" onHide={() => setShow(false)}  show={show}
+             triggerState={(profesor)=>{doFetch(profesor)}}/> */}
 
+          <ModalProfesor onHide={handleHide} selected_data={selected_data} show={show}  />
         </PanelContainerBG>
         
 
