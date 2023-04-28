@@ -90,15 +90,11 @@ const AlumnosInscriptos = () => {
         const body={ "claseId": getClaseSelectedId(), "listaAlumnos": list }
         console.log(body)
         StudentHelper.updateStudentsList(body, getToken())
-            .then((r)=>{
+            .then(()=>{
                 toast.success("Los datos fueron enviados correctamente.")
-                // setListaAlumnos(r.data)
-                // setNuevaListaAlumnos(r.data)
-                console.log(r)
-                // window.location.reload()
+                window.location.reload()
             })
-            .catch((error)=>{
-                console.log(error)
+            .catch(()=>{
                 toast.error("No se pudieron guardar los cambios. Intente de nuevo o recargue la página.")
             })
     }
