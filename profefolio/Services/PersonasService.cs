@@ -270,11 +270,15 @@ public class PersonasService : IPersona
         return true;
     }
 
-    public async Task<Persona?> FindByDocumentoAndRole(string documento = "", string role = "")
+    public async Task<Persona?> FindByDocumentoAndRole(string documento = "",string DocumentoTipo = "", string role = "")
     {
-        var persona = await _userManager.Users.Where(a => !a.Deleted
-                && a.Documento != null
-                && documento.Equals(a.Documento)).FirstOrDefaultAsync();
+        var persona = await _userManager.Users
+            .Where(a => !a.Deleted)
+            .Where(a => a.Documento != null)
+            .Where(a => a.Documento.Equals(documento))
+            .Where(a => a.DocumentoTipo != null)
+            .Where(a => a.DocumentoTipo.Equals(DocumentoTipo))
+            .FirstOrDefaultAsync();
         if (persona != null)
         {
             var tieneRol = await _userManager.IsInRoleAsync(persona, role);

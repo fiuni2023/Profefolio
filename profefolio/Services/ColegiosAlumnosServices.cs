@@ -91,12 +91,17 @@ namespace profefolio.Services
 
         public async Task<IEnumerable<ColegiosAlumnos>> FindAllNoAssignedToClaseByEmailAdminAndIdClase(string adminEmail, int idClase)
         {
+            /*
+                Se valida que el alumno no este asignado a ninguna clase y si esta se verifica que este marcado como eliminado en la clase
+                esto en el caso de que se haya eliminado de la clase y luego se agregue otra vez
+            */
             return await _context.ColegiosAlumnos
                             .Where(ca => !ca.Deleted
                                 && ca.Colegio.personas.Email.Equals(adminEmail)
                                 && (ca.ClasesAlumnosColegios == null
                                     || !ca.ClasesAlumnosColegios.Any()
-                                    || ca.ClasesAlumnosColegios.Any(a => !a.Deleted && a.ClaseId != idClase)))
+                                    || ca.ClasesAlumnosColegios.Any(a => (a.Deleted && a.ClaseId == idClase) || a.ClaseId != idClase))
+                                    && (ca.ClasesAlumnosColegios == null || !(ca.ClasesAlumnosColegios.Any(a => a.ClaseId == idClase && !a.Deleted))))
                             .Include(a => a.Persona)
                             .ToListAsync();
         }
