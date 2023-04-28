@@ -75,8 +75,8 @@ const AlumnosInscriptos = () => {
         event.target.value = "";
     };
     const useHandleSubmit = (e) => {
-        let list= []
         e.preventDefault()
+        let list= []
         for (let index = 0; index < nuevaListaAlumnos.length; index++) {
             let alumno = nuevaListaAlumnos[index];
             if (alumno.status === 'N') {
@@ -96,9 +96,10 @@ const AlumnosInscriptos = () => {
         StudentHelper.updateStudentsList(body, getToken())
             .then((r)=>{
                 toast.success("Los datos fueron enviados correctamente.")
-                // setListaAlumnos(r.data)
-                // setNuevaListaAlumnos(r.data)
+                setListaAlumnos(r.data)
+                setNuevaListaAlumnos(r.data)
                 console.log(r.data)
+                window.location.reload()
             })
             .catch((error)=>{
                 console.log(error)
