@@ -214,7 +214,9 @@ namespace profefolio.Services
                 throw new BadHttpRequestException("No estas autorizado a modificar una clase, que no pertenece a tu colegio");
             }
 
-            foreach (var item in dto.IdProfesores.Distinct())
+            var distinct = dto.IdProfesores.Distinct();
+
+            foreach (var item in distinct)
             {
                 var p = await _db.Users
                     .FirstOrDefaultAsync(x => !x.Deleted && x.Id.Equals(item));

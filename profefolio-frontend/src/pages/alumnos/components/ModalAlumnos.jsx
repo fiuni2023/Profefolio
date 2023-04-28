@@ -137,10 +137,9 @@ function ModalAlumnos({
 
     useEffect(()=>{
         if(selected_data){
-            console.log(selected_data)
             document.getElementById("nombreAlu").value = selected_data.nombre
             document.getElementById("apellido").value = selected_data.apellido
-            document.getElementById("fecha").value = selected_data.nacimiento.split('T')[0]
+            document.getElementById("fecha").value = selected_data.fechaNacimiento.split('T')[0]
             document.getElementById("email").value = selected_data.email
             document.getElementById("direccion").value = selected_data.direccion
             document.getElementById("genero").value = selected_data.genero === "Masculino"? "M": "F"
