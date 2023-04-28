@@ -209,9 +209,9 @@ namespace profefolio.Services
                 .Where(c => c.personas.Email.Equals(user))
                 .FirstOrDefaultAsync();
 
-            if (colegio == null || colegio.Id != clase.Id)
+            if (colegio == null || colegio.Id != clase.ColegioId)
             {
-                throw new BadHttpRequestException("Accion no valida");
+                throw new BadHttpRequestException("No estas autorizado a modificar una clase, que no pertenece a tu colegio");
             }
 
             foreach (var item in dto.IdProfesores.Distinct())
@@ -286,7 +286,7 @@ namespace profefolio.Services
                 .Where(c => c.personas.Email.Equals(user))
                 .FirstOrDefaultAsync();
 
-            if (colegio == null || colegio.Id != clase.Id)
+            if (colegio == null || colegio.Id != clase.ColegioId)
             {
                 throw new BadHttpRequestException("Accion no valida");
             }
