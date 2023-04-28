@@ -30,6 +30,22 @@ namespace profefolio.Controllers
 
 
         [HttpGet]
+        [Authorize(Roles = "Administrador de Colegio,Profesor")]
+        public async Task<ActionResult<List<MateriaResultDTO>>> GetAll(){
+            try{
+                var materias = await _materiaService.GetAll();
+                if(materias == null){
+                _log.Error($"Error durante la obtencion de las materias, la lista es nula.");
+                    return BadRequest("Erro en la obtencion de materias.");
+                }
+                return Ok(_mapper.Map<List<MateriaResultDTO>>(materias));
+            }catch(Exception e){
+                _log.Error($"Error durante la obtencion de las materias: \n{e}");
+                return BadRequest("Erro durante la obtencion de las materias");
+            }
+        }
+
+        [HttpGet]
         [Route("page/{page}")]
         [Authorize(Roles = "Administrador de Colegio,Profesor")]
         public ActionResult<DataListDTO<MateriaResultDTO>> GetMaterias(int page)

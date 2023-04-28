@@ -1,13 +1,13 @@
 import React from 'react'
-import { BsFillPlusCircleFill } from 'react-icons/bs'
+import { GrAddCircle } from 'react-icons/gr'
 
 const BtnAdd = ({ handleShowModal = () => { } }) => {
     //console.log(handleShowModal)
     return <>
         <div className='btnAddContainer'>
-            <div className="btnAddFloating">
-                <button className="buttonNavBarA" onClick={handleShowModal}>
-                    <BsFillPlusCircleFill />
+            <div className="buttonNavBarAdmin">
+                <button className="buttonNavBarAdmin" onClick={handleShowModal}>
+                    <GrAddCircle />
                 </button>
             </div>
 
@@ -20,6 +20,24 @@ const BtnAdd = ({ handleShowModal = () => { } }) => {
                     display: flex;
                     justify-content: flex-end;
                 }
+                .buttonNavBarA {
+                    border: none;
+                    outline: none;
+                  }
+
+                  .buttonNavBarAdmin {
+                    font-weight: bold;
+                    width: 100%;
+                    height: 100%;
+                    outline: none;
+                    border: none;
+                    background-color: #F3E6AE;
+                    font-size: 20px;
+                    color: #C2C2C2;
+                  }
+
+
+
             `
             }
         </style>

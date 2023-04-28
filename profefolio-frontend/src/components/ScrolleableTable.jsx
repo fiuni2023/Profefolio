@@ -5,20 +5,21 @@ import { RxReload } from 'react-icons/rx';
 
 function ListItem({ index, name, lastName, document, type, onClick }) {
     return (
-        <ItemContainer type={type}>
+        <ItemContainer type={type === 'N' ? 'new' : type === 'D' ? 'reload' : ''}>
             <Item>{index}- {lastName} {name} - {document}</Item>
-            <ListButton onClick={onClick}>{type !== 'reload' ? 'X' : <RxReload style={{ fontSize: '24px' }} size={24} />}</ListButton>
+            <ListButton onClick={onClick}>{type !== 'D' ? 'X' : <RxReload style={{ fontSize: '24px' }} size={24} />}</ListButton>
         </ItemContainer>
     )
 }
 
 
-const Scrolleable = ({ studentsList, isLoading = true }) => {
+const Scrolleable = ({ studentsList, isLoading = true, handleSelectOption = () => { }, handleStudent = () => { }}) => {
+
     useEffect(() => {
-      
-    console.log(studentsList)
+
+        console.log(studentsList)
     }, [studentsList])
-    
+
     return (
         <Container>
             <ScrollTable>
@@ -29,26 +30,28 @@ const Scrolleable = ({ studentsList, isLoading = true }) => {
                 {studentsList?.list &&
                     <SBody background={studentsList?.background ?? "gray"}>
                         {isLoading ? <p>Cargando lista de alumnos</p>
-                        :<List>
-                            {studentsList?.list?.map((student, index) => (
-                                <ListItem key={index}
-                                    index={index + 1}
-                                    id={student.id}
-                                    name={student.nombre}
-                                    lastName={student.apellido}
-                                    document={student.documento}
-                                    type={student.status}
-                                    onClick={() => console.log(`${student.name} 'seleccionado'`)} />
-                            ))}
-                        </List>}
+                            : studentsList.list.length === 0 ? <p>No hay alumnos para mostrar</p>
+                                : <List>
+                                    {studentsList?.list?.map((student, index) => (
+                                        <ListItem key={index}
+                                            index={index + 1}
+                                            id={student.alumnoId}
+                                            name={student.nombre}
+                                            lastName={student.apellido}
+                                            document={student.documento}
+                                            type={student.status}
+                                            value={student.id}
+                                            onClick={() => handleStudent(student.id, student.status)} />
+                                    ))}
+                                </List>}
                     </SBody>}
                 <SForm onSubmit={studentsList?.onSubmit ?? null} >
                     <span>{studentsList?.addTitle}</span>
-                    <Select defaultValue={""}>
+                    <Select defaultValue={""} onChange={handleSelectOption}>
                         <option value="" disabled>{studentsList?.selectTitle}</option>
                         {studentsList?.options?.map((option, index) => (
-                            <option key={index} value={option.value}>
-                                {option.label}
+                            <option key={index} value={option.alumnoId}>
+                                {option.apellido} {option.nombre} - {option.documento}
                             </option>
                         ))}
                     </Select>

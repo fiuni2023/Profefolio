@@ -4,22 +4,43 @@ import StudentHelper from '../../../alumnos/helpers/StudentHelper'
 import { useFetchEffect } from '../../../../components/utils/useFetchEffect'
 import { useGeneralContext } from '../../../../context/GeneralContext';
 import { toast } from 'react-hot-toast';
-const AlumnosInscriptos = ({colegio}) => {
+import { useClaseContext } from '../../context/ClaseContext';
+const AlumnosInscriptos = () => {
     const [listaAlumnos, setListaAlumnos] = useState([])
-    const { getToken} = useGeneralContext();
+    const [nuevaListaAlumnos, setNuevaListaAlumnos] = useState([])
+    const [alumnosSelect, setAlumnosSelect] = useState([])
+    const { getClaseSelectedId } = useClaseContext();
+    const { getToken } = useGeneralContext();
     const { loading } = useFetchEffect(
         () => {
-            return StudentHelper.getStudentsPage(0, getToken())
+            return StudentHelper.getAllClassStudents(getClaseSelectedId(), getToken())
         },
-        [ getToken],
+        [getToken],
         {
             condition: true,
             handleSuccess: (r) => {
-                setListaAlumnos(r.data.dataList)
-                console.log(r.data.dataList)
+                setListaAlumnos(r.data)
+                setNuevaListaAlumnos(r.data)
+                console.log(r.data)
             },
             handleError: () => {
-                toast.error("No se pudieron obtener los alumnos. Intente recargar la página")
+                toast.error("No se pudieron obtener los alumnos de la clase. Intente recargar la página")
+            }
+        }
+    )
+    const { loadingSelect } = useFetchEffect(
+        () => {
+            return StudentHelper.getAllNotClassStudents(getClaseSelectedId(), getToken())
+        },
+        [getToken],
+        {
+            condition: true,
+            handleSuccess: (r) => {
+                setAlumnosSelect(r.data)
+                console.log(r.data)
+            },
+            handleError: () => {
+                toast.error("No se pudieron obtener los alumnos para seleccionar. Intente recargar la página")
             }
         }
     )
@@ -31,14 +52,51 @@ const AlumnosInscriptos = ({colegio}) => {
         },
         addTitle: "Agregar alumnos",
         selectTitle: "Seleccionar alumno",
-        options: [
-            { label: "Carlos", value: 1 },
-            { label: "Gabriela", value: 1 }
-        ],
-        list: listaAlumnos
+        list: nuevaListaAlumnos,
+        options: alumnosSelect
     }
+
+    const handleDeleteStudent = (idAlumno) => {
+        const index = nuevaListaAlumnos.findIndex(student => student.id === idAlumno);
+        const updatedAlumno = [...nuevaListaAlumnos];
+        updatedAlumno[index] = {
+            ...updatedAlumno[index],
+            status: 'D'
+        };
+        setNuevaListaAlumnos(updatedAlumno);
+        console.log(nuevaListaAlumnos)
+    }
+
+    const handleRestoreStudent = (idAlumno) => {
+        const index = nuevaListaAlumnos.findIndex(student => student.id === idAlumno);
+        const newStudent = listaAlumnos.findIndex(student => student.id === idAlumno)<0;
+        const updatedAlumno = [...nuevaListaAlumnos];
+        updatedAlumno[index] = {
+            ...updatedAlumno[index],
+            status: newStudent ? 'N' : ''
+        };
+        setNuevaListaAlumnos(updatedAlumno);
+        console.log(nuevaListaAlumnos)
+    }
+
+    const handleStudent = (idAlumno, status) => {
+        status === 'D' ? handleRestoreStudent(idAlumno)
+        : handleDeleteStudent(idAlumno)
+    }
+    const handleSelectOption = (event) => {
+        const index = alumnosSelect.findIndex(option => option.alumnoId === event.target.value);
+        const selectedStudent = { ...alumnosSelect[index], status: 'N' };
+        console.log(selectedStudent)
+        setNuevaListaAlumnos([...nuevaListaAlumnos, selectedStudent]);
+        setAlumnosSelect([...alumnosSelect.slice(0, index), ...alumnosSelect.slice(index + 1)]);
+    };
     return <>
-        <ScrolleableTable isLoading={loading} studentsList={Alumnos} />
+        <ScrolleableTable
+            isLoading={loading}
+            loadingSelect={loadingSelect}
+            studentsList={Alumnos}
+            handleSelectOption={handleSelectOption}
+            handleStudent={handleStudent}/>
     </>
 
 }
