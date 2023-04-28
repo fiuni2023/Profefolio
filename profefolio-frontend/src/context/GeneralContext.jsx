@@ -25,6 +25,8 @@ export const GeneralProvider = ({ children }) => {
         return null
     }
 
+    console.log(getLoginData())
+
     const depricateLoginData = () => {
         if (localStorage.getItem('loginData') ? true : false) localStorage.removeItem('loginData')
         if (sessionStorage.getItem('loginData') ? true : false) sessionStorage.removeItem('loginData')
