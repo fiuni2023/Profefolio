@@ -22,16 +22,11 @@ const ShowClase = () => {
 
     useMemo(() => {
         const response = ClassesService.getClassesByIdNombre(idClase, getToken())
-
-        console.log('response',response)
       
         if (response !== null) {
           response.then((r) => {
             setNombreClase(r) // Modifica aquí para mostrar solo el nombre de la clase
-
-            console.log(' setNombreClase(r.data)', r)
           }).catch(e => {
-            console.log(e)
             setNombreClase()
           })
         }
