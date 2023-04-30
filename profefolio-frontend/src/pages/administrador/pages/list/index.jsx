@@ -57,7 +57,6 @@ const ListAdministrador = () => {
         {
             condition: condFetch,
             handleSuccess: (r)=>{
-                console.log(r.data)
                 //setAdmins(r.data.dataList)
                 setNext(r.data.next)
                 setTotalPage(r.data.totalPage)
