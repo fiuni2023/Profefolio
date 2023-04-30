@@ -162,7 +162,7 @@ namespace TestProfefolio.Account
             _personaServiceMock.Setup(x => x.FilterByRol(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()))
                 .Returns<int, int, string>((page, cantPerPage, role) =>
                 {
-                    var result = personas.Skip(page*cantPerPage).Take(cantPerPage);
+                    var result = personas.Skip(page * cantPerPage).Take(cantPerPage);
 
                     return Task.FromResult(result);
                 });
@@ -171,7 +171,7 @@ namespace TestProfefolio.Account
                 .ReturnsAsync(22);
 
             _mapperMock.Setup(x => x.Map<List<PersonaResultDTO>>(It.IsAny<List<Persona>>))
-                .Returns<List<Persona>>( p =>
+                .Returns<List<Persona>>(p =>
                 {
                     return p.ConvertAll(y => new PersonaResultDTO
                     {
@@ -185,7 +185,7 @@ namespace TestProfefolio.Account
                         DocumentoTipo = y.DocumentoTipo,
                         Documento = y.Documento
                     });
-                } );
+                });
 
 
             var result0 = await _accountController.Get(0);
@@ -247,7 +247,45 @@ namespace TestProfefolio.Account
             Assert.Equal($"No existe la pagina: {3} ", value1);
 
         }
+
+        [Fact]
+        public async Task Get_All_Simple_Ok()
+        {
+            _personaServiceMock.Setup(x => x.GetAllByRol(It.IsAny<string>()))
+                .ReturnsAsync(_entityParser.ToIEnumerable());
+
+            _mapperMock.Setup(x => x.Map<List<PersonaSimpleDTO>>(It.IsAny<List<Persona>>()))
+                .Returns<List<Persona>>(x =>
+                {
+                    var result = x.ConvertAll(y => new PersonaSimpleDTO
+                    {
+                        Id = y.Id,
+                        Nombre = y.Nombre
+                    });
+
+                    return result;
+                });
+            
+            var result = await _accountController.GetAll();
+
+            var resultOk = Assert.IsType<OkObjectResult>(result.Result);
+            var value = Assert.IsType<List<PersonaSimpleDTO>>(resultOk.Value);
+            Assert.NotNull(value);
+        }
+
+        [Fact]
+        public async Task Get_All_Simple_NotFound()
+        {
+            _personaServiceMock.Setup(x => x.GetAllByRol(It.IsAny<string>()))
+                .Throws<FileNotFoundException>();
+                
+            var result = await _accountController.GetAll();
+
+            Assert.IsType<NotFoundResult>(result.Result);
+            
+        }
+
     }
 
-    
+
 }
