@@ -226,9 +226,7 @@ public class AccountController : ControllerBase
 
         try
         {
-            var personaOld = await _personasService.FindById(id);
-
-            Console.WriteLine(personaOld.Id);
+            var personaOld = await _personasService.FindByIdAndRole(id, "Administrador de Colegio");
 
             if (await _personasService.ChangePassword(personaOld, dto.Password))
             {
