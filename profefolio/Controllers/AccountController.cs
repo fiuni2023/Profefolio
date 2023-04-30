@@ -175,9 +175,9 @@ public class AccountController : ControllerBase
 
         try
         {
-            var persona = await _personasService.FindById(id);
+            var persona = await _personasService.FindByIdAndRole(id, "Administrador de colegio");
 
-            var userId = User.Identity.GetUserId();
+            var userId = User.Identity.Name;
 
             var existMail = await _personasService.ExistMail(dto.Email);
 
