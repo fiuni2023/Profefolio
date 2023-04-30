@@ -81,9 +81,12 @@ public class PersonasService : IPersona
             throw new BadHttpRequestException("El email al cual quiere registrarse ya existe");
         }
 
-        if (await ExistDoc(user))
+        if (!(await _userManager.IsInRoleAsync(user, "Administrador de Colegio")))
         {
-            throw new BadHttpRequestException($"El usuario con doc {user.Documento} ya existe");
+            if (await ExistDoc(user))
+            {
+                throw new BadHttpRequestException($"Ya existe el user con el CI {user.Documento}");
+            }
         }
 
         await _userManager.CreateAsync(user, password);
@@ -95,6 +98,30 @@ public class PersonasService : IPersona
 
     public async Task<Persona> EditProfile(Persona p)
     {
+        var personaDb = await
+             _userManager.Users
+             .FirstOrDefaultAsync(o => !o.Deleted && o.Id.Equals(p.Id));
+
+        if (personaDb == null)
+        {
+            throw new FileNotFoundException();
+        }
+
+        if(! await _userManager.IsInRoleAsync(p, "Administrador de Colegio"))
+        {
+            var existOtherMail = await _userManager.Users
+                .Where(x => !x.Deleted)
+                .Where(x => !x.Id.Equals(p.Id))
+                .Where(x => x.Documento.Equals(p.Documento) && x.DocumentoTipo.Equals(p.DocumentoTipo))
+                .CountAsync() > 0;
+
+                if(existOtherMail)
+                {
+                    throw new BadHttpRequestException($"El user con el Id {p.Id} ya existe");
+                }
+        }
+
+        
         await _userManager.UpdateAsync(p);
         var query = await _userManager.Users
             .Where(x => !x.Deleted && x.Email.Equals(p.Email))
@@ -192,7 +219,10 @@ public class PersonasService : IPersona
 
     public async Task<Persona> FindByEmail(string email = "")
     {
-        return await _userManager.Users.FirstOrDefaultAsync(u => !u.Deleted && email.Equals(u.Email));
+        return await _userManager
+                .Users
+                .Include(a => a.Colegio)
+                .FirstOrDefaultAsync(u => !u.Deleted && email.Equals(u.Email));
     }
 
 
@@ -207,14 +237,57 @@ public class PersonasService : IPersona
             .Where(p => !p.Deleted && p.Id.Equals(id))
             .FirstOrDefaultAsync();
 
-        if(null == query || !(await _userManager.IsInRoleAsync(query, role)))
+        if (null == query || !(await _userManager.IsInRoleAsync(query, role)))
         {
             throw new FileNotFoundException();
         }
 
         return query;
 
-        
 
+
+    }
+
+    public async Task<bool> DeleteByUserAndRole(string id, string role)
+    {
+        var query = await _userManager.Users
+            .Where(p => !p.Deleted && p.Id.Equals(id))
+            .FirstOrDefaultAsync();
+
+
+        if (query == null || (!(await _userManager.IsInRoleAsync(query, role))))
+        {
+            return false;
+        }
+        query.Modified = DateTime.Now;
+        query.Deleted = true;
+        query.Email = $"deleted.{query.Id}.{query.Email}";
+        query.UserName = query.Email;
+
+        await _userManager.UpdateAsync(query);
+
+
+        return true;
+    }
+
+    public async Task<Persona?> FindByDocumentoAndRole(string documento = "",string DocumentoTipo = "", string role = "")
+    {
+        var persona = await _userManager.Users
+            .Where(a => !a.Deleted)
+            .Where(a => a.Documento != null)
+            .Where(a => a.Documento.Equals(documento))
+            .Where(a => a.DocumentoTipo != null)
+            .Where(a => a.DocumentoTipo.Equals(DocumentoTipo))
+            .FirstOrDefaultAsync();
+        if (persona != null)
+        {
+            var tieneRol = await _userManager.IsInRoleAsync(persona, role);
+            if (tieneRol)
+            {
+                return persona;
+            }
+        }
+
+        return null;
     }
 }

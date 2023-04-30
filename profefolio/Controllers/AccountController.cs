@@ -9,7 +9,7 @@ using profefolio.Models.DTOs.Persona;
 using profefolio.Models.DTOs.Colegio;
 using profefolio.Models.Entities;
 using profefolio.Repository;
-
+using profefolio.Helpers;
 
 namespace profefolio.Controllers;
 
@@ -21,7 +21,7 @@ public class AccountController : ControllerBase
     private readonly IRol _rolService;
     private readonly IColegio _colegioService;
     private const string RolAdmin = "Administrador de Colegio";
-    private const int CantPerPage = 20;
+    private static int CantPerPage => Constantes.CANT_ITEMS_POR_PAGE;
 
 
 
@@ -93,7 +93,7 @@ public class AccountController : ControllerBase
 
         var result = new DataListDTO<PersonaResultDTO>();
 
-        if (page >= cantPages)
+        if (page >= cantPages || page < 0)
         {
             return BadRequest($"No existe la pagina: {page} ");
         }
@@ -149,7 +149,7 @@ public class AccountController : ControllerBase
     [Route("{id}")]
     public async Task<ActionResult> Delete(string id)
     {
-        return await _personasService.DeleteUser(id) ? Ok() : NotFound();
+        return await _personasService.DeleteByUserAndRole(id, RolAdmin) ? Ok() : NotFound();
     }
 
 

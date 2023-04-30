@@ -7,31 +7,36 @@ using profefolio.Models.Entities;
 using profefolio.Repository;
 using Microsoft.AspNet.Identity;
 using System.Security.Claims;
-
+using profefolio.Helpers;
+using profefolio.Models.DTOs.ColegioProfesor;
 namespace profefolio.Controllers
 {
     [ApiController]
-    [Authorize(Roles = "Administrador de Colegio,Profesor")]
     [Route("api/[controller]")]
     public class ProfesorController : ControllerBase
     {
         private readonly IMapper _mapper;
         private readonly IPersona _personasService;
         private readonly IRol _rolService;
-        private const int CantPorPage = 20;
+        private readonly IColegioProfesor _colegioProfesor;
+        private static int CantPorPage => Constantes.CANT_ITEMS_POR_PAGE;
+        private readonly IProfesor _profesorService;
 
         private const string PROFESOR_ROLE = "Profesor";
 
 
-        public ProfesorController(IMapper mapper, IPersona personasService, IRol rolService)
+        public ProfesorController(IMapper mapper, IPersona personasService, IRol rolService, IColegioProfesor colProf, IProfesor profesorService)
         {
             _mapper = mapper;
             _personasService = personasService;
             _rolService = rolService;
+            _colegioProfesor = colProf;
+            _profesorService = profesorService;
         }
 
 
         [HttpGet("page/{page:int}")]
+        [Authorize(Roles = "Administrador de Colegio")]
         public async Task<ActionResult<DataListDTO<PersonaResultDTO>>> Get(int page)
         {
             if (page < 0)
@@ -62,13 +67,30 @@ namespace profefolio.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "Administrador de Colegio,Profesor")]
         public async Task<ActionResult<PersonaResultDTO>> Get(string id)
         {
             if (id.Length > 0)
             {
                 try
                 {
-                    var profesor = await _personasService.FindById(id);
+                    var adminEmail = User.FindFirstValue(ClaimTypes.Name);
+                    var userRole = User.FindFirstValue(ClaimTypes.Role);
+                    var profesor = await _personasService.FindByIdAndRole(id, PROFESOR_ROLE);
+
+
+                    if (profesor != null && PROFESOR_ROLE.Equals(userRole) && adminEmail.Equals(profesor.Email))
+                    {
+                        /* se verifica si el usuario es un profesor y si es asi se verifica su email con el profesor 
+                            obtenido y si son iguales se retorna el valor*/
+                        return Ok(_mapper.Map<PersonaResultDTO>(profesor));
+                    }
+                    else if (profesor == null || !(await _colegioProfesor.Exist(profesor.Id, adminEmail)))
+                    {
+                        //verificar que el profesor exista en la relacion colegioProfesor por medio de su id y el email del administrador
+                        return NotFound("No se encontro al profesor");
+                    }
+
                     return Ok(_mapper.Map<PersonaResultDTO>(profesor));
                 }
                 catch (FileNotFoundException e)
@@ -88,8 +110,41 @@ namespace profefolio.Controllers
             }
         }
 
+
+        [HttpGet("MisProfesores/")]
+        [Authorize(Roles = "Administrador de Colegio")]
+        public async Task<ActionResult<List<PersonaSimpleDTO>>> GetAllProfesorOfAdmin()
+        {
+
+            try
+            {
+                var adminEmail = User.FindFirstValue(ClaimTypes.Name);
+
+                var admin = await _personasService.FindByEmail(adminEmail);
+                if (admin != null && admin.Colegio != null)
+                {
+                    var profesores = await _profesorService.FindAllProfesoresOfColegio(admin.Colegio.Id);
+                    if (profesores != null)
+                    {
+                        return Ok(_mapper.Map<List<PersonaSimpleDTO>>(profesores));
+                    }
+                    return BadRequest("Error al obtener los profesores");
+                }
+                return BadRequest("Problemas al comprobar sus credenciales");
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return BadRequest("Error inesperado durante la busqueda");
+            }
+
+        }
+
+
         [HttpPost]
-        public async Task<ActionResult<PersonaResultDTO>> Post([FromBody] PersonaDTO dto)
+        [Authorize(Roles = "Administrador de Colegio")]
+        public async Task<ActionResult<ColegioProfesorResultOfCreatedDTO>> Post([FromBody] PersonaDTO dto)
         {
 
             if (!ModelState.IsValid)
@@ -128,13 +183,33 @@ namespace profefolio.Controllers
             entity.Deleted = false;
             entity.CreatedBy = name;
 
+            if (await _personasService.ExistMail(dto.Email))
+            {
+                return BadRequest("El email al cual quiere registrarse ya existe");
+            }
+
             try
             {
-                var saved = await _personasService.CreateUser(entity, dto.Password);
+                var adminEmail = User.FindFirstValue(ClaimTypes.Name);
+                var admin = await _personasService.FindByEmail(adminEmail);
 
-                if (await _rolService.AsignToUser(PROFESOR_ROLE, saved))
+                if (admin == null || admin.Colegio == null)
                 {
-                    return Ok(_mapper.Map<PersonaResultDTO>(saved));
+                    return BadRequest("Hay problemas con sus credenciales");
+                }
+                else
+                {
+                    var result = await _profesorService.Add(entity, dto.Password, PROFESOR_ROLE, admin.Colegio.Id);
+
+
+                    if (result.resultado != null)
+                    {
+                        return Ok(result.resultado);
+                    }
+                    if (result.ex != null)
+                    {
+                        return BadRequest(result.ex.Message);
+                    }
                 }
             }
             catch (BadHttpRequestException e)
@@ -147,6 +222,10 @@ namespace profefolio.Controllers
                 Console.WriteLine(e.Message);
                 return BadRequest("Formato invalido de constraseña. Debe contener mayusculas, minusculas, numeros y caracteres.");
             }
+            catch(FileNotFoundException e)
+            {
+                return NotFound();
+            }
             catch (Exception e)
             {
                 Console.WriteLine(e);
@@ -158,6 +237,7 @@ namespace profefolio.Controllers
 
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Administrador de Colegio")]
         public async Task<ActionResult<PersonaResultDTO>> Put(string id, [FromBody] PersonaEditDTO dto)
         {
             if (ModelState.IsValid)
@@ -180,20 +260,25 @@ namespace profefolio.Controllers
                 }
                 try
                 {
-                    //if (dto.Password == null) return BadRequest("Password es requerido");
 
-                    var persona = await _personasService.FindById(id);
+                    var persona = await _personasService.FindByIdAndRole(id, PROFESOR_ROLE);
+                    if (persona == null)
+                    {
+                        return NotFound("No se encontro el profesor");
+                    }
+                    var adminEmail = User.FindFirstValue(ClaimTypes.Name);
 
-                    var name = User.FindFirstValue(ClaimTypes.Name);
-
+                    // se verifica que el profesor sea del colegio del administrador
+                    if (!(await _colegioProfesor.Exist(id, adminEmail)))
+                    {
+                        return BadRequest("No pertenece a su colegio");
+                    }
                     if ((!persona.Email.Equals(dto.Email)) && await _personasService.ExistMail(dto.Email))
                     {
                         return BadRequest("El email nuevo que queres actualizar ya existe");
                     }
-                    
-                    MapOldToNew(persona, dto, name);
-                    //var personaNew = _mapper.Map<Persona>(dto);
 
+                    MapOldToNew(persona, dto, adminEmail);
 
                     var query = await _personasService.EditProfile(persona);
 
@@ -226,6 +311,7 @@ namespace profefolio.Controllers
 
         [HttpPut]
         [Route("change/password/{id}")]
+        [Authorize(Roles = "Administrador de Colegio,Profesor")]
         public async Task<ActionResult> ChangePassword(string id, [FromBody] Models.DTOs.Auth.ChangePasswordDTO dto)
         {
             if (!ModelState.IsValid)
@@ -273,7 +359,8 @@ namespace profefolio.Controllers
         {
             try
             {
-                bool result = await _personasService.DeleteUser(id);
+
+                bool result = await _personasService.DeleteByUserAndRole(id, PROFESOR_ROLE);
                 return result ? Ok() : NotFound();
             }
             catch (Exception e)

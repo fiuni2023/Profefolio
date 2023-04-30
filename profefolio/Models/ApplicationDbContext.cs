@@ -136,18 +136,40 @@ public class ApplicationDbContext : IdentityDbContext<Persona>
         .WithMany(p => p.ColegiosAlumnos)
         .HasForeignKey(p => p.PersonaId);
 
+        //Definimos la relacion entre Clase y Listas de Materias
+        modelBuilder.Entity<Clase>()
+            .HasMany(c => c.MateriaListas)
+            .WithOne(c => c.Clase)
+            .HasForeignKey(c => c.ClaseId)
+            .HasPrincipalKey(c => c.Id);
+
+
+        
+        /* Relacion muchos a muchos entre clases y alumnoscolegios */
+
+        // definicio de primary key de la tabla ClaseAlumnosColegio
+        modelBuilder.Entity<ClasesAlumnosColegio>().HasKey(ca => new { ca.Id });
+
+        //definimos el foreign key de Clase
+        modelBuilder.Entity<ClasesAlumnosColegio>()
+        .HasOne<Clase>(ca => ca.Clase)
+        .WithMany(c => c.ClasesAlumnosColegios)
+        .HasForeignKey(c => c.ClaseId);
+
+        //definimos el foreign key de ColegiosAlumnos
+        modelBuilder.Entity<ClasesAlumnosColegio>()
+        .HasOne<ColegiosAlumnos>(p => p.ColegiosAlumnos)
+        .WithMany(p => p.ClasesAlumnosColegios)
+        .HasForeignKey(p => p.ColegiosAlumnosId);
     }
 
 
     public DbSet<Materia> Materias { get; set; }
-    public DbSet<Colegio> Colegios
-    {
-        get;
-        set;
-    }
-
+    public DbSet<Colegio> Colegios{ get;set; }
     public DbSet<Ciclo> Ciclos { get; set; }
     public DbSet<Clase> Clases { get; set; }
     public DbSet<ColegioProfesor> ColegiosProfesors { get; set; }
     public DbSet<ColegiosAlumnos> ColegiosAlumnos { get; set; }
+    public DbSet<MateriaLista> MateriaListas { get; set; }
+    public DbSet<ClasesAlumnosColegio> ClasesAlumnosColegios { get; set; }
 }

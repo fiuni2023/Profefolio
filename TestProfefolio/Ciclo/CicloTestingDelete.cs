@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -49,9 +45,9 @@ namespace TestProfefolio.Ciclo
             };
 
 
-            service.Setup(c => c.FindById(id)).ReturnsAsync(ciclo);
+            service.Setup(c => c.FindById(It.IsAny<int>())).ReturnsAsync(ciclo);
 
-            service.Setup(s => s.Edit(ciclo)).Returns(ciclo);
+            service.Setup(s => s.Edit(It.IsAny<profefolio.Models.Entities.Ciclo>())).Returns(ciclo);
 
             service.Setup(a => a.Save()).Returns(Task.CompletedTask);
 
@@ -89,14 +85,12 @@ namespace TestProfefolio.Ciclo
             };
 
 
-            service.Setup(c => c.FindById(id));
+            service.Setup(c => c.FindById(It.IsAny<int>()));
 
             var result = await controller.Delete(id);
 
-            BadRequestObjectResult r = (BadRequestObjectResult)result;
-
-            Assert.Equal("Ciclo no encontrado", r.Value.ToString());
-            Assert.IsType<BadRequestObjectResult>(result);
+            var jsonResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.Equal("Ciclo no encontrado", jsonResult.Value);
         }
 
 
@@ -136,19 +130,18 @@ namespace TestProfefolio.Ciclo
             };
 
 
-            service.Setup(c => c.FindById(id)).ReturnsAsync(ciclo);
+            service.Setup(c => c.FindById(It.IsAny<int>())).ReturnsAsync(ciclo);
 
-            service.Setup(s => s.Edit(ciclo)).Returns(ciclo);
+            service.Setup(s => s.Edit(It.IsAny<profefolio.Models.Entities.Ciclo>())).Returns(ciclo);
 
             service.Setup(a => a.Save()).ThrowsAsync(new Exception());
 
 
             var result = await controller.Delete(id);
 
-            BadRequestObjectResult r = (BadRequestObjectResult)result;
-
-            Assert.Equal("Error durante la eliminacion", r.Value.ToString());
-            Assert.IsType<BadRequestObjectResult>(result);
+            var jsonResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.Equal("Error durante la eliminacion", jsonResult.Value);
+            
         }
     }
 

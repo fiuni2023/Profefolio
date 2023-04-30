@@ -44,8 +44,9 @@ public class ColegioMapper : Profile
             .ForMember(dest => dest.DocumentoTipo,
                         opt => opt.MapFrom(src => src.personas.DocumentoTipo))
             .ForMember(dest => dest.Direccion,
-                        opt => opt.MapFrom(src => src.personas.Direccion)
-            );
+                        opt => opt.MapFrom(src => src.personas.Direccion))
+            .ForMember(dest => dest.IdAdmin,
+                        opt => opt.MapFrom(src => src.personas == null || src.personas.Deleted ? null :  src.personas.Id));
 
         CreateMap<ColegioFullDTO, Colegio>()
             .ForMember(dest => dest.Id,

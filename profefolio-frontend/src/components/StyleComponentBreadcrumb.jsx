@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { BsArrowLeft } from 'react-icons/bs'
+import { HiArrowLeft } from 'react-icons/hi'
 import {Link } from "react-router-dom";
 
 const StyledNavAdmin = styled.div`
@@ -10,9 +10,9 @@ const StyledNavAdmin = styled.div`
     background-color: #FDF0D5;
 `;
 
-const StyledCustomIcon = styled(BsArrowLeft)`
+const StyledCustomIcon = styled(HiArrowLeft)`
     color: black !important;
-    font-size: 25px;
+    font-size: 20px;
 `;
 
 const StyledNButtonForSideAdmin = styled.div`
@@ -36,6 +36,7 @@ const StyledCustomSpan = styled.div`
     margin:0 0 10px 10px;  
     font-size:15px;
     font-weight: bold;
+    
 `;
 
 

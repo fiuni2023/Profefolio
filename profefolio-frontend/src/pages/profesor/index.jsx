@@ -13,6 +13,12 @@ import ListDetallesProfesor from './list/ListDetallesProfesor.jsx';
 
 import StyleComponentBreadcrumb from '../../components/StyleComponentBreadcrumb.jsx';
 
+import Tabla from '../../components/Tabla.jsx';
+import styled from 'styled-components';
+import { AiOutlinePlus } from 'react-icons/ai';
+import ModalProfesor from './components/ModalProfesor.jsx';
+import Paginations from '../../components/Paginations.jsx';
+
 
 
 
@@ -20,9 +26,10 @@ function Profesores() {
 
   const [profesores, setProfesores] = useState([]);
   
-  const [showModal, setShowModal] = useState(false);
-  const [id, setId] = useState(null);
+  const [selected_data, setSelectedData] = useState(null);
   const { getToken, cancan, verifyToken } = useGeneralContext();
+
+  const [fetch_data, setFetchData ] = useState([])
 
   const [page, setPage] = useState(0);
 
@@ -31,6 +38,8 @@ function Profesores() {
   const [next, setNext] = useState(false);
   const isLastPage = page === totalPage -1;
   const [currentPage, setCurrentPage] = useState(0);
+
+
 
   const nav = useNavigate()
 
@@ -60,21 +69,17 @@ function Profesores() {
           console.error(error);
         });
     }
-  }, [page, cancan, verifyToken, nav, getToken]);
+  }, [page, cancan, verifyToken, nav, getToken, fetch_data]);
 
-  const doFetch =(profesor) =>{
-    setProfesores([...profesores, profesor])
+ const doFetch =() =>{
+    setFetchData((before)=>[before])
 }
+ 
 
 
-const btndetalles = (id) => {
-  setShowModal(true);
-  setId(id);
-};
-
-const handleCloseModal = () => {
-  setShowModal(false);
-  setProfesores([]);
+const btndetalles = (data) => {
+  setSelectedData(data)
+  setShow(true);
 };
 
 
@@ -93,102 +98,78 @@ const handleCloseModal = () => {
 
   const [show, setShow] = useState(false);
 
+  const handleHide = () => {
+    setShow(false)
+    doFetch()
+    setSelectedData(null)
+  }
+
 
   return (
     <>
 
-      <div className="page">
+      <div>
       <StyleComponentBreadcrumb nombre="Profesor" />
 
         <PanelContainerBG>
 
 
           <div>
-            <table className={styles.CustomTable}>
-              <thead>
-                <tr>
-                  <th>CI</th>
-                  <th>Nombre</th>
-                  <th>Apellido</th>
-                  <th>Fecha de nacimiento</th>
-                  <th>Direccion</th>
-                  <th>Telefono</th>
-                 
-                </tr>
-              </thead>
-              <tbody > 
 
-              {profesores && profesores.length > 0 && profesores.map(profe => (
-            <tr  className={styles.tableRow} key={profe.id} onClick={() => btndetalles(profe.id)}>
-                    <td>{profe.documento}</td>
-                    <td>{profe.nombre}</td>
-                    <td>{profe.apellido}</td>
-                    <td>{(new Date(profe.nacimiento)).toLocaleDateString()}</td>
-                 
-                    <td>{profe.direccion}</td>
-                    <td>{profe.telefono}</td>
-                  
+          <Tabla
+              datosTabla={{
+                tituloTabla: 'Lista de profesores',
+                titulos: [
+                  { titulo: 'CI' },
+                  { titulo: 'Nombre' },
+                  { titulo: 'Apellido' },
+                  { titulo: 'Fecha de nacimiento' },
+                  { titulo: 'Dirección' },
+                  { titulo: 'Teléfono' },
+                ],
+                clickable: { action: btndetalles },
+                colorHeader: '',
+                tableWidth: '',
 
-                  </tr>
-                 
-                ))}
-              </tbody>
-            </table>
-           
-            <ListDetallesProfesor showModal={showModal} setShowModal={setShowModal} id={id}  triggerState={(profesor)=>{setProfesores(profesor)}} page={page} />
+            
 
+                filas: profesores.map((profe) => ({
+                  fila: profe,
+                  datos: [
+                    { dato: profe.documento },
+                    { dato: profe.nombre },
+                    { dato: profe.apellido },
+                    {
+                      dato: new Date(profe.nacimiento).toLocaleDateString(),
+                    },
+                    { dato: profe.direccion },
+                    { dato: profe.telefono },
+                  ],
+                })),
+              }}
+            />
+
+           <Paginations totalPage={totalPage} currentPage={currentPage} setCurrentPage={setCurrentPage} next={next} />
+            {/* <ListDetallesProfesor showModal={showModal} setShowModal={setShowModal} id={id}  triggerState={(profesor)=>{setProfesores(profesor)}} page={page} /> */}
+
+            <AddButton onClick={()=>setShow(true)}>
+              <AiOutlinePlus size={"35px"} />
+            </AddButton>
   
             <div >
 
            
         
       </div>
-
-             
-     
-             
-                        
-            <nav aria-label="Page navigation example">
-              <ul className="pagination justify-content-end">
-                <li className="page-item disabled">
-
-              
-                  <button className="btn page-item btn-sm" onClick={handlePrevClick} disabled={page === 0}>Anterior</button>
-                </li>
-                <li className="page-item">
-                 
-                <button className="btn page-item btn-sm" onClick={handleNextClick}  disabled={isLastPage} >
-                          Siguiente
-                        </button>
-                </li>
-              </ul>
-            </nav>
  
           </div>
+          
+          {/* <CreateModal title="My Modal" onHide={() => setShow(false)}  show={show}
+             triggerState={(profesor)=>{doFetch(profesor)}}/> */}
 
+          <ModalProfesor onHide={handleHide} selected_data={selected_data} show={show}  />
         </PanelContainerBG>
-        <footer>
-          <div className={styles.NButtonForSideA}>
-            <CreateModal title="My Modal" onClose={() => setShow(false)}  show={show}
-             triggerState={(profesor)=>{doFetch(profesor)}}>
-            </CreateModal>
-            
-          </div>
-
-     
-
-        </footer>
-
-
-
-
-
-
-
-
-
-
-
+        
 
       </div>
 
@@ -212,5 +193,24 @@ const handleCloseModal = () => {
     </>
   )
 }
+
+const AddButton = styled.button`
+    width: 50px;
+    height: 50px;
+    padding: 7px;
+    color: white;
+    background-color: #F0544F;
+    border-radius: 50%;
+    position: fixed;
+    bottom: 1.5%;
+    right: 1%;
+    cursor: pointer;
+    border: none;
+&:hover {
+    filter: brightness(0.95);
+&:active {
+    filter: brightness(0.8);
+  }
+`;
 
 export default Profesores

@@ -6,7 +6,8 @@ import axios from "axios";
 import { useGeneralContext } from "../../context/GeneralContext";
 import { toast } from 'react-hot-toast';
 import APILINK from '../../components/link';
-function ModalAgregarColegios({ onSubmit = () => { }, triggerState = () => { } }) {
+function ModalAgregarColegios(props) {
+    const { onSubmit = () => { }, triggerState = () => { }, currentPage}=props;
     const { getToken } = useGeneralContext()
     const [nombreColegio, setNombreColegio] = useState("");
     const [idAdmin, setIdAdmin] = useState(0);
@@ -68,8 +69,9 @@ function ModalAgregarColegios({ onSubmit = () => { }, triggerState = () => { } }
                         toast.error("Hubo un error")
                     }
                     else if (response.status >= 200) {
-                        triggerState(response.data)
-                        onSubmit(response.data)
+                        
+                       handleUpdate();
+                       
                         setNombreColegio("");
                         setIdAdmin("");
 
@@ -99,7 +101,26 @@ function ModalAgregarColegios({ onSubmit = () => { }, triggerState = () => { } }
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
-
+    const handleUpdate = () => {
+        axios.get(`${APILINK}/api/ColegiosFull/page/${currentPage}`, {
+          headers: {
+            Authorization: `Bearer ${getToken()}`,
+          }
+        })
+    
+          .then(response => {
+            triggerState(response.data.dataList);
+            onSubmit(response.data)
+        
+    
+    
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      }
+    
+    
     return (
         <>
             <button className={styles.buttonAgregar} onClick={handleShow}><BsFillPlusCircleFill className={styles.iconoAgregar} /></button>
@@ -109,7 +130,7 @@ function ModalAgregarColegios({ onSubmit = () => { }, triggerState = () => { } }
                 </Modal.Header>
                 <Modal.Body id={styles.modalContenido}>
                     <div>
-                        <form>
+                        <form onSubmit={handleSubmit}>
                             <label htmlFor="colegio-nombre" className={styles.labelForm}>Nombre</label><br />
                             <input required type="text" id={styles.inputColegio} name="colegio-nombre" onChange={event => handleNombreColegio(event)}></input><br />
                             
