@@ -42,6 +42,12 @@ namespace profefolio.Services
             throw new NotImplementedException();
         }
 
+        public async Task<int> CountNotAssigned(string user, int idClase)
+        {
+            var query = await this.FindAllNoAssignedToClaseByEmailAdminAndIdClase(user, idClase);
+            return query.Count();
+        }
+
         public void Dispose()
         {
             _context.Dispose();

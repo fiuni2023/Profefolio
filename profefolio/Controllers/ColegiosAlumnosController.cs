@@ -102,8 +102,9 @@ namespace profefolio.Controllers
 
         [HttpGet("NoAssignedAlumnos/{claseId:int}/page/{page:int}")]
         [Authorize(Roles = "Administrador de Colegio")]
-        public async Task<ActionResult<List<ColegioAlumnoToSelectDTO>>> GetAll(int claseId, int page)
+        public async Task<ActionResult<DataListDTO<AlumnoGetDTO>>> GetAll(int claseId, int page)
         {
+            
             var adminEmail = User.FindFirstValue(ClaimTypes.Name);
             try
             {
@@ -114,7 +115,25 @@ namespace profefolio.Controllers
                     BadRequest("No se encontraron alumnos para la clase");
                 }
 
-                var result = _mapper.Map<List<AlumnoGetDTO>>(listAlumnosColegio);
+                var cantTotal = await _cAlumnosService.CountNotAssigned(adminEmail, claseId);
+
+                var cantPages = (int)Math.Ceiling((double) listAlumnosColegio.Count() / CantPorPage);
+                
+                if(page < 0 || cantPages < page )
+                {
+                    return BadRequest($"No existe la pagina {page}");
+                }
+                    
+
+                var data = _mapper.Map<List<AlumnoGetDTO>>(listAlumnosColegio);
+
+                var result = new DataListDTO<AlumnoGetDTO>();
+
+                result.CantItems = listAlumnosColegio.Count();
+                result.CurrentPage = page;
+                result.DataList = data;
+                result.Next = result.CurrentPage + 1 < cantPages;
+                result.TotalPage = cantPages;              
                 return Ok(result);
 
             }
