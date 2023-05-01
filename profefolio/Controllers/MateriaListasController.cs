@@ -1,4 +1,6 @@
 ﻿using System.Collections.ObjectModel;
+using System.Security.Claims;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using profefolio.Models.DTOs.ClaseMateria;
@@ -16,13 +18,15 @@ namespace profefolio.Controllers
         private readonly IPersona _profesorService;
         private readonly IMateria _materiaService;
         private readonly IClase _claseService;
+        private readonly IMapper _mapper;
 
-        public MateriaListasController(IMateriaLista materiaListaService, IPersona profesorService, IMateria materiaService, IClase claseService)
+        public MateriaListasController(IMateriaLista materiaListaService, IPersona profesorService, IMateria materiaService, IClase claseService, IMapper mapper)
         {
             _materiaListaService = materiaListaService;
             _profesorService = profesorService;
             _materiaService = materiaService;
             _claseService = claseService;
+            _mapper = mapper;
         }
 
         [HttpPost]
@@ -162,6 +166,21 @@ namespace profefolio.Controllers
             }
         }
 
+        [HttpGet("ConProfesores/{idClase}")]
+        public async Task<ActionResult<List<ClaseMateriaResultDTO>>> GetMateriasConProfesores(int idClase){
+            var adminEmail = User.FindFirstValue(ClaimTypes.Name);
+            try
+            {
+                var materiaLista = _materiaListaService.FindByIdClase(idClase, adminEmail);
+                return Ok(_mapper.Map<ClaseMateriaResultDTO>(materiaLista));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"{e}");
+                return BadRequest("Sucedio un error inesperado durante la busqueda.");
+            }
+            
+        }
     }
 
 
