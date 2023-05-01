@@ -95,7 +95,7 @@ const TagProfesor = memo(({ id, nombre, state = "new", onClick = () => { } }) =>
 })
 
 
-
+  
 const TagProfesorSeleccionado=memo(({ profesorId, profesores ,onClick = () => { }}) =>{
     const profesor = profesores.find((profesor) => profesor.id === profesorId);
     return <>
@@ -152,7 +152,7 @@ const ListItem = memo(({ index, idMateria, nombre, profesores = [] ,profeProfeso
     const seleccionarProfesor = (e) => {
         setIdProfesorSeleccionado(e.target.value);
       };
-      
+
 
 
     const handleSelectOpenProfesores = () => {
@@ -192,33 +192,40 @@ const ListItem = memo(({ index, idMateria, nombre, profesores = [] ,profeProfeso
   </TagNombreSelect>
 )}
 
-{map(profeProfesor, (e, i) => (
-  
+
+{/*{map(profeProfesor, (e, i) => (
     <TagProfesor
       id={e.id}
       nombre={`${e.nombre}${e.status}`}
       state={e.status}
       onClick={() => setIdProfesorSeleccionado(e.id)}
     />
-
+  
 
     
+))}*/}
+
+<div>
+
+
+{profeProfesor.map((profesor) => (
+  (idProfesorSeleccionado && profesor.id === idProfesorSeleccionado) && (
+    <TagProfesor
+      key={profesor.id}
+      id={profesor.id}
+      nombre={`${profesor.nombre}${profesor.status}`}
+      state={profesor.status}
+      onClick={() => setIdProfesorSeleccionado(profesor.id)}
+    />
+  )
 ))}
 
 
 
-
-<TagNombreSelect>
-
-{idProfesorSeleccionado && (
-        <div>{profeProfesor.find((profesor) => profesor.id === idProfesorSeleccionado).nombre}
-        </div>
-        )}
-        </TagNombreSelect>
+</div>
 
 
-
-  {/* Este es un comentario en React 
+  {/* Este es un comentario en React
          {map(profesores, (e, i) => <TagProfesor key={i} id={e.id} nombre={`${e.nombre}${e.status}`} state={e.status} onClick={() => {
                         setStatusProfesorMateria(idMateria, e.id, e.status === "new" ? "reload" : "new");
                     }
