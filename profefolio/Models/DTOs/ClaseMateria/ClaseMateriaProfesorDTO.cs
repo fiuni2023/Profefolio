@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace profefolio.Models.DTOs.ClaseMateria
 {
-    public class ClaseMateriaProfesor
+    public class ClaseMateriaProfesorDTO
     {
         public int Id { get; set; }
         public string Nombre { get; set; }
