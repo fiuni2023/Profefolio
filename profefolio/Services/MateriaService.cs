@@ -94,9 +94,8 @@ public class MateriaService : IMateria
     public async Task<List<Materia>> FindAllUnsignedMaterias(int idClase)
     {
         return await _dbContext.Materias
-                .Where(m => !m.Deleted
-                    && m.MateriaListas.Where(ml => ml.ClaseId != idClase)
-                    .Count() == 0)
+                .Where(m => (!m.Deleted && !m.MateriaListas.Any()) || (!m.Deleted
+                    && m.MateriaListas.Any(ml => ml.ClaseId != idClase)))
                 .ToListAsync();
     }
 }
