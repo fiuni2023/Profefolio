@@ -63,7 +63,7 @@ public class AlumnosController : ControllerBase
             var adminColegio = await _personasService.FindByEmail(adminEmail);
 
             // verificar que no exista el alumno
-            var alumno = await _personasService.FindByDocumentoAndRole(dto.Documento, "Alumno");
+            var alumno = await _personasService.FindByDocumentoAndRole(dto.Documento, dto.DocumentoTipo, "Alumno");
             if (alumno != null)
             {
                 // si ya existe el alumno creado
@@ -183,15 +183,13 @@ public class AlumnosController : ControllerBase
         {
             
             var persona = await _personasService.FindByIdAndRole(id, "Alumno");
+            var alumno = await _personasService.FindByDocumentoAndRole(dto.Documento, dto.DocumentoTipo, "Alumno");
 
-            var alumno = await _personasService.FindByDocumentoAndRole(dto.Documento, "Alumno");
-
-            if (alumno != null && !alumno.Id.Equals(persona.Id))
+            if ((alumno != null) && !(alumno.Id.Equals(persona.Id)))
             {
-                // si ya existe el alumno creado
-                return new CustomStatusResult<AlumnoGetDTO>(230, _mapper.Map<AlumnoGetDTO>(alumno));
+                return BadRequest("CI en uso");
+            
             }
-
             var userId = User.Identity.Name;
 
             var existMail = await _personasService.ExistMail(dto.Email);

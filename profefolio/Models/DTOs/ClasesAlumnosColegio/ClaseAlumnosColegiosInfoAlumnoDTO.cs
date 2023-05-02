@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace profefolio.Models.DTOs.ClasesAlumnosColegio
 {
-    public class ClaseAlumnosColegiosInfoAlumnoDTO
+    public class ClaseAlumnosColegiosInfoAlumnoDTO : DataDTO
     {
-        public int Id { get; set; }
+        public int ClaseColegioAlumnoId { get; set; }
         public string Nombre { get; set; }
         public string Apellido { get; set; }
         public string Documento { get; set; }
