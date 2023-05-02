@@ -130,6 +130,7 @@ namespace profefolio.Services
             }
             var clase = await _db.Clases
                 .Include(c => c.MateriaListas)
+                .Include(c => c.MateriaListas)
                 .Where(c => !c.Deleted)
                 .Where(c => c.Id == idClase)
                 .FirstOrDefaultAsync();
@@ -348,6 +349,48 @@ namespace profefolio.Services
 
             }
             return true;
+        }
+
+        public async Task<List<MateriaLista>> FindByIdClaseAndUser(int idClase, string userEmail = "", string role = "")
+        {
+            // obtener colegio del usuario dependiendo del role
+
+            // si es admin validar si la clase es del colegio
+
+            // si es profesor verificar que el prof enseñe en la clase
+
+            // si no hay errores retornar la lista de materias de la clase
+
+            if ("Administrador de Colegio".Equals(role))
+            {
+                var colegio = await _db.Colegios.FirstOrDefaultAsync(a => !a.Deleted && userEmail.Equals(a.personas.Email));
+                if (colegio == null)
+                {
+                    throw new FileNotFoundException("No es Administrador del Colegio");
+                }
+
+                return await _db.MateriaListas
+                            .Where(a => !a.Deleted
+                            && a.Clase.ColegioId == colegio.Id
+                            && a.ClaseId == idClase)
+                            .Include(a => a.Materia)
+                            .Include(a => a.Profesor)
+                            .ToListAsync();
+            }
+
+
+            if ("Profesor".Equals(role))
+            {
+                return await _db.MateriaListas
+                            .Where(a => !a.Deleted
+                            && userEmail.Equals(a.Profesor.Email)
+                            && a.ClaseId == idClase)
+                            .Include(a => a.Materia)
+                            .Include(a => a.Profesor)
+                            .ToListAsync();
+            }
+
+            throw new BadHttpRequestException("El usuario no tienen acceso");
         }
     }
 }
