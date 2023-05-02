@@ -95,48 +95,6 @@ const TagProfesor = memo(({ id, nombre, state = "new", onClick = () => { } }) =>
 })
 
 
-  
-const TagProfesorSeleccionado=memo(({ profesorId, profesores ,onClick = () => { }}) =>{
-    const profesor = profesores.find((profesor) => profesor.id === profesorId);
-    return <>
-
-        <TagTeacher className={`tag-teacher-${unicId}`}>
-        <Item className='item-nombre-profe'>{profesor && profesor.nombre}</Item>
-
-        </TagTeacher>
-
-        <style jsx="true">{
-            `
-            .item-nombre-profe{
-                padding-left: 5px;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-                max-width: calc(10rem - 24px);
-                font-size: 15px;
-                display: flex;
-                align-items: center;
-            }
-            .tag-teacher-${unicId}{
-                background-color: #F3E6AE;
-                padding: 0.2rem;
-                max-width: 10rem;
-                width: fit-content;+
-                height: 24px;
-                display: flex;
-                align-items: center;
-            }
-            .btn-cancelar{
-                background-color: red;
-                min-width: 1rem;
-            }
-        `
-        }</style>
-
-      
-      </>
-  })
-  
 
   
 
@@ -165,12 +123,21 @@ const ListItem = memo(({ index, idMateria, nombre, profesores = [] ,profeProfeso
 
 const seleccionarProfesor = (event) => {
   const idProfesorSeleccionado = event.target.value;
+
+  console.log('idProfesorSeleccionado',idProfesorSeleccionado);
   setProfesoresSeleccionados((prevSeleccionados) =>
     prevSeleccionados.includes(idProfesorSeleccionado)
       ? prevSeleccionados.filter((id) => id !== idProfesorSeleccionado)
       : [...prevSeleccionados, idProfesorSeleccionado]
   );
+
+  console.log('profesoresSeleccionados',profesoresSeleccionados);
+
 };
+
+
+
+  
 
      
     
@@ -289,6 +256,7 @@ const MateriasDeClase = () => {
 
     const [profeProfesor, setProfeProfesor] = useState([]);
 
+    const [materiaProfesor, setMateriaProfesor] = useState([]);
     const { getListaMaterias, setStatusMateria, getClaseSelectedId, addMateriaToList, setProfesoresOptions } = useClaseContext();
     const { getToken } = useGeneralContext();
 
@@ -320,7 +288,30 @@ useMemo(() => {
   }, [getToken]);
   
 
-    
+ //Crear materia profesor
+ 
+ const handleCrearMateriaProfesor = async () => {
+    try {
+      const response = await ClassesService.createMateriaProfesor(getToken(), {
+        idProfesores: profesoresSeleccionados,
+        idMateria: optionSelected,
+        idClase: getClaseSelectedId()
+      });
+
+
+      console.log("Datos recibidos de la API:", response.data);
+      setMateriaProfesor(response.data);
+    } catch (e) {
+  
+      console.error("Error al llamar a la API:", e);
+      alert("Error al llamar a la API:", e);
+    }
+  };
+  
+  
+  
+  
+
 
    useMemo(() => {
         //console.log("obtenido profes..")
@@ -439,7 +430,19 @@ useMemo(() => {
                         ))}
                     </Select>
                     <div style={{ textAlign: 'right' }}>
-                        <TextButton buttonType={'save-changes'} enabled={materiasList?.enabled ?? false} onClick={(e) => { "enviando..." }} />
+                      {/*   <TextButton buttonType={'save-changes'} enabled={materiasList?.enabled ?? false} onClick={(e) => { "enviando..." } handleCrearMateriaProfesor()} />
+                     */}
+                                    <TextButton 
+                        buttonType={'save-changes'} 
+                        enabled={materiasList?.enabled ?? false} 
+                        onClick={(e) => { 
+                    e.preventDefault(); // prevent the default behavior of the onClick event
+                    handleCrearMateriaProfesor(); 
+                    console.log("enviando..."); // or alert("enviando...") to display the message to the user
+                }} 
+                />
+
+                  
                     </div>
                 </SForm>
             </ScrollTable>
