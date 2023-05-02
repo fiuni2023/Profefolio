@@ -166,13 +166,23 @@ namespace profefolio.Controllers
             }
         }
 
-        [HttpGet("ConProfesores/{idClase}")]
+        /*
+        * No tocar la ruta, la cambie porque el default era demasiado largo
+        */
+        [HttpGet("/api/lista/materias/ConProfesores/{idClase}")]
         public async Task<ActionResult<List<ClaseMateriaResultDTO>>> GetMateriasConProfesores(int idClase){
-            var adminEmail = User.FindFirstValue(ClaimTypes.Name);
+            var userEmail = User.FindFirstValue(ClaimTypes.Name);
+            var userRole = User.FindFirstValue(ClaimTypes.Name);
             try
             {
-                var materiaLista = _materiaListaService.FindByIdClase(idClase, adminEmail);
+                var materiaLista = await _materiaListaService.FindByIdClaseAndUser(idClase, userEmail, userRole);
                 return Ok(_mapper.Map<ClaseMateriaResultDTO>(materiaLista));
+            }
+            catch(FileNotFoundException e){
+                return NotFound(e);
+            }
+            catch(BadHttpRequestException e){
+                return BadRequest(e);
             }
             catch (Exception e)
             {
