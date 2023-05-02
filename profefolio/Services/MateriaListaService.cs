@@ -353,13 +353,6 @@ namespace profefolio.Services
 
         public async Task<List<MateriaLista>> FindByIdClaseAndUser(int idClase, string userEmail = "", string role = "")
         {
-            // obtener colegio del usuario dependiendo del role
-
-            // si es admin validar si la clase es del colegio
-
-            // si es profesor verificar que el prof enseñe en la clase
-
-            // si no hay errores retornar la lista de materias de la clase
 
             if ("Administrador de Colegio".Equals(role))
             {

@@ -170,18 +170,36 @@ namespace profefolio.Controllers
         * No tocar la ruta, la cambie porque el default era demasiado largo
         */
         [HttpGet("/api/lista/materias/ConProfesores/{idClase}")]
-        public async Task<ActionResult<List<ClaseMateriaResultDTO>>> GetMateriasConProfesores(int idClase){
-            var userEmail = User.FindFirstValue(ClaimTypes.Name);
-            var userRole = User.FindFirstValue(ClaimTypes.Name);
+        public async Task<ActionResult<List<ClaseMateriaResultDTO>>> GetMateriasConProfesores(int idClase)
+        {
             try
             {
+                var userEmail = User.FindFirstValue(ClaimTypes.Name);
+                var userRole = User.FindFirstValue(ClaimTypes.Role);
+                
                 var materiaLista = await _materiaListaService.FindByIdClaseAndUser(idClase, userEmail, userRole);
-                return Ok(_mapper.Map<ClaseMateriaResultDTO>(materiaLista));
+
+                var dto = _mapper.Map<List<ClaseMateriaResultDTO>>(materiaLista);
+                
+                //se carga los profesores a cada materia de la lista
+                materiaLista.ForEach(a =>
+                {
+                    var value = dto.FirstOrDefault(b => b.Id == a.Id);
+                    if (value == null)
+                    {
+                        throw new FileNotFoundException("Error durante la obtencion de los Profesores de las Materias");
+                    }
+                    var prof = _mapper.Map<ClaseMateriaProfesorDTO>(a.Profesor);
+                    value.Profesores.Add(prof);
+                });
+                return Ok(dto);
             }
-            catch(FileNotFoundException e){
+            catch (FileNotFoundException e)
+            {
                 return NotFound(e);
             }
-            catch(BadHttpRequestException e){
+            catch (BadHttpRequestException e)
+            {
                 return BadRequest(e);
             }
             catch (Exception e)
@@ -189,7 +207,7 @@ namespace profefolio.Controllers
                 Console.WriteLine($"{e}");
                 return BadRequest("Sucedio un error inesperado durante la busqueda.");
             }
-            
+
         }
     }
 

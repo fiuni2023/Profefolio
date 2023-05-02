@@ -28,11 +28,7 @@ namespace profefolio.Helpers.Mappers
                 .ForMember(dest => dest.Nombre,
                     opt => opt.MapFrom(v => v.Materia.Nombre_Materia))
                 .ForMember(dest => dest.Profesores,
-                    opt => opt.MapFrom(v => new ClaseMateriaProfesorDTO() {
-                        Id = v.Profesor.Id,
-                        Nombre = v.Profesor.Nombre,
-                        Apellido = v.Profesor.Apellido
-                    }));
+                    opt => opt.MapFrom(v => new List<ClaseMateriaProfesorDTO>()));
         }
     }
 }
