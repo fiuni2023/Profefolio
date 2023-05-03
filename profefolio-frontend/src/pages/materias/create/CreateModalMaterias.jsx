@@ -8,6 +8,8 @@ import { toast } from 'react-hot-toast';
 import styles from  './Modal.module.css';
 import APILINK from '../../../components/link.js';
 
+//import Modal from '../../../components/Modal';
+
 
 function CreateModalMaterias({onSubmit = ()=>{}, triggerState = () => {}}) {
 

@@ -84,13 +84,13 @@ namespace TestProfefolio.Clase
                 PersonaId = "123456789"
             };
 
-            claseService.Setup(c => c.FindById(id)).ReturnsAsync(clase);
+            claseService.Setup(c => c.FindById(It.IsAny<int>())).ReturnsAsync(clase);
 
-            cicloService.Setup(c => c.FindById(dto.CicloId)).ReturnsAsync(ciclo);
+            cicloService.Setup(c => c.FindById(It.IsAny<int>())).ReturnsAsync(ciclo);
 
-            colegioService.Setup(c => c.FindById(dto.ColegioId)).ReturnsAsync(colegio);
+            colegioService.Setup(c => c.FindById(It.IsAny<int>())).ReturnsAsync(colegio);
 
-            claseService.Setup(c => c.Edit(clase)).Returns(clase);
+            claseService.Setup(c => c.Edit(It.IsAny<profefolio.Models.Entities.Clase>())).Returns(clase);
 
             claseService.Setup(c => c.Save()).Returns(Task.CompletedTask);
 
@@ -224,7 +224,7 @@ namespace TestProfefolio.Clase
                 ColegioId = 1
             };
 
-            claseService.Setup(c => c.FindById(id));
+            claseService.Setup(c => c.FindById(It.IsAny<int>()));
 
             var result = await controller.Put(id, dto);
 
@@ -281,9 +281,9 @@ namespace TestProfefolio.Clase
                 CreatedBy = "juan.perez@gmail.com"
             };
 
-            claseService.Setup(c => c.FindById(id)).ReturnsAsync(clase);
+            claseService.Setup(c => c.FindById(It.IsAny<int>())).ReturnsAsync(clase);
 
-            cicloService.Setup(c => c.FindById(dto.CicloId));
+            cicloService.Setup(c => c.FindById(It.IsAny<int>()));
 
             var result = await controller.Put(id, dto);
 
@@ -377,11 +377,11 @@ namespace TestProfefolio.Clase
                 PersonaId = "123456789"
             };
 
-            claseService.Setup(c => c.FindById(id)).ReturnsAsync(clase);
+            claseService.Setup(c => c.FindById(It.IsAny<int>())).ReturnsAsync(clase);
 
-            cicloService.Setup(c => c.FindById(dto.CicloId)).ReturnsAsync(ciclo);;
+            cicloService.Setup(c => c.FindById(It.IsAny<int>())).ReturnsAsync(ciclo);;
 
-            colegioService.Setup(c => c.FindById(dto.ColegioId));
+            colegioService.Setup(c => c.FindById(It.IsAny<int>()));
 
             var result = await controller.Put(id, dto);
 
@@ -452,13 +452,13 @@ namespace TestProfefolio.Clase
                 PersonaId = "123456789"
             };
 
-            claseService.Setup(c => c.FindById(id)).ReturnsAsync(clase);
+            claseService.Setup(c => c.FindById(It.IsAny<int>())).ReturnsAsync(clase);
 
-            cicloService.Setup(c => c.FindById(dto.CicloId)).ReturnsAsync(ciclo);
+            cicloService.Setup(c => c.FindById(It.IsAny<int>())).ReturnsAsync(ciclo);
 
-            colegioService.Setup(c => c.FindById(dto.ColegioId)).ReturnsAsync(colegio);
+            colegioService.Setup(c => c.FindById(It.IsAny<int>())).ReturnsAsync(colegio);
 
-            claseService.Setup(c => c.Edit(clase)).Returns(clase);
+            claseService.Setup(c => c.Edit(It.IsAny<profefolio.Models.Entities.Clase>())).Returns(clase);
 
             claseService.Setup(c => c.Save()).ThrowsAsync(new Exception());
 

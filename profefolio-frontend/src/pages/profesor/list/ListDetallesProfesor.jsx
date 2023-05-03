@@ -23,6 +23,9 @@ function ListDetallesProfesor(props) {
 
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
 
+
+  
+
   const handleDeleteClick = () => {
     setShowConfirmDialog(true);
   };
@@ -140,6 +143,7 @@ function ListDetallesProfesor(props) {
     setShowModal(false);
     setReadOnly(true);
     setEliminarVisible(true);
+    
   };
 
   function closeModal() {
@@ -155,14 +159,15 @@ function ListDetallesProfesor(props) {
   }
 
   const handleModificar = () => {
-    setReadOnly(!readOnly);
-   
-  
-  
+    setReadOnly(!readOnly);  
+
   };
 
  
   useEffect(() => {
+
+
+    if(showModal){
       
     axios.get(`${APILINK}/api/profesor/${id}`, {
       headers: {
@@ -199,6 +204,7 @@ function ListDetallesProfesor(props) {
       });
 
 
+}
 }, [ id, getToken ]);
 
 const [nombre, setNombre] = useState(profesor.nombre || '');
@@ -236,7 +242,7 @@ const [documentoTipo, setDocumentoTipo] = useState(profesor.documentoTipo || '')
             {eliminarVisible && (
               <Form.Control
               type="text"
-              defaultValue={profesor.nombre  || ''}
+              value={profesor.nombre  || ''}
               readOnly={readOnly}
             /> 
             )}

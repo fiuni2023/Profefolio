@@ -9,7 +9,7 @@ using profefolio.Models.DTOs.Persona;
 using profefolio.Models.DTOs.Colegio;
 using profefolio.Models.Entities;
 using profefolio.Repository;
-
+using profefolio.Helpers;
 
 namespace profefolio.Controllers;
 
@@ -21,7 +21,7 @@ public class AccountController : ControllerBase
     private readonly IRol _rolService;
     private readonly IColegio _colegioService;
     private const string RolAdmin = "Administrador de Colegio";
-    private const int CantPerPage = 20;
+    private static int CantPerPage => Constantes.CANT_ITEMS_POR_PAGE;
 
 
 
@@ -47,18 +47,15 @@ public class AccountController : ControllerBase
             return BadRequest("El nacimiento no puede ser mayor a la fecha de hoy");
         }
 
-        if (dto.Genero == null)
-        {
-            return BadRequest();
-        }
-
         if (!(dto.Genero.Equals("M") || dto.Genero.Equals("F")))
         {
             return BadRequest("Solo se aceptan valores F para femenino y M para masculino");
         }
 
-        if (dto.Password == null) return BadRequest("Password es requerido");
-        var userId = User.Identity.GetUserId();
+        var userId = User.Identity.Name;
+
+        
+
         var entity = _mapper.Map<Persona>(dto);
         entity.Deleted = false;
         entity.CreatedBy = userId;
@@ -96,7 +93,7 @@ public class AccountController : ControllerBase
 
         var result = new DataListDTO<PersonaResultDTO>();
 
-        if (page >= cantPages)
+        if (page >= cantPages || page < 0)
         {
             return BadRequest($"No existe la pagina: {page} ");
         }
@@ -118,7 +115,7 @@ public class AccountController : ControllerBase
     {
         try
         {
-            var persona = await _personasService.FindById(id);
+            var persona = await _personasService.FindByIdAndRole(id, RolAdmin);
             return Ok(_mapper.Map<PersonaResultDTO>(persona));
         }
         catch (FileNotFoundException e)
@@ -152,7 +149,7 @@ public class AccountController : ControllerBase
     [Route("{id}")]
     public async Task<ActionResult> Delete(string id)
     {
-        return await _personasService.DeleteUser(id) ? Ok() : NotFound();
+        return await _personasService.DeleteByUserAndRole(id, RolAdmin) ? Ok() : NotFound();
     }
 
 
