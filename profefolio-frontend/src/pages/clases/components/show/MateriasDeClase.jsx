@@ -100,8 +100,10 @@ const TagProfesor = memo(({ id, nombre, state = "new", onClick = () => { } }) =>
   
 
 const ListItem = memo(({ index, idMateria, nombre, profesores = [] ,profeProfesor = [], type ,onClick }) => {
+
+    const [profesoresSeleccionados, setProfesoresSeleccionados] = useState([]);
    
-    const [idProfesorSeleccionado, setIdProfesorSeleccionado] = useState(null);
+
     const { setStatusProfesorMateria } = useClaseContext();
 
     const [isSelectOpen, setIsSelectOpen] = useState(false);
@@ -122,19 +124,16 @@ const ListItem = memo(({ index, idMateria, nombre, profesores = [] ,profeProfeso
       };
 
 
-      const [profesoresSeleccionados, setProfesoresSeleccionados] = useState([]);
+     
 
 const seleccionarProfesor = (event) => {
   const idProfesorSeleccionado = event.target.value;
 
-  console.log('idProfesorSeleccionado',idProfesorSeleccionado);
   setProfesoresSeleccionados((prevSeleccionados) =>
     prevSeleccionados.includes(idProfesorSeleccionado)
       ? prevSeleccionados.filter((id) => id !== idProfesorSeleccionado)
       : [...prevSeleccionados, idProfesorSeleccionado]
   );
-
-  console.log('profesoresSeleccionados',profesoresSeleccionados);
 
 };
 
@@ -293,19 +292,11 @@ useMemo(() => {
   }, [getToken]);
   
 
- //Crear materia profesor
-
+ 
  const idProfesoresArray = profeProfesor.map(profesor => profesor.id);
 
- 
+
  const handleCrearMateriaProfesor = async () => {
-
-
-    console.log('idProfesores',idProfesoresArray);
-
-    console.log('idMateria',idMateria);
-
-    console.log('idClase',getClaseSelectedId());
 
     const body = { "idProfesores": idProfesoresArray, "idMateria": idMateria , "idClase": getClaseSelectedId()}
     ClassesService.createMateriaProfesor(body, getToken())
@@ -375,7 +366,7 @@ useMemo(() => {
         setOptionSelected(e.target.value);
 
         setIdMateria(e.target.value);
-        console.log(`Asigna la materia con id: ${e.target.value} a la clase con id: ${getClaseSelectedId()} `)
+       // console.log(`Asigna la materia con id: ${e.target.value} a la clase con id: ${getClaseSelectedId()} `)
 
         if (/^[0-9]+$/.test(e.target.value)) {
             const index = optionsMaterias.findIndex(a => a.value === parseInt(e.target.value))
@@ -451,7 +442,7 @@ useMemo(() => {
                         onClick={(e) => { 
                     e.preventDefault(); // prevent the default behavior of the onClick event
                     handleCrearMateriaProfesor(); 
-                    console.log("enviando..."); // or alert("enviando...") to display the message to the user
+                  ///  console.log("enviando..."); // or alert("enviando...") to display the message to the user
                 }} 
                 />
 
