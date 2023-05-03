@@ -26,7 +26,7 @@ const Alumnos = () => {
     });
 
     const parseToDate = (d = new Date()) => {
-        return `${d.getFullYear()}-${d.getMonth() > 10 ? d.getMonth() + 1 : `0${d.getMonth() + 1}`}-${d.getDate() > 9 ? d.getDate() : `0${d.getDate()}`}`
+        return `${d.getFullYear()}-${d.getMonth() > 8 ? d.getMonth() + 1 : `0${d.getMonth() + 1}`}-${d.getDate() > 9 ? d.getDate() : `0${d.getDate()}`}`
     }
 
     const nav = useNavigate()
@@ -43,7 +43,6 @@ const Alumnos = () => {
     const doChangeStudent = (data) => {
         setSelectedStudent(data)
         setShow(true)
-        console.log(selected_student)
     }
 
     const { doFetch } = useFetchEffect(
@@ -64,7 +63,7 @@ const Alumnos = () => {
                             datos: [
                                 { dato: dato?.documento ? dato.documento : "" },
                                 { dato: dato?.nombre && dato.apellido ? dato.nombre + " " + dato.apellido : "" },
-                                { dato: dato?.nacimiento ? parseToDate(new Date(dato.nacimiento)) : "" },
+                                { dato: dato?.fechaNacimiento ? parseToDate(new Date(dato.fechaNacimiento)) : "" },
                                 { dato: dato?.direccion ? dato.direccion : "" }]
                         }
                     })

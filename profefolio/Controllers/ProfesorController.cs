@@ -188,11 +188,6 @@ namespace profefolio.Controllers
                 return BadRequest("El email al cual quiere registrarse ya existe");
             }
 
-            if (await _personasService.ExistDoc(entity))
-            {
-                return BadRequest($"El usuario con doc {dto.Documento} ya existe");
-            }
-
             try
             {
                 var adminEmail = User.FindFirstValue(ClaimTypes.Name);
@@ -226,6 +221,10 @@ namespace profefolio.Controllers
             {
                 Console.WriteLine(e.Message);
                 return BadRequest("Formato invalido de constraseña. Debe contener mayusculas, minusculas, numeros y caracteres.");
+            }
+            catch(FileNotFoundException e)
+            {
+                return NotFound();
             }
             catch (Exception e)
             {
