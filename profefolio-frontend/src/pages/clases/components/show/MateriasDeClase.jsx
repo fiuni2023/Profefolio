@@ -9,6 +9,7 @@ import { useClaseContext } from '../../context/ClaseContext';
 import MateriasService from "../../Helpers/MateriasHelper.js"
 import { useGeneralContext } from '../../../../context/GeneralContext';
 import ClassesService from '../../Helpers/ClassesHelper';
+import { toast } from 'react-hot-toast';
 
 
 import { GrAddCircle } from 'react-icons/gr'
@@ -98,12 +99,14 @@ const TagProfesor = memo(({ id, nombre, state = "new", onClick = () => { } }) =>
 
   
 
-const ListItem = memo(({ index, idMateria, nombre, profesores = [] ,profeProfesor = [], type, onClick }) => {
+const ListItem = memo(({ index, idMateria, nombre, profesores = [] ,profeProfesor = [], type ,onClick }) => {
+   
+    const [idProfesorSeleccionado, setIdProfesorSeleccionado] = useState(null);
     const { setStatusProfesorMateria } = useClaseContext();
 
     const [isSelectOpen, setIsSelectOpen] = useState(false);
 
-    const [idProfesorSeleccionado, setIdProfesorSeleccionado] = useState(null);
+ 
 
  
 
@@ -256,6 +259,8 @@ const MateriasDeClase = () => {
 
     const [profeProfesor, setProfeProfesor] = useState([]);
 
+    const [idMateria , setIdMateria]= useState("");
+
     const [materiaProfesor, setMateriaProfesor] = useState([]);
     const { getListaMaterias, setStatusMateria, getClaseSelectedId, addMateriaToList, setProfesoresOptions } = useClaseContext();
     const { getToken } = useGeneralContext();
@@ -289,23 +294,29 @@ useMemo(() => {
   
 
  //Crear materia profesor
+
+ const idProfesoresArray = profeProfesor.map(profesor => profesor.id);
+
  
  const handleCrearMateriaProfesor = async () => {
-    try {
-      const response = await ClassesService.createMateriaProfesor(getToken(), {
-        idProfesores: profesoresSeleccionados,
-        idMateria: optionSelected,
-        idClase: getClaseSelectedId()
-      });
 
 
-      console.log("Datos recibidos de la API:", response.data);
-      setMateriaProfesor(response.data);
-    } catch (e) {
-  
-      console.error("Error al llamar a la API:", e);
-      alert("Error al llamar a la API:", e);
-    }
+    console.log('idProfesores',idProfesoresArray);
+
+    console.log('idMateria',idMateria);
+
+    console.log('idClase',getClaseSelectedId());
+
+    const body = { "idProfesores": idProfesoresArray, "idMateria": idMateria , "idClase": getClaseSelectedId()}
+    ClassesService.createMateriaProfesor(body, getToken())
+        .then(() => {
+            toast.success("Los datos fueron enviados correctamente.")
+            window.location.reload()
+        })
+        .catch(() => {
+            toast.error("No se pudieron guardar los cambios. Intente de nuevo o recargue la página.")
+        })
+
   };
   
   
@@ -361,8 +372,10 @@ useMemo(() => {
 
     const handleSelectOptionMateria = (e) => {
         e.preventDefault();
-        setOptionSelected(e.target.value)
-        console.log(`Asigna la materia con id: ${e.target.value} a la clase con id: ${getClaseSelectedId()}`)
+        setOptionSelected(e.target.value);
+
+        setIdMateria(e.target.value);
+        console.log(`Asigna la materia con id: ${e.target.value} a la clase con id: ${getClaseSelectedId()} `)
 
         if (/^[0-9]+$/.test(e.target.value)) {
             const index = optionsMaterias.findIndex(a => a.value === parseInt(e.target.value))
@@ -409,7 +422,7 @@ useMemo(() => {
                                     profeProfesor={profeProfesor}
                                     type={materia.status}
 
-                                    onClick={() => { console.log(`${materia.nombre} 'seleccionado'`); setStatusMateria(materia.id, (materia.status === "new" ? "reload" : "new")); }}
+                                    onClick={() => { console.log(`${materia.nombre} 'seleccionado'`,"profesores", materia.profesores.map(profesor => profesor.id), "profeProfesor",profeProfesor);setIdMateria(materia.id) ;setStatusMateria(materia.id, (materia.status === "new" ? "reload" : "new")); }}
                                     
                                    
                                   
