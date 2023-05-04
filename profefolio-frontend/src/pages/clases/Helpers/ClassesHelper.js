@@ -91,6 +91,20 @@ const getProfesoresParaClase = async (token) => {
 }
 
 
+const createMateriaProfesor = async (body, token) => {
+    const result = await axios.post(`${APILINK}/api/administrador/materia/profesores`,
+        body,
+        {
+            headers: {
+                "Authorization": 'Bearer ' + token,
+                "Content-Type": "application/json"
+            },
+
+        })
+    return result.status === 200 ? result : null
+}
+
+
 
 const getProfesores = (token) => {
 
@@ -113,5 +127,5 @@ const getProfesores = (token) => {
 
 
 
-const ClassesService = { getClassesPage, getClassesByIdNombre,getClassesById, createClasse, updateClasse, deleteClasse, getProfesoresParaClase ,getProfesores}
+const ClassesService = { getClassesPage, getClassesByIdNombre,getClassesById, createClasse, updateClasse, deleteClasse, getProfesoresParaClase ,getProfesores, createMateriaProfesor}
 export default ClassesService

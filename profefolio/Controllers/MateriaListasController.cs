@@ -1,4 +1,6 @@
 ﻿using System.Collections.ObjectModel;
+using System.Security.Claims;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using profefolio.Models.DTOs.ClaseMateria;
@@ -16,13 +18,15 @@ namespace profefolio.Controllers
         private readonly IPersona _profesorService;
         private readonly IMateria _materiaService;
         private readonly IClase _claseService;
+        private readonly IMapper _mapper;
 
-        public MateriaListasController(IMateriaLista materiaListaService, IPersona profesorService, IMateria materiaService, IClase claseService)
+        public MateriaListasController(IMateriaLista materiaListaService, IPersona profesorService, IMateria materiaService, IClase claseService, IMapper mapper)
         {
             _materiaListaService = materiaListaService;
             _profesorService = profesorService;
             _materiaService = materiaService;
             _claseService = claseService;
+            _mapper = mapper;
         }
 
         [HttpPost]
@@ -162,6 +166,49 @@ namespace profefolio.Controllers
             }
         }
 
+        /*
+        * No tocar la ruta, la cambie porque el default era demasiado largo
+        */
+        [HttpGet("/api/lista/materias/ConProfesores/{idClase}")]
+        public async Task<ActionResult<List<ClaseMateriaResultDTO>>> GetMateriasConProfesores(int idClase)
+        {
+            try
+            {
+                var userEmail = User.FindFirstValue(ClaimTypes.Name);
+                var userRole = User.FindFirstValue(ClaimTypes.Role);
+                
+                var materiaLista = await _materiaListaService.FindByIdClaseAndUser(idClase, userEmail, userRole);
+
+                var dto = _mapper.Map<List<ClaseMateriaResultDTO>>(materiaLista);
+                
+                //se carga los profesores a cada materia de la lista
+                materiaLista.ForEach(a =>
+                {
+                    var value = dto.FirstOrDefault(b => b.Id == a.Id);
+                    if (value == null)
+                    {
+                        throw new FileNotFoundException("Error durante la obtencion de los Profesores de las Materias");
+                    }
+                    var prof = _mapper.Map<ClaseMateriaProfesorDTO>(a.Profesor);
+                    value.Profesores.Add(prof);
+                });
+                return Ok(dto);
+            }
+            catch (FileNotFoundException e)
+            {
+                return NotFound(e);
+            }
+            catch (BadHttpRequestException e)
+            {
+                return BadRequest(e);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"{e}");
+                return BadRequest("Sucedio un error inesperado durante la busqueda.");
+            }
+
+        }
     }
 
 

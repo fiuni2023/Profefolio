@@ -42,6 +42,12 @@ namespace profefolio.Services
             throw new NotImplementedException();
         }
 
+        public async Task<int> CountNotAssigned(string user, int idClase)
+        {
+            var query = await this.FindAllNoAssignedToClaseByEmailAdminAndIdClase(user, idClase);
+            return query.Count();
+        }
+
         public void Dispose()
         {
             _context.Dispose();
@@ -112,6 +118,18 @@ namespace profefolio.Services
                 .Include(a => a.Colegio)
                 .Include(a => a.Colegio.personas)
                 .FirstOrDefaultAsync(ca => !ca.Deleted && ca.Id == id);
+        }
+
+        public async Task<IEnumerable<Persona>> FindNotAssigned(string user, int idClase, int page, int cantPerPage)
+        {
+            var query = await this.FindAllNoAssignedToClaseByEmailAdminAndIdClase(user, idClase);
+
+            var result = query
+                .Skip(cantPerPage*page)
+                .Take(cantPerPage)
+                .Select(p => p.Persona);
+            
+            return result;
         }
 
         public IEnumerable<ColegiosAlumnos> GetAll(int page, int cantPorPag)
