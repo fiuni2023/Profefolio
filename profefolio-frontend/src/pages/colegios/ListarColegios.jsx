@@ -1,18 +1,18 @@
+/* eslint-disable */
 import React, { useEffect, useState } from "react";
 import styles from './ListarColegios.module.css';
 import { useNavigate } from "react-router-dom";
 import { BiArrowBack } from "react-icons/bi"
-import { Table } from "../../components/Table";
-import ModalAgregarColegios from './AgregarColegios'
 import axios from "axios";
-import Pagination from 'react-bootstrap/Pagination';
-import { useGeneralContext} from '../../context/GeneralContext'
-import APILINK from "../../components/link";
-import ModalVerColegios from './ModalVerColegios'
+import Paginations from "../../components/Paginations"
+import { useGeneralContext } from '../../context/GeneralContext'
 
-import ModalColegios from "./ModalColegios";
-import { BsFillPlusCircleFill } from "react-icons/bs"
-import Modal from "../../components/Modal";
+import APILINK from "../../components/link";
+import { toast } from "react-hot-toast";
+import Tabla from "../../components/Tabla";
+import ModalColegio from "./ModalColegios_";
+import { AddButton } from "../alumnos/styles/Styles";
+import { AiOutlinePlus } from "react-icons/ai";
 
 function ListarColegios() {
 
@@ -21,12 +21,22 @@ function ListarColegios() {
   const nav = useNavigate()
 
   const navigate = useNavigate()
-  
+
   const [currentPage, setCurrentPage] = useState(0);
-  const [colegios, setColegios] = useState([]);
-  const [datoIdColegio, setDatoIdColegio] = useState(null);
-  const [next, setNext] = useState(true)
-  const [enabled, setEnabled] = useState(true);
+  const [datoColegio, setDatoColegio] = useState('');
+  const [next, setNext] = useState(false);
+  const [totalPage, setTotalPage] = useState(0);
+
+  const [fetch_data, setFetchData] = useState([]);
+
+  const [administrators, setAdministrators] = useState([])
+
+  const [datosTabla, setDatosTabla] = useState({
+    tituloTabla: "studentsList",
+    titulos: [{ titulo: "Numero" }, { titulo: "Nombre" }, { titulo: "Administrador" }]
+  });
+  const [selectedId, setSelectedId] = useState(null)
+
 
 
   useEffect(() => {
@@ -42,58 +52,70 @@ function ListarColegios() {
       })
 
         .then(response => {
-          setColegios(response.data.dataList); //Guarda los datos
+          setDatosTabla({
+            ...datosTabla, clickable: { action: handleShow },
+            filas: response.data.dataList.map((dato) => {
+              return {
+                fila: dato,
+                datos: [
+                  { dato: dato?.id ?? "" },
+                  { dato: dato?.nombre ?? "" },
+                  { dato: dato?.idAdmin ? `${dato?.nombreAdministrador} ${dato?.apellido}` : "Sin Administrador" }]
+              }
+            })
+
+          })
+
           setCurrentPage(response.data.currentPage);//Actualiza la pagina en donde estan los datos
           setNext(response.data.next);
-          console.log(response.data);
+          setTotalPage(response.data.totalPage)
+
         })
         .catch(error => {
+          toast.error(error);
           console.error(error);
         });
+
+
+      let config = {
+        method: 'get',
+        url: `${APILINK}/api/administrador`,
+        headers: {
+          'Authorization': `Bearer ${getToken()}`
+        }
+      };
+      axios(config)
+        .then(function (response) {
+          setAdministrators(response.data);
+
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+
     }
-     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cancan, verifyToken, nav, currentPage, getToken]);
 
- 
-  const doFetch = (colegio) => {
-    setColegios([...colegios, colegio])
-  }
-  const getPages = () => {
-    return (
-        <>
-            <Pagination.Prev disabled={currentPage<=0} onClick={()=>{
-                setCurrentPage(currentPage-1)
-            }} />
-            <Pagination.Item disabled >{currentPage + 1}</Pagination.Item>
-            <Pagination.Next disabled={!next} onClick={()=>{
-                setCurrentPage(currentPage+1)
-            }}/>
-        </>
-    )
-}
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage, fetch_data]);
 
- 
   const [show, setShow] = useState(false);
-  const [disabled, setDisabled] = useState(false);
-  const [tituloModal, setTituloModal] = useState("AgregarColegio")
-  const handleShow = (id) => {
-    setDatoIdColegio(id);
-   
+
+  const handleShow = (dato) => {
+    setDatoColegio(dato)
+    setSelectedId(dato?.id)
     setShow(true);
   }
 
-  const handleChangeTituloModal = (titulo) => {
-    setTituloModal(titulo); 
+  const handleHide = () => {
+    setDatoColegio(null)
+    setShow(false)
   }
 
-  const openNew = () => {
-    setShow(!show);
-  }
+  const doFetch = () => { setFetchData((before) => [before]) }
 
 
   return (
     <>
-    <button className={styles.buttonAgregar} onClick={openNew}><BsFillPlusCircleFill className={styles.iconoAgregar} /></button>
       <div>
 
         <div className={styles.nombrePagina}>
@@ -103,31 +125,16 @@ function ListarColegios() {
           </div>
         </div>
         <div className={styles.tablePrincipal} >
-          <Table
-            headers={["Numero", "Nombre", "Administrador"]}
-            datas={colegios}
-            parseToRow={(col, index) => {
-              return (
-                <tr key={index} onClick={() => handleShow(col.id)}>
-                  <td>{index + 1}</td>
-                  <td>{col?.nombre}</td>
-                  <td>{col?.nombreAdministrador} {col?.apellido}</td>
-                 
-                </tr>
-              )
-            }}
-          />
-          <Pagination size="sm mt-3">
-                        {getPages()}
-                    </Pagination>
+          <Tabla datosTabla={datosTabla} selected={selectedId ?? "-"} />
+          <Paginations totalPage={totalPage} currentPage={currentPage} setCurrentPage={setCurrentPage} next={next} ></Paginations>
+
         </div>
-
-       
-        <ModalColegios tituloModal={tituloModal} isOpen={show} disabled={disabled}></ModalColegios>  
-
-        <ModalVerColegios datoIdColegio={datoIdColegio} show={show} setShow={setShow} disabled={disabled} setDisabled={setDisabled} triggerState={(colegio)=>{setColegios(colegio)}} page={currentPage}></ModalVerColegios>
-
-        <ModalAgregarColegios triggerState={(colegio) => { doFetch(colegio) }}  ></ModalAgregarColegios>
+        <AddButton onClick={() => { setShow(true) }}>
+          <AiOutlinePlus size={"35px"} />
+        </AddButton>
+        {/* <ModalVerColegios datoColegio={datoColegio} onClose={()=>{setDatoColegio(null)}} show={show} setShow={setShow} disabled={disabled} setDisabled={setDisabled} triggerState={() => { setFetchData((before)=>[before]) }} page={currentPage}></ModalVerColegios>
+        <ModalAgregarColegios triggerState={() => { setFetchData((before)=>[before]) }}  ></ModalAgregarColegios> */}
+        <ModalColegio show={show} onHide={handleHide} administrators={administrators} selected_data={datoColegio} fetchFunc={doFetch} />
       </div>
     </>)
 }

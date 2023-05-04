@@ -27,15 +27,15 @@ public class MateriaService : IMateria
             .Where(p => !p.Deleted && p.Nombre_Materia == n)
             .FirstOrDefaultAsync();
     }
-     public async Task<Materia> FindByNameMateriaId(string n, int id)
+    public async Task<Materia> FindByNameMateriaId(string n, int id)
     {
         return await _dbContext.Materias
             .Where(p => !p.Deleted && p.Nombre_Materia == n && p.Id != id)
             .FirstOrDefaultAsync();
     }
-    public IEnumerable<Materia> GetAll()
+    public async Task<List<Materia>> GetAll()
     {
-        return _dbContext.Materias.Where(p => p.Deleted);
+        return await _dbContext.Materias.Where(p => !p.Deleted).ToListAsync();
     }
 
     public Materia Edit(Materia t)
@@ -89,5 +89,16 @@ public class MateriaService : IMateria
          .Where(p => !p.Deleted)
          .Skip(page * cantPorPag)
          .Take(cantPorPag);
+    }
+
+    public async Task<List<Materia>> FindAllUnsignedMaterias(int idClase)
+    {
+        /*
+            Se retorna las materias no asignadas o las materias asignadas pero que estan marcadas como eliminadas
+        */
+        return await _dbContext.Materias
+                .Where(m => (!m.Deleted && !m.MateriaListas.Any()) || (!m.Deleted
+                    && m.MateriaListas.Any(ml => ml.ClaseId != idClase || (!ml.Deleted && ml.ClaseId == idClase))))
+                .ToListAsync();
     }
 }

@@ -110,6 +110,38 @@ namespace profefolio.Controllers
             }
         }
 
+
+        [HttpGet("MisProfesores/")]
+        [Authorize(Roles = "Administrador de Colegio")]
+        public async Task<ActionResult<List<PersonaSimpleDTO>>> GetAllProfesorOfAdmin()
+        {
+
+            try
+            {
+                var adminEmail = User.FindFirstValue(ClaimTypes.Name);
+
+                var admin = await _personasService.FindByEmail(adminEmail);
+                if (admin != null && admin.Colegio != null)
+                {
+                    var profesores = await _profesorService.FindAllProfesoresOfColegio(admin.Colegio.Id);
+                    if (profesores != null)
+                    {
+                        return Ok(_mapper.Map<List<PersonaSimpleDTO>>(profesores));
+                    }
+                    return BadRequest("Error al obtener los profesores");
+                }
+                return BadRequest("Problemas al comprobar sus credenciales");
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return BadRequest("Error inesperado durante la busqueda");
+            }
+
+        }
+
+
         [HttpPost]
         [Authorize(Roles = "Administrador de Colegio")]
         public async Task<ActionResult<ColegioProfesorResultOfCreatedDTO>> Post([FromBody] PersonaDTO dto)
@@ -156,11 +188,6 @@ namespace profefolio.Controllers
                 return BadRequest("El email al cual quiere registrarse ya existe");
             }
 
-            if (await _personasService.ExistDoc(entity))
-            {
-                return BadRequest($"El usuario con doc {dto.Documento} ya existe");
-            }
-
             try
             {
                 var adminEmail = User.FindFirstValue(ClaimTypes.Name);
@@ -194,6 +221,10 @@ namespace profefolio.Controllers
             {
                 Console.WriteLine(e.Message);
                 return BadRequest("Formato invalido de constraseña. Debe contener mayusculas, minusculas, numeros y caracteres.");
+            }
+            catch(FileNotFoundException e)
+            {
+                return NotFound();
             }
             catch (Exception e)
             {
@@ -246,7 +277,7 @@ namespace profefolio.Controllers
                     {
                         return BadRequest("El email nuevo que queres actualizar ya existe");
                     }
-                    
+
                     MapOldToNew(persona, dto, adminEmail);
 
                     var query = await _personasService.EditProfile(persona);

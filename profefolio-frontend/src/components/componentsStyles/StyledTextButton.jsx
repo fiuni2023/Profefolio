@@ -29,6 +29,24 @@ const StyledTextButton = styled.button`
             background-color: #5181D1;
           }
         `;
+      case 'create':
+        return `
+            background-color: #8DACE1;
+            color: #fff
+            ;&:hover {
+              background-color: #5181D1;
+            }
+          `;
+      case 'save-changes':
+        return `
+              background-color: #8DACE1;
+              color: #fff;
+              width: 200px;
+              height: 35px;
+              ;&:hover {
+                background-color: #5181D1;
+              }
+            `;
       case 'cancel':
         return `
           background-color: #E57BA4;
@@ -42,25 +60,33 @@ const StyledTextButton = styled.button`
         return `
           background-color: #59C8A4;
           color: #fff;
-
           &:hover {
             background-color: #24B787;
           }
         `;
-        case 'confirm':
-          return `
-            background-color: #F0544F;
-            color: #fff;
+      case 'confirm':
+        return `
+          background-color: #F0544F;
+          color: #fff;
   
-            &:hover {
-              background-color: #A32A26;
-            }
-          `; 
+          &:hover {
+            background-color: #A32A26;
+          }
+        `;
+      case 'danger':
+        return `
+          background-color: #F01F18;
+          color: #fff;
+  
+          &:hover {
+            background-color: #EB231C;
+          }
+        `;
       default:
         return `
           background-color: #ccc;
           color: #333;
-
+          cursor: not-allowed;
           &:hover {
             background-color: #ddd;
           }

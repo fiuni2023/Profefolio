@@ -32,9 +32,20 @@ namespace profefolio.Services
                             .CountAsync(ca => !ca.Deleted && ca.ColegioId == idColegio);
         }
 
+        public async Task<int> Count(string adminEmail)
+        {
+            return await _context.ColegiosAlumnos.CountAsync(a => !a.Deleted && adminEmail.Equals(a.Colegio.personas.Email));
+        }
+
         public int Count()
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<int> CountNotAssigned(string user, int idClase)
+        {
+            var query = await this.FindAllNoAssignedToClaseByEmailAdminAndIdClase(user, idClase);
+            return query.Count();
         }
 
         public void Dispose()
@@ -60,18 +71,65 @@ namespace profefolio.Services
                     && ca.PersonaId.Equals(idAlumno));
         }
 
+        public async Task<IEnumerable<ColegiosAlumnos>> FindAllByAdminEmail(int page, int cantPorPag, string adminEmail)
+        {
+            return await _context.ColegiosAlumnos
+                    .Where(a => !a.Deleted
+                        && adminEmail.Equals(a.Colegio.personas.Email))
+                    .OrderByDescending(ca => ca.Id)
+                    .Skip(page * cantPorPag)
+                    .Take(cantPorPag)
+                    .Include(a => a.Persona)
+                    .ToListAsync();
+        }
+
+
         public async Task<IEnumerable<ColegiosAlumnos>> FindAllByIdColegio(int page, int cantPorPag, int idColegio)
         {
             return await _context.ColegiosAlumnos
                     .Where(ca => !ca.Deleted && ca.ColegioId == idColegio)
                     .OrderByDescending(ca => ca.Id)
                     .Skip(page * cantPorPag)
-                    .Take(page).ToListAsync();
+                    .Take(page)
+                    .Include(a => a.Persona)
+                    .ToListAsync();
+        }
+
+        public async Task<IEnumerable<ColegiosAlumnos>> FindAllNoAssignedToClaseByEmailAdminAndIdClase(string adminEmail, int idClase)
+        {
+            /*
+                Se valida que el alumno no este asignado a ninguna clase y si esta se verifica que este marcado como eliminado en la clase
+                esto en el caso de que se haya eliminado de la clase y luego se agregue otra vez
+            */
+            return await _context.ColegiosAlumnos
+                            .Where(ca => !ca.Deleted
+                                && ca.Colegio.personas.Email.Equals(adminEmail)
+                                && (ca.ClasesAlumnosColegios == null
+                                    || !ca.ClasesAlumnosColegios.Any()
+                                    || ca.ClasesAlumnosColegios.Any(a => (a.Deleted && a.ClaseId == idClase) || a.ClaseId != idClase))
+                                    && (ca.ClasesAlumnosColegios == null || !(ca.ClasesAlumnosColegios.Any(a => a.ClaseId == idClase && !a.Deleted))))
+                            .Include(a => a.Persona)
+                            .ToListAsync();
         }
 
         public async Task<ColegiosAlumnos> FindById(int id)
         {
-            return await _context.ColegiosAlumnos.FirstOrDefaultAsync(ca => !ca.Deleted && ca.Id == id);
+            return await _context.ColegiosAlumnos
+                .Include(a => a.Colegio)
+                .Include(a => a.Colegio.personas)
+                .FirstOrDefaultAsync(ca => !ca.Deleted && ca.Id == id);
+        }
+
+        public async Task<IEnumerable<Persona>> FindNotAssigned(string user, int idClase, int page, int cantPerPage)
+        {
+            var query = await this.FindAllNoAssignedToClaseByEmailAdminAndIdClase(user, idClase);
+
+            var result = query
+                .Skip(cantPerPage*page)
+                .Take(cantPerPage)
+                .Select(p => p.Persona);
+            
+            return result;
         }
 
         public IEnumerable<ColegiosAlumnos> GetAll(int page, int cantPorPag)

@@ -1,9 +1,17 @@
-﻿using profefolio.Models.Entities;
+﻿using profefolio.Models.DTOs.ClaseMateria;
+using profefolio.Models.Entities;
 
 namespace profefolio.Repository
 {
     public interface IMateriaLista : IRepository<MateriaLista>
     {
-        IEnumerable<MateriaLista> FilterByIdMateriaAndUserAndClass(int idMateria, string createdBy, int idClase);
+        Task<bool> IsUsedMateria(int idMateria);
+        Task<MateriaLista> Find(int idClase, string idProfesor, int idMateria, string userLogged);
+        Task<List<MateriaLista>> FindByIdClase(int idClase, string user);
+        Task<List<MateriaLista>> FindByIdClaseAndUser(int idClase, string userEmail, string role);
+        Task<bool> DeleteByIdClase(int idClase, string user);
+        Task<bool> SaveMateriaLista(ClaseMateriaCreateDTO dto, string user);
+        Task<bool> EditMateriaLista(ClaseMateriaEditDTO dto, string user);
+
     }
 }

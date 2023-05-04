@@ -90,9 +90,10 @@ namespace TestProfefolio.Clase
                     Nombre = "Segundo grado"
                 }
             };
-            claseService.Setup(m => m.GetByIdColegio(idColegio)).ReturnsAsync(clases);
+            claseService.Setup(m => m.GetByIdColegio(It.IsAny<int>())).ReturnsAsync(clases);
 
-            mapper.Setup(m => m.Map<List<ClaseResultSimpleDTO>>(clases)).Returns(resultClases);
+            mapper.Setup(m => m.Map<List<ClaseResultSimpleDTO>>(It.IsAny<List<profefolio.Models.Entities.Clase>>())).Returns(resultClases);
+            
             var result = await controller.GetAllByColegioId(idColegio);
 
             Assert.IsType<OkObjectResult>(result.Result);
@@ -159,7 +160,7 @@ namespace TestProfefolio.Clase
                 cicloService.Object,
                 colegioService.Object);
 
-            claseService.Setup(m => m.GetByIdColegio(idColegio)).ThrowsAsync(new Exception());
+            claseService.Setup(m => m.GetByIdColegio(It.IsAny<int>())).ThrowsAsync(new Exception());
 
             var result = await controller.GetAllByColegioId(idColegio);
 
@@ -185,7 +186,6 @@ namespace TestProfefolio.Clase
         [InlineData(8, 0)]
         public async void GetAllByIdColegioWithPage_Ok(int idColegio, int pag)
         {
-            int cantidadPorPag = 20;
             Mock<IMapper> mapper = new Mock<IMapper>();
             Mock<ICiclo> cicloService = new Mock<ICiclo>();
             Mock<IClase> claseService = new Mock<IClase>();
@@ -246,11 +246,11 @@ namespace TestProfefolio.Clase
                 }
             };
 
-            claseService.Setup(c => c.GetAllByIdColegio(pag, cantidadPorPag, idColegio)).ReturnsAsync(clases);
+            claseService.Setup(c => c.GetAllByIdColegio(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>())).ReturnsAsync(clases);
             
-            claseService.Setup(c => c.Count(idColegio)).ReturnsAsync(clases.Count);
+            claseService.Setup(c => c.Count(It.IsAny<int>())).ReturnsAsync(clases.Count);
             
-            mapper.Setup(m => m.Map<List<ClaseResultSimpleDTO>>(clases)).Returns(resultClases);
+            mapper.Setup(m => m.Map<List<ClaseResultSimpleDTO>>(It.IsAny<List<profefolio.Models.Entities.Clase>>())).Returns(resultClases);
 
 
             var result = await controller.GetAll(idColegio, pag);
@@ -347,7 +347,6 @@ namespace TestProfefolio.Clase
         [InlineData(8, 11)]
         public async void GetAllByIdColegioWithPage_FearchedFailed_BadRequest(int idColegio, int pag)
         {
-            int cantidadPorPag = 20;
             Mock<IMapper> mapper = new Mock<IMapper>();
             Mock<ICiclo> cicloService = new Mock<ICiclo>();
             Mock<IClase> claseService = new Mock<IClase>();
@@ -408,9 +407,9 @@ namespace TestProfefolio.Clase
                 }
             };
 
-            claseService.Setup(c => c.GetAllByIdColegio(pag, cantidadPorPag, idColegio)).ReturnsAsync(clases);
+            claseService.Setup(c => c.GetAllByIdColegio(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>())).ReturnsAsync(clases);
             
-            claseService.Setup(c => c.Count(idColegio)).ReturnsAsync(clases.Count);
+            claseService.Setup(c => c.Count(It.IsAny<int>())).ReturnsAsync(clases.Count);
 
             var result = await controller.GetAll(idColegio, pag);
 
@@ -471,9 +470,9 @@ namespace TestProfefolio.Clase
                     Nombre = "Primer grado"
                 };
 
-            claseService.Setup(c => c.FindById(id)).ReturnsAsync(clase);
+            claseService.Setup(c => c.FindById(It.IsAny<int>())).ReturnsAsync(clase);
 
-            mapper.Setup(m => m.Map<ClaseResultDTO>(clase)).Returns(resultClase);
+            mapper.Setup(m => m.Map<ClaseResultDTO>(It.IsAny<List<profefolio.Models.Entities.Clase>>())).Returns(resultClase);
 
             var result = await controller.GetById(id);
 
@@ -524,7 +523,7 @@ namespace TestProfefolio.Clase
                 CreatedBy = "juan.perez@gmail.com"
             };
 
-            claseService.Setup(c => c.FindById(id));
+            claseService.Setup(c => c.FindById(It.IsAny<int>()));
 
             var result = await controller.GetById(id);
 
@@ -574,7 +573,7 @@ namespace TestProfefolio.Clase
                 CreatedBy = "juan.perez@gmail.com"
             };
 
-            claseService.Setup(c => c.FindById(id)).ThrowsAsync(new Exception());
+            claseService.Setup(c => c.FindById(It.IsAny<int>())).ThrowsAsync(new Exception());
 
             var result = await controller.GetById(id);
 

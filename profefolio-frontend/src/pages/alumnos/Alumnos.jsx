@@ -3,25 +3,30 @@ import { useGeneralContext } from '../../context/GeneralContext'
 import { AiOutlinePlus } from 'react-icons/ai'
 import { AddButton, MainContainer, TableContainer } from './styles/Styles'
 import StudentHelper from './helpers/StudentHelper'
-import { Pagination } from "react-bootstrap";
 import Tabla from '../../components/Tabla';
 import { toast } from "react-hot-toast";
 import { useNavigate } from 'react-router-dom';
 import { useFetchEffect } from '../../components/utils/useFetchEffect';
 import StyleComponentBreadcrumb from '../../components/StyleComponentBreadcrumb';
+import ModalAlumnos from './components/ModalAlumnos'
+import Paginations from '../../components/Paginations'
 
 const Alumnos = () => {
     const { getToken, cancan, verifyToken } = useGeneralContext()
     const [condFetch, setCondFetch] = useState(false)
     const [currentPage, setCurrentPage] = useState(0)
     const [next, setNext] = useState(true)
+    const [total_pages, setTotalPages] = useState(0)
+    const [selected_student, setSelectedStudent] = useState(null)
+
+
     const [datosTabla, setDatosTabla] = useState({
         tituloTabla: "studentsList",
         titulos: [{ titulo: "CI" }, { titulo: "Nombre" }, { titulo: "Fecha de nacimiento" }, { titulo: "Dirección" }]
     });
 
     const parseToDate = (d = new Date()) => {
-        return `${d.getFullYear()}-${d.getMonth() > 10 ? d.getMonth() + 1 : `0${d.getMonth() + 1}`}-${d.getDate() > 9 ? d.getDate() : `0${d.getDate()}`}`
+        return `${d.getFullYear()}-${d.getMonth() > 8 ? d.getMonth() + 1 : `0${d.getMonth() + 1}`}-${d.getDate() > 9 ? d.getDate() : `0${d.getDate()}`}`
     }
 
     const nav = useNavigate()
@@ -36,10 +41,11 @@ const Alumnos = () => {
     }, [cancan, verifyToken, nav])
 
     const doChangeStudent = (data) => {
-        console.log("Seleccionado", data)
+        setSelectedStudent(data)
+        setShow(true)
     }
 
-    const { isLoading, error } = useFetchEffect(
+    const { doFetch } = useFetchEffect(
         () => {
             return StudentHelper.getStudentsPage(currentPage, getToken())
         },
@@ -48,6 +54,7 @@ const Alumnos = () => {
             condition: condFetch,
             handleSuccess: (r) => {
                 setNext(r.data.next)
+                setTotalPages(r.data.totalPage)
                 setDatosTabla({
                     ...datosTabla, clickable: { action: doChangeStudent },
                     filas: r.data.dataList.map((dato) => {
@@ -56,7 +63,7 @@ const Alumnos = () => {
                             datos: [
                                 { dato: dato?.documento ? dato.documento : "" },
                                 { dato: dato?.nombre && dato.apellido ? dato.nombre + " " + dato.apellido : "" },
-                                { dato: dato?.nacimiento ? parseToDate(new Date(dato.nacimiento)) : "" },
+                                { dato: dato?.fechaNacimiento ? parseToDate(new Date(dato.fechaNacimiento)) : "" },
                                 { dato: dato?.direccion ? dato.direccion : "" }]
                         }
                     })
@@ -68,18 +75,11 @@ const Alumnos = () => {
             }
         }
     )
-    const getPages = () => {
-        return (
-            <>
-                <Pagination.Prev disabled={currentPage <= 0} onClick={() => {
-                    setCurrentPage(currentPage - 1)
-                }} />
-                <Pagination.Item disabled >{currentPage + 1}</Pagination.Item>
-                <Pagination.Next disabled={!next || isLoading || error} onClick={() => {
-                    setCurrentPage(currentPage + 1)
-                }} />
-            </>
-        )
+    const [show, setShow] = useState(false);
+
+    const handleHideModal = () => {
+        setSelectedStudent(null)
+        setShow(false)
     }
 
     return (
@@ -88,13 +88,12 @@ const Alumnos = () => {
                 <StyleComponentBreadcrumb nombre="Alumnos" />
                 <TableContainer>
                     <Tabla datosTabla={datosTabla} />
-                    <Pagination size="sm mt-3">
-                        {getPages()}
-                    </Pagination>
-                    <AddButton>
+                    <Paginations currentPage={currentPage} totalPage={total_pages} setCurrentPage={setCurrentPage} next={next}/>
+                    <AddButton onClick={()=>{setShow(true)}}>
                         <AiOutlinePlus size={"35px"} />
                     </AddButton>
                 </TableContainer >
+                <ModalAlumnos show={show} fetchFunc={doFetch} onHide={handleHideModal} selected_data={selected_student} />
             </MainContainer >
         </>
     )
