@@ -1,7 +1,7 @@
 body{
     background-color: white;
     margin: 0;
-    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    font-family: "Poppins", "Lucida Sans Unicode", "Lucida Grande", sans-serif;
     font-size: 12px;
     letter-spacing: 0px;
     word-spacing: 2px;
@@ -10,7 +10,6 @@ body{
     text-decoration: none;
     font-style: normal;
     font-variant: normal;
-    text-transform: capitalize;
 }
 
 div{

@@ -2,27 +2,32 @@ import React, { useEffect, useState } from "react";
 import styles from "./index.module.css"
 import { HiArrowLeft } from 'react-icons/hi'
 import { AiOutlinePlus } from 'react-icons/ai'
-import { Table } from "../../../../components/Table";
-import LACreateModal from "../../components/CreateModal";
+// import { Table } from "../../../../components/Table";
+import  Tabla  from "../../../../components/Tabla";
+// import LACreateModal from "../../components/CreateModal";
 import { useGeneralContext } from "../../../../context/GeneralContext";
-import { Pagination } from "react-bootstrap";
-
+import Paginations from '../../../../components/Paginations';
 import { toast } from "react-hot-toast";
 import { useFetchEffect } from "../../../../components/utils/useFetchEffect";
 import { useNavigate } from "react-router-dom";
 import AdminService from "../../../../sevices/administrador";
 import { useAdminContext } from "../../context/AdminContext";
 import LAEditPanel from "../../components/EditPanel";
+import ModalAdmin from "../../components/AdminModal";
 
 const ListAdministrador = () => {
     const {getToken, cancan, verifyToken} = useGeneralContext()
     const {selectedAdmin, setSelectedAdmin, showAdmin, setShowAdmin } = useAdminContext()
 
     const [showCreateModal, setShowCreateModal] = useState(false)
-    const [admins, setAdmins] = useState([])
+    //const [admins, setAdmins] = useState([])
     const [currentPage, setCurrentPage] = useState(0)
     const [next, setNext] = useState(true)
+    const [totalPage, setTotalPage] = useState(0)
     const [condFetch, setCondFetch] = useState(false)
+    const [datosTabla, setDatosTabla] = useState({
+        tituloTabla: "adminsList", 
+        titulos: [{titulo: "CI"}, {titulo: "Nombre"}, {titulo: "Fecha de nacimiento"}, {titulo: "Dirección"}, {titulo: "Teléfono"}]});
 
     const parseToDate = (d=new Date()) => {
         return `${d.getFullYear()}-${d.getMonth()>10? d.getMonth()+1:`0${d.getMonth()+1}`}-${d.getDate()>9? d.getDate():`0${d.getDate()}`}`
@@ -39,8 +44,12 @@ const ListAdministrador = () => {
         }
     }, [cancan, verifyToken, nav])
     
-
-    const { isLoading, error, doFetch } = useFetchEffect(
+    const doChangeAdmin = (data) => {
+        setSelectedAdmin(data)
+        setShowAdmin(true)
+    }
+    
+    const { doFetch } = useFetchEffect(
         ()=>{
             return AdminService.getList(currentPage, getToken())
         }, 
@@ -48,8 +57,19 @@ const ListAdministrador = () => {
         {
             condition: condFetch,
             handleSuccess: (r)=>{
-                setAdmins(r.data.dataList)
+                //setAdmins(r.data.dataList)
                 setNext(r.data.next)
+                setTotalPage(r.data.totalPage)
+                setDatosTabla({...datosTabla,   clickable: {action: doChangeAdmin},
+                                                filas: r.data.dataList.map((dato)=> {return {fila: dato, 
+                                                    datos:[ 
+                                                        {dato: dato?.documento ? dato.documento : ""},
+                                                        {dato: dato?.nombre && dato.apellido ? dato.nombre + " " + dato.apellido : ""},
+                                                        {dato: dato?.nacimiento ? parseToDate(new Date(dato.nacimiento)) : ""},
+                                                        {dato: dato?.direccion ? dato.direccion : ""},
+                                                        {dato: dato?.telefono ? dato.telefono : ""}]}})
+                                                
+                })
             },
             handleError: ()=>{
                 toast.error("No se pudieron cargar los administradores, intente de nuevo")
@@ -57,28 +77,15 @@ const ListAdministrador = () => {
         }
     )
 
-    const getPages = () => {
-        return (
-            <>
-                <Pagination.Prev disabled={currentPage<=0} onClick={()=>{
-                    setCurrentPage(currentPage-1)
-                }} />
-                <Pagination.Item disabled >{currentPage + 1}</Pagination.Item>
-                <Pagination.Next disabled={!next || isLoading || error} onClick={()=>{
-                    setCurrentPage(currentPage+1)
-                }}/>
-            </>
-        )
-    }
-
-    const doChangeAdmin = (data) => {
-        setSelectedAdmin(data)
-        setShowAdmin(true)
+    const handleHide = () => {
+        setShowCreateModal(!showCreateModal)
+        doFetch(true)
     }
 
     return (
         <>
-            <LACreateModal show={showCreateModal} handleClose={()=>{setShowCreateModal(!showCreateModal) }} triggerState={()=>{doFetch(true)}} />
+            {/* <LACreateModal show={showCreateModal} handleClose={()=>{setShowCreateModal(!showCreateModal) }} triggerState={()=>{doFetch(true)}} /> */}
+            <ModalAdmin show={showCreateModal} onHide={handleHide}  />
             <div className={styles.GridContainer}>
                 <div className={styles.LANavbar}> 
                     <HiArrowLeft size={"20px"} onClick={()=>nav("/")}/>
@@ -88,6 +95,9 @@ const ListAdministrador = () => {
                     { showAdmin && 
                         <LAEditPanel onUpdate={()=>{setCurrentPage(0);doFetch(true)}}/>
                     }
+
+                    {/*
+                    Asi se hacia una tabla antes, con el codigo nuevo se reduce a una linea 
                     <Table 
                         headers={["CI", "Nombre", "Fecha de Nacimiento", "Direccion", "Telefono"]}
                         datas={admins}
@@ -102,10 +112,14 @@ const ListAdministrador = () => {
                                 </tr>
                             )
                         }}
-                    />
-                    <Pagination size="sm mt-3">
-                        {getPages()}
-                    </Pagination>
+                        />
+                    */}
+                    
+                    <Tabla datosTabla = {datosTabla} selected = {selectedAdmin?.id}/>
+
+                    
+
+                    <Paginations totalPage={totalPage} currentPage={currentPage} setCurrentPage={setCurrentPage} next={next} />
                     <div className={styles.LAAddButton} onClick={()=>{setShowCreateModal(!showCreateModal)}}>
                         <AiOutlinePlus size={"35px"}/>
                     </div>

@@ -8,22 +8,24 @@ namespace TestProfefolio.Profesor;
 public class ProfesorTestingDeletes
 {
 
-    /*[Fact]
+    [Fact]
     public async void Delete_Ok()
     {
         string id = "sdasd4adaddg465g4d6fg4";
         Mock<IMapper> mapper = new Mock<IMapper>();
         Mock<IPersona> service = new Mock<IPersona>();
+        Mock<IColegioProfesor> serviceColProf = new Mock<IColegioProfesor>();
         Mock<IRol> rol = new Mock<IRol>();
+        Mock<IProfesor> serviceProfesor = new Mock<IProfesor>();
 
-        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object, serviceColProf.Object, serviceProfesor.Object);
 
-        service.Setup(s => s.DeleteUser(id)).ReturnsAsync(true);
-        
+        service.Setup(s => s.DeleteByUserAndRole(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(true);
+
         var result = await controller.Delete(id);
-        Assert.IsType<OkResult>(result.Result);
+        Assert.IsType<OkResult>(result);
     }
-    
+
     [Fact]
     public async void Delete_IdNotFound()
     {
@@ -31,13 +33,33 @@ public class ProfesorTestingDeletes
         Mock<IMapper> mapper = new Mock<IMapper>();
         Mock<IPersona> service = new Mock<IPersona>();
         Mock<IRol> rol = new Mock<IRol>();
+        Mock<IColegioProfesor> serviceColProf = new Mock<IColegioProfesor>();
+        Mock<IProfesor> serviceProfesor = new Mock<IProfesor>();
 
-        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object);
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object, serviceColProf.Object, serviceProfesor.Object);
 
-        service.Setup(s => s.DeleteUser(id)).ReturnsAsync(false);
-        
+        service.Setup(s => s.DeleteUser(It.IsAny<string>())).ReturnsAsync(false);
+
         var result = await controller.Delete(id);
-        Assert.IsType<NotFoundResult>(result.Result);
+        Assert.IsType<NotFoundResult>(result);
     }
-*/
+
+    [Fact]
+    public async void Delete_UnespectedError()
+    {
+        string id = "sdasd4adaddg465g4d6fg4";
+        Mock<IMapper> mapper = new Mock<IMapper>();
+        Mock<IPersona> service = new Mock<IPersona>();
+        Mock<IRol> rol = new Mock<IRol>();
+        Mock<IColegioProfesor> serviceColProf = new Mock<IColegioProfesor>();
+        Mock<IProfesor> serviceProfesor = new Mock<IProfesor>();
+
+        ProfesorController controller = new ProfesorController(mapper.Object, service.Object, rol.Object, serviceColProf.Object, serviceProfesor.Object);
+
+        service.Setup(s => s.DeleteUser(It.IsAny<string>())).ThrowsAsync(new Exception());
+
+        var result = await controller.Delete(id);
+        Assert.IsType<NotFoundResult>(result);
+    }
+
 }

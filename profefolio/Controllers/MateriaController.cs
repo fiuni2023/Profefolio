@@ -7,6 +7,8 @@ using profefolio.Models.DTOs.Materia;
 using profefolio.Models.Entities;
 using profefolio.Repository;
 using log4net;
+using profefolio.Helpers;
+using System.Security.Claims;
 
 namespace profefolio.Controllers
 {
@@ -16,14 +18,32 @@ namespace profefolio.Controllers
     {
         private static readonly ILog _log = LogManager.GetLogger(typeof(MateriaController));
         private readonly IMateria _materiaService;
-        private readonly int _cantPorPag = 10;
+        private readonly IMateriaLista _materiaListaService;
+        private static int _cantPorPag => Constantes.CANT_ITEMS_POR_PAGE;
         private readonly IMapper _mapper;
-        public MateriaController(IMateria materiaService, IMapper mapper)
+        public MateriaController(IMateria materiaService, IMapper mapper, IMateriaLista materiaLista)
         {
             _materiaService = materiaService;
             _mapper = mapper;
+            _materiaListaService = materiaLista;
         }
 
+
+        [HttpGet]
+        [Authorize(Roles = "Administrador de Colegio,Profesor")]
+        public async Task<ActionResult<List<MateriaResultDTO>>> GetAll(){
+            try{
+                var materias = await _materiaService.GetAll();
+                if(materias == null){
+                _log.Error($"Error durante la obtencion de las materias, la lista es nula.");
+                    return BadRequest("Erro en la obtencion de materias.");
+                }
+                return Ok(_mapper.Map<List<MateriaResultDTO>>(materias));
+            }catch(Exception e){
+                _log.Error($"Error durante la obtencion de las materias: \n{e}");
+                return BadRequest("Erro durante la obtencion de las materias");
+            }
+        }
 
         [HttpGet]
         [Route("page/{page}")]
@@ -63,6 +83,17 @@ namespace profefolio.Controllers
             return Ok(response);
         }
 
+        // get para obetner una lista de materias que no fueron asignadas a una clase
+        [HttpGet("NoAsignadas/{idClase:int}")]
+        [Authorize(Roles = "Administrador de Colegio")]
+        public async Task<ActionResult<List<MateriaResultDTO>>> GetMateriasNoAsignadas(int idClase)
+        {
+            // obtener la lista de relaciones de la clase en MateriaLista
+            var result = await _materiaService.FindAllUnsignedMaterias(idClase);
+
+            return Ok(_mapper.Map<List<MateriaResultDTO>>(result));
+        }
+
         // PUT: api/Materias/1
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         // 
@@ -74,7 +105,7 @@ namespace profefolio.Controllers
             //verificar el modelo
             if (!ModelState.IsValid)
             {
-                 _log.Error("An error occurred in the put method");
+                _log.Error("An error occurred in the put method");
                 return BadRequest("Objeto No valido");
             }
             //verificar que no sea nulo
@@ -96,8 +127,8 @@ namespace profefolio.Controllers
             {
                 return BadRequest($"Ya existe una materia con el mismo nombre.");
             }
-            string userId = User.Identity.GetUserId();
-            p.ModifiedBy = userId;
+            var userEmail = User.FindFirstValue(ClaimTypes.Name);
+            p.ModifiedBy = userEmail;
             p.Deleted = false;
             p.Modified = DateTime.Now;
 
@@ -134,8 +165,8 @@ namespace profefolio.Controllers
             {
                 var p = _mapper.Map<Materia>(materia);
 
-                var userId = User.Identity.GetUserId();
-                p.ModifiedBy = userId;
+                var userEmail = User.FindFirstValue(ClaimTypes.Name);
+                p.ModifiedBy = userEmail;
                 p.Deleted = false;
                 var saved = await _materiaService.Add(p);
                 await _materiaService.Save();
@@ -153,16 +184,25 @@ namespace profefolio.Controllers
         [Authorize(Roles = "Administrador de Colegio")]
         public async Task<IActionResult> Delete(int id)
         {
+            
             var data = await _materiaService.FindById(id);
-
+            
             if (data == null)
             {
                 return NotFound();
             }
 
+            // se verifica que la materia no se este usando en la relacion de materia-clase
+            var isUsed = await _materiaListaService.IsUsedMateria(id);
+            if(isUsed){
+                return BadRequest("La materia no se puede eliminar porque que ya se esta usando.");
+            }
+            
+            var userEmail = User.FindFirstValue(ClaimTypes.Name);
+
             data.Modified = DateTime.Now;
             data.Deleted = true;
-            data.ModifiedBy = "Anonimous";
+            data.ModifiedBy = userEmail;
             _materiaService.Edit(data);
             await _materiaService.Save();
 

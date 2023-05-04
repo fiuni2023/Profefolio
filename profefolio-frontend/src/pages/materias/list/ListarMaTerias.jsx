@@ -1,182 +1,404 @@
 /* eslint-disable */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useFetch } from 'react';
 import { PanelContainerBG } from '../../profesor/components/LayoutAdmin';
-import NavMaterias from '../componentes/NavMaterias.jsx';
-import CreateModal from '../create/CreateModalMaterias.jsx';
 import { useGeneralContext } from "../../../context/GeneralContext.jsx";
 import axios from 'axios';
-
-import styles from  '../create/Index.module.css';
+import TextButton from '../../../components/TextButton';
+import StyleComponentBreadcrumb from '../../../components/StyleComponentBreadcrumb';
+import { toast } from 'react-hot-toast';
+import styles from '../create/Index.module.css';
 import APILINK from '../../../components/link.js';
 import { useNavigate } from 'react-router';
-
-import Pagination from 'react-bootstrap/Pagination';
-
-
-
-
-
+import Tabla from '../../../components/Tabla';
+import { useFetchEffect } from '../../../components/utils/useFetchEffect';
 function ListarMaTerias() {
 
   const [materias, setMaterias] = useState([]);
-  
-  const [showModal, setShowModal] = useState(false);
+  const [ciclos, setCiclos] = useState([]);
   const [id, setId] = useState(null);
+  const [data, setData] = useState({})
+  const [dataCiclo, setDataCiclo] = useState({})
   const { getToken, cancan, verifyToken } = useGeneralContext();
-
   const [page, setPage] = useState(0);
-
-  const [totalPage, setTotalPage] = useState(1);
-    
-  const [next, setNext] = useState(false);
-  const isLastPage = page === totalPage -1;
-  const [currentPage, setCurrentPage] = useState(0);
-
+  const [nombreCiclo, setNombreCiclo] = useState(null);
+  const [nombre_Materia, setNombreMateria] = useState('');
+  const [detallesCiclo, setDetallesCiclo] = useState(false);
+  const [nombreNuevoCiclo, setNombreNuevoCiclo] = useState(null);
+  const [detallesMateria, setDetallesMateria] = useState(false);
+  const [nombreNuevoMateria, setNombreNuevoMateria] = useState(null);
+  const [deleteMateria, setDeleteMateria]=useState(false);
   const nav = useNavigate()
 
-  useEffect(() => {
-    verifyToken()
-    if(!cancan("Administrador de Colegio")){
+  const getCiclos = () => {
+    if (!cancan("Administrador de Colegio")) {
       nav("/")
-    }else{
-      //axios.get(`https://miapi.com/products?page=${page}&size=${size}`, {
-  
-      axios.get(`${APILINK}/api/Materia/page/${page}`, {
+    } else {
+      let config = {
+        method: 'get',
+        maxBodyLength: Infinity,
+        url: `${APILINK}/api/Ciclo`,
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${getToken()}`,
+        },
+
+      };
+
+      axios.request(config)
+        .then((response) => {
+
+          setCiclos(response.data)
+
+        })
+        .catch((error) => {
+          toast.error(error)
+        });
+    }
+
+
+  }
+
+
+
+  const getMaterias = () => {
+    verifyToken()
+    if (!cancan("Administrador de Colegio")) {
+      nav("/")
+    } else {
+      //https://localhost:7063/api/Materia
+
+      axios.get(`${APILINK}/api/Materia`, {
         headers: {
           Authorization: `Bearer ${getToken()}`,
         }
       })
-  
+
         .then(response => {
-          setMaterias(response.data.dataList);
-          setTotalPage(response.data.totalPage);//Total de Paginas
-          setCurrentPage(response.data.currentPage);
-          setNext(response.data.next);
-      
-  
+          setMaterias(response.data);
+        })
+        .catch(error => {
+          toast.error(error);
+        });
+    }
+
+  }
+
+  useEffect(() => {
+
+    getMaterias();
+    getCiclos();
+
+
+  }, [page, cancan, verifyToken, nav, getToken]);
+
+  const handleSubmitMateria = () => {
+
+    if (nombre_Materia === "") toast.error("revisa los datos, los campos deben ser completados")
+    else {
+      axios.post(`${APILINK}/api/Materia`, {
+        nombre_Materia,
+
+      }, {
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+        }
+      })
+        .then(response => {
+          toast.success("Guardado exitoso");
+          setNombreMateria('')
+          getMaterias();
+        })
+        .catch(error => {
+          if (typeof (error.response.data) === "string" ? true : false) {
+            toast.error(error.response.data)
+          } else {
+            toast.error(error.response.data?.errors.Password ? error.response.data?.errors.Password[0] : error.response.data?.errors.Email[0])
+          }
+        });
+
+    }
+  }
+
+  const handleSubmitCiclo = () => {
+
+    if (nombreCiclo === "") toast.error("revisa los datos, los campos deben ser completados")
+    else {
+      axios.post(`${APILINK}/api/Ciclo`, {
+        "nombre": nombreCiclo,
+
+      }, {
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+        }
+      })
+        .then(response => {
+          toast.success("Guardado exitoso");
+          setNombreCiclo('')
+          getCiclos();
+
 
         })
         .catch(error => {
-          console.error(error);
+
+          toast.error(error.response.data)
+
+
         });
+
     }
-  }, [page, cancan, verifyToken, nav, getToken]);
-
-  const doFetch =(materia) =>{
-    setMaterias([...materias, materia])
-}
+  }
 
 
-const btndetalles = (id) => {
-  setShowModal(true);
-  setId(id);
-};
 
-const handleCloseModal = () => {
-  setShowModal(false);
-  setMaterias([]);
-};
+  const btndetallesCiclo = (data) => {
+    console.log(data);
+    setId(dataCiclo.id);
+    setDataCiclo(data);
+    setDetallesCiclo(true);
+  };
+  const btndetallesMateria = (data) => {
+    setId(data.id);
+    setData(data);
+    if(!deleteMateria){
+      setDetallesMateria(true);}
+    else{
+      setDeleteMateria(false)
 
-
-  const handlePrevClick = () => {
-    setPage(page - 1);
+    }
+    
   };
 
+  const handleNombreMateria = (event) => {
+    setNombreMateria(event.target.value);
 
-  const handleNextClick = () => {
+  }
+  const handleNombreCiclo = (event) => {
+    setNombreCiclo(event.target.value);
 
-    if (!isLastPage) {
-      setPage(page + 1);
+  }
+
+  const handleCancel = () => {
+    setDetallesCiclo(false);
+
+  }
+  const handleCancelMaterias = () => {
+
+    setDetallesMateria(false);
+  }
+  const handleNombreNuevoCiclo = (event) => {
+    setNombreNuevoCiclo(event.target.value);
+
+  }
+  const handleNombreNuevoMateria = (event) => {
+    setNombreNuevoMateria(event.target.value);
+  }
+  const handleEditCiclo = () => {
+    if (nombreNuevoCiclo === null || nombreNuevoCiclo === "") {
+      toast.error("Favor rellenar el campo correctamente")
     }
-  };
+    else {
+      axios.put(`${APILINK}/api/Ciclo/${dataCiclo.id}`, {
+        "nombre": nombreNuevoCiclo,
+
+      }, {
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+        }
+      })
+        .then(response => {
+          toast.success("Editado");
+          setNombreNuevoCiclo("")
+          setDetallesCiclo(false);
+          getCiclos();
 
 
-  const [show, setShow] = useState(false);
 
+        })
+        .catch(error => {
+          if (typeof (error.response.data) === "string" ? true : false) {
+            toast.error(error.response.data)
+          } else {
+            toast.error(error.response.data?.errors.Email[0])
+          }
+        });
+
+    }
+
+  }
+  const handleEditMateria = () => {
+    
+    if (nombreNuevoMateria === null || nombreNuevoCiclo === "") {
+      toast.error("Favor rellenar el campo correctamente")
+    }
+    else {
+      axios.put(`${APILINK}/api/Materia/${data.id}`, {
+        "nombre_Materia": nombreNuevoMateria,
+
+      }, {
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+        }
+      })
+        .then(response => {
+          toast.success("Editado");
+          setNombreNuevoMateria("")
+          setDetallesMateria(false);
+          getMaterias();
+
+
+
+        })
+        .catch(error => {
+          if (typeof (error.response.data) === "string" ? true : false) {
+            toast.error(error.response.data)
+          } else {
+            toast.error(error.response.data?.errors.Email[0])
+          }
+        });
+
+    }
+
+  }
+  const handleDeleteMateria = (id) => {
+    setDetallesCiclo(false);
+    setDetallesMateria(false);
+    setDetallesMateria(false);
+    console.log(id)
+
+  }
 
   return (
     <>
 
       <div className="page">
-        <NavMaterias />
+        <StyleComponentBreadcrumb nombre="Materias" />
+
 
         <PanelContainerBG>
 
-
-          <div className={styles.container}>
-            <table className={styles.CustomTable}>
-              <thead>
-                <tr>
-                  <th>Nombre de la Materia</th>
-                 
-                </tr>
-              </thead>
-              <tbody > 
-
-          {materias && materias.length > 0 && materias.map(materia => (
-            <tr  className={styles.tableRow} key={materia.id}>
-                    <td>{materia.nombre_Materia}</td>
-                      </tr>
-
-                        ))}
+          <div className={styles.tableContainer}>
+            <div className={styles.container} id={styles.containerMaterias} >
+              <div id={styles.materiasTable}>
+                <Tabla
+                  datosTabla={{
+                    tituloTabla: 'Lista de Materias',
+                    titulos: [
+                      { titulo: 'Materias' },
+                    ],
+                    clickable: { action: btndetallesMateria },
+                    tableWidth: '100%',
+                    filas: materias.map((materia) => ({
+                      fila: materia,
+                      datos: [
+                        { dato: materia.id },
+                        { dato: materia.nombre_Materia },
+                        { dato: <button onClick={() =>setDeleteMateria(true)}>H</button> },
+                      ],
+                    })),
+                  }}
+                  selected={id ?? '-'}
+                />
+              </div>
+              <div>
+                {detallesMateria
+                  ? <div className={styles.divEditMateria}>
+                    <label className={styles.label}><strong>Editar Materia</strong></label>
+                    <br />
+                    <label className={styles.label}>Nombre Actual</label>
+                    <br />
+                    <div className={styles.inputAdd}>{data.nombre_Materia}</div>
                   
+                    <label className={styles.label}>Nombre Nuevo</label>
+                    <br />
+                    <input className={styles.inputAdd} placeholder='Nombre de la Materia' onChange={(event) => handleNombreNuevoMateria(event)} id='input-Materia' ></input>
+                    <div className={styles.buttonsMateria}>
+                      <TextButton enabled={true} buttonType='cancel' onClick={() => handleCancelMaterias()} />
+                      <TextButton enabled={true} buttonType='save' onClick={() => handleEditMateria()} />
+                    </div>
+                  </div>
+                  : <div className={styles.divAdd}>
+                    <label className={styles.label}><strong>Agregar Materia </strong></label>
+                    <br />
+                    <input type='text' className={styles.inputAdd} placeholder='Nombre de la materia' onChange={(event) => handleNombreMateria(event)} value={nombre_Materia || ''} ></input>
+                    <br />
+                    <div className={styles.buttonGuardarMateria}>
+                      <TextButton enabled={true} buttonType='save' onClick={() => handleSubmitMateria()} />
 
-                
-                 
-              
-              </tbody>
-            </table>
-        
-  
-           
-            <div >
+                    </div>
+                  </div>
 
-            <div>
-  </div>
 
-           
- 
-      </div>
 
-             
-     
-             
+                }
+
+
+              </div>
+
+            </div>
+
+            <div className={styles.container} id={styles.containerCiclos} >
+              <div id={styles.ciclosTable}>
+                <Tabla
+                  datosTabla={{
+                    tituloTabla: 'Lista de Ciclos',
+                    titulos: [
+                      { titulo: 'Ciclos' },
+                    ],
+                    clickable: { action: btndetallesCiclo },
+                    tableWidth: '100%',
+                    filas: ciclos.map((materia) => ({
+                      fila: materia,
+                      datos: [
+                        { dato: materia.id },
+                        { dato: materia.nombre },
+                        { dato: "X" },
+                      ],
+                    })),
+                  }}
+                  selected={id ?? '-'}
+                />
+
+              </div>
+              <div>
+                {detallesCiclo
+                  ? <div className={styles.divEditCiclos}>
+                    <label className={styles.label}><strong>Editar Ciclo</strong></label>
+                    <br />
+                    <label className={styles.label}>Nombre Actual</label>
+                    <br />
+                    <div className={styles.inputAdd}> {dataCiclo.nombre} </div>
+                   
+                    <label className={styles.label}>Nombre Nuevo</label>
+                    <br />
+                    <input className={styles.inputAdd} placeholder='Nombre del Ciclo' onChange={(event) => handleNombreNuevoCiclo(event)} id='input-Ciclo' ></input>
+                    <div className={styles.buttonsCiclo}>
+                      <TextButton enabled={true} buttonType='cancel' onClick={() => handleCancel()} />
+                      <TextButton enabled={true} buttonType='save' onClick={() => handleEditCiclo()} />
+
+                    </div>
+                  </div>
+                  : <div className={styles.divAddCiclos}>
+                    <label className={styles.label}> <strong>Agregar Ciclo</strong></label>
+                    <br />
+                    <input value={nombreCiclo || ''} className={styles.inputAdd} placeholder='Nombre del Ciclo' onChange={(event) => handleNombreCiclo(event)} ></input>
+                    <div className={styles.buttonGuardar}>
+
+                      <TextButton enabled={true} buttonType='save' onClick={() => handleSubmitCiclo()} />
+
+                    </div>
+                  </div>
+
+
+                }
+
+              </div>
+            </div>
+
           </div>
-
-          
-          <div className={styles.container}>
-
-          <Pagination className="justify-content-end">
-      <Pagination.Prev onClick={handlePrevClick} disabled={page === 0} />
-      <Pagination.Next onClick={handleNextClick} disabled={isLastPage} />
-    </Pagination>
-
-</div>
-
-
         </PanelContainerBG>
-         <footer>
-          <div className={styles.NButtonForSideA}>
-            <CreateModal title="My Modal" onClose={() => setShow(false)}  show={show}
-             triggerState={(profesor)=>{doFetch(profesor)}}>
-            </CreateModal>
-            
-          </div>
-
-     
+        <footer>
 
         </footer>
-
-
-
-
-
-
-
-
-
-
-
 
       </div>
 

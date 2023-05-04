@@ -10,26 +10,26 @@ namespace profefolio.Models.Entities
     public class Clase : Data
     {
 
-        [Required(ErrorMessage ="Se tiene que indicar el Colegio")]
+        [Required(ErrorMessage = "Se tiene que indicar el Colegio")]
         public int ColegioId { get; set; }
 
-        [Required(ErrorMessage ="Se tiene que indicar el Ciclo")]
+        [Required(ErrorMessage = "Se tiene que indicar el Ciclo")]
         public int CicloId { get; set; }
 
         [Required(ErrorMessage = "Se tiene que agregar un nombre a la clase")]
         [MaxLength(128)]
         public string? Nombre { get; set; }
-        
+
         [Required(ErrorMessage = "Se tiene que agregar el turno")]
         [MaxLength(32)]
         public string? Turno { get; set; }
 
         [Required(ErrorMessage = "Se tiene que agregar el anho")]
         public int Anho { get; set; }
-
-        
         public Ciclo? Ciclo { get; set; }
         public Colegio? Colegio { get; set; }
+        public ICollection<MateriaLista>? MateriaListas { get; set; }
+        public ICollection<ClasesAlumnosColegio>? ClasesAlumnosColegios { get; set; }
 
     }
 }
