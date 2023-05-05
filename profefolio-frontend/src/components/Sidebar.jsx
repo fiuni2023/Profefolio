@@ -4,10 +4,10 @@ import { useGeneralContext } from "../context/GeneralContext";
 import styles from './Sidebar.module.css'
 import {RxCross2} from 'react-icons/rx'
 
-const SideBar = () => {
+const SideBar = ({ showSB = false}) => {
     
     const navigate = useNavigate()
-    const { showSB, isLogged, setIsLogged, cancan } = useGeneralContext()
+    const { isLogged, setIsLogged, cancan } = useGeneralContext()
 
     const handleLogOut = () => {
         localStorage.removeItem('loginData')
@@ -24,35 +24,36 @@ const SideBar = () => {
 
     return <>
         <div className={styles.container} style={style}>
-            {showSB && <>
-                <SideBarClose>
-                    <div className="d-flex justify-content-end h-100 w-100">
-                        <div className={styles.ExitContainer}>
-                            <RxCross2 size={12} />
+            <div className={styles.background} style={style}>
+                {showSB && <>
+                    <SideBarClose>
+                        <div className="d-flex justify-content-end h-100 w-100">
+                            <div className={styles.ExitContainer}>
+                                <RxCross2 size={12} />
+                            </div>
                         </div>
-                    </div>
-                </SideBarClose>
-                <SideBarTab page={"home"} handleClick={handleLogOut} > Cerrar Sesión </SideBarTab>
-                <SideBarTab page={"home"} handleClick={()=>{navigate("/")}} > - Home </SideBarTab>
-                {   
-                    cancan("Master") &&
-                    <>
-                        <SideBarTab page={"administrador"}  handleClick={()=>{navigate("/administrador/list")}} > - Administrador </SideBarTab>
-                        <SideBarTab page={"/colegios/list"}  handleClick={()=>{navigate("/colegios/list")}} > - Colegios </SideBarTab>                    
-                    </>
-                }
-                {
-                    cancan("Administrador de Colegio") &&
-                    <>
-                        <SideBarTab page={"profesor"}  handleClick={()=>{navigate("/profesor")}}>- Profesor</SideBarTab>
-                        <SideBarTab page={"clases"}  handleClick={()=>{navigate("/clases")}}>- Clases</SideBarTab>
+                    </SideBarClose>
+                    <SideBarTab page={"home"} handleClick={handleLogOut} > Cerrar Sesión </SideBarTab>
+                    <SideBarTab page={"home"} handleClick={()=>{navigate("/")}} > - Home </SideBarTab>
+                    {   
+                        cancan("Master") &&
+                        <>
+                            <SideBarTab page={"administrador"}  handleClick={()=>{navigate("/administrador/list")}} > - Administrador </SideBarTab>
+                            <SideBarTab page={"/colegios/list"}  handleClick={()=>{navigate("/colegios/list")}} > - Colegios </SideBarTab>                    
+                        </>
+                    }
+                    {
+                        cancan("Administrador de Colegio") &&
+                        <>
+                            <SideBarTab page={"alumnos"}  handleClick={()=>{navigate("/alumnos")}}>- Alumnos</SideBarTab>
+                            <SideBarTab page={"clases"}  handleClick={()=>{navigate("/clases")}}>- Clases</SideBarTab>
+                            <SideBarTab page={"materia"}  handleClick={()=>{navigate("/materias")}}>- Materias</SideBarTab>
+                            <SideBarTab page={"profesor"}  handleClick={()=>{navigate("/profesor")}}>- Profesor</SideBarTab>
+                        </>
+                    }
 
-                         <SideBarTab page={"materia"}  handleClick={()=>{navigate("/materias")}}>- Materias</SideBarTab>
-                         <SideBarTab page={"alumnos"}  handleClick={()=>{navigate("/alumnos")}}>- Alumnos</SideBarTab>
-                    </>
-                }
-
-            </>}
+                </>}
+            </div>
         </div>
     </>
 }

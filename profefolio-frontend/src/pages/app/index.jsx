@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Navbar from "../../components/Navbar.jsx";
 import SideBar from "../../components/Sidebar.jsx";
@@ -27,16 +27,16 @@ import TestPage from "../../components/TestPage.jsx";
 import { ClaseProvider } from "../clases/context/ClaseContext.jsx";
 
 const App = () => {
-
+    const [showSB, setShowSB] = useState(false)
     return (
         <>
             <BrowserRouter>
                 <GeneralProvider>
                     <div className="page">
-                        <Navbar />
+                        <Navbar showSB={showSB} setShowSB={setShowSB} />
                         <ClaseProvider>
                             <div className="content">
-                                <SideBar />
+                                <SideBar showSB = {showSB}/>
                                 <Routes>
 
                                     <Route path="/" element={<Home />} />
