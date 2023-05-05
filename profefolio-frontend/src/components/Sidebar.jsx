@@ -7,7 +7,7 @@ import {RxCross2} from 'react-icons/rx'
 const SideBar = ({ showSB = false, setShowSB = ()=>{}}) => {
     
     const navigate = useNavigate()
-    const { isLogged, setIsLogged, cancan } = useGeneralContext()
+    const { isLogged, setIsLogged, cancan} = useGeneralContext()
 
     const handleLogOut = () => {
         localStorage.removeItem('loginData')
@@ -38,13 +38,13 @@ const SideBar = ({ showSB = false, setShowSB = ()=>{}}) => {
                             </div>
                         </div>
                     </SideBarClose>
-                    <SideBarTab showSB={showSB} setShowSB={setShowSB} page={"home"} handleClick={handleLogOut} > Cerrar Sesión </SideBarTab>
+                    <SideBarTab showSB={showSB} setShowSB={setShowSB} page={"logout"} handleClick={handleLogOut} > Cerrar Sesión </SideBarTab>
                     <SideBarTab showSB={showSB} setShowSB={setShowSB} page={"home"} handleClick={()=>{navigate("/")}} > - Home </SideBarTab>
                     {   
                         cancan("Master") &&
                         <>
                             <SideBarTab showSB={showSB} setShowSB={setShowSB} page={"administrador"}  handleClick={()=>{navigate("/administrador/list")}} > - Administrador </SideBarTab>
-                            <SideBarTab showSB={showSB} setShowSB={setShowSB} page={"/colegios/list"}  handleClick={()=>{navigate("/colegios/list")}} > - Colegios </SideBarTab>                    
+                            <SideBarTab showSB={showSB} setShowSB={setShowSB} page={"colegios"}  handleClick={()=>{navigate("/colegios/list")}} > - Colegios </SideBarTab>                    
                         </>
                     }
                     {
@@ -63,11 +63,12 @@ const SideBar = ({ showSB = false, setShowSB = ()=>{}}) => {
     </>
 }
 
-const SideBarTab = ({ children, page="", current="", handleClick = () => {}, showSB, setShowSB = ()=>{} }) => {
-    const selected = current.includes(page)
+const SideBarTab = ({ children, page="", handleClick = () => {}, showSB, setShowSB = ()=>{} }) => {
+    const { currentPage, setCurrentPage } = useGeneralContext()
+    const selected = currentPage.includes(page)
 
     return <>
-        <div className={styles.tabContainer} onClick={()=>{ handleClick(); setShowSB(false)}}>
+        <div className={styles.tabContainer} onClick={()=>{ handleClick(); setShowSB(!showSB); setCurrentPage(page)}}>
             <span className={`${styles.sbt} ${selected ? styles.selected: ""}`} >
                 {children}
             </span>
@@ -76,8 +77,9 @@ const SideBarTab = ({ children, page="", current="", handleClick = () => {}, sho
 }
 
 const SideBarClose = ({ setShowSB = () => {}, children }) => {
+    const { setCurrentPage } = useGeneralContext()
     return <>
-        <div className={styles.tabContainer} onClick={() => { setShowSB(false) }}>
+        <div className={styles.tabContainer} onClick={() => { setShowSB(false); setCurrentPage("home") }}>
                 {children}
         </div>
     </>
