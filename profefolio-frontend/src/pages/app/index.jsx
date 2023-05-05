@@ -36,7 +36,7 @@ const App = () => {
                         <Navbar showSB={showSB} setShowSB={setShowSB} />
                         <ClaseProvider>
                             <div className="content">
-                                <SideBar showSB = {showSB}/>
+                                <SideBar showSB = {showSB} setShowSB={setShowSB}/>
                                 <Routes>
 
                                     <Route path="/" element={<Home />} />
