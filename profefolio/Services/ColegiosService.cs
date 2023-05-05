@@ -139,6 +139,7 @@ public class ColegiosService : IColegio
     {
         return _dbContext.Colegios
          .Where(p => !p.Deleted)
+         .OrderBy(a => a.Id)
          .Skip(page * cantPorPag)
          .Take(cantPorPag);
     }
