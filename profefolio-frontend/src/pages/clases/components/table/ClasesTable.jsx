@@ -4,11 +4,12 @@ import Tabla from '../../../../components/Tabla'
 import { useFetchEffect } from '../../../../components/utils/useFetchEffect'
 import ClassesHelper from '../../Helpers/ClassesHelper'
 import { toast } from 'react-hot-toast'
-import ClasesPaginacion from './ClasesPaginacion'
+import Paginations from '../../../../components/Paginations'
 
 const ClasesTable = ({ condFetch, colegioId, getToken, doChangeClase, triggerUpdate }) => {
     const [currentPage, setCurrentPage] = useState(0);
     const [nextPage, setNextPage] = useState(false);
+    const [totalPage, setTotalPage] = useState(0)
     const [classesTable, setClassesTable] = useState(
         {
             tituloTabla: "ClassesList",
@@ -16,7 +17,7 @@ const ClasesTable = ({ condFetch, colegioId, getToken, doChangeClase, triggerUpd
         }
     );
 
-    const { isLoading, error } = useFetchEffect(
+    useFetchEffect(
         () => {
             return ClassesHelper.getClassesPage(currentPage, colegioId, getToken())
         },
@@ -25,6 +26,8 @@ const ClasesTable = ({ condFetch, colegioId, getToken, doChangeClase, triggerUpd
             condition: condFetch,
             handleSuccess: (r) => {
                 setNextPage(r.data.next)
+                console.log(r)
+                setTotalPage(r.data.totalPage)
                 setClassesTable({
                     ...classesTable, clickable: { action: doChangeClase },
                     filas: r.data.dataList.map((dato) => {
@@ -66,13 +69,8 @@ const ClasesTable = ({ condFetch, colegioId, getToken, doChangeClase, triggerUpd
         <TableContainer>
             <Tabla datosTabla={classesTable} />
 
-            {classesTable?.filas ? <ClasesPaginacion
-                currentPage={currentPage}
-                setCurrentPage={setCurrentPage}
-                nextPage={nextPage}
-                isLoading={isLoading}
-                error={error}
-            /> : ""}
+            <Paginations next={nextPage} currentPage={currentPage} setCurrentPage={setCurrentPage} totalPage={totalPage} />
+            
 
 
 

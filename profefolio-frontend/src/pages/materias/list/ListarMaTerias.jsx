@@ -271,7 +271,7 @@ function ListarMaTerias() {
     <>
 
       <div className="page">
-        <StyleComponentBreadcrumb nombre="Materias" />
+        <StyleComponentBreadcrumb nombre="Materias / Ciclos" />
 
 
         <PanelContainerBG>

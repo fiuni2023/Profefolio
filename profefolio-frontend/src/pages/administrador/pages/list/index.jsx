@@ -78,7 +78,7 @@ const ListAdministrador = () => {
     )
 
     const handleHide = () => {
-        setShowCreateModal(!showCreateModal)
+        setShowCreateModal(false)
         doFetch(true)
     }
 
