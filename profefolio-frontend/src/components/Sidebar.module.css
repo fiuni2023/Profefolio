@@ -10,7 +10,15 @@
 .sbt{
     font-size: 16px;
     color: white;
+    transition: 0.5s all;
 }
+
+.sbt:hover{
+    font-weight: 500;
+    font-size: 20px;
+    margin: 5px;
+}
+
 .sbt2{
     font-size: 16px;
     color: white;
@@ -18,7 +26,9 @@
 }
 .selected{
     color: white;
-    font-weight: 600;
+    font-weight: 500;
+    font-size: 20px;
+    margin: 5px;
 }
 
 .container{
@@ -31,6 +41,7 @@
     transition: 0.25s all;
     background-color: #F0544F;
     z-index: 100000000;
+    box-shadow: 5px 0px 2px 0px rgba(0,0,0,0.4);
 }
 
 .ExitContainer {
@@ -51,4 +62,7 @@
 
 .ExitContainer:active {
     filter: brightness(0.8);
+}
+
+.background{
 }
