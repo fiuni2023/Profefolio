@@ -25,7 +25,7 @@ import ShowClase from "../clases/pages/view/ShowClase.jsx";
 import Home from "../home/index.jsx";
 import TestPage from "../../components/TestPage.jsx";
 import { ClaseProvider } from "../clases/context/ClaseContext.jsx";
-import ProfesorPage from "../profesor-pages/index.jsx";
+
 
 const App = () => {
 
@@ -74,8 +74,6 @@ const App = () => {
                                         <Route path="list" element={<ListarMaterias />} />
                                     </Route>
                                     <Route path="/alumnos" element={<Alumnos />} />
-
-                                    <Route path="/user-profesor" element={<ProfesorPage />} />
 
                                 </Routes>
                             </div>
