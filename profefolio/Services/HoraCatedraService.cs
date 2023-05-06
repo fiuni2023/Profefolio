@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using profefolio.Models;
 using profefolio.Models.Entities;
 using profefolio.Repository;
 
@@ -9,6 +11,14 @@ namespace profefolio.Services
 {
     public class HoraCatedraService : IHoraCatedra
     {
+        private ApplicationDbContext _context;
+
+        public HoraCatedraService(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+
         public Task<HoraCatedra> Add(HoraCatedra t)
         {
             throw new NotImplementedException();
@@ -32,6 +42,11 @@ namespace profefolio.Services
         public bool Exist()
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<List<HoraCatedra>> FindAll()
+        {
+            return await _context.HorasCatedras.Where(a => !a.Deleted).ToListAsync();
         }
 
         public Task<HoraCatedra> FindById(int id)
