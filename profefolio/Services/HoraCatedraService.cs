@@ -30,9 +30,9 @@ namespace profefolio.Services
             throw new NotImplementedException();
         }
 
-        public void Dispose()
+        public async void Dispose()
         {
-            throw new NotImplementedException();
+            await _context.DisposeAsync();
         }
 
         public HoraCatedra Edit(HoraCatedra t)
@@ -43,6 +43,11 @@ namespace profefolio.Services
         public bool Exist()
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<bool> Exist(string inicio = "", string fin = "")
+        {
+            return await _context.HorasCatedras.AnyAsync(h => !h.Deleted && inicio.Equals(h.Inicio) && fin.Equals(h.Fin));
         }
 
         public async Task<List<HoraCatedra>> FindAll()

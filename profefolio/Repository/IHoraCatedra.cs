@@ -9,5 +9,6 @@ namespace profefolio.Repository
     public interface IHoraCatedra : IRepository<HoraCatedra>
     {
         Task<List<HoraCatedra>> FindAll();
+        Task<bool> Exist(string inicio = "", string fin = "");
     }
 }
