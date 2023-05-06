@@ -89,6 +89,17 @@ namespace profefolio.Controllers
             }
 
             try{
+                if(dto.Fin == null || dto.Inicio == null){
+                    return BadRequest("Ambas horas tienen que ser validas");
+                }
+
+                //se obtiene la diferencia entre la hora de fin e inicio (La operacion es: Fin - Inicio)
+                var diferencia = DateTime.Parse(dto.Fin).Subtract(DateTime.Parse(dto.Inicio)).Hours;
+
+                if(diferencia <= 0){
+                    return BadRequest("La hora de finalizacion tiene que ser mayor a la hora de inicio");
+                }
+
                 var userEmail = User.FindFirstValue(ClaimTypes.Name);
                 
                 var horaCatedra = _mapper.Map<HoraCatedra>(dto);
