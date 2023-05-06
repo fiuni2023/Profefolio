@@ -62,6 +62,25 @@ namespace profefolio.Controllers
             }
         }
 
+
+
+        /// <summary>
+        /// Guarda una hora catedra. Se recibe la hora de inicio y de fin, y tienen que estar en el formato de 24 horas de 00:00 hasta 23:59
+        /// 
+        /// </summary>
+        /// <response code="200">Retorna un status 200 vacio</response>
+        /// <remarks>
+        /// Ticket <a href="https://nande-y.atlassian.net/browse/PF-276">PF-276</a>
+        /// </remarks>
+        /// <remarks>
+        /// Ejemplo de Body:
+        ///
+        ///     {
+        ///        "inicio": "07:30",
+        ///        "fin": "08:10"
+        ///     }
+        ///
+        /// </remarks>
         [HttpPost]
         [Authorize(Roles = "Administrador de Colegio,Profesor")]
         public async Task<ActionResult> Post([FromBody]HoraCatedraDTO dto){
