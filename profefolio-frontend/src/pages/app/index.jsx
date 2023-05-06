@@ -24,6 +24,7 @@ import Clases from "../clases/index.jsx";
 import ShowClase from "../clases/pages/view/ShowClase.jsx";
 import Home from "../home/index.jsx";
 import TestPage from "../../components/TestPage.jsx";
+import PruebaMateria from "../materias/list/PruebaMaterias.jsx"
 import { ClaseProvider } from "../clases/context/ClaseContext.jsx";
 
 const App = () => {
@@ -41,6 +42,7 @@ const App = () => {
 
                                     <Route path="/" element={<Home />} />
                                     <Route path="/test" element={<TestPage />} />
+                                    <Route path="/pruebaMateria" element={<PruebaMateria />} />
                                     <Route path="/pagina1" element={<Partidos />}>
                                         <Route path="list" element={<PartidosList />} />
                                         <Route path='create' element={<CreatePartidos />} />
