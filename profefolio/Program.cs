@@ -10,6 +10,8 @@ using profefolio.Services;
 using log4net;
 using log4net.Config;
 using profefolio;
+using System.Reflection;
+using Microsoft.OpenApi.Models;
 
 var logRepository = LogManager.GetRepository(System.Reflection.Assembly.GetEntryAssembly());
 XmlConfigurator.Configure(logRepository, new FileInfo("log4net.config"));
@@ -59,6 +61,23 @@ builder.Services.AddAuthentication(options =>
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"]))
         };
     });
+
+
+// Configuracion de Swagger
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Version = "v1",
+        Title = "Profefolio"
+    });
+    
+    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+
+});
+
+
 
 //Servicios
 builder.Services.AddScoped<IPersona, PersonasService>();
