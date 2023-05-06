@@ -2,7 +2,7 @@ import { Modal } from "react-bootstrap";
 import TextButton from '../../../components/TextButton';
 
 function ModalConfirmacion(props) {
-  const { show, onHide,onConfirm } = props;
+  const { show, onHide,onConfirm,materia } = props;
 
   return (
     <Modal show={show} onHide={onHide} centered >
@@ -10,7 +10,7 @@ function ModalConfirmacion(props) {
           <Modal.Title>Confirmación de eliminación</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          ¿Está seguro de que desea eliminar?
+          ¿Está seguro de que desea eliminar "{materia}"?
         </Modal.Body>
         <Modal.Footer>
         <TextButton enabled={true} buttonType='cancel' onClick={() => onHide()}/>

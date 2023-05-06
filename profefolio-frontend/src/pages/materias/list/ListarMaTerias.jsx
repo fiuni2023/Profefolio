@@ -10,9 +10,8 @@ import styles from '../create/Index.module.css';
 import APILINK from '../../../components/link.js';
 import { useNavigate } from 'react-router';
 import Tabla from '../../../components/Tabla';
-import { useFetchEffect } from '../../../components/utils/useFetchEffect';
 import ModalConfirmacion from '../modal/ModalConfirmarDelete.jsx';
-
+import IconButton from '../../../components/IconButton';
 function ListarMaTerias() {
 
   const [materias, setMaterias] = useState([]);
@@ -23,14 +22,13 @@ function ListarMaTerias() {
   const { getToken, cancan, verifyToken } = useGeneralContext();
   const [page, setPage] = useState(0);
   const [nombreCiclo, setNombreCiclo] = useState(null);
-  const [nombre_Materia, setNombreMateria] = useState(''); //isEditing
+  const [nombre_Materia, setNombreMateria] = useState(''); 
   const [detallesCiclo, setDetallesCiclo] = useState(false);
   const [nombreNuevoCiclo, setNombreNuevoCiclo] = useState(null);
   const [detallesMateria, setDetallesMateria] = useState(false);
   const [nombreNuevoMateria, setNombreNuevoMateria] = useState(null);
-  const [deleteMateria, setDeleteMateria] = useState(false); //isDeleting
   const [showModal, setShowModal] = useState(false);
-
+  const [nombre_Materia_delete, setNombreMateriaDelete] = useState(''); 
   const nav = useNavigate()
 
   const getCiclos = () => {
@@ -161,15 +159,9 @@ function ListarMaTerias() {
     setDetallesCiclo(true);
   };
   const btndetallesMateria = (data) => {
-    console.log("btndetallesMateria...");
     setId(data.id);
     setData(data);
-    console.log("id en editar: ", data.id);
-    // if(!deleteMateria){
     setDetallesMateria(true);
-    // else{
-    //  setDeleteMateria(false)
-    //}
   };
 
   const handleNombreMateria = (event) => {
@@ -260,53 +252,37 @@ function ListarMaTerias() {
     }
 
   }
-  const handleDeleteMateria = (id) => {
-    setDetallesCiclo(false);
-    setDetallesMateria(false);
-    setDetallesMateria(false);
-    console.log(id)
-
-  }
-  //mi codigo
  
-  /*function handleDelete(event) {
-    //setIsDeleting(true);
-    console.log("click en eliminar...");
+  //mi codigo
 
-    //setDeleteMateria(true);
-    event.stopPropagation(); //event.stopPropagation() es para el problema de evitar que un evento se propague a través del DOM
-  }*/
-
-  const handleShowModal = (event, id) => {
-    console.log("click en showmodal...");
-    console.log("id", id);
+  const handleShowModal = (event, id,nombre) => {
     setId(id);
-   // setDetallesMateria(true);
+    setNombreMateriaDelete(nombre);
     setShowModal(true);
     event.stopPropagation();
   };
 
-  const handleDelete = (event) => {
-    // lógica para eliminar el elemento
-    axios.delete(`${APILINK}/api/Materia/${id}`, {
-      }, {
+  const handleDelete = async (event) => {
+    try {
+      // lógica para eliminar el elemento
+      // `https://localhost:7063/api/Materias/${id}`
+      await axios.delete(`${APILINK}/api/Materia/${id}`, {
         headers: {
           Authorization: `Bearer ${getToken()}`,
         }
-      })
-        .then(response => {
-          toast.success("eliminado exitoso");
-          getMaterias();
-        })
-        .catch(error => {
-          if (typeof (error.response.data) === "string" ? true : false) {
-            toast.error(error.response.data)
-          } else {
-            toast.error(error.response.data?.errors.Password ? error.response.data?.errors.Password[0] : error.response.data?.errors.Email[0])
-          }
-        });
+      });
+  
+      toast.success("Eliminado exitoso");
+      getMaterias();
+      setShowModal(false);
+    } catch (error) {
+      if (error.response && error.response.status === 400) {
+        toast.error("No se puede eliminar una materia asignada a una clase");
+      } 
+    }
     setShowModal(false); // ocultar el modal después de eliminar el elemento
   };
+  
 
   //end
   return (
@@ -335,7 +311,7 @@ function ListarMaTerias() {
                         { dato: materia.id },
                         { dato: materia.nombre_Materia },
                         {
-                          dato: <button id="my-button" onClick={(event) => handleShowModal(event, materia.id)}> X </button>
+                          dato: <IconButton enabled={true} buttonType='close' onClick={(event) => handleShowModal(event, materia.id,materia.nombre_Materia)}> X </IconButton>
                         },
                         
                       ],
@@ -348,6 +324,7 @@ function ListarMaTerias() {
                         show={showModal}
                         onHide={() => setShowModal(false)}
                         onConfirm={handleDelete}
+                        materia={nombre_Materia_delete}
               />
 
               <div>
