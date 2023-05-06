@@ -34,8 +34,7 @@ namespace profefolio.Controllers
         /// <returns>Lista de registros</returns>
         /// <remarks>
         /// Ticket <a href="https://nande-y.atlassian.net/browse/PF-275">PF-275</a>
-        /// </remarks>
-        /// <remarks>
+        /// 
         /// Ejemplo de respuesta:
         ///
         ///     {
@@ -71,8 +70,7 @@ namespace profefolio.Controllers
         /// <response code="200">Retorna un status 200 vacio</response>
         /// <remarks>
         /// Ticket <a href="https://nande-y.atlassian.net/browse/PF-276">PF-276</a>
-        /// </remarks>
-        /// <remarks>
+        /// 
         /// Ejemplo de Body:
         ///
         ///     {
@@ -100,6 +98,10 @@ namespace profefolio.Controllers
                     return BadRequest("La hora de finalizacion tiene que ser mayor a la hora de inicio");
                 }
 
+                if(!(await _horaCatedraService.Exist(dto.Inicio, dto.Fin))){
+                    return BadRequest("Ya existe la hora catedra con la mismo hora de inicio y fin");
+                }
+                
                 var userEmail = User.FindFirstValue(ClaimTypes.Name);
                 
                 var horaCatedra = _mapper.Map<HoraCatedra>(dto);
