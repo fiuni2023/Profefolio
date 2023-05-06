@@ -25,6 +25,24 @@ namespace profefolio.Controllers
             _horaCatedraService = horaCatedraService;
         }
 
+        /// <summary>
+        /// Obtiene todos los registros de HoraCatedra.
+        /// 
+        /// </summary>
+        /// <returns>Lista de registros</returns>
+        /// <remarks>
+        /// Ticket <a href="https://nande-y.atlassian.net/browse/PF-275">PF-275</a>
+        /// </remarks>
+        /// <remarks>
+        /// Ejemplo de respuesta:
+        ///
+        ///     {
+        ///        "id": 1,
+        ///        "Inicio": "07:30",
+        ///        "Fin": "08:10"
+        ///     }
+        ///
+        /// </remarks>
         [HttpGet]
         [Authorize(Roles = "Administrador de Colegio,Profesor")]
         public async Task<ActionResult<List<HoraCatedraResultDTO>>> GetAll()
