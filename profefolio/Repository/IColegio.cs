@@ -11,5 +11,6 @@ public interface IColegio : IRepository<Colegio>
     Task<Persona> FindByPerson(string id);
     Task<int> FindByPersonRol(string id);
     Task<Colegio> FindByIdAdmin(string id);
-
+    Task<bool> ExistOtherWithEqualName(string newName, int id);
+    Task<bool> ExistAdminInOtherColegio(string idNewAdmin, int idColegio);
 }
