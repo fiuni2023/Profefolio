@@ -65,9 +65,9 @@ namespace profefolio.Services
             throw new NotImplementedException();
         }
 
-        public Task Save()
+        public async Task Save()
         {
-            throw new NotImplementedException();
+            await _context.SaveChangesAsync();
         }
     }
 }

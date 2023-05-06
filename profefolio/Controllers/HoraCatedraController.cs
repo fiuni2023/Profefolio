@@ -91,17 +91,17 @@ namespace profefolio.Controllers
                     return BadRequest("Ambas horas tienen que ser validas");
                 }
 
-                //se obtiene la diferencia entre la hora de fin e inicio (La operacion es: Fin - Inicio)
-                var diferencia = DateTime.Parse(dto.Fin).Subtract(DateTime.Parse(dto.Inicio)).Hours;
+                //se obtiene la diferencia entre la hora de fin e inicio (La operacion es: Fin - Inicio), la diferencia es entre los minutos
+                var diferencia = DateTime.Parse(dto.Fin).Subtract(DateTime.Parse(dto.Inicio)).TotalMinutes;
 
                 if(diferencia <= 0){
                     return BadRequest("La hora de finalizacion tiene que ser mayor a la hora de inicio");
                 }
 
-                if(!(await _horaCatedraService.Exist(dto.Inicio, dto.Fin))){
+                if((await _horaCatedraService.Exist(dto.Inicio, dto.Fin))){
                     return BadRequest("Ya existe la hora catedra con la mismo hora de inicio y fin");
                 }
-                
+
                 var userEmail = User.FindFirstValue(ClaimTypes.Name);
                 
                 var horaCatedra = _mapper.Map<HoraCatedra>(dto);
