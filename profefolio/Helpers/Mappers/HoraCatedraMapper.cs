@@ -19,6 +19,14 @@ namespace profefolio.Helpers.Mappers
                     opt => opt.MapFrom(v => v.Inicio))
                 .ForMember(dest => dest.Fin, 
                     opt => opt.MapFrom(v => v.Fin));
+
+            CreateMap<HoraCatedraDTO, HoraCatedra>()
+                .ForMember(dest => dest.Id
+                    , opt => opt.MapFrom(a => 0))
+                .ForMember(dest => dest.Inicio
+                    , opt => opt.MapFrom(a => a.Inicio))
+                .ForMember(dest => dest.Fin
+                    , opt => opt.MapFrom(a => a.Fin));
         }
     }
 }
