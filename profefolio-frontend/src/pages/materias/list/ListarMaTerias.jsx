@@ -11,6 +11,8 @@ import APILINK from '../../../components/link.js';
 import { useNavigate } from 'react-router';
 import Tabla from '../../../components/Tabla';
 import { useFetchEffect } from '../../../components/utils/useFetchEffect';
+import ModalConfirmacion from '../modal/ModalConfirmarDelete.jsx';
+
 function ListarMaTerias() {
 
   const [materias, setMaterias] = useState([]);
@@ -21,12 +23,14 @@ function ListarMaTerias() {
   const { getToken, cancan, verifyToken } = useGeneralContext();
   const [page, setPage] = useState(0);
   const [nombreCiclo, setNombreCiclo] = useState(null);
-  const [nombre_Materia, setNombreMateria] = useState('');
+  const [nombre_Materia, setNombreMateria] = useState(''); //isEditing
   const [detallesCiclo, setDetallesCiclo] = useState(false);
   const [nombreNuevoCiclo, setNombreNuevoCiclo] = useState(null);
   const [detallesMateria, setDetallesMateria] = useState(false);
   const [nombreNuevoMateria, setNombreNuevoMateria] = useState(null);
-  const [deleteMateria, setDeleteMateria]=useState(false);
+  const [deleteMateria, setDeleteMateria] = useState(false); //isDeleting
+  const [showModal, setShowModal] = useState(false);
+
   const nav = useNavigate()
 
   const getCiclos = () => {
@@ -157,15 +161,15 @@ function ListarMaTerias() {
     setDetallesCiclo(true);
   };
   const btndetallesMateria = (data) => {
+    console.log("btndetallesMateria...");
     setId(data.id);
     setData(data);
-    if(!deleteMateria){
-      setDetallesMateria(true);}
-    else{
-      setDeleteMateria(false)
-
-    }
-    
+    console.log("id en editar: ", data.id);
+    // if(!deleteMateria){
+    setDetallesMateria(true);
+    // else{
+    //  setDeleteMateria(false)
+    //}
   };
 
   const handleNombreMateria = (event) => {
@@ -226,7 +230,7 @@ function ListarMaTerias() {
 
   }
   const handleEditMateria = () => {
-    
+
     if (nombreNuevoMateria === null || nombreNuevoCiclo === "") {
       toast.error("Favor rellenar el campo correctamente")
     }
@@ -244,9 +248,6 @@ function ListarMaTerias() {
           setNombreNuevoMateria("")
           setDetallesMateria(false);
           getMaterias();
-
-
-
         })
         .catch(error => {
           if (typeof (error.response.data) === "string" ? true : false) {
@@ -266,7 +267,48 @@ function ListarMaTerias() {
     console.log(id)
 
   }
+  //mi codigo
+ 
+  /*function handleDelete(event) {
+    //setIsDeleting(true);
+    console.log("click en eliminar...");
 
+    //setDeleteMateria(true);
+    event.stopPropagation(); //event.stopPropagation() es para el problema de evitar que un evento se propague a través del DOM
+  }*/
+
+  const handleShowModal = (event, id) => {
+    console.log("click en showmodal...");
+    console.log("id", id);
+    setId(id);
+   // setDetallesMateria(true);
+    setShowModal(true);
+    event.stopPropagation();
+  };
+
+  const handleDelete = (event) => {
+    // lógica para eliminar el elemento
+    axios.delete(`${APILINK}/api/Materia/${id}`, {
+      }, {
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+        }
+      })
+        .then(response => {
+          toast.success("eliminado exitoso");
+          getMaterias();
+        })
+        .catch(error => {
+          if (typeof (error.response.data) === "string" ? true : false) {
+            toast.error(error.response.data)
+          } else {
+            toast.error(error.response.data?.errors.Password ? error.response.data?.errors.Password[0] : error.response.data?.errors.Email[0])
+          }
+        });
+    setShowModal(false); // ocultar el modal después de eliminar el elemento
+  };
+
+  //end
   return (
     <>
 
@@ -292,13 +334,22 @@ function ListarMaTerias() {
                       datos: [
                         { dato: materia.id },
                         { dato: materia.nombre_Materia },
-                        { dato: <button onClick={() =>setDeleteMateria(true)}>H</button> },
+                        {
+                          dato: <button id="my-button" onClick={(event) => handleShowModal(event, materia.id)}> X </button>
+                        },
+                        
                       ],
                     })),
                   }}
                   selected={id ?? '-'}
                 />
               </div>
+              <ModalConfirmacion
+                        show={showModal}
+                        onHide={() => setShowModal(false)}
+                        onConfirm={handleDelete}
+              />
+
               <div>
                 {detallesMateria
                   ? <div className={styles.divEditMateria}>
@@ -307,7 +358,7 @@ function ListarMaTerias() {
                     <label className={styles.label}>Nombre Actual</label>
                     <br />
                     <div className={styles.inputAdd}>{data.nombre_Materia}</div>
-                  
+
                     <label className={styles.label}>Nombre Nuevo</label>
                     <br />
                     <input className={styles.inputAdd} placeholder='Nombre de la Materia' onChange={(event) => handleNombreNuevoMateria(event)} id='input-Materia' ></input>
@@ -326,14 +377,8 @@ function ListarMaTerias() {
 
                     </div>
                   </div>
-
-
-
                 }
-
-
               </div>
-
             </div>
 
             <div className={styles.container} id={styles.containerCiclos} >
@@ -367,7 +412,7 @@ function ListarMaTerias() {
                     <label className={styles.label}>Nombre Actual</label>
                     <br />
                     <div className={styles.inputAdd}> {dataCiclo.nombre} </div>
-                   
+
                     <label className={styles.label}>Nombre Nuevo</label>
                     <br />
                     <input className={styles.inputAdd} placeholder='Nombre del Ciclo' onChange={(event) => handleNombreNuevoCiclo(event)} id='input-Ciclo' ></input>
