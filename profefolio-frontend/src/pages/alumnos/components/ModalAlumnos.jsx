@@ -155,7 +155,7 @@ function ModalAlumnos({
         setDatosModal({
             header: selected_data? deleting? "ELIMINAR ALUMNO?" : "Editar Alumno" : "Agregar Alumno",
             form: {
-                onSubmit: {action: ()=>{}},
+                onSubmit: {action: ()=>{handleCreateSubmit()}},
                 inputs: [
                     {
                         key: "nombreAlu", label: "Nombre del Alumno",
@@ -173,11 +173,12 @@ function ModalAlumnos({
                         key: "fecha", label: "Fecha de nacimiento",
                         type: "date", placeholder: "Seleccione la fecha",
                         disabled: disabled,
+                        maxDate: true,
                         required: true,
                     },
                     {
                         key: "email", label: "Correo Electónico",
-                        type: "text", placeholder: "Ingrese correo electónico",
+                        type: "email", placeholder: "Ingrese correo electónico",
                         disabled: disabled, required: true,
                         invalidText: "Ingrese un correo electónico válido",
                     },
@@ -268,8 +269,8 @@ function ModalAlumnos({
                 [
                     {
                         style: "text",
-                        type: "accept",
-                        onclick: {action: ()=>{handleCreateSubmit()}}
+                        type: "create",
+                        submit: true,
                     },
                 ]
             }
