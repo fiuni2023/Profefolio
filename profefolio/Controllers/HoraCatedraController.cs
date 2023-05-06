@@ -81,38 +81,46 @@ namespace profefolio.Controllers
         /// </remarks>
         [HttpPost]
         [Authorize(Roles = "Administrador de Colegio,Profesor")]
-        public async Task<ActionResult> Post([FromBody]HoraCatedraDTO dto){
-            if(!ModelState.IsValid){
+        public async Task<ActionResult> Post([FromBody] HoraCatedraDTO dto)
+        {
+            if (!ModelState.IsValid)
+            {
                 return BadRequest("Peticion invaldia");
             }
 
-            try{
-                if(dto.Fin == null || dto.Inicio == null){
+            try
+            {
+                if (dto.Fin == null || dto.Inicio == null)
+                {
                     return BadRequest("Ambas horas tienen que ser validas");
                 }
 
                 //se obtiene la diferencia entre la hora de fin e inicio (La operacion es: Fin - Inicio), la diferencia es entre los minutos
                 var diferencia = DateTime.Parse(dto.Fin).Subtract(DateTime.Parse(dto.Inicio)).TotalMinutes;
 
-                if(diferencia <= 0){
+                if (diferencia <= 0)
+                {
                     return BadRequest("La hora de finalizacion tiene que ser mayor a la hora de inicio");
                 }
 
-                if((await _horaCatedraService.Exist(dto.Inicio, dto.Fin))){
+                if ((await _horaCatedraService.Exist(dto.Inicio, dto.Fin)))
+                {
                     return BadRequest("Ya existe la hora catedra con la mismo hora de inicio y fin");
                 }
 
                 var userEmail = User.FindFirstValue(ClaimTypes.Name);
-                
+
                 var horaCatedra = _mapper.Map<HoraCatedra>(dto);
                 horaCatedra.Created = DateTime.Now;
                 horaCatedra.CreatedBy = userEmail;
                 horaCatedra.Deleted = false;
-                
+
                 await _horaCatedraService.Add(horaCatedra);
                 await _horaCatedraService.Save();
                 return Ok();
-            }catch(Exception e){
+            }
+            catch (Exception e)
+            {
                 Console.WriteLine($"{e}");
                 return BadRequest("Erro durante el guardado");
             }
