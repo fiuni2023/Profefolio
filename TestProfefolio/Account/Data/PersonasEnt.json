@@ -11,7 +11,7 @@
     "DocumentoTipo": "CI",
     "Nacimiento": "1999-01-01",
     "Direccion": "Avda 123",
-    "PasswordHash": "hash",
+    "PasswordHash": "hash111111",
     "Deleted" : false
   },
   {

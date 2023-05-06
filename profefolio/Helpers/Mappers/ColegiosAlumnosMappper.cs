@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using profefolio.Models.DTOs.Alumno;
 using profefolio.Models.DTOs.ColegiosAlumnos;
 using profefolio.Models.Entities;
 
@@ -56,6 +57,7 @@ namespace profefolio.Helpers.Mappers
                 opt => opt.MapFrom(v => v.Persona.Apellido))
             .ForMember(dest => dest.Documento,
                 opt => opt.MapFrom(v => v.Persona.Documento));
+
         }
     }
 }

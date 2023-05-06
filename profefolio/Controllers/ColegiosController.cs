@@ -93,8 +93,8 @@ namespace profefolio.Controllers
                 return BadRequest($"Ya existe el colegio.");
             }
             //VERIFICAR REPETIDOS con nombre de colegio igual
-            var verificarNombreColegio = await _colegioService.FindByNameColegio(colegio.Nombre);
-            if (verificarNombreColegio != null)
+            var verificarNombreColegio = await _colegioService.ExistOtherWithEqualName(colegio.Nombre, id);
+            if (verificarNombreColegio)
             {
                 return BadRequest($"Ya existe un colegio con el mismo nombre.");
             }
@@ -104,6 +104,13 @@ namespace profefolio.Controllers
             {
                 return BadRequest($"No existe el administrador.");
             }
+
+            // verificar que el id del administrador nuevo no este asugnado a un colegio distinto al actual
+            var existeAdmin = await _colegioService.ExistAdminInOtherColegio(colegio.PersonaId, id);
+            if(existeAdmin){
+                return BadRequest("El administrador ya esta asignado a otro colegio.");
+            }
+
             var p = await _colegioService.FindById(id);
             if (p == null)
             {

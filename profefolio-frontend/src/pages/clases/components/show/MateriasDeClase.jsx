@@ -9,6 +9,7 @@ import { useClaseContext } from '../../context/ClaseContext';
 import MateriasService from "../../Helpers/MateriasHelper.js"
 import { useGeneralContext } from '../../../../context/GeneralContext';
 import ClassesService from '../../Helpers/ClassesHelper';
+import { toast } from 'react-hot-toast';
 
 
 import { GrAddCircle } from 'react-icons/gr'
@@ -96,69 +97,49 @@ const TagProfesor = memo(({ id, nombre, state = "new", onClick = () => { } }) =>
 
 
 
-const TagProfesorSeleccionado=memo(({ profesorId, profesores ,onClick = () => { }}) =>{
-    const profesor = profesores.find((profesor) => profesor.id === profesorId);
-    return <>
-
-        <TagTeacher className={`tag-teacher-${unicId}`}>
-        <Item className='item-nombre-profe'>{profesor && profesor.nombre}</Item>
-
-        </TagTeacher>
-
-        <style jsx="true">{
-            `
-            .item-nombre-profe{
-                padding-left: 5px;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-                max-width: calc(10rem - 24px);
-                font-size: 15px;
-                display: flex;
-                align-items: center;
-            }
-            .tag-teacher-${unicId}{
-                background-color: #F3E6AE;
-                padding: 0.2rem;
-                max-width: 10rem;
-                width: fit-content;+
-                height: 24px;
-                display: flex;
-                align-items: center;
-            }
-            .btn-cancelar{
-                background-color: red;
-                min-width: 1rem;
-            }
-        `
-        }</style>
-
-      
-      </>
-  })
   
 
-  
+const ListItem = memo(({ index, idMateria, nombre, profesores = [] ,profeProfesor = [], type ,onClick }) => {
 
-const ListItem = memo(({ index, idMateria, nombre, profesores = [] ,profeProfesor = [], type, onClick }) => {
+    const [profesoresSeleccionados, setProfesoresSeleccionados] = useState([]);
+   
+
     const { setStatusProfesorMateria } = useClaseContext();
 
     const [isSelectOpen, setIsSelectOpen] = useState(false);
 
-    const [idProfesorSeleccionado, setIdProfesorSeleccionado] = useState(null);
+ 
 
  
 
-    const seleccionarProfesor = (e) => {
+    /*const seleccionarProfesor = (e) => {
         setIdProfesorSeleccionado(e.target.value);
-      };
-      
+      };*/
+
 
 
     const handleSelectOpenProfesores = () => {
         setIsSelectOpen(true);
 
       };
+
+
+     
+
+const seleccionarProfesor = (event) => {
+  const idProfesorSeleccionado = event.target.value;
+
+  setProfesoresSeleccionados((prevSeleccionados) =>
+    prevSeleccionados.includes(idProfesorSeleccionado)
+      ? prevSeleccionados.filter((id) => id !== idProfesorSeleccionado)
+      : [...prevSeleccionados, idProfesorSeleccionado]
+  );
+
+};
+
+
+
+  
 
      
     
@@ -192,33 +173,54 @@ const ListItem = memo(({ index, idMateria, nombre, profesores = [] ,profeProfeso
   </TagNombreSelect>
 )}
 
-{map(profeProfesor, (e, i) => (
-  
+{profeProfesor.map((profesor) => (
+      profesoresSeleccionados.includes(profesor.id) && (
+        <TagProfesor
+          key={profesor.id}
+          id={profesor.id}
+          nombre={`${profesor.nombre}${profesor.status}`}
+          state={profesor.status}
+          onClick={() => {
+            setProfesoresSeleccionados((prevSeleccionados) =>
+              prevSeleccionados.filter((id) => id !== profesor.id)
+            );
+          }}
+        />
+      )
+    ))}
+
+
+{/* 
+{profeProfesor.map((profesor) => (
+  (idProfesorSeleccionado && profesor.id === idProfesorSeleccionado) && (
+    <TagProfesor
+      key={profesor.id}
+      id={profesor.id}
+      nombre={`${profesor.nombre}${profesor.status}`}
+      state={profesor.status}
+      onClick={() => setIdProfesorSeleccionado(profesor.id)}
+    />
+  )
+))}*/}
+
+
+
+{/*{map(profeProfesor, (e, i) => (
     <TagProfesor
       id={e.id}
       nombre={`${e.nombre}${e.status}`}
       state={e.status}
       onClick={() => setIdProfesorSeleccionado(e.id)}
     />
-
+  
 
     
-))}
+))}*/}
 
 
 
 
-<TagNombreSelect>
-
-{idProfesorSeleccionado && (
-        <div>{profeProfesor.find((profesor) => profesor.id === idProfesorSeleccionado).nombre}
-        </div>
-        )}
-        </TagNombreSelect>
-
-
-
-  {/* Este es un comentario en React 
+  {/* Este es un comentario en React
          {map(profesores, (e, i) => <TagProfesor key={i} id={e.id} nombre={`${e.nombre}${e.status}`} state={e.status} onClick={() => {
                         setStatusProfesorMateria(idMateria, e.id, e.status === "new" ? "reload" : "new");
                     }
@@ -256,6 +258,9 @@ const MateriasDeClase = () => {
 
     const [profeProfesor, setProfeProfesor] = useState([]);
 
+    const [idMateria , setIdMateria]= useState("");
+
+    const [materiaProfesor, setMateriaProfesor] = useState([]);
     const { getListaMaterias, setStatusMateria, getClaseSelectedId, addMateriaToList, setProfesoresOptions } = useClaseContext();
     const { getToken } = useGeneralContext();
 
@@ -287,7 +292,28 @@ useMemo(() => {
   }, [getToken]);
   
 
-    
+ 
+ const idProfesoresArray = profeProfesor.map(profesor => profesor.id);
+
+
+ const handleCrearMateriaProfesor = async () => {
+
+    const body = { "idProfesores": idProfesoresArray, "idMateria": idMateria , "idClase": getClaseSelectedId()}
+    ClassesService.createMateriaProfesor(body, getToken())
+        .then(() => {
+            toast.success("Los datos fueron enviados correctamente.")
+            window.location.reload()
+        })
+        .catch(() => {
+            toast.error("No se pudieron guardar los cambios. Intente de nuevo o recargue la página.")
+        })
+
+  };
+  
+  
+  
+  
+
 
    useMemo(() => {
         //console.log("obtenido profes..")
@@ -337,8 +363,10 @@ useMemo(() => {
 
     const handleSelectOptionMateria = (e) => {
         e.preventDefault();
-        setOptionSelected(e.target.value)
-        console.log(`Asigna la materia con id: ${e.target.value} a la clase con id: ${getClaseSelectedId()}`)
+        setOptionSelected(e.target.value);
+
+        setIdMateria(e.target.value);
+       // console.log(`Asigna la materia con id: ${e.target.value} a la clase con id: ${getClaseSelectedId()} `)
 
         if (/^[0-9]+$/.test(e.target.value)) {
             const index = optionsMaterias.findIndex(a => a.value === parseInt(e.target.value))
@@ -385,7 +413,7 @@ useMemo(() => {
                                     profeProfesor={profeProfesor}
                                     type={materia.status}
 
-                                    onClick={() => { console.log(`${materia.nombre} 'seleccionado'`); setStatusMateria(materia.id, (materia.status === "new" ? "reload" : "new")); }}
+                                    onClick={() => { console.log(`${materia.nombre} 'seleccionado'`,"profesores", materia.profesores.map(profesor => profesor.id), "profeProfesor",profeProfesor);setIdMateria(materia.id) ;setStatusMateria(materia.id, (materia.status === "new" ? "reload" : "new")); }}
                                     
                                    
                                   
@@ -406,7 +434,19 @@ useMemo(() => {
                         ))}
                     </Select>
                     <div style={{ textAlign: 'right' }}>
-                        <TextButton buttonType={'save-changes'} enabled={materiasList?.enabled ?? false} onClick={(e) => { "enviando..." }} />
+                      {/*   <TextButton buttonType={'save-changes'} enabled={materiasList?.enabled ?? false} onClick={(e) => { "enviando..." } handleCrearMateriaProfesor()} />
+                     */}
+                                    <TextButton 
+                        buttonType={'save-changes'} 
+                        enabled={materiasList?.enabled ?? false} 
+                        onClick={(e) => { 
+                    e.preventDefault(); // prevent the default behavior of the onClick event
+                    handleCrearMateriaProfesor(); 
+                  ///  console.log("enviando..."); // or alert("enviando...") to display the message to the user
+                }} 
+                />
+
+                  
                     </div>
                 </SForm>
             </ScrollTable>

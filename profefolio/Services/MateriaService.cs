@@ -93,10 +93,12 @@ public class MateriaService : IMateria
 
     public async Task<List<Materia>> FindAllUnsignedMaterias(int idClase)
     {
+        /*
+            Se retorna las materias no asignadas o las materias asignadas pero que estan marcadas como eliminadas
+        */
         return await _dbContext.Materias
-                .Where(m => !m.Deleted
-                    && m.MateriaListas.Where(ml => ml.ClaseId != idClase)
-                    .Count() == 0)
+                .Where(m => (!m.Deleted && !m.MateriaListas.Any()) || (!m.Deleted
+                    && m.MateriaListas.Any(ml => ml.ClaseId != idClase || (ml.Deleted && ml.ClaseId == idClase))))
                 .ToListAsync();
     }
 }
