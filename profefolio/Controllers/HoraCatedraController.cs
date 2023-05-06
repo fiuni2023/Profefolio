@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using profefolio.Helpers;
 using profefolio.Models.DTOs.HoraCatedra;
+using profefolio.Models.Entities;
 using profefolio.Repository;
 
 namespace profefolio.Controllers
@@ -57,6 +59,30 @@ namespace profefolio.Controllers
 
                 Console.WriteLine($"{e}");
                 return BadRequest("Error inesperado durante la busqueda");
+            }
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Administrador de Colegio,Profesor")]
+        public async Task<ActionResult> Post([FromBody]HoraCatedraDTO dto){
+            if(!ModelState.IsValid){
+                return BadRequest("Peticion invaldia");
+            }
+
+            try{
+                var userEmail = User.FindFirstValue(ClaimTypes.Name);
+                
+                var horaCatedra = _mapper.Map<HoraCatedra>(dto);
+                horaCatedra.Created = DateTime.Now;
+                horaCatedra.CreatedBy = userEmail;
+                horaCatedra.Deleted = false;
+                
+                await _horaCatedraService.Add(horaCatedra);
+                await _horaCatedraService.Save();
+                return Ok();
+            }catch(Exception e){
+                Console.WriteLine($"{e}");
+                return BadRequest("Erro durante el guardado");
             }
         }
 
