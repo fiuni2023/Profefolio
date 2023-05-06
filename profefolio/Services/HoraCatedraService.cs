@@ -19,9 +19,10 @@ namespace profefolio.Services
         }
 
 
-        public Task<HoraCatedra> Add(HoraCatedra t)
+        public async Task<HoraCatedra> Add(HoraCatedra t)
         {
-            throw new NotImplementedException();
+            _context.Entry(t).State = EntityState.Added;
+            return await Task.FromResult(t);
         }
 
         public int Count()
