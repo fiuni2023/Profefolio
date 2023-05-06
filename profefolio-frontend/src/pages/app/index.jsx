@@ -27,6 +27,7 @@ import TestPage from "../../components/TestPage.jsx";
 import PruebaMateria from "../materias/list/PruebaMaterias.jsx"
 import { ClaseProvider } from "../clases/context/ClaseContext.jsx";
 
+
 const App = () => {
     const [showSB, setShowSB] = useState(false)
     return (
@@ -75,6 +76,7 @@ const App = () => {
                                         <Route path="list" element={<ListarMaterias />} />
                                     </Route>
                                     <Route path="/alumnos" element={<Alumnos />} />
+
                                 </Routes>
                             </div>
                         </ClaseProvider>
