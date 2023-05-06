@@ -22,13 +22,15 @@ function ListarMaTerias() {
   const { getToken, cancan, verifyToken } = useGeneralContext();
   const [page, setPage] = useState(0);
   const [nombreCiclo, setNombreCiclo] = useState(null);
-  const [nombre_Materia, setNombreMateria] = useState(''); 
+  const [nombre_Materia, setNombreMateria] = useState('');
   const [detallesCiclo, setDetallesCiclo] = useState(false);
   const [nombreNuevoCiclo, setNombreNuevoCiclo] = useState(null);
   const [detallesMateria, setDetallesMateria] = useState(false);
   const [nombreNuevoMateria, setNombreNuevoMateria] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const [nombre_Materia_delete, setNombreMateriaDelete] = useState(''); 
+  const [nombre_Materia_delete, setNombreMateriaDelete] = useState('');
+  const [showModalCiclo, setShowModalCiclo] = useState(false);
+  const [nombre_Ciclo_delete, setNombreCicloDelete] = useState('');
   const nav = useNavigate()
 
   const getCiclos = () => {
@@ -59,8 +61,6 @@ function ListarMaTerias() {
 
 
   }
-
-
 
   const getMaterias = () => {
     verifyToken()
@@ -150,10 +150,7 @@ function ListarMaTerias() {
     }
   }
 
-
-
   const btndetallesCiclo = (data) => {
-    console.log(data);
     setId(dataCiclo.id);
     setDataCiclo(data);
     setDetallesCiclo(true);
@@ -206,9 +203,6 @@ function ListarMaTerias() {
           setNombreNuevoCiclo("")
           setDetallesCiclo(false);
           getCiclos();
-
-
-
         })
         .catch(error => {
           if (typeof (error.response.data) === "string" ? true : false) {
@@ -252,16 +246,22 @@ function ListarMaTerias() {
     }
 
   }
- 
+
   //mi codigo
 
-  const handleShowModal = (event, id,nombre) => {
+  const handleShowModal = (event, id, nombre) => {
     setId(id);
     setNombreMateriaDelete(nombre);
     setShowModal(true);
     event.stopPropagation();
   };
 
+  const handleShowModalCiclo = (event, id, nombre) => {
+    setId(id);
+    setNombreCicloDelete(nombre);
+    setShowModalCiclo(true);
+    event.stopPropagation();
+  };
   const handleDelete = async (event) => {
     try {
       // lógica para eliminar el elemento
@@ -271,18 +271,37 @@ function ListarMaTerias() {
           Authorization: `Bearer ${getToken()}`,
         }
       });
-  
+
       toast.success("Eliminado exitoso");
       getMaterias();
       setShowModal(false);
     } catch (error) {
       if (error.response && error.response.status === 400) {
         toast.error("No se puede eliminar una materia asignada a una clase");
-      } 
+      }
     }
     setShowModal(false); // ocultar el modal después de eliminar el elemento
   };
-  
+
+  const handleDeleteCiclo = async (event) => {
+    try {
+      // lógica para eliminar el elemento
+      await axios.delete(`${APILINK}/api/Ciclo/${id}`, {
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+        }
+      });
+      toast.success("Eliminado exitoso");
+      getCiclos();
+      setShowModalCiclo(false);
+    } catch (error) {
+      if (error.response && error.response.status === 400) {
+        toast.error("No se puede eliminar el ciclo");
+      }
+    }
+    setShowModalCiclo(false); // ocultar el modal después de eliminar el elemento
+  };
+
 
   //end
   return (
@@ -311,9 +330,9 @@ function ListarMaTerias() {
                         { dato: materia.id },
                         { dato: materia.nombre_Materia },
                         {
-                          dato: <IconButton enabled={true} buttonType='close' onClick={(event) => handleShowModal(event, materia.id,materia.nombre_Materia)}> X </IconButton>
+                          dato: <IconButton enabled={true} buttonType='close' onClick={(event) => handleShowModal(event, materia.id, materia.nombre_Materia)}> X </IconButton>
                         },
-                        
+
                       ],
                     })),
                   }}
@@ -321,10 +340,10 @@ function ListarMaTerias() {
                 />
               </div>
               <ModalConfirmacion
-                        show={showModal}
-                        onHide={() => setShowModal(false)}
-                        onConfirm={handleDelete}
-                        materia={nombre_Materia_delete}
+                show={showModal}
+                onHide={() => setShowModal(false)}
+                onConfirm={handleDelete}
+                materia={nombre_Materia_delete}
               />
 
               <div>
@@ -373,13 +392,18 @@ function ListarMaTerias() {
                       datos: [
                         { dato: materia.id },
                         { dato: materia.nombre },
-                        { dato: "X" },
+                        { dato: <IconButton enabled={true} buttonType='close' onClick={(event) => handleShowModalCiclo(event, materia.id, materia.nombre)}>  </IconButton> },
                       ],
                     })),
                   }}
                   selected={id ?? '-'}
                 />
-
+                <ModalConfirmacion
+                  show={showModalCiclo}
+                  onHide={() => setShowModalCiclo(false)}
+                  onConfirm={handleDeleteCiclo}
+                  materia={nombre_Ciclo_delete}
+                />
               </div>
               <div>
                 {detallesCiclo
