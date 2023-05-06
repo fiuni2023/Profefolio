@@ -4,8 +4,11 @@ import { BsJustify } from 'react-icons/bs'
 import { FaUserCircle } from 'react-icons/fa'
 import { LogoNavBar } from "../assets";
 
-const Navbar = () => {
-    const { showSB ,setShowSB, getUserName} = useGeneralContext()
+const Navbar = ({
+    showSB = false, 
+    setShowSB=()=>{}
+}) => {
+    const { getUserName} = useGeneralContext()
 
     return(
         <>
