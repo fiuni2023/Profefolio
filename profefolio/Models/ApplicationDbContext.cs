@@ -194,4 +194,5 @@ public class ApplicationDbContext : IdentityDbContext<Persona>
     public DbSet<MateriaLista> MateriaListas { get; set; }
     public DbSet<ClasesAlumnosColegio> ClasesAlumnosColegios { get; set; }
     public DbSet<HoraCatedra> HorasCatedras { get; set; }
+    public DbSet<HorasCatedrasMaterias> HorasCatedrasMaterias { get; set; }
 }
