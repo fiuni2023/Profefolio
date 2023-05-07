@@ -63,6 +63,16 @@ namespace profefolio.Services
                             .ToListAsync();
         }
 
+        public async Task<List<ColegioProfesor>> GetAllHorariosOfColegiosByEmailProfesor(string emailProfesor)
+        {
+            return await _context.ColegiosProfesors
+                        .Include(a => a.Persona)
+                        .Where(p => !p.Deleted && emailProfesor.Equals(p.Persona.Email))
+                        .Include(a => a.Colegio)
+                        .Include(a => a.Persona.ListaMaterias)
+                        .ToListAsync();
+        }
+
         public async Task Save()
         {
             await _context.SaveChangesAsync();
