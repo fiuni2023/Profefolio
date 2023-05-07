@@ -260,7 +260,7 @@ const MateriasDeClase = () => {
 
     const [idMateria , setIdMateria]= useState("");
 
-    const [materiaProfesor, setMateriaProfesor] = useState([]);
+    const [materiaProfesores, setMateriaProfesores] = useState([]);
     const { getListaMaterias, setStatusMateria, getClaseSelectedId, addMateriaToList, setProfesoresOptions } = useClaseContext();
     const { getToken } = useGeneralContext();
 
@@ -269,6 +269,27 @@ const MateriasDeClase = () => {
      * 
      * Pedir profesores del colegio
      */
+
+    useEffect(() => {
+      listaMateriasProfesores();
+    }, []);
+    
+    const listaMateriasProfesores = async () => {
+      try {
+        const dataList = await ClassesService.getMateriasProfesores(getClaseSelectedId(),getToken());
+        setMateriaProfesores(dataList ?? []);
+      } catch (e) {
+        setMateriaProfesores([]);
+      }
+    };
+    
+    useEffect(() => {
+      console.log('materiaProfesores', materiaProfesores);
+    }, [materiaProfesores]);
+    
+
+ 
+ // eslint-disable-next-line react-hooks/exhaustive-deps
 
 
 
