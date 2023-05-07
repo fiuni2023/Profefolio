@@ -24,6 +24,10 @@ namespace profefolio.Helpers.Mappers
             CreateMap<HorasCatedrasMaterias, HorarioMateriaDTO>()
                 .ForMember(dest => dest.Id, 
                     opt => opt.MapFrom(v => v.Id))
+                .ForMember(dest => dest.NombreColegio, 
+                    opt => opt.MapFrom(v => v.MateriaLista.Clase.Colegio.Nombre))
+                .ForMember(dest => dest.ColegioId, 
+                    opt => opt.MapFrom(v => v.MateriaLista.Clase.ColegioId))
                 .ForMember(dest => dest.Nombre, 
                     opt => opt.MapFrom(v => v.MateriaLista.Materia.Nombre_Materia))
                 .ForMember(dest => dest.NombreClase, 

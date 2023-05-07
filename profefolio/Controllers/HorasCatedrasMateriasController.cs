@@ -33,35 +33,26 @@ namespace profefolio.Controllers
 
 
         /// <summary>
-        /// Obtiene todos los registros de los horarios en los colegios del Profesot
+        /// Obtiene todos los registros de los horarios de las materias del Profesor, en el anho actual
         /// 
         /// </summary>
-        /// <returns>Lista de colegios con los horarios de cada materia del profesor</returns>
+        /// <returns>Lista de horarios de cada materia</returns>
         /// <remarks>
         /// Ticket <a href="https://nande-y.atlassian.net/browse/PF-277">PF-277</a>
-        /// 
+        /// Rol de Usuario Autorizado: Profesor
         /// </remarks>
         [HttpGet]
         [Authorize(Roles = "Profesor")]
-        public async Task<ActionResult<List<HorariosColegiosResultDTO>>> GetAllColegiosHorarios()
+        public async Task<ActionResult<List<HorarioMateriaDTO>>> GetAllHorarios()
         {
             var profeEmail = User.FindFirstValue(ClaimTypes.Name);
 
-            var colegiosProfe = await _horaCatMatService.GetAllHorariosOfColegiosByEmailProfesor(profeEmail);
-            var listaResult = new List<HorariosColegiosResultDTO>();
-
             try
             {
-                foreach (var colProf in colegiosProfe)
-                {
-
-                    var colegioProfeResult = _mapper.Map<HorariosColegiosResultDTO>(colProf);
-                    var horarios = colProf.Persona.ListaMaterias
-                                .Select(c => _mapper.Map<HorarioMateriaDTO>(c.Horarios)).ToList();
-                    colegioProfeResult.HorariosMaterias = horarios;
-                    listaResult.Add(colegioProfeResult);
-                }
-                return Ok(listaResult);
+            var horarios = await _horaCatMatService.GetAllHorariosByEmailProfesorAndYear(profeEmail, DateTime.Now.Year);
+            
+            var lista = _mapper.Map<List<HorarioMateriaDTO>>(horarios);
+                return Ok(lista);
             }
             catch (Exception e)
             {
@@ -72,11 +63,13 @@ namespace profefolio.Controllers
 
         /// <summary>
         /// Guarda una relacion entre una hora catedra y una MateriaLista de acuerdo a un dia
-        /// 
+        /// El dia tiene que estar en minusculas
+        ///
         /// </summary>
         /// <remarks>
         /// Ticket <a href="https://nande-y.atlassian.net/browse/PF-278">PF-278</a>
         /// 
+        /// Rol de Usuario Autorizado: Profesor
         /// </remarks>
         [HttpPost]
         [Authorize(Roles = "Profesor")]

@@ -31,7 +31,7 @@ namespace profefolio.Services
 
         public async void Dispose()
         {
-            await _context.DisposeAsync(); 
+            await _context.DisposeAsync();
         }
 
         public HorasCatedrasMaterias Edit(HorasCatedrasMaterias t)
@@ -46,11 +46,11 @@ namespace profefolio.Services
 
         public async Task<bool> Exist(int idMateriaLista, int idHoraCatedra, string dia)
         {
-            return await _context.HorasCatedrasMaterias.AnyAsync(a => 
-                    !a.Deleted 
-                    && a.MateriaListaId == idMateriaLista 
-                    && a.HoraCatedraId == idHoraCatedra 
-                    && dia.ToLower().Equals($"{a.Dia}".ToLower()));
+            return await _context.HorasCatedrasMaterias.AnyAsync(a =>
+                    !a.Deleted
+                    && a.MateriaListaId == idMateriaLista
+                    && a.HoraCatedraId == idHoraCatedra
+                    && a.Dia != null && dia.ToLower().Equals(a.Dia.ToLower()));
         }
 
         public Task<HorasCatedrasMaterias> FindById(int id)
@@ -72,15 +72,19 @@ namespace profefolio.Services
                             .ToListAsync();
         }
 
-        public async Task<List<ColegioProfesor>> GetAllHorariosOfColegiosByEmailProfesor(string emailProfesor)
+        public async Task<List<HorasCatedrasMaterias>> GetAllHorariosByEmailProfesorAndYear(string emailProfesor, int anho)
         {
-            return await _context.ColegiosProfesors
-                        .Include(a => a.Persona)
-                        .Include(a => a.Persona.ListaMaterias)
-                        .Where(p => !p.Deleted && emailProfesor.Equals(p.Persona.Email))
-                        .Include(a => a.Colegio)
-                        .Include(a => a.Colegio.ListaClases)
-                        .ToListAsync();
+            return await _context.HorasCatedrasMaterias
+            .Include(a => a.HoraCatedra)
+            .Include(a => a.MateriaLista)
+            .Include(a => a.MateriaLista.Materia)
+            .Include(a => a.MateriaLista.Profesor)
+            .Include(a => a.MateriaLista.Clase.Colegio)
+            .Where(a => !a.Deleted 
+                && emailProfesor.Equals(a.MateriaLista.Profesor.Email) && a.MateriaLista.Clase.Anho == anho)/* .GroupBy(a => a.MateriaLista.Clase.Colegio) */
+            .OrderBy(a => a.HoraCatedra.Inicio)
+            .ToListAsync();
+
         }
 
         public async Task Save()
