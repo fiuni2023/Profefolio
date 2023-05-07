@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using profefolio.Models;
@@ -11,9 +12,10 @@ using profefolio.Models;
 namespace profefolio.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230507021138_Add-Relacion-HorasCatedrasMaterias")]
+    partial class AddRelacionHorasCatedrasMaterias
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -226,7 +228,7 @@ namespace profefolio.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Ciclos", (string)null);
+                    b.ToTable("Ciclos");
                 });
 
             modelBuilder.Entity("profefolio.Models.Entities.Clase", b =>
@@ -277,7 +279,7 @@ namespace profefolio.Migrations
 
                     b.HasIndex("ColegioId");
 
-                    b.ToTable("Clases", (string)null);
+                    b.ToTable("Clases");
                 });
 
             modelBuilder.Entity("profefolio.Models.Entities.ClasesAlumnosColegio", b =>
@@ -315,7 +317,7 @@ namespace profefolio.Migrations
 
                     b.HasIndex("ColegiosAlumnosId");
 
-                    b.ToTable("ClasesAlumnosColegios", (string)null);
+                    b.ToTable("ClasesAlumnosColegios");
                 });
 
             modelBuilder.Entity("profefolio.Models.Entities.Colegio", b =>
@@ -352,7 +354,7 @@ namespace profefolio.Migrations
                     b.HasIndex("PersonaId")
                         .IsUnique();
 
-                    b.ToTable("Colegios", (string)null);
+                    b.ToTable("Colegios");
                 });
 
             modelBuilder.Entity("profefolio.Models.Entities.ColegioProfesor", b =>
@@ -391,7 +393,7 @@ namespace profefolio.Migrations
 
                     b.HasIndex("PersonaId");
 
-                    b.ToTable("ColegiosProfesors", (string)null);
+                    b.ToTable("ColegiosProfesors");
                 });
 
             modelBuilder.Entity("profefolio.Models.Entities.ColegiosAlumnos", b =>
@@ -430,7 +432,7 @@ namespace profefolio.Migrations
 
                     b.HasIndex("PersonaId");
 
-                    b.ToTable("ColegiosAlumnos", (string)null);
+                    b.ToTable("ColegiosAlumnos");
                 });
 
             modelBuilder.Entity("profefolio.Models.Entities.HoraCatedra", b =>
@@ -466,7 +468,7 @@ namespace profefolio.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("HorasCatedras", (string)null);
+                    b.ToTable("HorasCatedras");
                 });
 
             modelBuilder.Entity("profefolio.Models.Entities.HorasCatedrasMaterias", b =>
@@ -508,7 +510,7 @@ namespace profefolio.Migrations
 
                     b.HasIndex("MateriaListaId");
 
-                    b.ToTable("HorasCatedrasMaterias", (string)null);
+                    b.ToTable("HorasCatedrasMaterias");
                 });
 
             modelBuilder.Entity("profefolio.Models.Entities.Materia", b =>
@@ -539,7 +541,7 @@ namespace profefolio.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Materias", (string)null);
+                    b.ToTable("Materias");
                 });
 
             modelBuilder.Entity("profefolio.Models.Entities.MateriaLista", b =>
@@ -583,7 +585,7 @@ namespace profefolio.Migrations
 
                     b.HasIndex("ProfesorId");
 
-                    b.ToTable("MateriaListas", (string)null);
+                    b.ToTable("MateriaListas");
                 });
 
             modelBuilder.Entity("profefolio.Models.Entities.Persona", b =>
