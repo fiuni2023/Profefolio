@@ -20,14 +20,27 @@ namespace profefolio.Controllers
     {
         private readonly IMapper _mapper;
         private readonly IHorasCatedrasMaterias _horaCatMatService;
+        private readonly IProfesor _profesorService;
+        private readonly IHoraCatedra _horaCatedraService;
         private static int CantPorPage => Constantes.CANT_ITEMS_POR_PAGE;
-        public HorasCatedrasMateriasController(IMapper mapper, IHorasCatedrasMaterias horaCMService)
+        public HorasCatedrasMateriasController(IMapper mapper, IHorasCatedrasMaterias horaCMService, IProfesor profesorService, IHoraCatedra horaCatService)
         {
             _mapper = mapper;
             _horaCatMatService = horaCMService;
+            _profesorService = profesorService;
+            _horaCatedraService = horaCatService;
         }
 
 
+        /// <summary>
+        /// Obtiene todos los registros de los horarios en los colegios del Profesot
+        /// 
+        /// </summary>
+        /// <returns>Lista de colegios con los horarios de cada materia del profesor</returns>
+        /// <remarks>
+        /// Ticket <a href="https://nande-y.atlassian.net/browse/PF-277">PF-277</a>
+        /// 
+        /// </remarks>
         [HttpGet]
         [Authorize(Roles = "Profesor")]
         public async Task<ActionResult<List<HorariosColegiosResultDTO>>> GetAllColegiosHorarios()
@@ -54,6 +67,47 @@ namespace profefolio.Controllers
             {
                 Console.WriteLine($"{e}");
                 return BadRequest("Error durante la obtencion del horario");
+            }
+        }
+
+        /// <summary>
+        /// Guarda una relacion entre una hora catedra y una MateriaLista de acuerdo a un dia
+        /// 
+        /// </summary>
+        /// <remarks>
+        /// Ticket <a href="https://nande-y.atlassian.net/browse/PF-278">PF-278</a>
+        /// 
+        /// </remarks>
+        [HttpPost]
+        [Authorize(Roles = "Profesor")]
+        public async Task<ActionResult> Post(HorasCatedrasMateriasDTO dto){
+            try
+            {
+                var profeEmail = User.FindFirstValue(ClaimTypes.Name);
+                // se valdia que exista la hora catedra
+                if(!(await _horaCatedraService.Exist(dto.HoraCatedraId))){
+                    return BadRequest("Hora Catedra no existe");
+                }
+                // se valida que el profesor ensenhe la materia
+                if(!(await _profesorService.IsProfesorInMateria(dto.MateriaListaId, profeEmail))){
+                    return BadRequest("El profesor no ensena la materia");
+                }
+
+                // validar que no existe una relacion similar previa
+                if(await _horaCatMatService.Exist(dto.MateriaListaId, dto.HoraCatedraId, dto.Dia)){
+                    return BadRequest("Ya se asigno este horario a la materia");
+                }
+                var model = _mapper.Map<HorasCatedrasMaterias>(dto);
+                model.Created = DateTime.Now;
+                model.CreatedBy = profeEmail;
+                model.Deleted = false;
+
+                await _horaCatMatService.Add(model);
+                await _horaCatMatService.Save();
+                return Ok();
+            }catch(Exception e){
+                Console.WriteLine($"{e}");
+                return BadRequest("Error durante el guardado");
             }
         }
     }
