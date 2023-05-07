@@ -161,6 +161,27 @@ public class ApplicationDbContext : IdentityDbContext<Persona>
         .HasOne<ColegiosAlumnos>(p => p.ColegiosAlumnos)
         .WithMany(p => p.ClasesAlumnosColegios)
         .HasForeignKey(p => p.ColegiosAlumnosId);
+
+
+
+
+
+        /* Relacion muchos a muchos entre HoraCatedra y MateriaLista */
+
+        // definicio de primary key de la tabla HorasCatedrasMaterias
+        modelBuilder.Entity<HorasCatedrasMaterias>().HasKey(ca => new { ca.Id });
+
+        //definimos el foreign key de HoraCatedra
+        modelBuilder.Entity<HorasCatedrasMaterias>()
+        .HasOne<HoraCatedra>(ca => ca.HoraCatedra)
+        .WithMany(c => c.HorariosMaterias)
+        .HasForeignKey(c => c.HoraCatedraId);
+
+        //definimos el foreign key de MateriaLista
+        modelBuilder.Entity<HorasCatedrasMaterias>()
+        .HasOne<MateriaLista>(p => p.MateriaLista)
+        .WithMany(p => p.Horarios)
+        .HasForeignKey(p => p.MateriaListaId);
     }
 
 
