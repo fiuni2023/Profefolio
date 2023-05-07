@@ -14,7 +14,8 @@ function ModalAlumnos({
     const { getToken } = useGeneralContext()
     const disabled = false
 
-    const handleCreateSubmit = () => {
+    const handleCreateSubmit = (e) => {
+        e.preventDefault()
         const nombre = document.getElementById("nombreAlu").value;
         const apellido = document.getElementById("apellido").value;
         const fecha = document.getElementById("fecha").value;
@@ -47,7 +48,10 @@ function ModalAlumnos({
 
         axios(config)
             .then(function (response) {
-                if (response.status >= 200) {
+                if (response.status === 230){
+                    console.log(response)
+                }
+                else if (response.status >= 200) {
                     handleHide();
                     fetchFunc()
                     toast.success("Guardado correctamente");
@@ -155,7 +159,7 @@ function ModalAlumnos({
         setDatosModal({
             header: selected_data? deleting? "ELIMINAR ALUMNO?" : "Editar Alumno" : "Agregar Alumno",
             form: {
-                onSubmit: {action: ()=>{handleCreateSubmit()}},
+                onSubmit: {action: (e)=>{handleCreateSubmit(e)}},
                 inputs: [
                     {
                         key: "nombreAlu", label: "Nombre del Alumno",
