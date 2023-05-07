@@ -54,6 +54,15 @@ namespace profefolio.Services
             throw new NotImplementedException();
         }
 
+        public async Task<List<HorasCatedrasMaterias>> GetAll()
+        {
+            return await _context.HorasCatedrasMaterias
+                            .Where(a => !a.Deleted)
+                            .Include(a => a.HoraCatedra)
+                            .Include(a => a.MateriaLista)
+                            .ToListAsync();
+        }
+
         public async Task Save()
         {
             await _context.SaveChangesAsync();

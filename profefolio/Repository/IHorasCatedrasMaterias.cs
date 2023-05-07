@@ -8,6 +8,6 @@ namespace profefolio.Repository
 {
     public interface IHorasCatedrasMaterias : IRepository<HorasCatedrasMaterias>
     {
-        
+        Task<List<HorasCatedrasMaterias>> GetAll();
     }
 }
