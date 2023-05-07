@@ -54,7 +54,6 @@ const FormAddCiclo = ({ handleClose, handleChangeListCiclos }) => {
     return <>
         <Formik
             validationSchema={schema}
-            onSubmit={handleSubmitCiclo}
             validateOnBlur
             initialValues={{
                 nombre: ''
@@ -62,16 +61,13 @@ const FormAddCiclo = ({ handleClose, handleChangeListCiclos }) => {
 
         >
             {({
-                handleSubmit,
                 handleChange,
                 handleBlur,
                 values,
                 touched,
-                isValid,
                 errors,
-                blur
             }) => {
-                return <Form onSubmit={handleSubmit}>
+                return <Form>
                     <SRow className="mb-3">
                         <SGroup as={Col} md="7" className="position-relative" style={{ "margin": "4px" }}>
                             <SLabel>Ciclo Nuevo</SLabel>
@@ -91,7 +87,9 @@ const FormAddCiclo = ({ handleClose, handleChangeListCiclos }) => {
                             </Form.Control.Feedback>}
                         </SGroup>
                         <SGroup as={Col} md="5" className="btn-gestion-ciclo">
-                            <TextButton type="submit" enabled={!isSend} buttonType='save'>Guardar</TextButton>
+                            <TextButton onClick={()=>{
+                                handleSubmitCiclo(values)
+                            }} enabled={!isSend} buttonType='save'>Guardar</TextButton>
                             <TextButton onClick={onClose} enabled={!isSend} buttonType='cancel'>Cancelar</TextButton>
                         </SGroup>
                     </SRow>
