@@ -97,13 +97,13 @@ const TagProfesor = memo(({ id, nombre, state = "new", onClick = () => { } }) =>
 
 
 
-  
+
 
 const ListItem = memo(({ index, idMateria, nombre, profesores = [] ,profeProfesor = [], type ,onClick }) => {
 
     const [profesoresSeleccionados, setProfesoresSeleccionados] = useState([]);
-   
 
+      
     const { setStatusProfesorMateria } = useClaseContext();
 
     const [isSelectOpen, setIsSelectOpen] = useState(false);
@@ -115,7 +115,7 @@ const ListItem = memo(({ index, idMateria, nombre, profesores = [] ,profeProfeso
     /*const seleccionarProfesor = (e) => {
         setIdProfesorSeleccionado(e.target.value);
       };*/
-
+      
 
 
     const handleSelectOpenProfesores = () => {
@@ -204,7 +204,7 @@ const seleccionarProfesor = (event) => {
 ))}*/}
 
 
-
+  
 {/*{map(profeProfesor, (e, i) => (
     <TagProfesor
       id={e.id}
@@ -212,7 +212,7 @@ const seleccionarProfesor = (event) => {
       state={e.status}
       onClick={() => setIdProfesorSeleccionado(e.id)}
     />
-  
+
 
     
 ))}*/}
@@ -220,7 +220,7 @@ const seleccionarProfesor = (event) => {
 
 
 
-  {/* Este es un comentario en React
+  {/* Este es un comentario en React 
          {map(profesores, (e, i) => <TagProfesor key={i} id={e.id} nombre={`${e.nombre}${e.status}`} state={e.status} onClick={() => {
                         setStatusProfesorMateria(idMateria, e.id, e.status === "new" ? "reload" : "new");
                     }
@@ -268,11 +268,12 @@ const MateriasDeClase = () => {
     /**
      * 
      * Pedir profesores del colegio
-     */
+     
 
     useEffect(() => {
       listaMateriasProfesores();
-    }, []);
+
+     }, []);
     
     const listaMateriasProfesores = async () => {
       try {
@@ -282,18 +283,14 @@ const MateriasDeClase = () => {
         setMateriaProfesores([]);
       }
     };
-    
-    useEffect(() => {
-      console.log('materiaProfesores', materiaProfesores);
-    }, [materiaProfesores]);
-    
+*/
 
  
  // eslint-disable-next-line react-hooks/exhaustive-deps
 
 
 
-   
+
 
 //trae profesores 
 
@@ -315,7 +312,7 @@ useMemo(() => {
   }, [getToken]);
   
 
- 
+    
  const idProfesoresArray = profeProfesor.map(profesor => profesor.id);
 
 
@@ -403,6 +400,20 @@ useMemo(() => {
         }
     }
 
+    useEffect(() => {
+        const listaMateriasProfesores = async () => {
+          try {
+            const dataList = await ClassesService.getMateriasProfesores(getClaseSelectedId(),getToken());
+            setMateriaProfesores(dataList ?? []);
+            console.log('materiaProfesores:', dataList);
+          } catch (e) {
+            setMateriaProfesores([]);
+          }
+        };
+      
+        listaMateriasProfesores();
+      }, []);
+
     let materiasList = {
         onSubmit: () => console.log("Guardado"),
         enabled: true,
@@ -412,13 +423,15 @@ useMemo(() => {
         addTitle: "Agregar Materias",
         selectTitle: "Seleccionar Materia",
         options: optionsMaterias,
-        list: getListaMaterias()
+        list: materiaProfesores.data ?? [],
     }
 
     return <>
 
         <Container>
-            <ScrollTable>
+
+
+    <ScrollTable>
                 {materiasList?.header &&
                     <SHeader>
                         {materiasList?.header?.title}
@@ -427,7 +440,7 @@ useMemo(() => {
                 {materiasList?.list &&
                     <SBody background={materiasList?.background ?? "gray"}>
                         <List>
-                          {/*   {materiasList?.list?.map((materia, index) => (
+                           {materiasList?.list?.map((materia, index) => (
                                 <ListItem key={index}
                                     idMateria={materia.id}
                                     index={index + 1}
@@ -442,7 +455,7 @@ useMemo(() => {
                                   
                                       />
                             ))}
-                            */}
+                        
                         </List>
                     </SBody>}
 
@@ -458,8 +471,7 @@ useMemo(() => {
                         ))}
                     </Select>
                     <div style={{ textAlign: 'right' }}>
-                      {/*   <TextButton buttonType={'save-changes'} enabled={materiasList?.enabled ?? false} onClick={(e) => { "enviando..." } handleCrearMateriaProfesor()} />
-                     */}
+                     
                                     <TextButton 
                         buttonType={'save-changes'} 
                         enabled={materiasList?.enabled ?? false} 
@@ -474,6 +486,8 @@ useMemo(() => {
                     </div>
                 </SForm>
             </ScrollTable>
+
+       
         </Container>
 
     </>
