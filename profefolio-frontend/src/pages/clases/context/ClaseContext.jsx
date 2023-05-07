@@ -1,5 +1,8 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState,useEffect } from "react";
 import { createContext } from "react";
+
+import ClassesService from '../Helpers/ClassesHelper';
+
 
 
 
@@ -14,8 +17,8 @@ export const useClaseContext = () => {
 
 export const ClaseProvider = ({ children }) => {
     const [profesoresOption, setProfesoresOption] = useState();
-    const [listaMaterias, setListaMaterias] = useState([
-        { id: 1, nombre: "Matematicas", status: "reload", profesores: [{ id: 1, nombre: "John Foe", status: "new" }, { id: 21, nombre: "Juan Foe", status: "new" }] },
+    const [listaMaterias, setListaMaterias] = useState([]);
+  /*      { id: 1, nombre: "Matematicas", status: "reload", profesores: [{ id: 1, nombre: "John Foe", status: "new" }, { id: 21, nombre: "Juan Foe", status: "new" }] },
         { id: 2, nombre: "Matematicas", status: "reload", profesores: [{ id: 1, nombre: "John Foe", status: "new" }, { id: 21, nombre: "Juan Foe", status: "new" }] },
         { id: 3, nombre: "Matematicas", status: "new", profesores: [{ id: 3, nombre: "John Dafoe", status: "new" }, { id: 22, nombre: "Luis Foe", status: "new" }, { id: 23, nombre: "John Foe", status: "new" }, { id: 24, nombre: "John Foe", status: "new" }] },
         { id: 4, nombre: "Matematicas", status: "new", profesores: [{ id: 4, nombre: "John Foe Garcia", status: "new" }] },
@@ -27,7 +30,27 @@ export const ClaseProvider = ({ children }) => {
         { id: 10, nombre: "Matematicas", status: "new", profesores: [{ id: 10, nombre: "John Foe", status: "new" }] },
         { id: 11, nombre: "Matematicas", status: "new", profesores: [{ id: 11, nombre: "John Foe", status: "new" }] },
         { id: 12, nombre: "Matematicas", status: "new", profesores: [{ id: 12, nombre: "John Foe", status: "new" }] },
-    ]);
+    ]);*/
+
+
+
+   /* useEffect(() => {
+        const token = getToken();
+        const claseSelectedId = getClaseSelectedId();
+        const response = ClassesService.getMateriasProfesores(claseSelectedId, token);
+    
+        response
+          .then((dataList) => {
+            // dataList es la respuesta de la API
+            // Aquí se actualiza el estado de listaMaterias con los datos recibidos de la API
+            setListaMaterias(dataList ?? []);
+          })
+          .catch((e) => {
+            setListaMaterias([]);
+          });
+      }, [getToken, getClaseSelectedId]);*/
+
+
 
 
 

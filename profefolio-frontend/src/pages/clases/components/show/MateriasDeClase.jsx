@@ -272,6 +272,8 @@ const MateriasDeClase = () => {
 
 
 
+   
+
 //trae profesores 
 
 useMemo(() => {
@@ -311,8 +313,8 @@ useMemo(() => {
   };
   
   
-  
-  
+    
+
 
 
    useMemo(() => {
@@ -404,7 +406,7 @@ useMemo(() => {
                 {materiasList?.list &&
                     <SBody background={materiasList?.background ?? "gray"}>
                         <List>
-                            {materiasList?.list?.map((materia, index) => (
+                          {/*   {materiasList?.list?.map((materia, index) => (
                                 <ListItem key={index}
                                     idMateria={materia.id}
                                     index={index + 1}
@@ -419,6 +421,7 @@ useMemo(() => {
                                   
                                       />
                             ))}
+                            */}
                         </List>
                     </SBody>}
 
