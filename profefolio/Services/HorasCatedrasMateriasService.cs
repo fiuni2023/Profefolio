@@ -67,9 +67,10 @@ namespace profefolio.Services
         {
             return await _context.ColegiosProfesors
                         .Include(a => a.Persona)
+                        .Include(a => a.Persona.ListaMaterias)
                         .Where(p => !p.Deleted && emailProfesor.Equals(p.Persona.Email))
                         .Include(a => a.Colegio)
-                        .Include(a => a.Persona.ListaMaterias)
+                        .Include(a => a.Colegio.ListaClases)
                         .ToListAsync();
         }
 

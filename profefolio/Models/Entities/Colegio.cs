@@ -17,4 +17,5 @@ public class Colegio : Data
     //Para la relacion muchos a muchos
     public IEnumerable<ColegioProfesor> ColegioProfesores { get; set; }
     public IEnumerable<ColegiosAlumnos> ColegiosAlumnos { get; set; }
+    public IEnumerable<Clase> ListaClases { get; set; }
 }
