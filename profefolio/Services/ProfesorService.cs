@@ -152,5 +152,13 @@ namespace profefolio.Services
                                 .Any(pr => !pr.Deleted && pr.ColegioId == idColegio))
                         .ToListAsync();
         }
+
+        public async Task<bool> IsProfesorInMateria(int idMateriaLista, string emailProfesor)
+        {
+            return await _context
+                    .MateriaListas
+                        .Include(a => a.Profesor)
+                        .AnyAsync(a => !a.Deleted && a.Id == idMateriaLista && a.Profesor.Email.Equals(emailProfesor));
+        }
     }
 }
