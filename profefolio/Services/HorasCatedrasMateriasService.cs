@@ -44,6 +44,15 @@ namespace profefolio.Services
             throw new NotImplementedException();
         }
 
+        public async Task<bool> Exist(int idMateriaLista, int idHoraCatedra, string dia)
+        {
+            return await _context.HorasCatedrasMaterias.AnyAsync(a => 
+                    !a.Deleted 
+                    && a.MateriaListaId == idMateriaLista 
+                    && a.HoraCatedraId == idHoraCatedra 
+                    && dia.ToLower().Equals($"{a.Dia}".ToLower()));
+        }
+
         public Task<HorasCatedrasMaterias> FindById(int id)
         {
             throw new NotImplementedException();

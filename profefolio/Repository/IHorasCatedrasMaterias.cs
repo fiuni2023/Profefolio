@@ -10,5 +10,6 @@ namespace profefolio.Repository
     {
         Task<List<HorasCatedrasMaterias>> GetAll();
         Task<List<ColegioProfesor>> GetAllHorariosOfColegiosByEmailProfesor(string emailProfesor);
+        Task<bool> Exist(int idMateriaLista, int idHoraCatedra, string dia);
     }
 }
