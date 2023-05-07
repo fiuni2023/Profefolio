@@ -4,16 +4,21 @@ import { useGeneralContext } from "../../../context/GeneralContext";
 import APILINK from '../../../components/link';
 import Modal from '../../../components/Modal';
 import { toast } from 'react-hot-toast';
+import ModalMensajeAlumno from './ModalMensajeAlumno';
 
 function ModalAlumnos({
     show = false, 
-    onHide = () => {},
+    setShow = () => {},
     fetchFunc = ()=>{},
-    selected_data
+    selected_data,
+    handleExistingStudent = () =>{},
+    onHide= () => {}
 }) {
     const { getToken } = useGeneralContext()
     const disabled = false
-
+    console.log(selected_data)
+    const [alumno, setAlumno] = useState("")
+    const [openAviso, setOpenAviso] = useState(false)
     const handleCreateSubmit = (e) => {
         e.preventDefault()
         const nombre = document.getElementById("nombreAlu").value;
@@ -46,13 +51,25 @@ function ModalAlumnos({
             data: data
         };
 
+
         axios(config)
             .then(function (response) {
                 if (response.status === 230){
                     console.log(response)
+                    setShow(false)
+                    setAlumno(response.data)
+                    setOpenAviso(true)
+                    // toast(
+                    //     <span>
+                    //       El alumno con documento: "{response.data.documento}" ya existe en la base de datos. ¿Deseas agregarlo a tu colegio?  
+                    //       <button onClick={() => console.log("Guardando: ", response.data)}>
+                    //         Agregar Alumno
+                    //       </button>
+                    //     </span>
+                    //   );
                 }
-                else if (response.status >= 200) {
-                    handleHide();
+                else if (response.status === 200) {
+                    // handleHide();
                     fetchFunc()
                     toast.success("Guardado correctamente");
                 }
@@ -64,7 +81,11 @@ function ModalAlumnos({
                 }
             });
     }
-
+    const handleCancelAviso = ()=>{
+        setShow(true)
+        setOpenAviso(false)
+    }
+    
     const handleEditSubmit = () => {
         const nombre = document.getElementById("nombreAlu").value;
         const apellido = document.getElementById("apellido").value;
@@ -143,7 +164,7 @@ function ModalAlumnos({
         if(selected_data){
             document.getElementById("nombreAlu").value = selected_data.nombre
             document.getElementById("apellido").value = selected_data.apellido
-            document.getElementById("fecha").value = selected_data.fechaNacimiento.split('T')[0]
+            document.getElementById("fecha").value = selected_data.nacimiento.split('T')[0]
             document.getElementById("email").value = selected_data.email
             document.getElementById("direccion").value = selected_data.direccion
             document.getElementById("genero").value = selected_data.genero === "Masculino"? "M": "F"
@@ -290,6 +311,7 @@ function ModalAlumnos({
     return (
         <>
             <Modal show={show} onHide={handleHide} datosModal={datosModal}/>
+            <ModalMensajeAlumno isOpen={openAviso} onAdd={()=> console.log("first")} student={alumno} onCancel={handleCancelAviso} />
         </>
     )
 }
