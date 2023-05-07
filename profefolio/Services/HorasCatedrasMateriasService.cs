@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using profefolio.Models;
 using profefolio.Models.Entities;
 using profefolio.Repository;
 
@@ -9,9 +11,17 @@ namespace profefolio.Services
 {
     public class HorasCatedrasMateriasService : IHorasCatedrasMaterias
     {
-        public Task<HorasCatedrasMaterias> Add(HorasCatedrasMaterias t)
+        private ApplicationDbContext _context;
+
+        public HorasCatedrasMateriasService(ApplicationDbContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
+        }
+
+        public async Task<HorasCatedrasMaterias> Add(HorasCatedrasMaterias t)
+        {
+            _context.Entry(t).State = EntityState.Added;
+            return await Task.FromResult(t);
         }
 
         public int Count()
@@ -19,9 +29,9 @@ namespace profefolio.Services
             throw new NotImplementedException();
         }
 
-        public void Dispose()
+        public async void Dispose()
         {
-            throw new NotImplementedException();
+            await _context.DisposeAsync(); 
         }
 
         public HorasCatedrasMaterias Edit(HorasCatedrasMaterias t)
@@ -44,9 +54,9 @@ namespace profefolio.Services
             throw new NotImplementedException();
         }
 
-        public Task Save()
+        public async Task Save()
         {
-            throw new NotImplementedException();
+            await _context.SaveChangesAsync();
         }
     }
 }
