@@ -56,7 +56,7 @@ function ModalAlumnos({
             .then(function (response) {
                 if (response.status === 230){
                     console.log(response)
-                    setShow(false)
+                    // setShow(false)
                     setAlumno(response.data)
                     setOpenAviso(true)
                     // toast(
@@ -82,7 +82,7 @@ function ModalAlumnos({
             });
     }
     const handleCancelAviso = ()=>{
-        setShow(true)
+        // setShow(true)
         setOpenAviso(false)
     }
     
