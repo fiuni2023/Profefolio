@@ -93,7 +93,7 @@ const Alumnos = () => {
                         <AiOutlinePlus size={"35px"} />
                     </AddButton>
                 </TableContainer >
-                <ModalAlumnos show={show} fetchFunc={doFetch} onHide={handleHideModal} selected_data={selected_student} />
+                <ModalAlumnos show={show} fetchFunc={doFetch} onHide={handleHideModal} selected_data={selected_student} handleExistingStudent={setSelectedStudent} setShow={setShow}/>
             </MainContainer >
         </>
     )
