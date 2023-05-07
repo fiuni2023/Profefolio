@@ -34,6 +34,17 @@ namespace profefolio.Helpers.Mappers
                     opt => opt.MapFrom(v => v.HoraCatedra.Inicio))
                 .ForMember(dest => dest.Fin, 
                     opt => opt.MapFrom(v => v.HoraCatedra.Fin));
+
+            
+            CreateMap<HorasCatedrasMateriasDTO, HorasCatedrasMaterias>()
+                .ForMember(dest => dest.Id, 
+                    opt => opt.MapFrom(v => 0))
+                .ForMember(dest => dest.HoraCatedraId, 
+                    opt => opt.MapFrom(v => v.HoraCatedraId))
+                .ForMember(dest => dest.MateriaListaId, 
+                    opt => opt.MapFrom(v => v.MateriaListaId))
+                .ForMember(dest => dest.Dia, 
+                    opt => opt.MapFrom(v => v.Dia != null ? v.Dia.Replace(v.Dia[0], v.Dia.ToUpper()[0]) : ""));
         }
     }
 }
