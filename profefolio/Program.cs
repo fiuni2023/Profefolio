@@ -91,6 +91,7 @@ builder.Services.AddScoped<IClase, ClaseService>();
 builder.Services.AddScoped<IClasesAlumnosColegio, ClasesAlumnosColegioService>();
 builder.Services.AddScoped<IFullColegio, ColegiosFullService>();
 builder.Services.AddScoped<IHoraCatedra, HoraCatedraService>();
+builder.Services.AddScoped<IHorasCatedrasMaterias, HorasCatedrasMateriasService>();
 builder.Services.AddScoped<IRol, RolService>();
 builder.Services.AddScoped<IAuth, AuthService>();
 builder.Services.AddScoped<IMateriaLista, MateriaListaService>();
