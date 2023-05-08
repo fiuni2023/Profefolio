@@ -39,6 +39,8 @@ public class AlumnosController : ControllerBase
             return BadRequest(ModelState);
         }
 
+
+
         if (dto.Nacimiento > DateTime.Now)
         {
             return BadRequest("El nacimiento no puede ser mayor a la fecha de hoy");
@@ -61,10 +63,14 @@ public class AlumnosController : ControllerBase
             var adminColegio = await _personasService.FindByEmail(adminEmail);
 
             // verificar que no exista el alumno
-            var alumno = await _personasService.FindByDocumentoAndRole(dto.Documento, "Alumno");
+            var alumno = await _personasService.FindByDocumentoAndRole(dto.Documento, dto.DocumentoTipo, "Alumno");
             if (alumno != null)
             {
-                // si ya existe el alumno creado
+                                // validar si el alumno pertenece al colegio
+                if (alumno.ColegiosAlumnos.Any(a => a.ColegioId == adminColegio.Colegio.Id)){
+                    return BadRequest("El alumno ya existe en el colegio");
+                }
+                // si el alumno existe en pero no en elcolegio del administrador
                 return new CustomStatusResult<AlumnoGetDTO>(230, _mapper.Map<AlumnoGetDTO>(alumno));
             }
 
@@ -135,7 +141,7 @@ public class AlumnosController : ControllerBase
     {
         try
         {
-            var persona = await _personasService.FindById(id);
+            var persona = await _personasService.FindByIdAndRole(id, "Alumno");
             return Ok(_mapper.Map<AlumnoGetDTO>(persona));
         }
         catch (FileNotFoundException e)
@@ -179,9 +185,16 @@ public class AlumnosController : ControllerBase
 
         try
         {
-            var persona = await _personasService.FindById(id);
+            
+            var persona = await _personasService.FindByIdAndRole(id, "Alumno");
+            var alumno = await _personasService.FindByDocumentoAndRole(dto.Documento, dto.DocumentoTipo, "Alumno");
 
-            var userId = User.Identity.GetUserId();
+            if ((alumno != null) && !(alumno.Id.Equals(persona.Id)))
+            {
+                return BadRequest("CI en uso");
+            
+            }
+            var userId = User.Identity.Name;
 
             var existMail = await _personasService.ExistMail(dto.Email);
 

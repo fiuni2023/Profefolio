@@ -10,11 +10,11 @@ footer {
 }
 
 .container {
-  height: 350px;
+  height: 80%;
   display: block;
   justify-content: center;
   align-items: center;
- 
+
 }
 
 th,
@@ -35,7 +35,8 @@ td {
 
 .tableContainer {
   display: flex;
-margin-left: 10%;
+  margin-left: 10%;
+  height: 90%;
 
 }
 
@@ -43,50 +44,86 @@ margin-left: 10%;
   overflow-y: scroll;
   display: block;
   margin-left: 7%;
-  height: 320px;
+  height: 85%;
+
+}
+
+::placeholder {
+  color: black;
+}
+
+.label {
   
+  font-size: small;
 }
-::placeholder { color: black; }
-.label{
-  font-size: medium;
-}
+
 #ciclosTable {
   margin-left: 11%;
   overflow-y: scroll;
   display: block;
-  height: 320px;
+  height: 85%;
 }
-#containerCiclos{
+
+#containerCiclos {
   width: 30%;
 
 }
-#containerMaterias{
+
+#containerMaterias {
   width: 50%;
 
 }
-.divAdd{
+
+.divAdd {
   margin-left: 8%;
-  width:650px;
+  width: 650px;
   margin-top: 4%;
 }
-.divAddCiclos{
+
+.divAddCiclos {
   margin-left: 12%;
-  width:370px;
+  width: 370px;
   margin-top: 7%;
 }
-.buttonGuardar{
-  margin-left: 45%;
+
+.divEditCiclos {
+  margin-left: 12%;
+  width: 370px;
+
 }
-.buttonGuardarMateria{
+.divEditMateria {
+  margin-left: 7%;
+  width: 650px;
+
+
+}
+
+.buttonGuardar {
+  margin-left: 45%;
+  display: flex;
+}
+.buttonsCiclo {
+  margin-top: 2%;
+  margin-left: 9%;
+  display: flex;
+}
+.buttonsMateria {
+  margin-top: 1%;
+  margin-left: 40%;
+  display: flex;
+}
+
+.buttonGuardarMateria {
   margin-left: 60%;
 }
+
 .inputAdd {
   background-color: #F5F5F5;
   border-radius: 5px;
   border-color: none;
   border: none;
   width: 80%;
-  height: 30px;
+  height: 25px;
   color: black;
 }
 

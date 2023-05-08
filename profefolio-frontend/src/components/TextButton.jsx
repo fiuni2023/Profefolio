@@ -22,11 +22,9 @@ function TextButton({ buttonType, onClick, enabled }) {
       break;
     case 'accept':
       text = 'Aceptar';
-      type = "submit";
       break;
     case 'create':
       text = 'Crear';
-      type = "submit";
       break;
     case 'save-changes':
       text = 'Guardar Cambios';
@@ -34,7 +32,6 @@ function TextButton({ buttonType, onClick, enabled }) {
       break;
     case 'save':
       text = 'Guardar';
-      type = "submit";
       break;
     case 'confirm':
       text = 'Confirmar';

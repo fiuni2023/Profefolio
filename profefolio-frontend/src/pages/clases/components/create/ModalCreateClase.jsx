@@ -104,12 +104,8 @@ const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = 
                 <Modal.Title>{title}</Modal.Title>
             </SHeader>
             <Modal.Body >
-
-
-
                 <Formik
                     validationSchema={schema}
-                    onSubmit={handleSubmit}
                     validateOnBlur
                     initialValues={{
                         nombre: '',
@@ -117,10 +113,8 @@ const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = 
                         ciclo: '',
                         anho: 2023,
                     }}
-
                 >
                     {({
-                        handleSubmit,
                         handleChange,
                         handleBlur,
                         values,
@@ -217,7 +211,7 @@ const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = 
 
                                 <SRow>
                                     <Col className="btn-container pe-2" md={10}>
-                                        <TextButton enabled={!(addCiclos || isSend)} buttonType='accept' />
+                                        <TextButton enabled={!(addCiclos || isSend)} buttonType='accept' onClick={()=>{handleSubmit(values)}} />
                                     </Col>
                                     <Col className="btn-container" md={2}>
                                         <TextButton enabled={!(addCiclos || isSend)} buttonType='cancel' onClick={handleClose} />

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using profefolio.Helpers;
 using profefolio.Models.DTOs;
+using profefolio.Models.DTOs.Alumno;
 using profefolio.Models.DTOs.ColegiosAlumnos;
 using profefolio.Models.Entities;
 using profefolio.Repository;
@@ -89,6 +90,50 @@ namespace profefolio.Controllers
                 }
 
                 var result = _mapper.Map<List<ColegioAlumnoToSelectDTO>>(listAlumnosColegio);
+                return Ok(result);
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"{ex}");
+                return BadRequest("Error durarnte la obtencion de alumnos de la clase");
+            }
+        }
+
+        [HttpGet("NoAssignedAlumnos/{claseId:int}/page/{page:int}")]
+        [Authorize(Roles = "Administrador de Colegio")]
+        public async Task<ActionResult<DataListDTO<AlumnoGetDTO>>> GetAll(int claseId, int page)
+        {
+            
+            var adminEmail = User.FindFirstValue(ClaimTypes.Name);
+            try
+            {
+                var listAlumnosColegio = await _cAlumnosService.FindNotAssigned(adminEmail, claseId, page, CantPorPage);
+
+                if (listAlumnosColegio == null)
+                {
+                    BadRequest("No se encontraron alumnos para la clase");
+                }
+
+                var cantTotal = await _cAlumnosService.CountNotAssigned(adminEmail, claseId);
+
+                var cantPages = (int)Math.Ceiling((double) listAlumnosColegio.Count() / CantPorPage);
+                
+                if(page < 0 || cantPages < page )
+                {
+                    return BadRequest($"No existe la pagina {page}");
+                }
+                    
+
+                var data = _mapper.Map<List<AlumnoGetDTO>>(listAlumnosColegio);
+
+                var result = new DataListDTO<AlumnoGetDTO>();
+
+                result.CantItems = listAlumnosColegio.Count();
+                result.CurrentPage = page;
+                result.DataList = data;
+                result.Next = result.CurrentPage + 1 < cantPages;
+                result.TotalPage = cantPages;              
                 return Ok(result);
 
             }
