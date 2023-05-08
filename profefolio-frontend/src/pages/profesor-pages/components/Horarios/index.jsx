@@ -2,6 +2,7 @@ import React, { useId } from 'react'
 import styled from 'styled-components'
 import { Calendar } from '../../api/calendar';
 import { orderBy, groupBy, sortBy, map } from "lodash"
+import { SBody, SCard, SHeader } from '../../../../components/componentsStyles/StyledDashComponent';
 
 
 const STablaHorarios = styled.table`
@@ -21,7 +22,7 @@ const TablaHorarios = () => {
     // si hay coincidencia se agrega  a la lista de rows(lista de listas ) 
     // se detiene cuando ninguna key no tenga mas elementos 
     const IdGen = () => {
-        const idGenerator =  useId()
+        const idGenerator = useId()
         return idGenerator
     };
 
@@ -39,7 +40,8 @@ const TablaHorarios = () => {
             rowDias.push(<td key={IdGen()} rowSpan={6}>{hora}</td>)
         }
         let maxLength = 0;
-        rowDias.push(<td key={IdGen()}>{`${hora < 10 ? `0${hora}` : hora}:${minuto < 10 ? `0${minuto}` : minuto}`}</td>)
+        //rowDias.push(<td key={IdGen()}>{`${hora < 10 ? `0${hora}` : hora}:${minuto < 10 ? `0${minuto}` : minuto}`}</td>)
+        rowDias.push(<td key={IdGen()}>{`${minuto < 10 ? `0${minuto}` : minuto}`}</td>)
         for (const key in grupo) {
             maxLength = maxLength < grupo[key].length ? grupo[key].length : maxLength;
 
@@ -47,7 +49,7 @@ const TablaHorarios = () => {
                 const element = grupo[key][elementoPosition]
                 const horaMinuto = element.inicio.split(":")
                 const horaMinutoFin = element.fin.split(":")
-                
+
                 const fechaInicio = new Date();
                 const fechaFin = new Date();
 
@@ -58,20 +60,20 @@ const TablaHorarios = () => {
                 // si es asi se agrega la celda de con la cantidad de filas que ocupa
                 if ((parseInt(horaMinuto[0]) === hora && parseInt(horaMinuto[1]) === minuto)) {
                     // se calcula la cantidad de filas que ocupara la materia en la tabla
-                    const rowSpan = Math.ceil(Math.abs(fechaInicio - fechaFin) / 60000 / 10) + 1; 
-                    
+                    const rowSpan = Math.ceil(Math.abs(fechaInicio - fechaFin) / 60000 / 10) + 1;
+
                     rowDias.push(<td key={IdGen()} rowSpan={rowSpan}>{grupo[key][elementoPosition].nombreColegio}</td>)
                 } else {
                     // para comprobar si la hora esta dentro del rango del inicio y fin de una materia
                     // si esta no se agrega ninguna celda
                     const horaActual = new Date();
                     horaActual.setHours(hora, minuto, 0, 0, 0)
-                    if(!(horaActual >= fechaInicio && horaActual <= fechaFin)){
-                        rowDias.push(<td key={IdGen()}>_</td>)
+                    if (!(horaActual >= fechaInicio && horaActual <= fechaFin)) {
+                        rowDias.push(<td key={IdGen()}></td>)
                     }
                 }
             } else {
-                rowDias.push(<td key={IdGen()}>_</td>)
+                rowDias.push(<td key={IdGen()}></td>)
             }
         }
 
@@ -103,8 +105,8 @@ const TablaHorarios = () => {
             </thead>
             <tbody>
                 {map(rows, (e, i) => <tr key={i}>
-                        {e}
-                    </tr>)
+                    {e}
+                </tr>)
                 }
 
             </tbody>
@@ -113,9 +115,15 @@ const TablaHorarios = () => {
 }
 const Horarios = () => {
     return <>
-        <div className="container-visualizacion">
-            <TablaHorarios />
-        </div>
+
+        <SCard>
+            <SHeader>Horarios</SHeader>
+            <SBody>
+                <div className="container-visualizacion">
+                    <TablaHorarios />
+                </div>
+            </SBody>
+        </SCard>
 
         <style jsx="true">
             {
@@ -123,7 +131,7 @@ const Horarios = () => {
                     .container-visualizacion{
                         border: 1px solid black;
                         border-radius: 20px;
-                        background-color: rgb(238, 238, 238)
+                        background-color: rgb(238, 238, 238);
                         min-height: 300px;
                         padding: 1rem;
                         max-height: 500px;
@@ -156,7 +164,7 @@ const Horarios = () => {
                     .col-horas{
                         max-width: 50px;
                     }
-                    tr > td:nth-child(1), tr > td:nth-child(2){
+                    tbody > tr:nth-child(6n + 1) > td:nth-child(2), tbody > tr:nth-child(n + 1) > td:nth-child(1){
                         font-weight: bold; 
                     } 
 
