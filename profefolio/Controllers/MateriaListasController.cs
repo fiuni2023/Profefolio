@@ -151,10 +151,12 @@ namespace profefolio.Controllers
 
                 var profesores = _mapper.Map<List<ProfesorSimpleDTO>>(result.ConvertAll(x => x.Profesor));
 
-                var materias = _mapper.Map<List<MateriaDTO>>(result.ConvertAll(x => x.Materia));
+                var materias = result.ConvertAll(x => x.Materia);
+
+                var materiasUnified = materias.DistinctBy(x => x.Id);
 
                 response.Profesores = profesores;
-                response.Materias = materias;
+                response.Materias = _mapper.Map<List<MateriaDTO>>(materiasUnified);
                 return Ok(profesores);
 
 
