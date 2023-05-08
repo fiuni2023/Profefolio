@@ -139,6 +139,7 @@ public class ColegiosService : IColegio
     {
         return _dbContext.Colegios
          .Where(p => !p.Deleted)
+         .OrderBy(a => a.Id)
          .Skip(page * cantPorPag)
          .Take(cantPorPag);
     }
@@ -150,5 +151,15 @@ public class ColegiosService : IColegio
                     && c.PersonaId != null 
                     && id.Equals(c.PersonaId)
                     && !c.personas.Deleted);
+    }
+
+    public async Task<bool> ExistOtherWithEqualName(string newName, int id)
+    {
+        return await _dbContext.Colegios.AnyAsync(a => !a.Deleted && newName.Equals(a.Nombre) && a.Id != id);
+    }
+
+    public async Task<bool> ExistAdminInOtherColegio(string idNewAdmin, int idColegio)
+    {
+        return await _dbContext.Colegios.AnyAsync(a => !a.Deleted && a.Id != idColegio && idNewAdmin.Equals(a.PersonaId));
     }
 }

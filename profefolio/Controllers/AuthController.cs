@@ -16,6 +16,9 @@ public class AuthController : ControllerBase
         _authService = authService;
     }
 
+    /// <summary>
+    /// Permite realizar el login de los distintos tipos de usuario tales como: Administrador Master, Administradores de Colegios y Profesores. Para que se puean loguear los Administradores de Colegios tienen que estar primeramente asignados a un Colegio.
+    /// </summary>
     [Route("/login")]
     [HttpPost]
     [AllowAnonymous]

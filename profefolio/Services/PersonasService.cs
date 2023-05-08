@@ -209,12 +209,14 @@ public class PersonasService : IPersona
 
     public async Task<bool> ExistDoc(Persona persona)
     {
-        return await _userManager.Users
+        var query = await _userManager.Users
             .Where(p => !p.Deleted)
-            .AnyAsync(p => p.DocumentoTipo != null
-                           && persona.Documento != null
-                           && persona.Documento.Equals(p.Documento)
-                           && p.DocumentoTipo.Equals(p.DocumentoTipo));
+            .Where(p => (p.Documento != null && p.DocumentoTipo != null) &&
+                (p.DocumentoTipo.Equals(persona.DocumentoTipo) && p.Documento.Equals(persona.Documento)))
+                .CountAsync() > 0;
+
+        return query;
+                    
     }
 
     public async Task<Persona> FindByEmail(string email = "")
@@ -274,10 +276,11 @@ public class PersonasService : IPersona
     {
         var persona = await _userManager.Users
             .Where(a => !a.Deleted)
-            .Where(a => a.Documento != null)
-            .Where(a => a.Documento.Equals(documento))
-            .Where(a => a.DocumentoTipo != null)
-            .Where(a => a.DocumentoTipo.Equals(DocumentoTipo))
+            .Where(a => 
+                (a.Documento != null && a.DocumentoTipo != null)
+                && (a.DocumentoTipo.Equals(DocumentoTipo) && a.Documento.Equals(documento)))
+            .Include(a => a.ColegiosAlumnos)
+            .Include(a => a.ColegiosAlumnos)
             .FirstOrDefaultAsync();
         if (persona != null)
         {

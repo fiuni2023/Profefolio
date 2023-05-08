@@ -98,7 +98,7 @@ public class MateriaService : IMateria
         */
         return await _dbContext.Materias
                 .Where(m => (!m.Deleted && !m.MateriaListas.Any()) || (!m.Deleted
-                    && m.MateriaListas.Any(ml => ml.ClaseId != idClase || (!ml.Deleted && ml.ClaseId == idClase))))
+                    && m.MateriaListas.Any(ml => ml.ClaseId != idClase || (ml.Deleted && ml.ClaseId == idClase))))
                 .ToListAsync();
     }
 }

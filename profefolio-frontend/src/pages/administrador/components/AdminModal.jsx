@@ -42,9 +42,8 @@ function ModalAdmin({
 
         AdminService.createAdmin(data, getToken())
                 .then(r => {
-                    toast.success("creado con exito!!")
-                    fetchFunc()
                     handleHide()
+                    toast.success("creado con exito!!")
                 })
                 .catch(error => {
                     if (typeof (error.response.data) === "string" ? true : false) {
@@ -53,7 +52,6 @@ function ModalAdmin({
                         toast.error(error.response.data?.Password ? error.response.data?.Password[0] : error.response.data?.Email[0])
                     }
                 })
-
     }
 
     useEffect(() => {
@@ -194,6 +192,7 @@ function ModalAdmin({
         document.getElementById("passConf").value = "";
         setDeleting(false)
         onHide()
+        fetchFunc()
     }
 
     return (
