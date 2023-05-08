@@ -11,5 +11,7 @@ namespace profefolio.Repository
     {
         Task<(ColegioProfesorResultOfCreatedDTO? resultado, Exception? ex)> Add(Persona p, string password, string rol, int idColegio);
         Task<List<Persona>> FindAllProfesoresOfColegio(int idColegio);
+
+        Task<bool> IsProfesorInMateria(int idMateriaLista, string emailProfesor);
     }
 }
