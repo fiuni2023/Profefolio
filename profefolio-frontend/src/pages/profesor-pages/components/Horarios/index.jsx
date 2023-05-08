@@ -1,16 +1,54 @@
 import React, { useId } from 'react'
 import styled from 'styled-components'
 import { Calendar } from '../../api/calendar';
-import { orderBy, groupBy, sortBy, map } from "lodash"
+import { groupBy, map, find } from "lodash"
 import { SBody, SCard, SHeader } from '../../../../components/componentsStyles/StyledDashComponent';
 
 
 const STablaHorarios = styled.table`
 
 `
+const getColors = (color) => {
+    switch(color){
+        case "bluesky":
+            return "#C1E1FA";
+        case "purple":
+            return "#C8BFD9";
+        case "yellow":
+            return "#F6E7A7";
+        case "orange":
+            return "#FCC6AC";
+        case "blue":
+            return "#8DACE1";
+        case "green":
+            return "#59C8A4";
+        case "pink":
+            return "#F2BFD3";
+        case "salmon":
+            return "#F5918E"
+        default:
+            return "#C2C2C2"
+    }
+}
 const TablaHorarios = () => {
+    const colorsColegios = [];
 
+    const addColorColegios = (idColegio)=> {
+        const listColorsName = ["bluesky", "yellow", "green", "orange", "blue", "purple", "pink", "salmon"]
+        
+        const colegio = find(colorsColegios, a => a.idColegio === idColegio)
 
+        if(!!colegio){
+            return getColors(colegio.colorName)
+        }
+        else{
+            const colorName = listColorsName[colorsColegios.length]
+            const colorColegio = {idColegio : idColegio, colorName: colorName}
+            colorsColegios.push(colorColegio)
+            
+            return getColors(colorName)
+        }
+    }
     const grupo = groupBy(Calendar, a => a.dia)
 
     const headers = []
@@ -37,11 +75,11 @@ const TablaHorarios = () => {
 
         const rowDias = []
         if (minuto === 0) {
-            rowDias.push(<td key={IdGen()} rowSpan={6}>{hora}</td>)
+            rowDias.push(<td className={`cells-hours ${hora % 2 !== 0 ? "cell-striped" : ""}`} key={IdGen()} rowSpan={6}>{hora}</td>)
         }
         let maxLength = 0;
         //rowDias.push(<td key={IdGen()}>{`${hora < 10 ? `0${hora}` : hora}:${minuto < 10 ? `0${minuto}` : minuto}`}</td>)
-        rowDias.push(<td key={IdGen()}>{`${minuto < 10 ? `0${minuto}` : minuto}`}</td>)
+        rowDias.push(<td className={`cells-minutes ${hora % 2 !== 0 ? "cell-striped" : ""}`} key={IdGen()}>{`${minuto < 10 ? `0${minuto}` : minuto}`}</td>)
         for (const key in grupo) {
             maxLength = maxLength < grupo[key].length ? grupo[key].length : maxLength;
 
@@ -62,18 +100,26 @@ const TablaHorarios = () => {
                     // se calcula la cantidad de filas que ocupara la materia en la tabla
                     const rowSpan = Math.ceil(Math.abs(fechaInicio - fechaFin) / 60000 / 10) + 1;
 
-                    rowDias.push(<td key={IdGen()} rowSpan={rowSpan}>{grupo[key][elementoPosition].nombreColegio}</td>)
+                    rowDias.push(<td
+                        key={IdGen()} 
+                        rowSpan={rowSpan} 
+                        style={{"backgroundColor": addColorColegios(grupo[key][elementoPosition].colegioId), "fontWeight": "bold" }}
+                        >
+                            {
+                                grupo[key][elementoPosition].nombreColegio
+                            }
+                        </td>)
                 } else {
                     // para comprobar si la hora esta dentro del rango del inicio y fin de una materia
                     // si esta no se agrega ninguna celda
                     const horaActual = new Date();
                     horaActual.setHours(hora, minuto, 0, 0, 0)
                     if (!(horaActual >= fechaInicio && horaActual <= fechaFin)) {
-                        rowDias.push(<td key={IdGen()}></td>)
+                        rowDias.push(<td className={`${hora % 2 !== 0 ? "cell-striped" : ""}`} key={IdGen()}></td>)
                     }
                 }
             } else {
-                rowDias.push(<td key={IdGen()}></td>)
+                rowDias.push(<td className={`${hora % 2 !== 0 ? "cell-striped" : ""}`} key={IdGen()}></td>)
             }
         }
 
@@ -111,6 +157,15 @@ const TablaHorarios = () => {
 
             </tbody>
         </STablaHorarios>
+        <style jsx="true">
+                {
+                    `
+                        .cell-striped{
+                            background-color: rgb(238, 238, 238);
+                        }
+                    `
+                }
+        </style>
     </>
 }
 const Horarios = () => {
@@ -131,7 +186,7 @@ const Horarios = () => {
                     .container-visualizacion{
                         border: 1px solid black;
                         border-radius: 20px;
-                        background-color: rgb(238, 238, 238);
+                        background-color: white;
                         min-height: 300px;
                         padding: 1rem;
                         max-height: 500px;
@@ -149,20 +204,37 @@ const Horarios = () => {
                         
                     }
                     .container-visualizacion::-webkit-scrollbar-thumb {
-                        background: gray; 
+                        background: rgb(180, 180, 180); 
                         border-radius: 10px;
                     }
 
                     table, th, td {
-                        border: 1px solid black;
+                        border: 1px solid rgb(200, 200, 200);
                         border-collapse: collapse;
                     }
                     table {
                         width: 100%;
                         table-layout: auto;
                     }
+
+                    
+                    td, th{
+                        min-width: 25px;
+                        max-width: 100px;
+                        overflow: hidden;
+                    }
+
                     .col-horas{
-                        max-width: 50px;
+                        max-width: 40px;
+                    }
+
+                    .cells-hours{
+                        min-width:15;
+                        max-width:16;
+                    }
+                    .cells-minutes{
+                        min-width:23;
+                        max-width:24;
                     }
                     tbody > tr:nth-child(6n + 1) > td:nth-child(2), tbody > tr:nth-child(n + 1) > td:nth-child(1){
                         font-weight: bold; 
