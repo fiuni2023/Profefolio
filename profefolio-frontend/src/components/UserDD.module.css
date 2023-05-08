@@ -1,0 +1,69 @@
+.tabContainer{
+    display: flex;
+    width: 85%;
+    height: 30px;
+    cursor: pointer;
+    align-items: center;
+    justify-content: flex-start;
+    padding-left: 15%;
+}
+.sbt{
+    font-size: 16px;
+    color: white;
+    transition: 0.5s all;
+}
+
+.sbt:hover{
+    font-weight: 500;
+    font-size: 20px;
+    margin: 5px;
+}
+
+.sbt2{
+    font-size: 16px;
+    color: white;
+    font-weight: 500;
+}
+.selected{
+    color: white;
+    font-weight: 500;
+    font-size: 20px;
+    margin: 5px;
+}
+
+.container{
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    border: none;
+    transition: 0.25s all;
+    background-color: rgba(0, 0, 0, .5);
+    z-index: 100;
+}
+
+.ExitContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #F0544F;
+    border-radius: 50%;
+    width: 16%;
+    cursor: pointer;
+    transition: all 0.25s;
+    color: white;
+}
+
+.ExitContainer:hover {
+    filter: brightness(0.95);
+}
+
+.ExitContainer:active {
+    filter: brightness(0.8);
+}
+
+.background{
+    width: 20%;
+    background-color: #F0544F;
+    transition: 0.25s all;
+}
