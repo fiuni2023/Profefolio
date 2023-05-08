@@ -9,21 +9,10 @@ const STablaHorarios = styled.table`
 `
 const TablaHorarios = () => {
 
-    //const diasSemana = ["lunes", "martes", "miércoles", "jueves", "viernes", "sábado", "domingo"];
-
-    /* const ordenados = sortBy(Calendar, function (e) {
-        const orden = ["Lunes", "Martes", "Miércoles", "Miercoles", "Jueves", "Viernes", "Sábado", "Sabado", "Domingo"];
-        return orden.indexOf(e.dia);
-    });
-
-    console.table(ordenados) */
 
     const grupo = groupBy(Calendar, a => a.dia)
 
-    console.log(grupo)
     const headers = []
-
-    //const diff = Math.abs(fecha2 - fecha1) / 60000; // Convierte la diferencia en minutos
 
     for (const key in grupo) {
         headers.push(key);
@@ -31,46 +20,62 @@ const TablaHorarios = () => {
     // recorrer cada key y verificar si hay un elemento para cada hora y minuto especifico
     // si hay coincidencia se agrega  a la lista de rows(lista de listas ) 
     // se detiene cuando ninguna key no tenga mas elementos 
+    const IdGen = () => {
+        const idGenerator =  useId()
+        return idGenerator
+    };
 
     let bandera = true;
     let elementoPosition = 0;
     let hora = 7;
     let minuto = 0;
     let rows = [];
-    let reten = 0;
-    let skey = useId();
+
+
     while (bandera) {
-        reten++;
+
         const rowDias = []
         if (minuto === 0) {
-            rowDias.push(<td rowSpan={6}>{hora}</td>)
+            rowDias.push(<td key={IdGen()} rowSpan={6}>{hora}</td>)
         }
         let maxLength = 0;
-        //rowDias.push(<td key={skey++}>{`${hora < 10 ? `0${hora}`: hora}:${minuto < 10 ? `0${minuto}`: minuto}`}</td>)
-
-        rowDias.push(<td>{`${hora < 10 ? `0${hora}` : hora}:${minuto < 10 ? `0${minuto}` : minuto}`}</td>)
+        rowDias.push(<td key={IdGen()}>{`${hora < 10 ? `0${hora}` : hora}:${minuto < 10 ? `0${minuto}` : minuto}`}</td>)
         for (const key in grupo) {
-            //console.log(`${hora < 10 ? `0${hora}`: hora}:${minuto < 10 ? `0${minuto}`: minuto}`)
             maxLength = maxLength < grupo[key].length ? grupo[key].length : maxLength;
 
             if (grupo[key][elementoPosition]) {
                 const element = grupo[key][elementoPosition]
                 const horaMinuto = element.inicio.split(":")
+                const horaMinutoFin = element.fin.split(":")
+                
+                const fechaInicio = new Date();
+                const fechaFin = new Date();
 
-                if (parseInt(horaMinuto[0]) === hora && parseInt(horaMinuto[1]) === minuto) {
-                    //rowDias.push(<td key={skey++}>{grupo[key][elementoPosition].nombre}</td>)
-                    rowDias.push(<td>{grupo[key][elementoPosition].nombre}</td>)
+                fechaInicio.setHours(parseInt(horaMinuto[0]), parseInt(horaMinuto[1]), 0, 0)
+                fechaFin.setHours(parseInt(horaMinutoFin[0]), parseInt(horaMinutoFin[1]), 0, 0)
+
+                // se verifica si la hora de inicio de la materia coincide con el de la hora actual 
+                // si es asi se agrega la celda de con la cantidad de filas que ocupa
+                if ((parseInt(horaMinuto[0]) === hora && parseInt(horaMinuto[1]) === minuto)) {
+                    // se calcula la cantidad de filas que ocupara la materia en la tabla
+                    const rowSpan = Math.ceil(Math.abs(fechaInicio - fechaFin) / 60000 / 10) + 1; 
+                    
+                    rowDias.push(<td key={IdGen()} rowSpan={rowSpan}>{grupo[key][elementoPosition].nombreColegio}</td>)
                 } else {
-                    //rowDias.push(<td key={skey++}></td>)
-                    rowDias.push(<td>_</td>)
+                    // para comprobar si la hora esta dentro del rango del inicio y fin de una materia
+                    // si esta no se agrega ninguna celda
+                    const horaActual = new Date();
+                    horaActual.setHours(hora, minuto, 0, 0, 0)
+                    if(!(horaActual >= fechaInicio && horaActual <= fechaFin)){
+                        rowDias.push(<td key={IdGen()}>_</td>)
+                    }
                 }
             } else {
-                //rowDias.push(<td key={skey++}></td>)
-                rowDias.push(<td>_</td>)
+                rowDias.push(<td key={IdGen()}>_</td>)
             }
         }
-        console.log(`${hora < 10 ? `0${hora}` : hora}:${minuto < 10 ? `0${minuto}` : minuto}`)
 
+        // para que la hora se vaya aumentando si se llega a pasar 50 minutos
         minuto += 10;
         if (minuto > 50) {
             minuto = 0;
@@ -79,17 +84,15 @@ const TablaHorarios = () => {
 
         elementoPosition++;
 
-        if (maxLength <= elementoPosition || hora === 14) {
+        if (maxLength <= elementoPosition || hora === 23) {
             bandera = false;
         } else {
             elementoPosition = 0;
         }
 
-
         rows.push(rowDias);
-        console.log(rowDias)
     }
-    //console.table(rows)
+
     return <>
         <STablaHorarios>
             <thead>
@@ -99,25 +102,10 @@ const TablaHorarios = () => {
                 </tr>
             </thead>
             <tbody>
-                {map(rows, (e, i) => <><tr key={i}>
+                {map(rows, (e, i) => <tr key={i}>
                         {e}
-                    </tr></>)
+                    </tr>)
                 }
-                {/* {map(rows, (e, i) => <>
-                    <tr key={i + e.length}>
-                        <td key={(i) * 100 + 101 } rowSpan={6}>{7 + i} asda sd </td>
-                        {
-                            map(e, (el, idx) => <td key={1000 * (idx + 1) * (i+1)}>{el}</td>)
-                        }
-                    </tr></>)
-                } */}
-
-                {/* <tr>
-                    <td rowSpan={6}>7</td>
-                    <td>00</td>
-
-                </tr>
- */}
 
             </tbody>
         </STablaHorarios>
@@ -135,7 +123,7 @@ const Horarios = () => {
                     .container-visualizacion{
                         border: 1px solid black;
                         border-radius: 20px;
-                        background-color: gray;
+                        background-color: rgb(238, 238, 238)
                         min-height: 300px;
                         padding: 1rem;
                         max-height: 500px;
