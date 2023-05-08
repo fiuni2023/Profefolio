@@ -163,6 +163,10 @@ const TablaHorarios = () => {
                         .cell-striped{
                             background-color: rgb(238, 238, 238);
                         }
+
+                        td:hover, th:hover{
+                            transform: scale(1.1);
+                        } 
                     `
                 }
         </style>
@@ -219,22 +223,22 @@ const Horarios = () => {
 
                     
                     td, th{
-                        min-width: 25px;
+                        min-width: 40px;
                         max-width: 100px;
                         overflow: hidden;
                     }
 
                     .col-horas{
-                        max-width: 40px;
+                        max-width: 30px;
                     }
 
                     .cells-hours{
-                        min-width:15;
-                        max-width:16;
+                        min-width:9;
+                        max-width:10;
                     }
                     .cells-minutes{
-                        min-width:23;
-                        max-width:24;
+                        min-width:19;
+                        max-width:20;
                     }
                     tbody > tr:nth-child(6n + 1) > td:nth-child(2), tbody > tr:nth-child(n + 1) > td:nth-child(1){
                         font-weight: bold; 

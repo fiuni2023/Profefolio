@@ -68,5 +68,15 @@ export const Calendar = [
             "inicio": "13:40",
             "fin": "14:20",
             "id": 8
+        },
+        {
+            "nombre": "Historia",
+            "nombreClase": "Septimo Grado",
+            "colegioId": 10,
+            "nombreColegio": "CREE",
+            "dia": "Viernes",
+            "inicio": "08:40",
+            "fin": "09:20",
+            "id": 9
         }
     ]
