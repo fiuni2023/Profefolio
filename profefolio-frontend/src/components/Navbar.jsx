@@ -6,7 +6,9 @@ import { LogoNavBar } from "../assets";
 
 const Navbar = ({
     showSB = false, 
-    setShowSB=()=>{}
+    setShowSB = () => {},
+    showDD = false,
+    setShowDD = ()=> {}
 }) => {
     const { getUserName} = useGeneralContext()
 
@@ -18,7 +20,7 @@ const Navbar = ({
                 </div>
                 <div className="navbarmain">
                     <div className="logo"> <LogoNavBar width="100%" height="100%" /> </div>
-                    <div className="user"> <span>{getUserName()}</span> <FaUserCircle size={25}/> </div>
+                    <div className="user" onClick={()=>{setShowDD(!showDD)}}> <span>{getUserName()}</span> <FaUserCircle size={25}/> </div>
                 </div>
             </div>
             <style jsx="true">{`
