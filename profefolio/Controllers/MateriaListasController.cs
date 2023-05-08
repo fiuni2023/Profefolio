@@ -4,6 +4,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using profefolio.Models.DTOs.ClaseMateria;
+using profefolio.Models.DTOs.Materia;
 using profefolio.Models.Entities;
 using profefolio.Repository;
 
@@ -146,12 +147,16 @@ namespace profefolio.Controllers
                 var user = User.Identity.Name;
                 var result = await _materiaListaService.FindByIdClase(idClase, user);
 
-                var response = new ClaseDetallesDTO();
+                var response = _mapper.Map<ClaseDetallesDTO>(result[0]);
 
-                response.IdProfesores = result.ConvertAll(c => c.ProfesorId);
-                response.ClaseId = idClase;
-                response.MateriaId = result[0].ClaseId;
-                return Ok(response);
+                var profesores = _mapper.Map<List<ProfesorSimpleDTO>>(result.ConvertAll(x => x.Profesor));
+
+                var materias = _mapper.Map<List<MateriaDTO>>(result.ConvertAll(x => x.Materia));
+
+                response.Profesores = profesores;
+                response.Materias = materias;
+                return Ok(profesores);
+
 
             }
             catch (BadHttpRequestException e)
