@@ -39,7 +39,7 @@ justify-content: space-around;
 
 
 
-const TagProfesor = memo(({ id, nombre, state = "new", onClick = () => { } }) => {
+const TagProfesor = memo(({ id, nombre,apellido, state = "new", onClick = () => { } }) => {
     const uid = useId();
     const unicId = uid.substring(1, uid.length - 1)
 
@@ -61,31 +61,37 @@ const TagProfesor = memo(({ id, nombre, state = "new", onClick = () => { } }) =>
 
     return <>
         <TagTeacher className={`tag-teacher-${unicId}`}>
-            <Item className='item-nombre-profe'>{nombre}</Item>
+            <Item className='item-nombre-profe'>{nombre} {apellido}</Item>
             <ListButton onClick={onClick}>{state !== 'reload' ? 'X' : <RxReload style={{ fontSize: '24px' }} size={24} />}</ListButton>
 
         </TagTeacher>
         <style jsx="true">{
             `
-            .item-nombre-profe{
+            .item-nombre-profe {
                 padding-left: 5px;
                 overflow: hidden;
                 text-overflow: ellipsis;
-                white-space: nowrap;
-                max-width: calc(10rem - 24px);
+                max-width: calc(15rem - 24px);
                 font-size: 15px;
                 display: flex;
                 align-items: center;
-            }
-            .tag-teacher-${unicId}{
+                white-space: nowrap;
+              }
+              
+              .tag-teacher-${unicId} {
                 background-color: ${type};
                 padding: 0.2rem;
                 max-width: 10rem;
-                width: fit-content;+
+                width: fit-content;
                 height: 24px;
                 display: flex;
                 align-items: center;
-            }
+                flex-wrap: nowrap;
+                white-space: nowrap;
+              }
+              
+              
+              
             .btn-cancelar{
                 background-color: red;
                 min-width: 1rem;
@@ -97,24 +103,16 @@ const TagProfesor = memo(({ id, nombre, state = "new", onClick = () => { } }) =>
 
 
 
-  
+
 
 const ListItem = memo(({ index, idMateria, nombre, profesores = [] ,profeProfesor = [], type ,onClick }) => {
 
     const [profesoresSeleccionados, setProfesoresSeleccionados] = useState([]);
-   
 
+      
     const { setStatusProfesorMateria } = useClaseContext();
 
     const [isSelectOpen, setIsSelectOpen] = useState(false);
-
- 
-
- 
-
-    /*const seleccionarProfesor = (e) => {
-        setIdProfesorSeleccionado(e.target.value);
-      };*/
 
 
 
@@ -204,7 +202,7 @@ const seleccionarProfesor = (event) => {
 ))}*/}
 
 
-
+  
 {/*{map(profeProfesor, (e, i) => (
     <TagProfesor
       id={e.id}
@@ -212,20 +210,36 @@ const seleccionarProfesor = (event) => {
       state={e.status}
       onClick={() => setIdProfesorSeleccionado(e.id)}
     />
-  
+
 
     
 ))}*/}
+{map(profesores, (e, i) => (
+  <TagProfesor
+    key={i}
+    id={e.id}
+    nombre={e.nombre}
+    apellido={e.apellido}
+    state={e.status}
+    onClick={() => {
+      setStatusProfesorMateria(
+        idMateria,
+        e.id,
+        e.status === "new" ? "reload" : "new"
+      );
+    }}
+  />
+))}
 
 
 
 
-  {/* Este es un comentario en React
+  {/* Este es un comentario en React 
          {map(profesores, (e, i) => <TagProfesor key={i} id={e.id} nombre={`${e.nombre}${e.status}`} state={e.status} onClick={() => {
                         setStatusProfesorMateria(idMateria, e.id, e.status === "new" ? "reload" : "new");
                     }
-                    } />)}
-*/}
+                    } />)}*/}
+
                 </div>
             </div>
 
@@ -260,15 +274,10 @@ const MateriasDeClase = () => {
 
     const [idMateria , setIdMateria]= useState("");
 
-    const [materiaProfesor, setMateriaProfesor] = useState([]);
+    const [materiaProfesores, setMateriaProfesores] = useState([]);
     const { getListaMaterias, setStatusMateria, getClaseSelectedId, addMateriaToList, setProfesoresOptions } = useClaseContext();
     const { getToken } = useGeneralContext();
 
-
-    /**
-     * 
-     * Pedir profesores del colegio
-     */
 
 
 
@@ -292,7 +301,7 @@ useMemo(() => {
   }, [getToken]);
   
 
- 
+    
  const idProfesoresArray = profeProfesor.map(profesor => profesor.id);
 
 
@@ -311,8 +320,8 @@ useMemo(() => {
   };
   
   
-  
-  
+    
+
 
 
    useMemo(() => {
@@ -380,6 +389,20 @@ useMemo(() => {
         }
     }
 
+    useEffect(() => {
+        const listaMateriasProfesores = async () => {
+          try {
+            const dataList = await ClassesService.getMateriasProfesores(getClaseSelectedId(),getToken());
+            setMateriaProfesores(dataList ?? []);
+            console.log('materiaProfesores:', dataList);
+          } catch (e) {
+            setMateriaProfesores([]);
+          }
+        };
+      
+        listaMateriasProfesores();
+      }, []);
+
     let materiasList = {
         onSubmit: () => console.log("Guardado"),
         enabled: true,
@@ -389,13 +412,15 @@ useMemo(() => {
         addTitle: "Agregar Materias",
         selectTitle: "Seleccionar Materia",
         options: optionsMaterias,
-        list: getListaMaterias()
+        list: materiaProfesores.data ?? [],
     }
 
     return <>
 
         <Container>
-            <ScrollTable>
+
+
+    <ScrollTable>
                 {materiasList?.header &&
                     <SHeader>
                         {materiasList?.header?.title}
@@ -404,7 +429,7 @@ useMemo(() => {
                 {materiasList?.list &&
                     <SBody background={materiasList?.background ?? "gray"}>
                         <List>
-                            {materiasList?.list?.map((materia, index) => (
+                           {materiasList?.list?.map((materia, index) => (
                                 <ListItem key={index}
                                     idMateria={materia.id}
                                     index={index + 1}
@@ -419,6 +444,7 @@ useMemo(() => {
                                   
                                       />
                             ))}
+                        
                         </List>
                     </SBody>}
 
@@ -434,8 +460,7 @@ useMemo(() => {
                         ))}
                     </Select>
                     <div style={{ textAlign: 'right' }}>
-                      {/*   <TextButton buttonType={'save-changes'} enabled={materiasList?.enabled ?? false} onClick={(e) => { "enviando..." } handleCrearMateriaProfesor()} />
-                     */}
+                     
                                     <TextButton 
                         buttonType={'save-changes'} 
                         enabled={materiasList?.enabled ?? false} 
@@ -450,6 +475,8 @@ useMemo(() => {
                     </div>
                 </SForm>
             </ScrollTable>
+
+       
         </Container>
 
     </>
