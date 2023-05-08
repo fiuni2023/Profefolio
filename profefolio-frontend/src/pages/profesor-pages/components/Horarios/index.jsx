@@ -1,15 +1,18 @@
-import React, { useId } from 'react'
+import React, { memo, useCallback, useEffect, useId, useState } from 'react'
 import styled from 'styled-components'
-import { Calendar } from '../../api/calendar';
+//import { Calendar } from '../../api/calendar';
 import { groupBy, map, find } from "lodash"
 import { SBody, SCard, SHeader } from '../../../../components/componentsStyles/StyledDashComponent';
+import axios from 'axios';
+import APILINK from '../../../../components/link';
+import { useGeneralContext } from '../../../../context/GeneralContext';
 
 
 const STablaHorarios = styled.table`
 
 `
 const getColors = (color) => {
-    switch(color){
+    switch (color) {
         case "bluesky":
             return "#C1E1FA";
         case "purple":
@@ -31,21 +34,48 @@ const getColors = (color) => {
     }
 }
 const TablaHorarios = () => {
+    const { getToken } = useGeneralContext();
+
+    const [Calendar, setCalendar] = useState([]);
+
+    const peticionCalendar = useCallback(async () => {
+        const response = await axios.get(`${APILINK}/api/HorasCatedrasMaterias`, {
+            headers: {
+                Authorization: "Bearer " + getToken(),
+            }
+        });
+        return response.status === 200 ? response.data : null
+    }, [getToken])
+
+    useEffect(() => {
+        const getHorarios = async () => {
+            console.log("Pidiendo Horario...")
+            const result = await peticionCalendar();
+            console.log("RESULT", result);
+            if (result !== null) {
+                setCalendar(result);
+            } else {
+                console.log("Error al obtener el horario")
+            }
+        }
+        getHorarios();
+    }, [peticionCalendar]);
+
     const colorsColegios = [];
 
-    const addColorColegios = (idColegio)=> {
+    const addColorColegios = (idColegio) => {
         const listColorsName = ["bluesky", "yellow", "green", "orange", "blue", "purple", "pink", "salmon"]
-        
+
         const colegio = find(colorsColegios, a => a.idColegio === idColegio)
 
-        if(!!colegio){
+        if (!!colegio) {
             return getColors(colegio.colorName)
         }
-        else{
+        else {
             const colorName = listColorsName[colorsColegios.length]
-            const colorColegio = {idColegio : idColegio, colorName: colorName}
+            const colorColegio = { idColegio: idColegio, colorName: colorName }
             colorsColegios.push(colorColegio)
-            
+
             return getColors(colorName)
         }
     }
@@ -60,8 +90,9 @@ const TablaHorarios = () => {
     // si hay coincidencia se agrega  a la lista de rows(lista de listas ) 
     // se detiene cuando ninguna key no tenga mas elementos 
     const IdGen = () => {
-        const idGenerator = useId()
-        return idGenerator
+        /* const idGenerator = useId()
+        return idGenerator */
+        return Math.random() * 10000;
     };
 
     let bandera = true;
@@ -101,14 +132,14 @@ const TablaHorarios = () => {
                     const rowSpan = Math.ceil(Math.abs(fechaInicio - fechaFin) / 60000 / 10) + 1;
 
                     rowDias.push(<td
-                        key={IdGen()} 
-                        rowSpan={rowSpan} 
-                        style={{"backgroundColor": addColorColegios(grupo[key][elementoPosition].colegioId), "fontWeight": "bold" }}
-                        >
-                            {
-                                grupo[key][elementoPosition].nombreColegio
-                            }
-                        </td>)
+                        key={IdGen()}
+                        rowSpan={rowSpan}
+                        style={{ "backgroundColor": addColorColegios(grupo[key][elementoPosition].colegioId), "fontWeight": "bold" }}
+                    >
+                        {
+                            grupo[key][elementoPosition].nombreColegio
+                        }
+                    </td>)
                 } else {
                     // para comprobar si la hora esta dentro del rango del inicio y fin de una materia
                     // si esta no se agrega ninguna celda
@@ -158,8 +189,8 @@ const TablaHorarios = () => {
             </tbody>
         </STablaHorarios>
         <style jsx="true">
-                {
-                    `
+            {
+                `
                         .cell-striped{
                             background-color: rgb(238, 238, 238);
                         }
@@ -168,11 +199,11 @@ const TablaHorarios = () => {
                             transform: scale(1.1);
                         } 
                     `
-                }
+            }
         </style>
     </>
 }
-const Horarios = () => {
+const Horarios = memo(() => {
     return <>
 
         <SCard>
@@ -188,8 +219,7 @@ const Horarios = () => {
             {
                 `
                     .container-visualizacion{
-                        border: 1px solid black;
-                        border-radius: 20px;
+                        border-radius: 5px;
                         background-color: white;
                         min-height: 300px;
                         padding: 1rem;
@@ -253,6 +283,6 @@ const Horarios = () => {
             }
         </style>
     </>
-}
+})
 
 export default Horarios
