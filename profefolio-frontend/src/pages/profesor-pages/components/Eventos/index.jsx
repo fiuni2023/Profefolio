@@ -1,7 +1,27 @@
 import React from 'react'
-
+import { BsCircleFill } from 'react-icons/bs';
 import { SBody, SCard, SHeader } from '../../../../components/componentsStyles/StyledDashComponent'
 import { TD, TH, TR, Table, Tbody, Thead } from '../../../../components/componentsStyles/StyledTable'
+import styled from 'styled-components';
+
+const ListTypeEvent = styled.div`
+    display: flex;
+    margin-top: 1rem;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    column-gap: 2rem;
+    align-items: center;
+    padding-left: 1rem;
+    padding-right: 1rem;
+`
+
+const TypeEventTarget = styled.div`
+    min-width: 60px;
+    text-align: left;
+    display: flex;
+    column-gap: 0.5rem;
+    align-items: center;
+`
 
 const TableEvents = () => {
     return <>
@@ -32,6 +52,12 @@ const TableEvents = () => {
                 </TR>
             </Tbody>
         </Table>
+        <ListTypeEvent>
+            <TypeEventTarget><BsCircleFill/>Evento</TypeEventTarget>
+            <TypeEventTarget><BsCircleFill/>Parcial</TypeEventTarget>
+            <TypeEventTarget><BsCircleFill/>Prueba Sumativa</TypeEventTarget>
+            <TypeEventTarget><BsCircleFill/>Examen</TypeEventTarget>
+        </ListTypeEvent>
     </>
 }
 
