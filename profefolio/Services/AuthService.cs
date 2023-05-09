@@ -33,8 +33,8 @@ public class AuthService : IAuth
     public async Task<AuthPersonaDTO> Login(Login login)
     {
         var user = await _userManager
-            .FindByEmailAsync(login.Email);            
-        
+            .FindByEmailAsync(login.Email);
+
         if ((user == null || user.Deleted) || !await _userManager.CheckPasswordAsync(user, login.Password))
             throw new BadHttpRequestException("Credenciales no validas");
         var roles = await _userManager.GetRolesAsync(user);
@@ -52,18 +52,18 @@ public class AuthService : IAuth
         {
             throw new UnauthorizedAccessException();
         }
-       
+
         var authClaims = new List<Claim>()
         {
             new Claim(ClaimTypes.Name, user.Email),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
-        
+
         foreach (var role in roles)
         {
             authClaims.Add(new Claim(ClaimTypes.Role, role));
         }
-        
+
         var token = new TokenGenerator(_configuration);
 
         var tokenValues = token.GetToken(authClaims);
