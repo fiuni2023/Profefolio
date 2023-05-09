@@ -64,7 +64,7 @@ const GetColors = (idElement) => {
 
 
 // mappeos de eventos
-const MapperHorariosByColegio = ((eventos) => {
+const MapperHorariosByColegio = (eventos) => {
     const dias = ["Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado"]
 
     return map(eventos, (e, i) => {
@@ -92,7 +92,7 @@ const MapperHorariosByColegio = ((eventos) => {
         }
 
     })
-}, [])
+}
 
 const Tools = { compararStringsSinAcentos, GetColors, MapperHorariosByColegio }
 

@@ -5,7 +5,7 @@ import { useGeneralContext } from '../../../../context/GeneralContext';
 
 import HorarioService from "../../helpers/HorariosHelpers.js"
 import SCalendar from '../Calendar';
-
+import Tools from "../../helpers/Tools.js";
 
 const Horarios = memo(() => {
     const { getToken } = useGeneralContext();
@@ -16,12 +16,14 @@ const Horarios = memo(() => {
             
             const result = await HorarioService.getHorariosColegios(getToken());
             if (result !== null) {
-                setEvents(HorarioService.mapperHorariosByColegio(result))
+                setEvents(Tools.MapperHorariosByColegio(result))
             } else {
                 console.log("Error al obtener el horario")
             }
         }
+        
         getHorarios();
+        
     }, [getToken]);
 
 
