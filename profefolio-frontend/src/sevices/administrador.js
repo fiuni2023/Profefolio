@@ -11,6 +11,16 @@ const getList = async (page, token)=>{
     return result.status === 200? result : null
 }
 
+const getAll = async (token)=>{
+    const result = await axios.get(`${APILINK}/api/administrador`,
+    {
+        headers:{
+            Authorization: 'Bearer ' + token
+        }
+    })
+    return result.status === 200? result : null
+}
+
 const createAdmin = async (body, token)=>{
     const result = await axios.post(`${APILINK}/api/administrador`,
     body,
@@ -49,5 +59,5 @@ const deleteAdmin = async (id, token)=>{
     return result.status === 200? result : null
 }
 
-const AdminService = { getList, createAdmin, updateAdmin, deleteAdmin }
+const AdminService = { getList, getAll, createAdmin, updateAdmin, deleteAdmin }
 export default AdminService
