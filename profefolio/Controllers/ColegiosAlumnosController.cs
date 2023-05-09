@@ -130,9 +130,9 @@ namespace profefolio.Controllers
                 }
                     
 
-                var data = _mapper.Map<List<AlumnoGetDTO>>(listAlumnosColegio);
+                var data = _mapper.Map<List<ColegioAlumnosDTO>>(listAlumnosColegio);
 
-                var result = new DataListDTO<AlumnoGetDTO>();
+                var result = new DataListDTO<ColegioAlumnosDTO>();
 
                 result.CantItems = listAlumnosColegio.Count();
                 result.CurrentPage = page;
