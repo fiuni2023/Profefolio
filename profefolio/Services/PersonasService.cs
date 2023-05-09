@@ -83,7 +83,7 @@ public class PersonasService : IPersona
 
         if (!(await _userManager.IsInRoleAsync(user, "Administrador de Colegio")))
         {
-            if (await ExistDoc(user))
+            if (await ExistDoc(user)) 
             {
                 throw new BadHttpRequestException($"Ya existe el user con el CI {user.Documento}");
             }
@@ -211,10 +211,9 @@ public class PersonasService : IPersona
     {
         var query = await _userManager.Users
             .Where(p => !p.Deleted)
-            .Where(p => (p.Documento != null && p.DocumentoTipo != null) &&
-                (p.DocumentoTipo.Equals(persona.DocumentoTipo) && p.Documento.Equals(persona.Documento)))
+            .Where(p => p.Documento != null && p.DocumentoTipo != null)
+            .Where(p => ((p.DocumentoTipo.Equals(persona.DocumentoTipo)) && (p.Documento.Equals(persona.Documento))))
                 .CountAsync() > 0;
-
         return query;
                     
     }
@@ -272,14 +271,19 @@ public class PersonasService : IPersona
         return true;
     }
 
-    public async Task<Persona?> FindByDocumentoAndRole(string documento = "",string DocumentoTipo = "", string role = "")
+    public async Task<Persona?> FindByDocumentoAndRole(string NumeroDocumento = "",string DocumentoTipo = "", string role = "")
     {
+        /**
+         .Where(a => 
+                (a.Documento != null && a.DocumentoTipo != null)
+                && (a.DocumentoTipo.Equals(DocumentoTipo) && a.Documento.Equals(documento)))
+        **/
         var persona = await _userManager.Users
             .Where(a => !a.Deleted)
             .Where(a => 
                 (a.Documento != null && a.DocumentoTipo != null)
-                && (a.DocumentoTipo.Equals(DocumentoTipo) && a.Documento.Equals(documento)))
-            .Include(a => a.ColegiosAlumnos)
+                && 
+                (a.DocumentoTipo.Equals(DocumentoTipo) && a.Documento.Equals(NumeroDocumento)))
             .Include(a => a.ColegiosAlumnos)
             .FirstOrDefaultAsync();
         if (persona != null)

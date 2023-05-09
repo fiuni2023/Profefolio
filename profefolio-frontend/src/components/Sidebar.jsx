@@ -7,15 +7,7 @@ import {RxCross2} from 'react-icons/rx'
 const SideBar = ({ showSB = false, setShowSB = ()=>{}}) => {
     
     const navigate = useNavigate()
-    const { isLogged, setIsLogged, cancan} = useGeneralContext()
-
-    const handleLogOut = () => {
-        localStorage.removeItem('loginData')
-        sessionStorage.removeItem('loginData')
-        navigate("/")
-        setIsLogged(!isLogged)
-        
-    }
+    const { cancan} = useGeneralContext()
 
     const style = {
         height: showSB? "100%" : "0%",
@@ -38,7 +30,6 @@ const SideBar = ({ showSB = false, setShowSB = ()=>{}}) => {
                             </div>
                         </div>
                     </SideBarClose>
-                    <SideBarTab showSB={showSB} setShowSB={setShowSB} page={"logout"} handleClick={handleLogOut} > Cerrar Sesión </SideBarTab>
                     <SideBarTab showSB={showSB} setShowSB={setShowSB} page={"home"} handleClick={()=>{navigate("/")}} > - Home </SideBarTab>
                     {   
                         cancan("Master") &&
