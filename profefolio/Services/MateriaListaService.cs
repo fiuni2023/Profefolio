@@ -143,16 +143,13 @@ namespace profefolio.Services
                 throw new FileNotFoundException();
             }
 
-            var materias = _db.MateriaListas
-                .Include(x => x.Profesor)
-                .Include(x => x.Clase)
-                .Include(x => x.Materia)
-                .Where(c => c.ClaseId == idClase)
-                .Where(c => c.Clase == null ? false : c.Clase.ColegioId == colegio.Id)
-                .Select(x => x.Materia)
-                .DistinctBy(x => x.Id)
-                .Include(x => x.MateriaListas);
+            var materiaListasQuery = _db.MateriaListas;
 
+            var materias = _db.Materias
+                .Include(x => x.MateriaListas)
+                .Where(x => !x.Deleted)
+                .Where(x => materiaListasQuery.Any(y => y.ClaseId == clase.Id));
+                
             
             var result = new ClaseDetallesDTO();
 
