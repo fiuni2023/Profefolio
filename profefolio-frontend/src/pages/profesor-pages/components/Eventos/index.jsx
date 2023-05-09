@@ -61,10 +61,11 @@ const TableEvents = () => {
     </>
 }
 
+
 const Eventos = () => {
     return <>
         <SCard>
-            <SHeader>Horarios de Clases</SHeader>
+            <SHeader>Proximos Eventos</SHeader>
             <SBody>
                 <TableEvents />
             </SBody>
