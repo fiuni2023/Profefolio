@@ -1,10 +1,5 @@
-import React, { useContext, useState,useEffect } from "react";
+import React, { useContext, useState} from "react";
 import { createContext } from "react";
-
-import ClassesService from '../Helpers/ClassesHelper';
-
-
-
 
 
 const ClaseContext = createContext();
