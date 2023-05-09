@@ -40,6 +40,7 @@ public class AuthService : IAuth
         var roles = await _userManager.GetRolesAsync(user);
 
         int colegioId = 0;
+        string colegioNombre = "";
         if (roles.Contains("Administrador de Colegio"))
         {
             var colegio = await _colegioService.FindByIdAdmin(user.Id);
@@ -48,6 +49,7 @@ public class AuthService : IAuth
                 throw new BadHttpRequestException("El administrador no fue asignado a un colegio todavia");
             }
             colegioId = colegio.Id;
+            colegioNombre = colegio.Nombre;
         }
 
         if (roles.Contains("Alumno"))
@@ -77,7 +79,8 @@ public class AuthService : IAuth
             Expires = tokenValues.ValidTo,
             Roles = (List<string>)roles,
             Email = login.Email,
-            ColegioId = colegioId
+            ColegioId = colegioId,
+            ColegioNombre = colegioNombre
         };
     }
 

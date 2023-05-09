@@ -26,5 +26,6 @@ public class AuthPersonaDTO
         set;
     }
     public int ColegioId { get; set; }
+    public string ColegioNombre { get; set; } = "";
 }
 
