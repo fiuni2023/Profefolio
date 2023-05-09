@@ -223,12 +223,12 @@ const seleccionarProfesor = (event) => {
 
 
 
-  {/* Este es un comentario en React
+  {/* Este es un comentario en React*/}
          {map(profesores, (e, i) => <TagProfesor key={i} id={e.id} nombre={`${e.nombre}${e.status}`} state={e.status} onClick={() => {
                         setStatusProfesorMateria(idMateria, e.id, e.status === "new" ? "reload" : "new");
                     }
                     } />)}
-*/}
+
                 </div>
             </div>
 
