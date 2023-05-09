@@ -146,12 +146,12 @@ namespace profefolio.Services
                 throw new FileNotFoundException();
             }
 
-            var materiaListasQuery = _db.MateriaListas;
+            
 
             var materias = _db.Materias
                 .Include(x => x.MateriaListas)
                 .Where(x => !x.Deleted)
-                .Where(x => materiaListasQuery.Any(y => y.ClaseId == clase.Id));
+                .Where(x => x.MateriaListas.Any(y => y.ClaseId == clase.Id));
                 
             
             var result = new ClaseDetallesDTO();
@@ -168,6 +168,7 @@ namespace profefolio.Services
                 var materiaProfesores = new MateriaProfesoresDTO();
 
                 materiaProfesores.IdMateria = item.Id;
+                materiaProfesores.Materia = item.Nombre_Materia;
 
                 var profesorSimpleList = new List<ProfesorSimpleDTO>();
 
