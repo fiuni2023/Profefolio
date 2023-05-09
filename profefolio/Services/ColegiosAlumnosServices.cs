@@ -111,7 +111,17 @@ namespace profefolio.Services
                                     && (ca.ClasesAlumnosColegios == null || !(ca.ClasesAlumnosColegios.Any(a => a.ClaseId == idClase && !a.Deleted))))
                             .Include(a => a.Persona)
                             .ToListAsync();
+        
             */
+
+            var clase = await _context.Clases
+                    .AnyAsync(c => !c.Deleted && c.Id == idClase);
+
+            if(!clase)
+            {
+                throw new BadHttpRequestException("clase no valida");
+            }
+
             var query = await _context.ColegiosAlumnos
                         .Where(ca => !ca.Deleted)
                         .Where(ca => ca.Colegio.personas.Email.Equals(adminEmail))
