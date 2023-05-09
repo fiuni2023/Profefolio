@@ -31,7 +31,7 @@ namespace profefolio.Helpers.Mappers
                     opt => opt.MapFrom(src => src.ClaseId))
                 .ForMember(dest => dest.NombreClase,
                     opt => opt.MapFrom(src => src.Clase == null ? "" : src.Clase.Nombre))
-                .ForMember(dest => dest.Profesores, opt => opt.Ignore());
+                .ForMember(dest => dest.MateriaProfesores, opt => opt.Ignore());
 
 
         }
