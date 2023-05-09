@@ -101,7 +101,8 @@ namespace profefolio.Services
                 Se valida que el alumno no este asignado a ninguna clase y si esta se verifica que este marcado como eliminado en la clase
                 esto en el caso de que se haya eliminado de la clase y luego se agregue otra vez
             */
-            return await _context.ColegiosAlumnos
+            /*
+            var query =  await _context.ColegiosAlumnos
                             .Where(ca => !ca.Deleted
                                 && ca.Colegio.personas.Email.Equals(adminEmail)
                                 && (ca.ClasesAlumnosColegios == null
@@ -110,6 +111,27 @@ namespace profefolio.Services
                                     && (ca.ClasesAlumnosColegios == null || !(ca.ClasesAlumnosColegios.Any(a => a.ClaseId == idClase && !a.Deleted))))
                             .Include(a => a.Persona)
                             .ToListAsync();
+        
+            */
+
+            var clase = await _context.Clases
+                    .AnyAsync(c => !c.Deleted && c.Id == idClase);
+
+            if(!clase)
+            {
+                throw new BadHttpRequestException("clase no valida");
+            }
+
+            var query = await _context.ColegiosAlumnos
+                        .Where(ca => !ca.Deleted)
+                        .Where(ca => ca.Colegio.personas.Email.Equals(adminEmail))
+                        .Where(ca => ca.ClasesAlumnosColegios == null || 
+                            !ca.ClasesAlumnosColegios.Any() || 
+                                ca.ClasesAlumnosColegios.Any(a => (a.Deleted && a.ClaseId == idClase) || a.ClaseId != idClase))
+                                .Where(ca => ca.ClasesAlumnosColegios == null || !(ca.ClasesAlumnosColegios.Any(a => a.ClaseId == idClase && !a.Deleted)))
+                                .Include(a => a.Persona)
+                                .ToListAsync();
+            return query;
         }
 
         public async Task<ColegiosAlumnos> FindById(int id)

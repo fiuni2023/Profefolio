@@ -273,17 +273,11 @@ public class PersonasService : IPersona
 
     public async Task<Persona?> FindByDocumentoAndRole(string NumeroDocumento = "",string DocumentoTipo = "", string role = "")
     {
-        /**
-         .Where(a => 
-                (a.Documento != null && a.DocumentoTipo != null)
-                && (a.DocumentoTipo.Equals(DocumentoTipo) && a.Documento.Equals(documento)))
-        **/
+        
         var persona = await _userManager.Users
             .Where(a => !a.Deleted)
-            .Where(a => 
-                (a.Documento != null && a.DocumentoTipo != null)
-                && 
-                (a.DocumentoTipo.Equals(DocumentoTipo) && a.Documento.Equals(NumeroDocumento)))
+            .Where(a => a.DocumentoTipo.Equals(DocumentoTipo))
+            .Where(a => a.Documento.Equals(NumeroDocumento))
             .Include(a => a.ColegiosAlumnos)
             .FirstOrDefaultAsync();
         if (persona != null)

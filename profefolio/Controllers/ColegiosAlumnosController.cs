@@ -125,9 +125,9 @@ namespace profefolio.Controllers
                 }
                     
 
-                var data = _mapper.Map<List<AlumnoGetDTO>>(listAlumnosColegio);
+                var data = _mapper.Map<List<ColegioAlumnosDTO>>(listAlumnosColegio);
 
-                var result = new DataListDTO<AlumnoGetDTO>();
+                var result = new DataListDTO<ColegioAlumnosDTO>();
 
                 result.CantItems = listAlumnosColegio.Count();
                 result.CurrentPage = page;
@@ -137,11 +137,17 @@ namespace profefolio.Controllers
                 return Ok(result);
 
             }
+            catch(BadHttpRequestException ex)
+            {
+                Console.WriteLine(ex.Message);
+                return BadRequest(ex.Message);
+            }
             catch (Exception ex)
             {
                 Console.WriteLine($"{ex}");
                 return BadRequest("Error durarnte la obtencion de alumnos de la clase");
             }
+            
         }
 
         [HttpPost]
