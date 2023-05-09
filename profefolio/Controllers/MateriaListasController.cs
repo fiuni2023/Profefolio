@@ -144,20 +144,49 @@ namespace profefolio.Controllers
         {
             try
             {
+                //Obtenemos el username del usuario
                 var user = User.Identity.Name;
+
                 var result = await _materiaListaService.FindByIdClase(idClase, user);
 
+
+                //Mapeamos al tipo de objeto claseDetalle, tomando, el IdClase y la clase
                 var response = _mapper.Map<ClaseDetallesDTO>(result[0]);
 
-                var profesores = _mapper.Map<List<ProfesorSimpleDTO>>(result.ConvertAll(x => x.Profesor));
 
+                //Obtenemos las materias
                 var materias = result.ConvertAll(x => x.Materia);
 
+
+                //Unificamos is es que hay materias repetidas
                 var materiasUnified = materias.DistinctBy(x => x.Id);
 
-                response.Profesores = profesores;
-                response.Materias = _mapper.Map<List<MateriaDTO>>(materiasUnified);
-                return Ok(profesores);
+
+                //Creamos el contenedor de materias con profesores
+                var materiaProfesoresList = new List<MateriaProfesoresDTO>();
+
+                foreach (var item in materiasUnified)
+                {
+                    var materiaProfesores = new MateriaProfesoresDTO();
+                    materiaProfesores.IdMateria = item.Id;
+
+                    if (item.Nombre_Materia == null)
+                    {
+                        return BadRequest("Nombre Materia == null");
+                    }
+
+                    materiaProfesores.Materia = item.Nombre_Materia;
+                    var profesoresPerMateria = item.MateriaListas
+                        .Select(x => x.Profesor).ToList();
+
+                    materiaProfesores.Profesores = _mapper.Map<List<ProfesorSimpleDTO>>(profesoresPerMateria);
+
+                    materiaProfesoresList.Add(materiaProfesores);
+                }
+
+                response.MateriaProfesores = materiaProfesoresList;
+
+                return Ok(response);
 
 
             }
@@ -183,11 +212,11 @@ namespace profefolio.Controllers
             {
                 var userEmail = User.FindFirstValue(ClaimTypes.Name);
                 var userRole = User.FindFirstValue(ClaimTypes.Role);
-                
+
                 var materiaLista = await _materiaListaService.FindByIdClaseAndUser(idClase, userEmail, userRole);
 
                 var dto = _mapper.Map<List<ClaseMateriaResultDTO>>(materiaLista);
-                
+
                 //se carga los profesores a cada materia de la lista
                 materiaLista.ForEach(a =>
                 {
