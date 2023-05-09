@@ -149,51 +149,14 @@ namespace profefolio.Controllers
 
                 var result = await _materiaListaService.FindByIdClase(idClase, user);
 
-
-                //Mapeamos al tipo de objeto claseDetalle, tomando, el IdClase y la clase
-                var response = _mapper.Map<ClaseDetallesDTO>(result[0]);
-
-
-                //Obtenemos las materias
-                var materias = result.ConvertAll(x => x.Materia);
-
-
-                //Unificamos is es que hay materias repetidas
-                var materiasUnified = materias.DistinctBy(x => x.Id);
-
-
-                //Creamos el contenedor de materias con profesores
-                var materiaProfesoresList = new List<MateriaProfesoresDTO>();
-
-                foreach (var item in materiasUnified)
-                {
-                    var materiaProfesores = new MateriaProfesoresDTO();
-                    materiaProfesores.IdMateria = item.Id;
-
-                    if (item.Nombre_Materia == null)
-                    {
-                        return BadRequest("Nombre Materia == null");
-                    }
-
-                    materiaProfesores.Materia = item.Nombre_Materia;
-                    var profesoresPerMateria = item.MateriaListas
-                        .Select(x => x.Profesor).ToList();
-
-                    materiaProfesores.Profesores = _mapper.Map<List<ProfesorSimpleDTO>>(profesoresPerMateria);
-
-                    materiaProfesoresList.Add(materiaProfesores);
-                }
-
-                response.MateriaProfesores = materiaProfesoresList;
-
-                return Ok(response);
+                return Ok(result);
 
 
             }
             catch (BadHttpRequestException e)
             {
                 Console.WriteLine(e.Message);
-                return BadRequest();
+                return BadRequest(e.Message);
             }
             catch (FileNotFoundException e)
             {
