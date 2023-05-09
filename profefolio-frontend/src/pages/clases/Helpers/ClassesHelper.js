@@ -30,6 +30,38 @@ const getClassesByIdNombre = async (id, token) => {
     }
   };
 
+
+  const getProfesoresParaClase = async (token) => {
+    const result = await axios.get(`${APILINK}/api/profesor/misprofesores`,
+        {
+            headers: {
+                "Authorization": 'Bearer ' + token,
+                "Content-Type": "application/json"
+            },
+        })
+    return result.status === 200 ? result : null
+}
+
+//
+const getMateriasProfesores= async (id, token) => {
+      const result = await axios.get(`${APILINK}/api/lista/materias/ConProfesores/${id}`, {
+        headers: {
+            "Authorization": 'Bearer ' + token,
+            "Content-Type": "application/json"
+
+        },
+      });
+    
+    return result.status === 200 ? result : null
+
+  };
+
+
+
+//
+
+
+
 const getClassesById = async (id, token) => {
     const result = await axios.get(`${APILINK}/api/clase/${id}`,
         {
@@ -79,13 +111,18 @@ const deleteClasse = async (id, token) => {
     return result.status === 200 ? result : null
 }
 
-const getProfesoresParaClase = async (token) => {
-    const result = await axios.get(`${APILINK}/api/profesor/misprofesores`,
+
+
+
+const createMateriaProfesor = async (body, token) => {
+    const result = await axios.post(`${APILINK}/api/administrador/materia/profesores`,
+        body,
         {
             headers: {
                 "Authorization": 'Bearer ' + token,
                 "Content-Type": "application/json"
             },
+
         })
     return result.status === 200 ? result : null
 }
@@ -113,5 +150,5 @@ const getProfesores = (token) => {
 
 
 
-const ClassesService = { getClassesPage, getClassesByIdNombre,getClassesById, createClasse, updateClasse, deleteClasse, getProfesoresParaClase ,getProfesores}
+const ClassesService = { getClassesPage, getClassesByIdNombre,getClassesById, createClasse, updateClasse, deleteClasse, getProfesoresParaClase ,getProfesores, createMateriaProfesor,getMateriasProfesores}
 export default ClassesService

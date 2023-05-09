@@ -1,7 +1,10 @@
 ﻿using System.Collections.ObjectModel;
+using System.Security.Claims;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using profefolio.Models.DTOs.ClaseMateria;
+using profefolio.Models.DTOs.Materia;
 using profefolio.Models.Entities;
 using profefolio.Repository;
 
@@ -16,13 +19,15 @@ namespace profefolio.Controllers
         private readonly IPersona _profesorService;
         private readonly IMateria _materiaService;
         private readonly IClase _claseService;
+        private readonly IMapper _mapper;
 
-        public MateriaListasController(IMateriaLista materiaListaService, IPersona profesorService, IMateria materiaService, IClase claseService)
+        public MateriaListasController(IMateriaLista materiaListaService, IPersona profesorService, IMateria materiaService, IClase claseService, IMapper mapper)
         {
             _materiaListaService = materiaListaService;
             _profesorService = profesorService;
             _materiaService = materiaService;
             _claseService = claseService;
+            _mapper = mapper;
         }
 
         [HttpPost]
@@ -139,15 +144,50 @@ namespace profefolio.Controllers
         {
             try
             {
+                //Obtenemos el username del usuario
                 var user = User.Identity.Name;
+
                 var result = await _materiaListaService.FindByIdClase(idClase, user);
 
-                var response = new ClaseDetallesDTO();
 
-                response.IdProfesores = result.ConvertAll(c => c.ProfesorId);
-                response.ClaseId = idClase;
-                response.MateriaId = result[0].ClaseId;
+                //Mapeamos al tipo de objeto claseDetalle, tomando, el IdClase y la clase
+                var response = _mapper.Map<ClaseDetallesDTO>(result[0]);
+
+
+                //Obtenemos las materias
+                var materias = result.ConvertAll(x => x.Materia);
+
+
+                //Unificamos is es que hay materias repetidas
+                var materiasUnified = materias.DistinctBy(x => x.Id);
+
+
+                //Creamos el contenedor de materias con profesores
+                var materiaProfesoresList = new List<MateriaProfesoresDTO>();
+
+                foreach (var item in materiasUnified)
+                {
+                    var materiaProfesores = new MateriaProfesoresDTO();
+                    materiaProfesores.IdMateria = item.Id;
+
+                    if (item.Nombre_Materia == null)
+                    {
+                        return BadRequest("Nombre Materia == null");
+                    }
+
+                    materiaProfesores.Materia = item.Nombre_Materia;
+                    var profesoresPerMateria = item.MateriaListas
+                        .Select(x => x.Profesor).ToList();
+
+                    materiaProfesores.Profesores = _mapper.Map<List<ProfesorSimpleDTO>>(profesoresPerMateria);
+
+                    materiaProfesoresList.Add(materiaProfesores);
+                }
+
+                response.MateriaProfesores = materiaProfesoresList;
+
                 return Ok(response);
+
 
             }
             catch (BadHttpRequestException e)
@@ -162,6 +202,49 @@ namespace profefolio.Controllers
             }
         }
 
+        /*
+        * No tocar la ruta, la cambie porque el default era demasiado largo
+        */
+        [HttpGet("/api/lista/materias/ConProfesores/{idClase}")]
+        public async Task<ActionResult<List<ClaseMateriaResultDTO>>> GetMateriasConProfesores(int idClase)
+        {
+            try
+            {
+                var userEmail = User.FindFirstValue(ClaimTypes.Name);
+                var userRole = User.FindFirstValue(ClaimTypes.Role);
+
+                var materiaLista = await _materiaListaService.FindByIdClaseAndUser(idClase, userEmail, userRole);
+
+                var dto = _mapper.Map<List<ClaseMateriaResultDTO>>(materiaLista);
+
+                //se carga los profesores a cada materia de la lista
+                materiaLista.ForEach(a =>
+                {
+                    var value = dto.FirstOrDefault(b => b.Id == a.Id);
+                    if (value == null)
+                    {
+                        throw new FileNotFoundException("Error durante la obtencion de los Profesores de las Materias");
+                    }
+                    var prof = _mapper.Map<ClaseMateriaProfesorDTO>(a.Profesor);
+                    value.Profesores.Add(prof);
+                });
+                return Ok(dto);
+            }
+            catch (FileNotFoundException e)
+            {
+                return NotFound(e);
+            }
+            catch (BadHttpRequestException e)
+            {
+                return BadRequest(e);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"{e}");
+                return BadRequest("Sucedio un error inesperado durante la busqueda.");
+            }
+
+        }
     }
 
 

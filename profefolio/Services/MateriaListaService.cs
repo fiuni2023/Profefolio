@@ -103,7 +103,11 @@ namespace profefolio.Services
                 .Where(c => c.Id == idClase)
                 .FirstOrDefaultAsync();
 
-            if (clase == null) throw new FileNotFoundException();
+            if (clase == null || clase.MateriaListas == null)
+            {
+                throw new FileNotFoundException();
+            }
+
 
             var materiaListas = clase.MateriaListas
                 .Where(p => p.ClaseId == idClase)
@@ -144,41 +148,47 @@ namespace profefolio.Services
 
         public async Task<bool> DeleteByIdClase(int idClase, string user)
         {
-            var colegio = await _db.Colegios
+            try
+            {
+                var colegio = await _db.Colegios
                 .Include(c => c.personas)
                 .Where(c => !c.Deleted)
                 .Where(c => c.personas.Email.Equals(user))
                 .FirstOrDefaultAsync();
 
-            if (colegio == null)
-            {
-                throw new BadHttpRequestException("Accion no valida");
-            }
-            var clase = await _db.Clases
-                .Include(c => c.MateriaListas)
-                .Where(c => !c.Deleted)
-                .Where(c => c.Id == idClase)
-                .FirstOrDefaultAsync();
-
-            if (clase == null || (colegio.Id != clase.ColegioId) || clase.MateriaListas == null)
-            {
-                throw new FileNotFoundException();
-            }
-
-            foreach (var item in clase.MateriaListas)
-            {
-                try
+                if (colegio == null)
                 {
+                    throw new BadHttpRequestException("Accion no valida");
+                }
+                var clase = await _db.Clases
+                    .Include(c => c.MateriaListas)
+                    .Where(c => !c.Deleted)
+                    .Where(c => c.Id == idClase)
+                    .FirstOrDefaultAsync();
+
+                if (clase == null || (colegio.Id != clase.ColegioId) || clase.MateriaListas == null)
+                {
+                    throw new FileNotFoundException();
+                }
+
+                foreach (var item in clase.MateriaListas)
+                {
+
                     _db.MateriaListas.Remove(item);
+
                 }
-                catch (Exception e)
-                {
-                    return false;
-                }
+
+                await _db.SaveChangesAsync();
+                return true;
 
             }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return false;
+            }
 
-            return true;
+
         }
 
         public async Task<bool> SaveMateriaLista(ClaseMateriaCreateDTO dto, string user)
@@ -348,6 +358,41 @@ namespace profefolio.Services
 
             }
             return true;
+        }
+
+        public async Task<List<MateriaLista>> FindByIdClaseAndUser(int idClase, string userEmail = "", string role = "")
+        {
+
+            if ("Administrador de Colegio".Equals(role))
+            {
+                var colegio = await _db.Colegios.FirstOrDefaultAsync(a => !a.Deleted && userEmail.Equals(a.personas.Email));
+                if (colegio == null)
+                {
+                    throw new FileNotFoundException("No es Administrador del Colegio");
+                }
+
+                return await _db.MateriaListas
+                            .Where(a => !a.Deleted
+                            && a.Clase.ColegioId == colegio.Id
+                            && a.ClaseId == idClase)
+                            .Include(a => a.Materia)
+                            .Include(a => a.Profesor)
+                            .ToListAsync();
+            }
+
+
+            if ("Profesor".Equals(role))
+            {
+                return await _db.MateriaListas
+                            .Where(a => !a.Deleted
+                            && userEmail.Equals(a.Profesor.Email)
+                            && a.ClaseId == idClase)
+                            .Include(a => a.Materia)
+                            .Include(a => a.Profesor)
+                            .ToListAsync();
+            }
+
+            throw new BadHttpRequestException("El usuario no tienen acceso");
         }
     }
 }
