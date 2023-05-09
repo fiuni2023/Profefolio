@@ -1,11 +1,15 @@
 import React, { memo, useCallback, useEffect, useId, useState } from 'react'
 import styled from 'styled-components'
-//import { Calendar } from '../../api/calendar';
 import { groupBy, map, find } from "lodash"
 import { SBody, SCard, SHeader } from '../../../../components/componentsStyles/StyledDashComponent';
 import axios from 'axios';
 import APILINK from '../../../../components/link';
 import { useGeneralContext } from '../../../../context/GeneralContext';
+
+import { Calendar, momentLocalizer, dateFnsLocalizer } from 'react-big-calendar'
+import moment from 'moment'
+
+import "react-big-calendar/lib/css/react-big-calendar.css";
 
 
 const STablaHorarios = styled.table`
@@ -36,7 +40,7 @@ const getColors = (color) => {
 const TablaHorarios = () => {
     const { getToken } = useGeneralContext();
 
-    const [Calendar, setCalendar] = useState([]);
+    const [calendar, setCalendar] = useState([]);
 
     const peticionCalendar = useCallback(async () => {
         const response = await axios.get(`${APILINK}/api/HorasCatedrasMaterias`, {
@@ -53,7 +57,12 @@ const TablaHorarios = () => {
             const result = await peticionCalendar();
             console.log("RESULT", result);
             if (result !== null) {
-                setCalendar(result);
+                setCalendar(result)
+                /* setCalendar(map(result, (e) => e.fin.startsWith("08") ? (() => {
+                    e.fin = "08:20"; 
+                    return e
+                })() : e)) */
+
             } else {
                 console.log("Error al obtener el horario")
             }
@@ -61,8 +70,8 @@ const TablaHorarios = () => {
         getHorarios();
     }, [peticionCalendar]);
 
-    const colorsColegios = [];
-
+    /* const colorsColegios = [];
+    console.log(Calendar)
     const addColorColegios = (idColegio) => {
         const listColorsName = ["bluesky", "yellow", "green", "orange", "blue", "purple", "pink", "salmon"]
 
@@ -80,7 +89,7 @@ const TablaHorarios = () => {
         }
     }
     const grupo = groupBy(Calendar, a => a.dia)
-
+    console.log("GRUPO", grupo)
     const headers = []
 
     for (const key in grupo) {
@@ -90,8 +99,8 @@ const TablaHorarios = () => {
     // si hay coincidencia se agrega  a la lista de rows(lista de listas ) 
     // se detiene cuando ninguna key no tenga mas elementos 
     const IdGen = () => {
-        /* const idGenerator = useId()
-        return idGenerator */
+        //const idGenerator = useId()
+        //return idGenerator
         return Math.random() * 10000;
     };
 
@@ -102,18 +111,18 @@ const TablaHorarios = () => {
     let rows = [];
 
 
+    let maxLength = 0;
     while (bandera) {
 
         const rowDias = []
         if (minuto === 0) {
             rowDias.push(<td className={`cells-hours ${hora % 2 !== 0 ? "cell-striped" : ""}`} key={IdGen()} rowSpan={6}>{hora}</td>)
         }
-        let maxLength = 0;
+        console.log(maxLength)
         //rowDias.push(<td key={IdGen()}>{`${hora < 10 ? `0${hora}` : hora}:${minuto < 10 ? `0${minuto}` : minuto}`}</td>)
         rowDias.push(<td className={`cells-minutes ${hora % 2 !== 0 ? "cell-striped" : ""}`} key={IdGen()}>{`${minuto < 10 ? `0${minuto}` : minuto}`}</td>)
         for (const key in grupo) {
             maxLength = maxLength < grupo[key].length ? grupo[key].length : maxLength;
-
             if (grupo[key][elementoPosition]) {
                 const element = grupo[key][elementoPosition]
                 const horaMinuto = element.inicio.split(":")
@@ -124,6 +133,7 @@ const TablaHorarios = () => {
 
                 fechaInicio.setHours(parseInt(horaMinuto[0]), parseInt(horaMinuto[1]), 0, 0)
                 fechaFin.setHours(parseInt(horaMinutoFin[0]), parseInt(horaMinutoFin[1]), 0, 0)
+
 
                 // se verifica si la hora de inicio de la materia coincide con el de la hora actual 
                 // si es asi se agrega la celda de con la cantidad de filas que ocupa
@@ -163,17 +173,101 @@ const TablaHorarios = () => {
 
         elementoPosition++;
 
-        if (maxLength <= elementoPosition || hora === 23) {
+        if (maxLength <= elementoPosition || hora === 20) {
             bandera = false;
         } else {
             elementoPosition = 0;
         }
 
         rows.push(rowDias);
-    }
+    } */
 
+    const events = [
+        {
+            id: 1,
+            title: 'Evento 1',
+            start: new Date(2023, 4, 8, 10, 0), // Fecha y hora de inicio del evento
+            end: new Date(2023, 4, 8, 12, 0), // Fecha y hora de finalización del evento
+            // Otras propiedades personalizadas del evento, como color, descripción, etc.
+        },
+        {
+            id: 2,
+            title: 'Evento 2',
+            start: new Date(2023, 4, 9, 14, 0),
+            end: new Date(2023, 4, 9, 16, 0),
+            color: "#F6E7A7"
+            // Otras propiedades personalizadas del evento
+        },
+        // Otros eventos...
+    ];
+    const localizer = momentLocalizer(moment)
+
+    const minTime = new Date();
+    minTime.setHours(6, 0, 0); // Establecer el mínimo horario a las 06:00 de la mañana
+
+    const maxTime = new Date();
+    maxTime.setHours(20, 0, 0); // Establecer el máximo horario a las 20:00 (8:00 PM)
+
+    const formats = {
+        timeGutterFormat: (date, culture, localizer) =>
+          localizer.format(date, 'H:mm', culture), // Formato de las horas en la columna lateral
+        eventTimeRangeFormat: ({ start, end }, culture, localizer) =>
+          `${localizer.format(start, 'H:mm', culture)} - ${localizer.format(end, 'H:mm', culture)}`, // Formato de las horas en los eventos
+        slotLabelFormat: (date, culture, localizer) =>
+          localizer.format(date, 'H:mm', culture), // Formato de las horas en las etiquetas de los intervalos de tiempo
+    };
     return <>
-        <STablaHorarios>
+        <Calendar
+            localizer={localizer}
+            events={events}
+            defaultView="week"
+            startAccessor="start"
+            endAccessor="end"
+            formats={formats}
+            style={{ height: 400 }}
+            step={10}
+            min={minTime}
+            max={maxTime}
+            onShowMore={(events, date) => this.setState({ showModal: true, events })}
+            timeslots={1} // number of per section
+            toolbar={false}
+            popup={true}
+        />
+        <style jsx="true">
+            {
+                `
+                .rbc-day-slot .rbc-events-container{
+                        margin-right: 0px;
+                }
+
+                .rbc-row-content{
+                    display: none;
+                }
+
+                .rbc-time-header.rbc-overflowing{
+                    margin-right: 8px !important;
+                }
+
+                .rbc-time-content::-webkit-scrollbar {
+                    width: 10px;
+                }
+                
+                .rbc-time-content::-webkit-scrollbar-thumb {
+                    background: rgb(180, 180, 180); 
+                    border-radius: 10px;
+                }
+                `
+            }
+        </style>
+        {/* <Calendar
+            events={events}
+            step={60}
+            views={['work_week']}
+            defaultDate={new Date(2015, 3, 1)}
+            popup={false}
+            onShowMore={(events, date) => this.setState({ showModal: true, events })}
+        /> */}
+        {/* <STablaHorarios>
             <thead>
                 <tr>
                     <th className='col-horas' colSpan={2}>Horas</th>
@@ -187,8 +281,8 @@ const TablaHorarios = () => {
                 }
 
             </tbody>
-        </STablaHorarios>
-        <style jsx="true">
+        </STablaHorarios> */}
+        {/* <style jsx="true">
             {
                 `
                         .cell-striped{
@@ -200,7 +294,7 @@ const TablaHorarios = () => {
                         } 
                     `
             }
-        </style>
+        </style> */}
     </>
 }
 const Horarios = memo(() => {
@@ -215,7 +309,7 @@ const Horarios = memo(() => {
             </SBody>
         </SCard>
 
-        <style jsx="true">
+        {/* <style jsx="true">
             {
                 `
                     .container-visualizacion{
@@ -281,7 +375,7 @@ const Horarios = memo(() => {
                     }
                 `
             }
-        </style>
+        </style> */}
     </>
 })
 
