@@ -53,10 +53,18 @@ const TableEvents = () => {
             </Tbody>
         </Table>
         <ListTypeEvent>
-            <TypeEventTarget><BsCircleFill/>Evento</TypeEventTarget>
-            <TypeEventTarget><BsCircleFill/>Parcial</TypeEventTarget>
-            <TypeEventTarget><BsCircleFill/>Prueba Sumativa</TypeEventTarget>
-            <TypeEventTarget><BsCircleFill/>Examen</TypeEventTarget>
+            <TypeEventTarget>
+                <BsCircleFill />Evento
+            </TypeEventTarget>
+            <TypeEventTarget>
+                <BsCircleFill />Parcial
+            </TypeEventTarget>
+            <TypeEventTarget>
+                <BsCircleFill />Prueba Sumativa
+            </TypeEventTarget>
+            <TypeEventTarget>
+                <BsCircleFill />Examen
+            </TypeEventTarget>
         </ListTypeEvent>
     </>
 }
