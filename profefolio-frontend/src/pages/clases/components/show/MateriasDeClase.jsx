@@ -474,21 +474,19 @@ if (Array.isArray(materiaProfesores.data)) {
                             ))}
                         </List>
                     </SBody>}
-
-                    <h1>{materiaSelected}</h1>
-
-                    <h1>{idMateria}</h1>
-
         
                 <SForm onSubmit={materiasList?.onSubmit ?? null} >
                     <span>{materiasList?.addTitle}</span>
                     <Select value={optionSelected} onChange={(e) => { handleSelectOptionMateria(e) }}>
                         <option value="" disabled>{materiasList?.selectTitle}</option>
-                        {map(materiasList?.options, (option, index) => (
+                        {materiasList?.options.filter(option => option.status === "not_used").length > 0 ? 
+                        materiasList?.options.map((option, index) => (
                             option.status === "not_used" && <option key={index} value={option.value}>
-                                {option.label}
+                            {option.label}
                             </option>
-                        ))}
+                        )) :
+                        <option value="" disabled>No hay materias sin asignar</option>
+                        }
                     </Select>
                     <div style={{ textAlign: 'right' }}>
                       {/*   <TextButton buttonType={'save-changes'} enabled={materiasList?.enabled ?? false} onClick={(e) => { "enviando..." } handleCrearMateriaProfesor()} />
