@@ -69,7 +69,7 @@ function ModalAlumnos({
                     //   );
                 }
                 else if (response.status === 200) {
-                    // handleHide();
+                    handleHide();
                     fetchFunc()
                     toast.success("Guardado correctamente");
                 }
@@ -311,7 +311,7 @@ function ModalAlumnos({
     return (
         <>
             <Modal show={show} onHide={handleHide} datosModal={datosModal}/>
-            <ModalMensajeAlumno isOpen={openAviso} onAdd={()=> console.log("first")} student={alumno} onCancel={handleCancelAviso} />
+            <ModalMensajeAlumno isOpen={openAviso} onAdd={onHide} student={alumno} onCancel={handleCancelAviso} />
         </>
     )
 }

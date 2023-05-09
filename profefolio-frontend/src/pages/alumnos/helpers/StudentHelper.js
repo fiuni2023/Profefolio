@@ -58,7 +58,7 @@ const updateStudent = async (id, body, token) => {
 }
 
 const deleteStudent = async (id, token) => {
-    const result = await axios.delete(`${APILINK}/api/alumnos/${id}`,
+    const result = await axios.delete(`${APILINK}/api/ColegiosAlumnos/${id}`,
         {
             headers: {
                 "Authorization": 'Bearer ' + token,
@@ -81,5 +81,18 @@ const updateStudentsList = async (body, token) => {
     return result.status === 200 ? result : null
 }
 
-const StudentsService = { getStudentsPage, getAllNotClassStudents, createStudent, updateStudent, deleteStudent, getAllClassStudents, updateStudentsList }
+const addStudentToSchool = async (body, token) =>{
+    const result = await axios.post(`${APILINK}/api/ColegiosAlumnos`,
+        body,
+        {
+            headers: {
+                "Authorization": 'Bearer ' + token,
+                "Content-Type": "application/json"
+            },
+
+        })
+    return result.status === 200 ? result : null
+}
+
+const StudentsService = { getStudentsPage, getAllNotClassStudents, createStudent, updateStudent, deleteStudent, getAllClassStudents, updateStudentsList, addStudentToSchool }
 export default StudentsService
