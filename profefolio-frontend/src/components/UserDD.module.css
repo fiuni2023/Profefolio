@@ -7,23 +7,25 @@
     justify-content: flex-start;
     padding-left: 15%;
 }
+
 .sbt{
     font-size: 16px;
     color: white;
     transition: 0.5s all;
+    display: flex;
+    justify-content: center;
+    user-select: none;
 }
-
-.sbt:hover{
-    font-weight: 500;
-    font-size: 20px;
-    margin: 5px;
-}
-
 .sbt2{
     font-size: 16px;
     color: white;
-    font-weight: 500;
+    transition: 0.5s all;
+    display: flex;
+    justify-content: center;
+    user-select: none;
+    cursor: pointer;
 }
+
 .selected{
     color: white;
     font-weight: 500;
@@ -47,8 +49,8 @@
     justify-content: center;
     align-items: center;
     background-color: #F0544F;
-    border-radius: 50%;
-    width: 16%;
+    border-radius: 10px;
+    width: 95%;
     cursor: pointer;
     transition: all 0.25s;
     color: white;
@@ -63,7 +65,15 @@
 }
 
 .background{
+    position: fixed;
     width: 20%;
     background-color: #F0544F;
     transition: 0.25s all;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    overflow: hidden;
+    align-content: center;
+    gap: 2%;
 }

@@ -10,5 +10,6 @@ namespace profefolio.Repository
     {
         Task<List<HoraCatedra>> FindAll();
         Task<bool> Exist(string inicio = "", string fin = "");
+        Task<bool> Exist(int id);
     }
 }
