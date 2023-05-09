@@ -58,6 +58,10 @@ export const GeneralProvider = ({ children }) => {
         return getLoginData()?.email
     }
 
+    const getColegioId = () => {
+        return getLoginData()?.colegioId
+    }
+
     const values = {
         currentPage,
         setCurrentPage,
@@ -71,7 +75,8 @@ export const GeneralProvider = ({ children }) => {
         cancan,
         getUserName,
         getUserMail,
-        colegio, 
+        colegio,
+        getColegioId, 
         setColegio
     }
 
