@@ -9,11 +9,13 @@ import AlumnoService from "../../../../sevices/alumno";
 import ProfesorService from "../../../../sevices/profesor";
 import MateriaService from "../../../../sevices/materia";
 import CicloService from "../../../../sevices/ciclo";
+import ClaseService from "../../../../sevices/clase";
 
 const CAdminHome = () => {
 
-    const {getUserName, getToken, colegio } = useGeneralContext()
+    const {getUserName, getToken, getColegioId } = useGeneralContext()
     const token = getToken()
+    const colegioId = getColegioId()
 
     const [alumnos, setAlumnos] = useState({
         xs: 12, sm:12, md: 6, lg:3,
@@ -117,7 +119,7 @@ const CAdminHome = () => {
         ProfesorService.getFirstPage(token)
         .then(r=>{
             if(r.data){
-                let listaProfesor =  r.data.dataList.length > 5? r.data.dataList.slice(0,5):r.data.dataList
+                let listaProfesor =  r.data.length > 5? r.data.slice(0,5):r.data
                 setProfesores({
                     xs: 12, sm:12, md: 6, lg:3,
                     background: "yellow",
@@ -142,11 +144,11 @@ const CAdminHome = () => {
             if(r.data){
                 let ciclos
                 let materias
-                materias = r.data.dataList
+                materias = r.data.dataList.length>4? r.data.dataList.slice(0,5) : r.data.dataList
                 CicloService.getCiclos(token)
                 .then(a=>{
                     if(a.data){
-                        ciclos = a.data
+                        ciclos = a.data.length>4? a.data.slice(0,5): a.data
                         setMaterias({
                             xs: 12, sm:12, md: 6, lg:3,
                             background: "orange",
@@ -174,9 +176,32 @@ const CAdminHome = () => {
                 
             }
         })
+        ClaseService.getFirstPage(colegioId, token)
+        .then(r=>{
+            if(r.data){
+                let clases =  r.data.dataList.length>4? r.data.dataList.slice(0,5) : r.data.dataList
+                console.log(clases)
+                setClases({
+                    xs: 12, sm:12, md: 6, lg:3,
+                    background: "purple",
+                    hover: true,
+                    goto: '/clases',
+                    header: {
+                        title: "Clases",
+                    },
+                    body: {
+                        title: "Ultimas Clases",
+                        table: {
+                            small: true, 
+                            titulos: [ {titulo: "Titulo"},  {titulo: "Ciclo"}  ], 
+                            filas: clases.map(b=>{return {datos:[{dato: b.nombre}, {dato: b.ciclo}]}})
+                        }
+                    }
+                })
+            }
+        })
         
-        
-    },[token])
+    },[token, colegioId])
 
     return(
         <Container className={styles.HomeDiv}>
