@@ -368,6 +368,10 @@ useMemo(() => {
     }, [getClaseSelectedId, getToken])
 
 
+   
+
+
+
     const handleSelectOptionMateria = (e) => {
       e.preventDefault();
       setOptionSelected(e.target.value);
@@ -384,9 +388,14 @@ useMemo(() => {
     
       // actualizar la variable de estado con el nombre de la materia seleccionada
       setMateriaSelected(optionsMaterias[index].label);
+
+      
+      const nuevaMateria = { id: idMateria, nombre: materiaSelected, profesores: [] };
+      setMateriaProfesores(prevMaterias => prevMaterias.concat(nuevaMateria))
     
       //cargar a la lista de materias principal
       setOptionSelected("")
+
     }
 
 
