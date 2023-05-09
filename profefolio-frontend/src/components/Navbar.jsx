@@ -15,12 +15,20 @@ const Navbar = ({
     return(
         <>
             <div className="Navbar">
-                <div className="NButtonForSide" onClick={()=>{setShowSB(!showSB)}}>
+                <div className="NButtonForSide" onClick={()=>{
+                    setShowDD(false)
+                    setShowSB(!showSB)
+                }}>
                     <button className="buttonNavBar">  <BsJustify /> </button>
                 </div>
                 <div className="navbarmain">
                     <div className="logo"> <LogoNavBar width="100%" height="100%" /> </div>
-                    <div className="user" onClick={()=>{setShowDD(!showDD)}}> <span>{getUserName()}</span> <FaUserCircle size={25}/> </div>
+                    {!showDD &&
+                        <div className="user" onClick={()=>{
+                            setShowSB(false)
+                            setShowDD(!showDD)
+                        }}> <span>{getUserName()}</span> <FaUserCircle size={25}/> </div>
+                    }
                 </div>
             </div>
             <style jsx="true">{`
