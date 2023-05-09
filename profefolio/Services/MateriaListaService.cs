@@ -103,7 +103,11 @@ namespace profefolio.Services
                 .Where(c => c.Id == idClase)
                 .FirstOrDefaultAsync();
 
-            if (clase == null) throw new FileNotFoundException();
+            if (clase == null || clase.MateriaListas == null)
+            {
+                throw new FileNotFoundException();
+            }
+
 
             var materiaListas = clase.MateriaListas
                 .Where(p => p.ClaseId == idClase)
@@ -129,7 +133,6 @@ namespace profefolio.Services
                 throw new BadHttpRequestException("Accion no valida");
             }
             var clase = await _db.Clases
-                .Include(c => c.MateriaListas)
                 .Include(c => c.MateriaListas)
                 .Where(c => !c.Deleted)
                 .Where(c => c.Id == idClase)
@@ -179,7 +182,7 @@ namespace profefolio.Services
                 return true;
 
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Console.WriteLine(e);
                 return false;
