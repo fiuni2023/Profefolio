@@ -1,0 +1,79 @@
+.tabContainer{
+    display: flex;
+    width: 85%;
+    height: 30px;
+    cursor: pointer;
+    align-items: center;
+    justify-content: flex-start;
+    padding-left: 15%;
+}
+
+.sbt{
+    font-size: 16px;
+    color: white;
+    transition: 0.5s all;
+    display: flex;
+    justify-content: center;
+    user-select: none;
+}
+.sbt2{
+    font-size: 16px;
+    color: white;
+    transition: 0.5s all;
+    display: flex;
+    justify-content: center;
+    user-select: none;
+    cursor: pointer;
+}
+
+.selected{
+    color: white;
+    font-weight: 500;
+    font-size: 20px;
+    margin: 5px;
+}
+
+.container{
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    border: none;
+    transition: 0.25s all;
+    background-color: rgba(255, 255, 255, .5);
+    z-index: 100;
+}
+
+.ExitContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #F0544F;
+    border-radius: 10px;
+    width: 95%;
+    cursor: pointer;
+    transition: all 0.25s;
+    color: white;
+}
+
+.ExitContainer:hover {
+    filter: brightness(0.95);
+}
+
+.ExitContainer:active {
+    filter: brightness(0.8);
+}
+
+.background{
+    position: fixed;
+    width: 20%;
+    background-color: #F0544F;
+    transition: 0.25s all;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    overflow: hidden;
+    align-content: center;
+    gap: 2%;
+}

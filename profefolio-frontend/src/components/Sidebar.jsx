@@ -4,18 +4,10 @@ import { useGeneralContext } from "../context/GeneralContext";
 import styles from './Sidebar.module.css'
 import {RxCross2} from 'react-icons/rx'
 
-const SideBar = () => {
+const SideBar = ({ showSB = false, setShowSB = ()=>{}}) => {
     
     const navigate = useNavigate()
-    const { showSB, isLogged, setIsLogged, cancan } = useGeneralContext()
-
-    const handleLogOut = () => {
-        localStorage.removeItem('loginData')
-        sessionStorage.removeItem('loginData')
-        navigate("/")
-        setIsLogged(!isLogged)
-        
-    }
+    const { cancan} = useGeneralContext()
 
     const style = {
         height: showSB? "100%" : "0%",
@@ -23,46 +15,51 @@ const SideBar = () => {
     }
 
     return <>
-        <div className={styles.container} style={style}>
-            {showSB && <>
-                <SideBarClose>
-                    <div className="d-flex justify-content-end h-100 w-100">
-                        <div className={styles.ExitContainer}>
-                            <RxCross2 size={12} />
+        <div className={styles.container} style={{
+            height: showSB? "100%" : "0%"
+        }}  onClick={(e)=>{
+            e.stopPropagation()
+            setShowSB(!showSB)
+        }}>
+            <div className={styles.background} style={style} onClick={(e)=>{e.stopPropagation()}}>
+                {showSB && <>
+                    <SideBarClose setShowSB={setShowSB}>
+                        <div className="d-flex justify-content-end h-100 w-100">
+                            <div className={styles.ExitContainer}>
+                                <RxCross2 size={12} />
+                            </div>
                         </div>
-                    </div>
-                </SideBarClose>
-                <SideBarTab page={"home"} handleClick={handleLogOut} > Cerrar Sesión </SideBarTab>
-                <SideBarTab page={"home"} handleClick={()=>{navigate("/")}} > - Home </SideBarTab>
-                {   
-                    cancan("Master") &&
-                    <>
-                        <SideBarTab page={"administrador"}  handleClick={()=>{navigate("/administrador/list")}} > - Administrador </SideBarTab>
-                        <SideBarTab page={"/colegios/list"}  handleClick={()=>{navigate("/colegios/list")}} > - Colegios </SideBarTab>                    
-                    </>
-                }
-                {
-                    cancan("Administrador de Colegio") &&
-                    <>
-                        <SideBarTab page={"profesor"}  handleClick={()=>{navigate("/profesor")}}>- Profesor</SideBarTab>
-                        <SideBarTab page={"clases"}  handleClick={()=>{navigate("/clases")}}>- Clases</SideBarTab>
+                    </SideBarClose>
+                    <SideBarTab showSB={showSB} setShowSB={setShowSB} page={"home"} handleClick={()=>{navigate("/")}} > - Home </SideBarTab>
+                    {   
+                        cancan("Master") &&
+                        <>
+                            <SideBarTab showSB={showSB} setShowSB={setShowSB} page={"administrador"}  handleClick={()=>{navigate("/administrador/list")}} > - Administrador </SideBarTab>
+                            <SideBarTab showSB={showSB} setShowSB={setShowSB} page={"colegios"}  handleClick={()=>{navigate("/colegios/list")}} > - Colegios </SideBarTab>                    
+                        </>
+                    }
+                    {
+                        cancan("Administrador de Colegio") &&
+                        <>
+                            <SideBarTab showSB={showSB} setShowSB={setShowSB} page={"alumnos"}  handleClick={()=>{navigate("/alumnos")}}>- Alumnos</SideBarTab>
+                            <SideBarTab showSB={showSB} setShowSB={setShowSB} page={"clases"}  handleClick={()=>{navigate("/clases")}}>- Clases</SideBarTab>
+                            <SideBarTab showSB={showSB} setShowSB={setShowSB} page={"materia"}  handleClick={()=>{navigate("/materias")}}>- Materias</SideBarTab>
+                            <SideBarTab showSB={showSB} setShowSB={setShowSB} page={"profesor"}  handleClick={()=>{navigate("/profesor")}}>- Profesor</SideBarTab>
+                        </>
+                    }
 
-                         <SideBarTab page={"materia"}  handleClick={()=>{navigate("/materias")}}>- Materias</SideBarTab>
-                         <SideBarTab page={"alumnos"}  handleClick={()=>{navigate("/alumnos")}}>- Alumnos</SideBarTab>
-                    </>
-                }
-
-            </>}
+                </>}
+            </div>
         </div>
     </>
 }
 
-const SideBarTab = ({ children, page="", current="", handleClick = () => {} }) => {
-    const selected = current.includes(page)
-    const {showSB, setShowSB} = useGeneralContext()
+const SideBarTab = ({ children, page="", handleClick = () => {}, showSB, setShowSB = ()=>{} }) => {
+    const { currentPage, setCurrentPage } = useGeneralContext()
+    const selected = currentPage.includes(page)
 
     return <>
-        <div className={styles.tabContainer} onClick={()=>{ handleClick(); setShowSB(!showSB)}}>
+        <div className={styles.tabContainer} onClick={()=>{ handleClick(); setShowSB(!showSB); setCurrentPage(page)}}>
             <span className={`${styles.sbt} ${selected ? styles.selected: ""}`} >
                 {children}
             </span>
@@ -70,11 +67,10 @@ const SideBarTab = ({ children, page="", current="", handleClick = () => {} }) =
     </>
 }
 
-const SideBarClose = ({ children }) => {
-    const { setShowSB } = useGeneralContext()
-
+const SideBarClose = ({ setShowSB = () => {}, children }) => {
+    const { setCurrentPage } = useGeneralContext()
     return <>
-        <div className={styles.tabContainer} onClick={() => { setShowSB(false) }}>
+        <div className={styles.tabContainer} onClick={() => { setShowSB(false); setCurrentPage("home") }}>
                 {children}
         </div>
     </>

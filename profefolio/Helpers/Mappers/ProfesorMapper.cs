@@ -38,6 +38,9 @@ public class ProfesorMapper : Profile
                 opt => opt.MapFrom(
                     src => src.Email == null ? "" : src.Email.ToUpper()));
         
+        CreateMap<Persona, ProfesorSimpleDTO>()
+            .ForMember(dest => dest.IdProfesor, 
+                opt => opt.MapFrom(src => src.Id));
 
     }
 }

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Navbar from "../../components/Navbar.jsx";
 import SideBar from "../../components/Sidebar.jsx";
@@ -24,23 +24,29 @@ import Clases from "../clases/index.jsx";
 import ShowClase from "../clases/pages/view/ShowClase.jsx";
 import Home from "../home/index.jsx";
 import TestPage from "../../components/TestPage.jsx";
+import PruebaMateria from "../materias/list/PruebaMaterias.jsx"
 import { ClaseProvider } from "../clases/context/ClaseContext.jsx";
+import UserDD from "../../components/UserDD.jsx";
+
 
 const App = () => {
-
+    const [showSB, setShowSB] = useState(false)
+    const [showDD, setShowDD] = useState(false)
     return (
         <>
             <BrowserRouter>
                 <GeneralProvider>
                     <div className="page">
-                        <Navbar />
+                        <Navbar showSB={showSB} setShowSB={setShowSB} showDD={showDD} setShowDD={setShowDD} />
                         <ClaseProvider>
                             <div className="content">
-                                <SideBar />
+                                <UserDD showSB={showDD} setShowSB={setShowDD} />
+                                <SideBar showSB = {showSB} setShowSB={setShowSB}/>
                                 <Routes>
 
                                     <Route path="/" element={<Home />} />
                                     <Route path="/test" element={<TestPage />} />
+                                    <Route path="/pruebaMateria" element={<PruebaMateria />} />
                                     <Route path="/pagina1" element={<Partidos />}>
                                         <Route path="list" element={<PartidosList />} />
                                         <Route path='create' element={<CreatePartidos />} />
@@ -73,6 +79,7 @@ const App = () => {
                                         <Route path="list" element={<ListarMaterias />} />
                                     </Route>
                                     <Route path="/alumnos" element={<Alumnos />} />
+
                                 </Routes>
                             </div>
                         </ClaseProvider>
