@@ -4,7 +4,7 @@ import styles from "./index.module.css";
 import { Row, Container } from "react-bootstrap";
 import {DTitle, SRow, Separator} from "../../../../components/componentsStyles/StyledDashComponent"
 import Card from "../../../../components/Card";
-import { Clases, Stats} from "./cards"
+import { Stats} from "./cards"
 import AlumnoService from "../../../../sevices/alumno";
 import ProfesorService from "../../../../sevices/profesor";
 import MateriaService from "../../../../sevices/materia";
