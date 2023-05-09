@@ -268,6 +268,8 @@ const seleccionarProfesor = (event) => {
 })
 const MateriasDeClase = () => {
     const [optionSelected, setOptionSelected] = useState("");
+
+    const [materiaSelected,setMateriaSelected] = useState("");
     const [optionsMaterias, setOptionsMaterias] = useState([]);
 
     const [profeProfesor, setProfeProfesor] = useState([]);
@@ -368,14 +370,32 @@ useMemo(() => {
 
     }, [getClaseSelectedId, getToken])
 
-
-
     const handleSelectOptionMateria = (e) => {
+      e.preventDefault();
+      setOptionSelected(e.target.value);
+    
+      
+      const index = optionsMaterias.findIndex(a => a.value === parseInt(e.target.value))
+    
+      addMateriaToList(optionsMaterias[index].label)
+      optionsMaterias[index].status = "selected";
+      setOptionsMaterias([...optionsMaterias]);
+    
+      // actualizar la variable de estado con el nombre de la materia seleccionada
+      setMateriaSelected(optionsMaterias[index].label);
+    
+      //cargar a la lista de materias principal
+      setOptionSelected("")
+    }
+
+
+
+   /* const handleSelectOptionMateria = (e) => {
         e.preventDefault();
         setOptionSelected(e.target.value);
 
         setIdMateria(e.target.value);
-       // console.log(`Asigna la materia con id: ${e.target.value} a la clase con id: ${getClaseSelectedId()} `)
+       console.log(`Asigna la materia con id: ${e.target.value} a la clase con id: ${getClaseSelectedId()} `)
 
         if (/^[0-9]+$/.test(e.target.value)) {
             const index = optionsMaterias.findIndex(a => a.value === parseInt(e.target.value))
@@ -387,7 +407,7 @@ useMemo(() => {
             //cargar a la lista de materias principal
             setOptionSelected("")
         }
-    }
+    }*/
 
     useEffect(() => {
         const listaMateriasProfesores = async () => {
@@ -438,7 +458,7 @@ useMemo(() => {
                                     profeProfesor={profeProfesor}
                                     type={materia.status}
 
-                                    onClick={() => { console.log(`${materia.nombre} 'seleccionado'`,"profesores", materia.profesores.map(profesor => profesor.id), "profeProfesor",profeProfesor);setIdMateria(materia.id) ;setStatusMateria(materia.id, (materia.status === "new" ? "reload" : "new")); }}
+                                    onClick={() => { console.log(`${materia.nombre} 'seleccionado'`,"profesores", materia.profesores.map(profesor => profesor.id),  setMateriaSelected(materia.nombre),"profeProfesor",profeProfesor);setIdMateria(materia.id) ;setStatusMateria(materia.id, (materia.status === "new" ? "reload" : "new")); }}
                                     
                                    
                                   
@@ -449,6 +469,8 @@ useMemo(() => {
                     </SBody>}
 
         
+                    <div id="materia-seleccionada">{idMateria}</div>
+
                 <SForm onSubmit={materiasList?.onSubmit ?? null} >
                     <span>{materiasList?.addTitle}</span>
                     <Select value={optionSelected} onChange={(e) => { handleSelectOptionMateria(e) }}>
@@ -459,6 +481,7 @@ useMemo(() => {
                             </option>
                         ))}
                     </Select>
+                    <span>{materiaSelected}</span> 
                     <div style={{ textAlign: 'right' }}>
                      
                                     <TextButton 
