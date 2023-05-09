@@ -83,7 +83,7 @@ public class PersonasService : IPersona
 
         if (!(await _userManager.IsInRoleAsync(user, "Administrador de Colegio")))
         {
-            if (await ExistDoc(user))
+            if (await ExistDoc(user)) 
             {
                 throw new BadHttpRequestException($"Ya existe el user con el CI {user.Documento}");
             }
@@ -209,12 +209,13 @@ public class PersonasService : IPersona
 
     public async Task<bool> ExistDoc(Persona persona)
     {
-        return await _userManager.Users
+        var query = await _userManager.Users
             .Where(p => !p.Deleted)
-            .AnyAsync(p => p.DocumentoTipo != null
-                           && persona.Documento != null
-                           && persona.Documento.Equals(p.Documento)
-                           && p.DocumentoTipo.Equals(p.DocumentoTipo));
+            .Where(p => p.Documento != null && p.DocumentoTipo != null)
+            .Where(p => ((p.DocumentoTipo.Equals(persona.DocumentoTipo)) && (p.Documento.Equals(persona.Documento))))
+                .CountAsync() > 0;
+        return query;
+                    
     }
 
     public async Task<Persona> FindByEmail(string email = "")
@@ -270,15 +271,13 @@ public class PersonasService : IPersona
         return true;
     }
 
-    public async Task<Persona?> FindByDocumentoAndRole(string documento = "",string DocumentoTipo = "", string role = "")
+    public async Task<Persona?> FindByDocumentoAndRole(string NumeroDocumento = "",string DocumentoTipo = "", string role = "")
     {
+        
         var persona = await _userManager.Users
             .Where(a => !a.Deleted)
-            .Where(a => a.Documento != null)
-            .Where(a => a.Documento.Equals(documento))
-            .Where(a => a.DocumentoTipo != null)
             .Where(a => a.DocumentoTipo.Equals(DocumentoTipo))
-            .Include(a => a.ColegiosAlumnos)
+            .Where(a => a.Documento.Equals(NumeroDocumento))
             .Include(a => a.ColegiosAlumnos)
             .FirstOrDefaultAsync();
         if (persona != null)

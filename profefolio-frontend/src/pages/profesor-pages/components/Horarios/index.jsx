@@ -1,25 +1,40 @@
-import React from 'react'
+import React, { memo, useEffect, useState} from 'react'
+import { SBody, SCard, SHeader } from '../../../../components/componentsStyles/StyledDashComponent';
+import { useGeneralContext } from '../../../../context/GeneralContext';
 
-const Horarios = () => {
-    return <>
-        <div className="container-visualizacion">
-            Horarios
-        </div>
 
-        <style jsx="true">
-            {
-                `
-                    .container-visualizacion{
-                        border: 1px solid black;
-                        border-radius: 20px;
-                        background-color: gray;
-                        min-height: 300px;
-                        padding: 1rem;
-                    }
-                `
+import HorarioService from "../../helpers/HorariosHelpers.js"
+import SCalendar from '../Calendar';
+import Tools from "../../helpers/Tools.js";
+
+const Horarios = memo(() => {
+    const { getToken } = useGeneralContext();
+    const [events, setEvents] = useState([]);
+
+    useEffect(() => {
+        const getHorarios = async () => {
+            
+            const result = await HorarioService.getHorariosColegios(getToken());
+            if (result !== null) {
+                setEvents(Tools.MapperHorariosByColegio(result))
+            } else {
+                console.log("Error al obtener el horario")
             }
-        </style>
+        }
+        
+        getHorarios();
+        
+    }, [getToken]);
+
+
+    return <>
+        <SCard>
+            <SHeader>Horarios de Clases</SHeader>
+            <SBody>
+                <SCalendar events={events}/>
+            </SBody>
+        </SCard>
     </>
-}
+})
 
 export default Horarios

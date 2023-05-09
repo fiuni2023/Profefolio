@@ -50,6 +50,11 @@ namespace profefolio.Services
             return await _context.HorasCatedras.AnyAsync(h => !h.Deleted && inicio.Equals(h.Inicio) && fin.Equals(h.Fin));
         }
 
+        public async Task<bool> Exist(int id)
+        {
+            return await _context.HorasCatedras.AnyAsync(a => !a.Deleted && a.Id == id);
+        }
+
         public async Task<List<HoraCatedra>> FindAll()
         {
             return await _context.HorasCatedras.Where(a => !a.Deleted).ToListAsync();

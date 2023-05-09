@@ -4,6 +4,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using profefolio.Models.DTOs.ClaseMateria;
+using profefolio.Models.DTOs.Materia;
 using profefolio.Models.Entities;
 using profefolio.Repository;
 
@@ -143,21 +144,19 @@ namespace profefolio.Controllers
         {
             try
             {
+                //Obtenemos el username del usuario
                 var user = User.Identity.Name;
+
                 var result = await _materiaListaService.FindByIdClase(idClase, user);
 
-                var response = new ClaseDetallesDTO();
+                return Ok(result);
 
-                response.IdProfesores = result.ConvertAll(c => c.ProfesorId);
-                response.ClaseId = idClase;
-                response.MateriaId = result[0].ClaseId;
-                return Ok(response);
 
             }
             catch (BadHttpRequestException e)
             {
                 Console.WriteLine(e.Message);
-                return BadRequest();
+                return BadRequest(e.Message);
             }
             catch (FileNotFoundException e)
             {
@@ -176,11 +175,11 @@ namespace profefolio.Controllers
             {
                 var userEmail = User.FindFirstValue(ClaimTypes.Name);
                 var userRole = User.FindFirstValue(ClaimTypes.Role);
-                
+
                 var materiaLista = await _materiaListaService.FindByIdClaseAndUser(idClase, userEmail, userRole);
 
                 var dto = _mapper.Map<List<ClaseMateriaResultDTO>>(materiaLista);
-                
+
                 //se carga los profesores a cada materia de la lista
                 materiaLista.ForEach(a =>
                 {
