@@ -132,6 +132,9 @@ namespace profefolio.Services
             {
                 throw new BadHttpRequestException("Accion no valida");
             }
+
+            var profesores = _db.Users.ToList();
+
             var clase = await _db.Clases
                 .Include(c => c.MateriaListas)
                 .Where(c => !c.Deleted)
@@ -170,7 +173,7 @@ namespace profefolio.Services
 
                 foreach (var itemLista in materiaLista)
                 {
-                    var profesor = itemLista.Profesor;
+                    var profesor = profesores.Find(x => x.Id.Equals(itemLista.ProfesorId));
 
 
                     var profeSimple = new ProfesorSimpleDTO();
