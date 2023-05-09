@@ -267,7 +267,7 @@ const MateriasDeClase = () => {
 
     const [materiaSelected, setMateriaSelected] = useState("");
 
-    const { getListaMaterias, setStatusMateria, getClaseSelectedId, addMateriaToList, setProfesoresOptions } = useClaseContext();
+    const { getListaMaterias, setStatusMateria, getClaseSelectedId, setProfesoresOptions } = useClaseContext();
     const { getToken } = useGeneralContext();
 
     const [materiaProfesores, setMateriaProfesores] = useState([]);
@@ -368,9 +368,17 @@ useMemo(() => {
     }, [getClaseSelectedId, getToken])
 
 
-   
 
+    const addMateriaToList = (nombre) => {
+        const newMateria = {
+            id: Date.now().toString(),
+            nombre,
+           // status: "new",
+            profesores: []
+        };
+        setMateriaProfesor((materiaProfesor) => [...materiaProfesor, newMateria]);
 
+    };
 
     const handleSelectOptionMateria = (e) => {
       e.preventDefault();
@@ -380,56 +388,31 @@ useMemo(() => {
         setIdMateria(e.target.value);
        console.log(`Asigna la materia con id: ${e.target.value} a la clase con id: ${getClaseSelectedId()} `)
       
-      const index = optionsMaterias.findIndex(a => a.value === parseInt(e.target.value))
-    
-      addMateriaToList(optionsMaterias[index].label)
-      optionsMaterias[index].status = "selected";
-      setOptionsMaterias([...optionsMaterias]);
-    
-      // actualizar la variable de estado con el nombre de la materia seleccionada
-      setMateriaSelected(optionsMaterias[index].label);
+       const index = optionsMaterias.findIndex(a => a.value === parseInt(e.target.value))
 
-      
-      const nuevaMateria = { id: idMateria, nombre: materiaSelected, profesores: [] };
-      setMateriaProfesores(prevMaterias => prevMaterias.concat(nuevaMateria))
-    
-      //cargar a la lista de materias principal
-      setOptionSelected("")
+       addMateriaToList(optionsMaterias[index].label);
+
+     
+       
+       optionsMaterias[index].status = "selected";
+       setOptionsMaterias([...optionsMaterias]);
+       
+       //cargar a la lista de materias principal
+       setOptionSelected("")
+
+       //addMateriaToList(optionsMaterias[index].label);
+
+       
 
     }
-
-
-
-    /*const handleSelectOptionMateria = (e) => {
-        e.preventDefault();
-        setOptionSelected(e.target.value);
-
-        setIdMateria(e.target.value);
-       // console.log(`Asigna la materia con id: ${e.target.value} a la clase con id: ${getClaseSelectedId()} `)
-
-        if (/^[0-9]+$/.test(e.target.value)) {
-            const index = optionsMaterias.findIndex(a => a.value === parseInt(e.target.value))
-
-            addMateriaToList(optionsMaterias[index].label)
-            optionsMaterias[index].status = "selected";
-
-            setOptionsMaterias([...optionsMaterias]);
-            //cargar a la lista de materias principal
-            setOptionSelected("")
-        }
-    }*/
 
     useEffect(() => {
       const listaMateriasProfesores = async () => {
         try {
           const dataList = await ClassesService.getMateriasProfesores(getClaseSelectedId(),getToken());
           setMateriaProfesores(dataList ?? []);
-          console.log('materiaProfesores:', dataList);
+        
 
-        //  setMateriaSelected(materiaSelected);
-
-         // console.log('nombre',nombre);
-         // console.log('materiaSelected',materiaSelected);
         } catch (e) {
           setMateriaProfesores([]);
         }
@@ -439,6 +422,11 @@ useMemo(() => {
     }, []);
 
 
+let listaFusionada = [...materiaProfesor];
+
+if (Array.isArray(materiaProfesores.data)) {
+  listaFusionada = [...listaFusionada, ...materiaProfesores.data];
+}
 
     
     let materiasList = {
@@ -450,9 +438,8 @@ useMemo(() => {
         addTitle: "Agregar Materias",
         selectTitle: "Seleccionar Materia",
         options: optionsMaterias,
-        list:  materiaProfesores.data ?? [],
+        list:  listaFusionada ?? [],
     }
-
     return <>
 
         <Container>
@@ -467,10 +454,10 @@ useMemo(() => {
                         <List>
                             {materiasList?.list?.map((materia, index) => (
                                 <ListItem key={index}
-                                    idMateria={materia.id || idMateria}
+                                    idMateria={materia.id}
                                     index={index + 1}
                                    // nombre={materia.nombre}
-                                    nombre={materiaSelected || materia.nombre}
+                                    nombre={materia.nombre}
 
                                   //  nombre={materiaSelected}
                                     profesores={materia.profesores}
