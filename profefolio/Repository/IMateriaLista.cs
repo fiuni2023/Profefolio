@@ -7,7 +7,7 @@ namespace profefolio.Repository
     {
         Task<bool> IsUsedMateria(int idMateria);
         Task<MateriaLista> Find(int idClase, string idProfesor, int idMateria, string userLogged);
-        Task<List<MateriaLista>> FindByIdClase(int idClase, string user);
+        Task<ClaseDetallesDTO> FindByIdClase(int idClase, string user);
         Task<List<MateriaLista>> FindByIdClaseAndUser(int idClase, string userEmail, string role);
         Task<bool> DeleteByIdClase(int idClase, string user);
         Task<bool> SaveMateriaLista(ClaseMateriaCreateDTO dto, string user);
