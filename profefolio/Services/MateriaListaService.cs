@@ -170,8 +170,7 @@ namespace profefolio.Services
 
                 foreach (var itemLista in materiaLista)
                 {
-                    var profesor = await _db.Users
-                        .FirstOrDefaultAsync(x => x.Id.Equals(itemLista.ProfesorId));
+                    var profesor = itemLista.Profesor;
 
 
                     var profeSimple = new ProfesorSimpleDTO();
