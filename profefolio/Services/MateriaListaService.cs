@@ -132,6 +132,9 @@ namespace profefolio.Services
             {
                 throw new BadHttpRequestException("Accion no valida");
             }
+
+            var profesores = _db.Users.ToList();
+
             var clase = await _db.Clases
                 .Include(c => c.MateriaListas)
                 .Where(c => !c.Deleted)
@@ -143,16 +146,13 @@ namespace profefolio.Services
                 throw new FileNotFoundException();
             }
 
-            var materias = _db.MateriaListas
-                .Include(x => x.Profesor)
-                .Include(x => x.Clase)
-                .Include(x => x.Materia)
-                .Where(c => c.ClaseId == idClase)
-                .Where(c => c.Clase == null ? false : c.Clase.ColegioId == colegio.Id)
-                .Select(x => x.Materia)
-                .DistinctBy(x => x.Id)
-                .Include(x => x.MateriaListas);
+            
 
+            var materias = _db.Materias
+                .Include(x => x.MateriaListas)
+                .Where(x => !x.Deleted)
+                .Where(x => x.MateriaListas.Any(y => y.ClaseId == clase.Id));
+                
             
             var result = new ClaseDetallesDTO();
 
@@ -168,13 +168,13 @@ namespace profefolio.Services
                 var materiaProfesores = new MateriaProfesoresDTO();
 
                 materiaProfesores.IdMateria = item.Id;
+                materiaProfesores.Materia = item.Nombre_Materia;
 
                 var profesorSimpleList = new List<ProfesorSimpleDTO>();
 
                 foreach (var itemLista in materiaLista)
                 {
-                    var profesor = await _db.Users
-                        .FirstOrDefaultAsync(x => x.Id.Equals(itemLista.ProfesorId));
+                    var profesor = profesores.Find(x => x.Id.Equals(itemLista.ProfesorId));
 
 
                     var profeSimple = new ProfesorSimpleDTO();
