@@ -39,7 +39,7 @@ justify-content: space-around;
 
 
 
-const TagProfesor = memo(({ id, nombre, state = "new", onClick = () => { } }) => {
+const TagProfesor = memo(({ id, nombre,apellido, state = "new", onClick = () => { } }) => {
     const uid = useId();
     const unicId = uid.substring(1, uid.length - 1)
 
@@ -61,7 +61,7 @@ const TagProfesor = memo(({ id, nombre, state = "new", onClick = () => { } }) =>
 
     return <>
         <TagTeacher className={`tag-teacher-${unicId}`}>
-            <Item className='item-nombre-profe'>{nombre}</Item>
+            <Item className='item-nombre-profe'>{nombre} {apellido}</Item>
             <ListButton onClick={onClick}>{state !== 'reload' ? 'X' : <RxReload style={{ fontSize: '24px' }} size={24} />}</ListButton>
 
         </TagTeacher>
@@ -99,7 +99,7 @@ const TagProfesor = memo(({ id, nombre, state = "new", onClick = () => { } }) =>
 
   
 
-const ListItem = memo(({ index, idMateria, nombre, profesores = [] ,profeProfesor = [], type ,onClick }) => {
+const ListItem = memo(({ index, idMateria, nombre,apellido, profesores = [] ,profeProfesor = [], type ,onClick }) => {
 
     const [profesoresSeleccionados, setProfesoresSeleccionados] = useState([]);
 
@@ -182,6 +182,7 @@ const seleccionarProfesor = (event) => {
           key={profesor.id}
           id={profesor.id}
           nombre={`${profesor.nombre}${profesor.status}`}
+          apellido={`${profesor.apellido}${profesor.status}`}
           state={profesor.status}
           onClick={() => {
             setProfesoresSeleccionados((prevSeleccionados) =>
@@ -193,38 +194,11 @@ const seleccionarProfesor = (event) => {
     ))}
 
 
-{/* 
-{profeProfesor.map((profesor) => (
-  (idProfesorSeleccionado && profesor.id === idProfesorSeleccionado) && (
-    <TagProfesor
-      key={profesor.id}
-      id={profesor.id}
-      nombre={`${profesor.nombre}${profesor.status}`}
-      state={profesor.status}
-      onClick={() => setIdProfesorSeleccionado(profesor.id)}
-    />
-  )
-))}*/}
-
-
-
-{/*{map(profeProfesor, (e, i) => (
-    <TagProfesor
-      id={e.id}
-      nombre={`${e.nombre}${e.status}`}
-      state={e.status}
-      onClick={() => setIdProfesorSeleccionado(e.id)}
-    />
-  
-
-    
-))}*/}
-
 
 
 
   {/* Este es un comentario en React*/}
-         {map(profesores, (e, i) => <TagProfesor key={i} id={e.id} nombre={`${e.nombre}${e.status}`} state={e.status} onClick={() => {
+         {map(profesores, (e, i) => <TagProfesor key={i} id={e.id} nombre={`${e.nombre}`} apellido={`${e.apellido}`} state={e.status} onClick={() => {
                         setStatusProfesorMateria(idMateria, e.id, e.status === "new" ? "reload" : "new");
                     }
                     } />)}
