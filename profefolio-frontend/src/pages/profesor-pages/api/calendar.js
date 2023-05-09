@@ -1,4 +1,4 @@
-export const Calendar = [
+export const calendarEvents = [
         {
             "nombre": "Lengua",
             "nombreClase": "Septimo Grado",
@@ -15,7 +15,7 @@ export const Calendar = [
             "colegioId": 5,
             "nombreColegio": "San Fransisco de Asis",
             "dia": "Martes",
-            "inicio": "08:10",
+            "inicio": "07:10",
             "fin": "08:50",
             "id": 3
         },
