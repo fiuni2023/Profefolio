@@ -17,5 +17,6 @@ namespace profefolio.Repository
         Task<IEnumerable<ColegiosAlumnos>> FindAllNoAssignedToClaseByEmailAdminAndIdClase(string adminEmail, int idClase);
         Task<IEnumerable<ColegiosAlumnos>> FindNotAssigned(string user, int idClase, int page, int cantPerPage);
         Task<int> CountNotAssigned(string user, int idClase);
+        Task<IEnumerable<ColegiosAlumnos>> FindAll(string user, int page, int cantPerPage);
     }
 }
