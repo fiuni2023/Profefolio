@@ -96,7 +96,10 @@ namespace profefolio.Controllers
         {
             try
             {
-                var result = await _claseService.FindById(id);
+                var user = User.Identity.Name;
+
+
+                var result = await _claseService.FindByIdAndUser(id, user);
 
                 return result != null
                     ? Ok(_mapper.Map<ClaseResultDTO>(result))
@@ -175,7 +178,8 @@ namespace profefolio.Controllers
 
             try
             {
-                var clase = await _claseService.FindById(id);
+                var name = User.Identity.Name;
+                var clase = await _claseService.FindByIdAndUser(id, name);
                 if (clase == null)
                 {
                     return NotFound("No se ha encontrado la Clase a editar");
@@ -193,7 +197,7 @@ namespace profefolio.Controllers
                     return NotFound("El campo de Colegio es invalido");
                 }
 
-                var name = User.FindFirstValue(ClaimTypes.Name);
+                
                 clase.ModifiedBy = name;
                 clase.Modified = DateTime.Now;
                 clase.Deleted = false;
@@ -230,14 +234,12 @@ namespace profefolio.Controllers
 
             try
             {
-                var clase = await _claseService.FindById(id);
+                var name = User.Identity.Name;
+                var clase = await _claseService.FindByIdAndUser(id, name);
                 if (clase == null)
                 {
                     return NotFound();
                 }
-
-                //string userId = User.Identity.GetUserId();
-                var name = User.FindFirstValue(ClaimTypes.Name);
 
                 clase.ModifiedBy = name;
                 clase.Modified = DateTime.Now;

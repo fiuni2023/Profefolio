@@ -9,6 +9,7 @@ import { useClaseContext } from '../../context/ClaseContext';
 import MateriasService from "../../Helpers/MateriasHelper.js"
 import { useGeneralContext } from '../../../../context/GeneralContext';
 import ClassesService from '../../Helpers/ClassesHelper';
+import { toast } from 'react-hot-toast';
 
 
 import { GrAddCircle } from 'react-icons/gr'
@@ -38,7 +39,7 @@ justify-content: space-around;
 
 
 
-const TagProfesor = memo(({ id, nombre, state = "new", onClick = () => { } }) => {
+const TagProfesor = memo(({ id, nombre,apellido, state = "new", onClick = () => { } }) => {
     const uid = useId();
     const unicId = uid.substring(1, uid.length - 1)
 
@@ -60,7 +61,7 @@ const TagProfesor = memo(({ id, nombre, state = "new", onClick = () => { } }) =>
 
     return <>
         <TagTeacher className={`tag-teacher-${unicId}`}>
-            <Item className='item-nombre-profe'>{nombre}</Item>
+            <Item className='item-nombre-profe'>{nombre} {apellido}</Item>
             <ListButton onClick={onClick}>{state !== 'reload' ? 'X' : <RxReload style={{ fontSize: '24px' }} size={24} />}</ListButton>
 
         </TagTeacher>
@@ -96,69 +97,52 @@ const TagProfesor = memo(({ id, nombre, state = "new", onClick = () => { } }) =>
 
 
 
-const TagProfesorSeleccionado=memo(({ profesorId, profesores ,onClick = () => { }}) =>{
-    const profesor = profesores.find((profesor) => profesor.id === profesorId);
-    return <>
-
-        <TagTeacher className={`tag-teacher-${unicId}`}>
-        <Item className='item-nombre-profe'>{profesor && profesor.nombre}</Item>
-
-        </TagTeacher>
-
-        <style jsx="true">{
-            `
-            .item-nombre-profe{
-                padding-left: 5px;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-                max-width: calc(10rem - 24px);
-                font-size: 15px;
-                display: flex;
-                align-items: center;
-            }
-            .tag-teacher-${unicId}{
-                background-color: #F3E6AE;
-                padding: 0.2rem;
-                max-width: 10rem;
-                width: fit-content;+
-                height: 24px;
-                display: flex;
-                align-items: center;
-            }
-            .btn-cancelar{
-                background-color: red;
-                min-width: 1rem;
-            }
-        `
-        }</style>
-
-      
-      </>
-  })
   
 
-  
+const ListItem = memo(({ index, idMateria, nombre,apellido, profesores = [] ,profeProfesor = [], type ,onClick }) => {
 
-const ListItem = memo(({ index, idMateria, nombre, profesores = [] ,profeProfesor = [], type, onClick }) => {
+    const [profesoresSeleccionados, setProfesoresSeleccionados] = useState([]);
+
+    const [selectedData,setSelectedData ]= useState([]);
+
+   
+
     const { setStatusProfesorMateria } = useClaseContext();
 
     const [isSelectOpen, setIsSelectOpen] = useState(false);
 
-    const [idProfesorSeleccionado, setIdProfesorSeleccionado] = useState(null);
+ 
 
  
 
-    const seleccionarProfesor = (e) => {
+    /*const seleccionarProfesor = (e) => {
         setIdProfesorSeleccionado(e.target.value);
-      };
-      
+      };*/
+
 
 
     const handleSelectOpenProfesores = () => {
         setIsSelectOpen(true);
 
       };
+
+
+     
+
+const seleccionarProfesor = (event) => {
+  const idProfesorSeleccionado = event.target.value;
+
+  setProfesoresSeleccionados((prevSeleccionados) =>
+    prevSeleccionados.includes(idProfesorSeleccionado)
+      ? prevSeleccionados.filter((id) => id !== idProfesorSeleccionado)
+      : [...prevSeleccionados, idProfesorSeleccionado]
+  );
+
+};
+
+
+
+  
 
      
     
@@ -167,7 +151,7 @@ const ListItem = memo(({ index, idMateria, nombre, profesores = [] ,profeProfeso
     return <>
         <ItemContainer type={type} className={`item-container-${index}`}>
             <div>
-            <Item>{index}- {nombre}</Item>
+            <Item>{index}- {nombre} </Item>
                 <div className={`profe-container-${index}`}>
                     <Item>Profesores:</Item>
 
@@ -192,38 +176,33 @@ const ListItem = memo(({ index, idMateria, nombre, profesores = [] ,profeProfeso
   </TagNombreSelect>
 )}
 
-{map(profeProfesor, (e, i) => (
-  
-    <TagProfesor
-      id={e.id}
-      nombre={`${e.nombre}${e.status}`}
-      state={e.status}
-      onClick={() => setIdProfesorSeleccionado(e.id)}
-    />
-
-
-    
-))}
-
-
-
-
-<TagNombreSelect>
-
-{idProfesorSeleccionado && (
-        <div>{profeProfesor.find((profesor) => profesor.id === idProfesorSeleccionado).nombre}
-        </div>
-        )}
-        </TagNombreSelect>
+{profeProfesor.map((profesor) => (
+      profesoresSeleccionados.includes(profesor.id) && (
+        <TagProfesor
+          key={profesor.id}
+          id={profesor.id}
+          nombre={`${profesor.nombre}${profesor.status}`}
+          apellido={`${profesor.apellido}${profesor.status}`}
+          state={profesor.status}
+          onClick={() => {
+            setProfesoresSeleccionados((prevSeleccionados) =>
+              prevSeleccionados.filter((id) => id !== profesor.id)
+            );
+          }}
+        />
+      )
+    ))}
 
 
 
-  {/* Este es un comentario en React 
-         {map(profesores, (e, i) => <TagProfesor key={i} id={e.id} nombre={`${e.nombre}${e.status}`} state={e.status} onClick={() => {
+
+
+  {/* Este es un comentario en React*/}
+         {map(profesores, (e, i) => <TagProfesor key={i} id={e.id} nombre={`${e.nombre}`} apellido={`${e.apellido}`} state={e.status} onClick={() => {
                         setStatusProfesorMateria(idMateria, e.id, e.status === "new" ? "reload" : "new");
                     }
                     } />)}
-*/}
+
                 </div>
             </div>
 
@@ -256,8 +235,16 @@ const MateriasDeClase = () => {
 
     const [profeProfesor, setProfeProfesor] = useState([]);
 
-    const { getListaMaterias, setStatusMateria, getClaseSelectedId, addMateriaToList, setProfesoresOptions } = useClaseContext();
+    const [idMateria , setIdMateria]= useState("");
+
+    const [materiaProfesor, setMateriaProfesor] = useState([]);
+
+    const [materiaSelected, setMateriaSelected] = useState("");
+
+    const { getListaMaterias, setStatusMateria, getClaseSelectedId, setProfesoresOptions } = useClaseContext();
     const { getToken } = useGeneralContext();
+
+    const [materiaProfesores, setMateriaProfesores] = useState([]);
 
 
     /**
@@ -287,7 +274,28 @@ useMemo(() => {
   }, [getToken]);
   
 
-    
+ 
+ const idProfesoresArray = profeProfesor.map(profesor => profesor.id);
+
+
+ const handleCrearMateriaProfesor = async () => {
+
+    const body = { "idProfesores": idProfesoresArray, "idMateria": idMateria , "idClase": getClaseSelectedId()}
+    ClassesService.createMateriaProfesor(body, getToken())
+        .then(() => {
+            toast.success("Los datos fueron enviados correctamente.")
+            window.location.reload()
+        })
+        .catch(() => {
+            toast.error("No se pudieron guardar los cambios. Intente de nuevo o recargue la página.")
+        })
+
+  };
+  
+  
+  
+  
+
 
    useMemo(() => {
         //console.log("obtenido profes..")
@@ -335,23 +343,66 @@ useMemo(() => {
 
 
 
+    const addMateriaToList = (nombre) => {
+        const newMateria = {
+            id: Date.now().toString(),
+            nombre,
+           // status: "new",
+            profesores: []
+        };
+        setMateriaProfesor((materiaProfesor) => [...materiaProfesor, newMateria]);
+
+    };
+
     const handleSelectOptionMateria = (e) => {
-        e.preventDefault();
-        setOptionSelected(e.target.value)
-        console.log(`Asigna la materia con id: ${e.target.value} a la clase con id: ${getClaseSelectedId()}`)
+      e.preventDefault();
+      setOptionSelected(e.target.value);
+    
+      
+        setIdMateria(e.target.value);
+       console.log(`Asigna la materia con id: ${e.target.value} a la clase con id: ${getClaseSelectedId()} `)
+      
+       const index = optionsMaterias.findIndex(a => a.value === parseInt(e.target.value))
 
-        if (/^[0-9]+$/.test(e.target.value)) {
-            const index = optionsMaterias.findIndex(a => a.value === parseInt(e.target.value))
+       addMateriaToList(optionsMaterias[index].label);
 
-            addMateriaToList(optionsMaterias[index].label)
-            optionsMaterias[index].status = "selected";
+     
+       
+       optionsMaterias[index].status = "selected";
+       setOptionsMaterias([...optionsMaterias]);
+       
+       //cargar a la lista de materias principal
+       setOptionSelected("")
 
-            setOptionsMaterias([...optionsMaterias]);
-            //cargar a la lista de materias principal
-            setOptionSelected("")
-        }
+       //addMateriaToList(optionsMaterias[index].label);
+
+       
+
     }
 
+    useEffect(() => {
+      const listaMateriasProfesores = async () => {
+        try {
+          const dataList = await ClassesService.getMateriasProfesores(getClaseSelectedId(),getToken());
+          setMateriaProfesores(dataList ?? []);
+        
+
+        } catch (e) {
+          setMateriaProfesores([]);
+        }
+      };
+    
+      listaMateriasProfesores();
+    }, []);
+
+
+let listaFusionada = [...materiaProfesor];
+
+if (Array.isArray(materiaProfesores.data)) {
+  listaFusionada = [...listaFusionada, ...materiaProfesores.data];
+}
+
+    
     let materiasList = {
         onSubmit: () => console.log("Guardado"),
         enabled: true,
@@ -361,9 +412,8 @@ useMemo(() => {
         addTitle: "Agregar Materias",
         selectTitle: "Seleccionar Materia",
         options: optionsMaterias,
-        list: getListaMaterias()
+        list:  listaFusionada ?? [],
     }
-
     return <>
 
         <Container>
@@ -380,12 +430,17 @@ useMemo(() => {
                                 <ListItem key={index}
                                     idMateria={materia.id}
                                     index={index + 1}
+                                   // nombre={materia.nombre}
                                     nombre={materia.nombre}
+
+                                  //  nombre={materiaSelected}
                                     profesores={materia.profesores}
                                     profeProfesor={profeProfesor}
                                     type={materia.status}
 
-                                    onClick={() => { console.log(`${materia.nombre} 'seleccionado'`); setStatusMateria(materia.id, (materia.status === "new" ? "reload" : "new")); }}
+                                    onClick={() => { console.log(`${materia.nombre} 'seleccionado'`,"profesores", materia.profesores.map(profesor => profesor.id), "profeProfesor",profeProfesor);setIdMateria(materia.id) ;setStatusMateria(materia.id, (materia.status === "new" ? "reload" : "new")); }}
+                                   
+
                                     
                                    
                                   
@@ -393,20 +448,34 @@ useMemo(() => {
                             ))}
                         </List>
                     </SBody>}
-
         
                 <SForm onSubmit={materiasList?.onSubmit ?? null} >
                     <span>{materiasList?.addTitle}</span>
                     <Select value={optionSelected} onChange={(e) => { handleSelectOptionMateria(e) }}>
                         <option value="" disabled>{materiasList?.selectTitle}</option>
-                        {map(materiasList?.options, (option, index) => (
+                        {materiasList?.options.filter(option => option.status === "not_used").length > 0 ? 
+                        materiasList?.options.map((option, index) => (
                             option.status === "not_used" && <option key={index} value={option.value}>
-                                {option.label}
+                            {option.label}
                             </option>
-                        ))}
+                        )) :
+                        <option value="" disabled>No hay materias sin asignar</option>
+                        }
                     </Select>
                     <div style={{ textAlign: 'right' }}>
-                        <TextButton buttonType={'save-changes'} enabled={materiasList?.enabled ?? false} onClick={(e) => { "enviando..." }} />
+                      {/*   <TextButton buttonType={'save-changes'} enabled={materiasList?.enabled ?? false} onClick={(e) => { "enviando..." } handleCrearMateriaProfesor()} />
+                     */}
+                                    <TextButton 
+                        buttonType={'save-changes'} 
+                        enabled={materiasList?.enabled ?? false} 
+                        onClick={(e) => { 
+                    e.preventDefault(); // prevent the default behavior of the onClick event
+                    handleCrearMateriaProfesor(); 
+                  ///  console.log("enviando..."); // or alert("enviando...") to display the message to the user
+                }} 
+                />
+
+                  
                     </div>
                 </SForm>
             </ScrollTable>

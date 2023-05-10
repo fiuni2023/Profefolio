@@ -175,9 +175,9 @@ public class AccountController : ControllerBase
 
         try
         {
-            var persona = await _personasService.FindById(id);
+            var persona = await _personasService.FindByIdAndRole(id, "Administrador de colegio");
 
-            var userId = User.Identity.GetUserId();
+            var userId = User.Identity.Name;
 
             var existMail = await _personasService.ExistMail(dto.Email);
 
@@ -226,9 +226,7 @@ public class AccountController : ControllerBase
 
         try
         {
-            var personaOld = await _personasService.FindById(id);
-
-            Console.WriteLine(personaOld.Id);
+            var personaOld = await _personasService.FindByIdAndRole(id, "Administrador de Colegio");
 
             if (await _personasService.ChangePassword(personaOld, dto.Password))
             {

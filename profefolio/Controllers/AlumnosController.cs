@@ -66,7 +66,11 @@ public class AlumnosController : ControllerBase
             var alumno = await _personasService.FindByDocumentoAndRole(dto.Documento, dto.DocumentoTipo, "Alumno");
             if (alumno != null)
             {
-                // si ya existe el alumno creado
+                                // validar si el alumno pertenece al colegio
+                if (alumno.ColegiosAlumnos.Any(a => a.ColegioId == adminColegio.Colegio.Id)){
+                    return BadRequest("El alumno ya existe en el colegio");
+                }
+                // si el alumno existe pero no en el colegio del administrador
                 return new CustomStatusResult<AlumnoGetDTO>(230, _mapper.Map<AlumnoGetDTO>(alumno));
             }
 

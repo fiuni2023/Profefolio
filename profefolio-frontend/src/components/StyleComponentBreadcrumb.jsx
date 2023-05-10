@@ -7,7 +7,9 @@ const StyledNavAdmin = styled.div`
     height: 100%;
     background-color: white;
     display: flex;
+    align-items: center;
     background-color: #FDF0D5;
+    min-height: 40px;
 `;
 
 const StyledCustomIcon = styled(HiArrowLeft)`
@@ -31,9 +33,8 @@ const StyledButtonNavBarAdmin = styled.button`
     color: black;
 `;
 
-const StyledCustomSpan = styled.div`
-    padding: 6px;
-    margin:0 0 10px 10px;  
+const StyledCustomSpan = styled.span`
+    margin-left: 2%;
     font-size:15px;
     font-weight: bold;
     
@@ -48,20 +49,15 @@ const StyleComponentBreadcrumb = ({ nombre }) => {
                     <StyledButtonNavBarAdmin>
                         <Link to="/" className="buttonNavBarAdmin ">
                             
-                        <StyledCustomIcon className="glyphicon glyphicon-info-sign" />
+                            <StyledCustomIcon className="glyphicon glyphicon-info-sign" />
                 
                             
-                            </Link>
+                        </Link>
                     </StyledButtonNavBarAdmin>
-
-                    <div className="">
-                        <div>
-                       
-                        </div>
-                        <StyledCustomSpan>{nombre}</StyledCustomSpan>
-                    </div>   
+                    
                    
                 </StyledNButtonForSideAdmin>
+                <StyledCustomSpan>{nombre}</StyledCustomSpan>
             </StyledNavAdmin>
         </>
     );

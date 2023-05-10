@@ -21,11 +21,13 @@ namespace profefolio.Controllers
         private readonly IMateriaLista _materiaListaService;
         private static int _cantPorPag => Constantes.CANT_ITEMS_POR_PAGE;
         private readonly IMapper _mapper;
-        public MateriaController(IMateria materiaService, IMapper mapper, IMateriaLista materiaLista)
+        private readonly IClase _claseService;
+        public MateriaController(IMateria materiaService, IMapper mapper, IMateriaLista materiaLista, IClase claseService)
         {
             _materiaService = materiaService;
             _mapper = mapper;
             _materiaListaService = materiaLista;
+            _claseService = claseService;
         }
 
 
@@ -88,6 +90,18 @@ namespace profefolio.Controllers
         [Authorize(Roles = "Administrador de Colegio")]
         public async Task<ActionResult<List<MateriaResultDTO>>> GetMateriasNoAsignadas(int idClase)
         {
+            // se valida que la Clase sea del Colegio del Administrador
+            var clase = await _claseService.FindById(idClase);
+            var adminEmail = User.FindFirstValue(ClaimTypes.Name);
+            
+            if(clase == null){
+                return NotFound("La Clase no existe");
+            }
+
+            if(!adminEmail.Equals(clase.Colegio.personas.Email)){
+                return BadRequest("La Clase no es de su Colegio");
+            }
+
             // obtener la lista de relaciones de la clase en MateriaLista
             var result = await _materiaService.FindAllUnsignedMaterias(idClase);
 

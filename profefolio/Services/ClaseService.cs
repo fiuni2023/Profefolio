@@ -60,6 +60,41 @@ namespace profefolio.Services
                         .FirstOrDefaultAsync();
         }
 
+        public async Task<Clase> FindByIdAndUser(int idClase, string user)
+        {
+            var person = await _context.Users
+                .Where(p => !p.Deleted)
+                .Where(p => p.Email.Equals(user))
+                .FirstOrDefaultAsync();
+
+            if(person == null)
+            {
+                throw new FileNotFoundException();
+            }
+
+            var colegio = await _context.Colegios
+                .Where(c => !c.Deleted)
+                .Where(c => c.PersonaId != null && c.PersonaId.Equals(person.Id))
+                .FirstOrDefaultAsync();
+            
+            if(colegio == null)
+            {
+                throw new FileNotFoundException();
+            }
+
+            var clase = await _context.Clases
+                .Where(x => !x.Deleted)
+                .Where(x => x.Id == idClase && x.ColegioId == colegio.Id)
+                .FirstOrDefaultAsync();
+
+            if(clase == null)
+            {
+                throw new FileNotFoundException();
+            }
+            
+            return clase;
+        }
+
         public async Task<IEnumerable<Clase>> GetAllByIdColegio(int page, int cantPorPag, int idColegio)
         {
             return await _context.Clases

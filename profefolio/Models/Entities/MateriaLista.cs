@@ -16,5 +16,7 @@ namespace profefolio.Models.Entities
         [ForeignKey("ProfesorId")]
         public Persona Profesor { get; set; }
         public Clase Clase { get; set; }
+
+        public IEnumerable<HorasCatedrasMaterias>? Horarios { get; set; }
     }
 }

@@ -4,18 +4,34 @@ import { BsJustify } from 'react-icons/bs'
 import { FaUserCircle } from 'react-icons/fa'
 import { LogoNavBar } from "../assets";
 
-const Navbar = () => {
-    const { showSB ,setShowSB, getUserName} = useGeneralContext()
+const Navbar = ({
+    showSB = false, 
+    setShowSB = () => {},
+    showDD = false,
+    setShowDD = ()=> {}
+}) => {
+    const { getUserName, getColegioName, cancan } = useGeneralContext()
 
     return(
         <>
             <div className="Navbar">
-                <div className="NButtonForSide" onClick={()=>{setShowSB(!showSB)}}>
+                <div className="NButtonForSide" onClick={()=>{
+                    setShowDD(false)
+                    setShowSB(!showSB)
+                }}>
                     <button className="buttonNavBar">  <BsJustify /> </button>
                 </div>
                 <div className="navbarmain">
-                    <div className="logo"> <LogoNavBar width="100%" height="100%" /> </div>
-                    <div className="user"> <span>{getUserName()}</span> <FaUserCircle size={25}/> </div>
+                    <div className="logonameset">
+                        <div className="logo"> <LogoNavBar width="100%" height="100%" /> </div>
+                        {cancan("Administrador de Colegio")? getColegioName():"Master"}
+                    </div>
+                    {!showDD &&
+                        <div className="user" onClick={()=>{
+                            setShowSB(false)
+                            setShowDD(!showDD)
+                        }}> <span>{getUserName()}</span> <FaUserCircle size={25}/> </div>
+                    }
                 </div>
             </div>
             <style jsx="true">{`
@@ -45,7 +61,7 @@ const Navbar = () => {
                 }
                 .logo{
                     padding: 5px;
-                    width: 10%;
+                    width: 45%;
                     height: 100%;
                 }
                 .user{
@@ -62,6 +78,16 @@ const Navbar = () => {
                 }
                 .user svg{
                     font-size: 20px;
+                }
+                .logonameset{
+                    display: flex;
+                    width: 25%;
+                    align-content: center;
+                    flex-wrap: wrap;
+                    gap: 10px;
+                    align-items: center;
+                    font-size: 20px;
+                    color: white;
                 }
             `}</style>
         </>
