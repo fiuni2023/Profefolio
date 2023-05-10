@@ -28,7 +28,7 @@ const Horarios = memo(() => {
 
 
     return <>
-        <SCard>
+        <SCard style={{width: "100%"}}>
             <SHeader>Horarios de Clases</SHeader>
             <SBody>
                 <SCalendar events={events}/>
