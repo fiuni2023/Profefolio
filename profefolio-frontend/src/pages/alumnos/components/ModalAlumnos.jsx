@@ -4,17 +4,22 @@ import { useGeneralContext } from "../../../context/GeneralContext";
 import APILINK from '../../../components/link';
 import Modal from '../../../components/Modal';
 import { toast } from 'react-hot-toast';
+import ModalMensajeAlumno from './ModalMensajeAlumno';
 
 function ModalAlumnos({
     show = false, 
-    onHide = () => {},
+    setShow = () => {},
     fetchFunc = ()=>{},
-    selected_data
+    selected_data,
+    editing=false,
+    onHide= () => {}
 }) {
     const { getToken } = useGeneralContext()
     const disabled = false
-
-    const handleCreateSubmit = () => {
+    const [alumno, setAlumno] = useState("")
+    const [openAviso, setOpenAviso] = useState(false)
+    const handleCreateSubmit = (e) => {
+        e.preventDefault()
         const nombre = document.getElementById("nombreAlu").value;
         const apellido = document.getElementById("apellido").value;
         const fecha = document.getElementById("fecha").value;
@@ -45,9 +50,14 @@ function ModalAlumnos({
             data: data
         };
 
+
         axios(config)
             .then(function (response) {
-                if (response.status >= 200) {
+                if (response.status === 230){
+                    setAlumno(response.data)
+                    setOpenAviso(true)
+                }
+                else if (response.status === 200) {
                     handleHide();
                     fetchFunc()
                     toast.success("Guardado correctamente");
@@ -60,8 +70,12 @@ function ModalAlumnos({
                 }
             });
     }
-
-    const handleEditSubmit = () => {
+    const handleCancelAviso = ()=>{
+        setOpenAviso(false)
+    }
+    
+    const handleEditSubmit = (e) => {
+        e.preventDefault()
         const nombre = document.getElementById("nombreAlu").value;
         const apellido = document.getElementById("apellido").value;
         const fecha = document.getElementById("fecha").value;
@@ -139,7 +153,7 @@ function ModalAlumnos({
         if(selected_data){
             document.getElementById("nombreAlu").value = selected_data.nombre
             document.getElementById("apellido").value = selected_data.apellido
-            document.getElementById("fecha").value = selected_data.fechaNacimiento.split('T')[0]
+            document.getElementById("fecha").value = selected_data.nacimiento.split('T')[0]
             document.getElementById("email").value = selected_data.email
             document.getElementById("direccion").value = selected_data.direccion
             document.getElementById("genero").value = selected_data.genero === "Masculino"? "M": "F"
@@ -150,12 +164,14 @@ function ModalAlumnos({
 
     const [datosModal, setDatosModal] = useState(null);
     const [deleting, setDeleting] = useState(false)
-
+    const noAction =(e)=>{
+        e.preventDefault()
+    }
     useEffect(() => {
         setDatosModal({
             header: selected_data? deleting? "ELIMINAR ALUMNO?" : "Editar Alumno" : "Agregar Alumno",
             form: {
-                onSubmit: {action: ()=>{}},
+                onSubmit: deleting ? {action: (e)=>{noAction(e)}} : editing ? {action: (e)=>{ handleEditSubmit(e)}} : {action: (e)=>{handleCreateSubmit(e)}},
                 inputs: [
                     {
                         key: "nombreAlu", label: "Nombre del Alumno",
@@ -173,11 +189,12 @@ function ModalAlumnos({
                         key: "fecha", label: "Fecha de nacimiento",
                         type: "date", placeholder: "Seleccione la fecha",
                         disabled: disabled,
+                        maxDate: true,
                         required: true,
                     },
                     {
                         key: "email", label: "Correo Electónico",
-                        type: "text", placeholder: "Ingrese correo electónico",
+                        type: "email", placeholder: "Ingrese correo electónico",
                         disabled: disabled, required: true,
                         invalidText: "Ingrese un correo electónico válido",
                     },
@@ -248,7 +265,7 @@ function ModalAlumnos({
                         {
                             style: "text",
                             type: "save",
-                            onclick: {action: ()=>{handleEditSubmit()}}
+                            submit: true,
                         },
                     ]
                     :
@@ -268,8 +285,8 @@ function ModalAlumnos({
                 [
                     {
                         style: "text",
-                        type: "accept",
-                        onclick: {action: ()=>{handleCreateSubmit()}}
+                        type: "create",
+                        submit: true,
                     },
                 ]
             }
@@ -282,9 +299,14 @@ function ModalAlumnos({
         onHide()
     }
 
+    const addNewExistingSuccess=()=>{
+        handleHide()
+        fetchFunc()
+    }
     return (
         <>
             <Modal show={show} onHide={handleHide} datosModal={datosModal}/>
+            <ModalMensajeAlumno isOpen={openAviso} onAdd={onHide} student={alumno} onCancel={handleCancelAviso} onSuccess={addNewExistingSuccess}/>
         </>
     )
 }
