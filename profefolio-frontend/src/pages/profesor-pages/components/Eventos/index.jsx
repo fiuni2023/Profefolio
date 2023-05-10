@@ -3,6 +3,8 @@ import { BsCircleFill } from 'react-icons/bs';
 import { SBody, SCard, SHeader } from '../../../../components/componentsStyles/StyledDashComponent'
 import { TD, TH, TR, Table, Tbody, Thead } from '../../../../components/componentsStyles/StyledTable'
 import styled from 'styled-components';
+import Tools from '../../helpers/Tools.js'
+import {map} from "lodash"
 
 const ListTypeEvent = styled.div`
     display: flex;
@@ -24,11 +26,46 @@ const TypeEventTarget = styled.div`
 `
 
 const TableEvents = () => {
+    const eventos = [
+        {
+            id: 1,
+            tipo: "Examen",
+            fecha: new Date(),
+            materia: "Matematicas",
+            clase: "Primer Grado",
+            colegio: "San Juan"
+        },
+        {
+            id: 2,
+            tipo: "Evento",
+            fecha: new Date(),
+            materia: "Matematicas",
+            clase: "Primer Grado",
+            colegio: "San Juan"
+        },
+        {
+            id: 3,
+            tipo: "Parcial",
+            fecha: new Date(),
+            materia: "Matematicas",
+            clase: "Primer Grado",
+            colegio: "San Juan"
+        },
+        {
+            id: 4,
+            tipo: "Prueba Sumativa",
+            fecha: new Date(),
+            materia: "Matematicas",
+            clase: "Primer Grado",
+            colegio: "San Juan"
+        }
+    ]   
+
     return <>
         <Table style={{ width: "100%" }}>
             <Thead>
                 <TR>
-                    <TH>Tipo</TH>
+                    <TH className='col-tipo'>Tipo</TH>
                     <TH>Fecha</TH>
                     <TH>Materia</TH>
                     <TH>Clase</TH>
@@ -36,20 +73,14 @@ const TableEvents = () => {
                 </TR>
             </Thead>
             <Tbody>
-                <TR>
-                    <TD>Ex</TD>
-                    <TD>12/05/2023</TD>
-                    <TD>Matematicas</TD>
-                    <TD>Quinto Grado</TD>
-                    <TD>San Juan</TD>
-                </TR>
-                <TR>
-                    <TD>Ex</TD>
-                    <TD>12/05/2023</TD>
-                    <TD>Matematicas</TD>
-                    <TD>Quinto Grado</TD>
-                    <TD>San Juan</TD>
-                </TR>
+                {map(eventos, (e, i) => <TR key={i}>
+                    <TD className='col-tipo'>{e.tipo}</TD>
+                    <TD>{e.fecha.toLocaleDateString("en-US", {day: "2-digit", month: "2-digit", year: "numeric"})}</TD>
+                    <TD>{e.materia}</TD>
+                    <TD>{e.clase}</TD>
+                    <TD>{e.colegio}</TD>
+                </TR>)}
+                
             </Tbody>
         </Table>
         <ListTypeEvent>
@@ -66,6 +97,18 @@ const TableEvents = () => {
                 <BsCircleFill />Examen
             </TypeEventTarget>
         </ListTypeEvent>
+        <style jsx="true">
+            {
+                `
+                    .col-tipo{
+                        max-width: 80px;
+                        overflow: hidden;
+                        white-space: nowrap;
+                        text-overflow: ellipsis;
+                    }
+                `
+            }
+        </style>
     </>
 }
 
