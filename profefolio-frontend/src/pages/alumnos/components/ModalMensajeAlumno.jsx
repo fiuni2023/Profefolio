@@ -40,11 +40,12 @@ const ButtonContainer = styled.div`
   width: 100%;
 `;
 
-const ModalMensajeAlumno = ({ student, isOpen, onAdd, onCancel }) => {
-  const { colegio, getToken } = useGeneralContext()
+const ModalMensajeAlumno = ({ student, isOpen, onAdd, onCancel, onSuccess}) => {
+  const { getColegioId, getToken } = useGeneralContext()
+  const colegioId = getColegioId()
   console.log(student)
   const addStudent = () => {
-    let newStudent = { "colegioId": colegio, "alumnoId": student.id }
+    let newStudent = { "colegioId": colegioId, "alumnoId": student.id }
     console.log(newStudent)
     toast.promise(StudentHelper.addStudentToSchool(newStudent, getToken()), {
       loading: "Grardando Alumno...",
@@ -55,24 +56,11 @@ const ModalMensajeAlumno = ({ student, isOpen, onAdd, onCancel }) => {
         console.log(res);
         onAdd()
         onCancel()
+        onSuccess()
       }).catch((error) => {
         console.error(error);
         return error.message;
       })
-
-
-    // toast.promise(SaveStudentInMySchool, {
-    //   loading: "Grardando Alumno...",
-    //   success: (data) =>{
-    //     console.log(data);
-    //       onAdd()
-    //       onCancel()
-    //     if (data.status === 200) {
-    //       console.log("Entró");
-    //     }
-    //     return "Alumno guardado"},
-    //   error: "Hubo un error al guardar el alumno, intente nuevamente.",
-    // });
 
   }
   return (

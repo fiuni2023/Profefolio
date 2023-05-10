@@ -56,17 +56,8 @@ function ModalAlumnos({
             .then(function (response) {
                 if (response.status === 230){
                     console.log(response)
-                    // setShow(false)
                     setAlumno(response.data)
                     setOpenAviso(true)
-                    // toast(
-                    //     <span>
-                    //       El alumno con documento: "{response.data.documento}" ya existe en la base de datos. ¿Deseas agregarlo a tu colegio?  
-                    //       <button onClick={() => console.log("Guardando: ", response.data)}>
-                    //         Agregar Alumno
-                    //       </button>
-                    //     </span>
-                    //   );
                 }
                 else if (response.status === 200) {
                     handleHide();
@@ -82,7 +73,6 @@ function ModalAlumnos({
             });
     }
     const handleCancelAviso = ()=>{
-        // setShow(true)
         setOpenAviso(false)
     }
     
@@ -308,10 +298,14 @@ function ModalAlumnos({
         onHide()
     }
 
+    const addNewExistingSuccess=()=>{
+        handleHide()
+        fetchFunc()
+    }
     return (
         <>
             <Modal show={show} onHide={handleHide} datosModal={datosModal}/>
-            <ModalMensajeAlumno isOpen={openAviso} onAdd={onHide} student={alumno} onCancel={handleCancelAviso} />
+            <ModalMensajeAlumno isOpen={openAviso} onAdd={onHide} student={alumno} onCancel={handleCancelAviso} onSuccess={addNewExistingSuccess}/>
         </>
     )
 }

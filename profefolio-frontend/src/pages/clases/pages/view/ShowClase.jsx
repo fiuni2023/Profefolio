@@ -6,14 +6,12 @@ import ShowContainer from '../../components/ShowContainer';
 import InfoClase from '../../components/show/InfoClase';
 import AlumnosInscriptos from '../../components/show/AlumnosInscriptos';
 import MateriasDeClase from '../../components/show/MateriasDeClase';
-import { useClaseContext } from '../../context/ClaseContext';
-
 import ClassesService from '../../Helpers/ClassesHelper';
 import { useGeneralContext } from '../../../../context/GeneralContext';
 
 const ShowClase = () => {
     const { idClase } = useParams();
-    const { getColegioId} = useClaseContext();
+    const { getColegioId} = useGeneralContext();
 
     const { getToken } = useGeneralContext();
 
