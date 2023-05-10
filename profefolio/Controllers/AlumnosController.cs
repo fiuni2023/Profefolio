@@ -70,7 +70,7 @@ public class AlumnosController : ControllerBase
                 if (alumno.ColegiosAlumnos.Any(a => a.ColegioId == adminColegio.Colegio.Id)){
                     return BadRequest("El alumno ya existe en el colegio");
                 }
-                // si el alumno existe en pero no en elcolegio del administrador
+                // si el alumno existe pero no en el colegio del administrador
                 return new CustomStatusResult<AlumnoGetDTO>(230, _mapper.Map<AlumnoGetDTO>(alumno));
             }
 

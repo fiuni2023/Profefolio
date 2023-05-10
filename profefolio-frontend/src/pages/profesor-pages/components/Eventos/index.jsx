@@ -6,18 +6,18 @@ const Eventos = () => {
             Eventos
         </div>
 
-        <style jsx="true">
+        {/* <style jsx="true">
             {
                 `
                     .container-visualizacion{
                         border: 1px solid black;
                         border-radius: 20px;
-                        background-color: #f4A89E;
+                        background-color: rgb(238, 238, 238)
                         min-height: 300px;
                     }
                 `
             }
-        </style>
+        </style> */}
     </>
 }
 

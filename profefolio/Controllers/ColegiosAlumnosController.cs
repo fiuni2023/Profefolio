@@ -102,7 +102,7 @@ namespace profefolio.Controllers
 
         [HttpGet("NoAssignedAlumnos/{claseId:int}/page/{page:int}")]
         [Authorize(Roles = "Administrador de Colegio")]
-        public async Task<ActionResult<DataListDTO<AlumnoGetDTO>>> GetAll(int claseId, int page)
+        public async Task<ActionResult<DataListDTO<ColegioAlumnosDTO>>> GetAll(int claseId, int page)
         {
             
             var adminEmail = User.FindFirstValue(ClaimTypes.Name);
@@ -125,9 +125,11 @@ namespace profefolio.Controllers
                 }
                     
 
-                var data = _mapper.Map<List<AlumnoGetDTO>>(listAlumnosColegio);
+                var data = _mapper.Map<List<ColegioAlumnosDTO>>(listAlumnosColegio);
 
-                var result = new DataListDTO<AlumnoGetDTO>();
+                
+
+                var result = new DataListDTO<ColegioAlumnosDTO>();
 
                 result.CantItems = listAlumnosColegio.Count();
                 result.CurrentPage = page;
@@ -137,11 +139,17 @@ namespace profefolio.Controllers
                 return Ok(result);
 
             }
+            catch(BadHttpRequestException ex)
+            {
+                Console.WriteLine(ex.Message);
+                return BadRequest(ex.Message);
+            }
             catch (Exception ex)
             {
                 Console.WriteLine($"{ex}");
                 return BadRequest("Error durarnte la obtencion de alumnos de la clase");
             }
+            
         }
 
         [HttpPost]

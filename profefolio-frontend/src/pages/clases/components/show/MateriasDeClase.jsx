@@ -67,31 +67,25 @@ const TagProfesor = memo(({ id, nombre,apellido, state = "new", onClick = () => 
         </TagTeacher>
         <style jsx="true">{
             `
-            .item-nombre-profe {
+            .item-nombre-profe{
                 padding-left: 5px;
                 overflow: hidden;
                 text-overflow: ellipsis;
-                max-width: calc(15rem - 24px);
+                white-space: nowrap;
+                max-width: calc(10rem - 24px);
                 font-size: 15px;
                 display: flex;
                 align-items: center;
-                white-space: nowrap;
-              }
-              
-              .tag-teacher-${unicId} {
+            }
+            .tag-teacher-${unicId}{
                 background-color: ${type};
                 padding: 0.2rem;
                 max-width: 10rem;
-                width: fit-content;
+                width: fit-content;+
                 height: 24px;
                 display: flex;
                 align-items: center;
-                flex-wrap: nowrap;
-                white-space: nowrap;
-              }
-              
-              
-              
+            }
             .btn-cancelar{
                 background-color: red;
                 min-width: 1rem;
@@ -103,16 +97,27 @@ const TagProfesor = memo(({ id, nombre,apellido, state = "new", onClick = () => 
 
 
 
+  
 
-
-const ListItem = memo(({ index, idMateria, nombre, profesores = [] ,profeProfesor = [], type ,onClick }) => {
+const ListItem = memo(({ index, idMateria, nombre,apellido, profesores = [] ,profeProfesor = [], type ,onClick }) => {
 
     const [profesoresSeleccionados, setProfesoresSeleccionados] = useState([]);
 
-      
+    const [selectedData,setSelectedData ]= useState([]);
+
+   
+
     const { setStatusProfesorMateria } = useClaseContext();
 
     const [isSelectOpen, setIsSelectOpen] = useState(false);
+
+ 
+
+ 
+
+    /*const seleccionarProfesor = (e) => {
+        setIdProfesorSeleccionado(e.target.value);
+      };*/
 
 
 
@@ -146,7 +151,7 @@ const seleccionarProfesor = (event) => {
     return <>
         <ItemContainer type={type} className={`item-container-${index}`}>
             <div>
-            <Item>{index}- {nombre}</Item>
+            <Item>{index}- {nombre} </Item>
                 <div className={`profe-container-${index}`}>
                     <Item>Profesores:</Item>
 
@@ -177,6 +182,7 @@ const seleccionarProfesor = (event) => {
           key={profesor.id}
           id={profesor.id}
           nombre={`${profesor.nombre}${profesor.status}`}
+          apellido={`${profesor.apellido}${profesor.status}`}
           state={profesor.status}
           onClick={() => {
             setProfesoresSeleccionados((prevSeleccionados) =>
@@ -188,57 +194,14 @@ const seleccionarProfesor = (event) => {
     ))}
 
 
-{/* 
-{profeProfesor.map((profesor) => (
-  (idProfesorSeleccionado && profesor.id === idProfesorSeleccionado) && (
-    <TagProfesor
-      key={profesor.id}
-      id={profesor.id}
-      nombre={`${profesor.nombre}${profesor.status}`}
-      state={profesor.status}
-      onClick={() => setIdProfesorSeleccionado(profesor.id)}
-    />
-  )
-))}*/}
-
-
-  
-{/*{map(profeProfesor, (e, i) => (
-    <TagProfesor
-      id={e.id}
-      nombre={`${e.nombre}${e.status}`}
-      state={e.status}
-      onClick={() => setIdProfesorSeleccionado(e.id)}
-    />
-
-
-    
-))}*/}
-{map(profesores, (e, i) => (
-  <TagProfesor
-    key={i}
-    id={e.id}
-    nombre={e.nombre}
-    apellido={e.apellido}
-    state={e.status}
-    onClick={() => {
-      setStatusProfesorMateria(
-        idMateria,
-        e.id,
-        e.status === "new" ? "reload" : "new"
-      );
-    }}
-  />
-))}
 
 
 
-
-  {/* Este es un comentario en React 
-         {map(profesores, (e, i) => <TagProfesor key={i} id={e.id} nombre={`${e.nombre}${e.status}`} state={e.status} onClick={() => {
+  {/* Este es un comentario en React*/}
+         {map(profesores, (e, i) => <TagProfesor key={i} id={e.id} nombre={`${e.nombre}`} apellido={`${e.apellido}`} state={e.status} onClick={() => {
                         setStatusProfesorMateria(idMateria, e.id, e.status === "new" ? "reload" : "new");
                     }
-                    } />)}*/}
+                    } />)}
 
                 </div>
             </div>
@@ -274,10 +237,20 @@ const MateriasDeClase = () => {
 
     const [idMateria , setIdMateria]= useState("");
 
-    const [materiaProfesores, setMateriaProfesores] = useState([]);
-    const { getListaMaterias, setStatusMateria, getClaseSelectedId, addMateriaToList, setProfesoresOptions } = useClaseContext();
+    const [materiaProfesor, setMateriaProfesor] = useState([]);
+
+    const [materiaSelected, setMateriaSelected] = useState("");
+
+    const { getListaMaterias, setStatusMateria, getClaseSelectedId, setProfesoresOptions } = useClaseContext();
     const { getToken } = useGeneralContext();
 
+    const [materiaProfesores, setMateriaProfesores] = useState([]);
+
+
+    /**
+     * 
+     * Pedir profesores del colegio
+     */
 
 
 
@@ -301,7 +274,7 @@ useMemo(() => {
   }, [getToken]);
   
 
-    
+ 
  const idProfesoresArray = profeProfesor.map(profesor => profesor.id);
 
 
@@ -320,8 +293,8 @@ useMemo(() => {
   };
   
   
-    
-
+  
+  
 
 
    useMemo(() => {
@@ -370,39 +343,66 @@ useMemo(() => {
 
 
 
+    const addMateriaToList = (nombre) => {
+        const newMateria = {
+            id: Date.now().toString(),
+            nombre,
+           // status: "new",
+            profesores: []
+        };
+        setMateriaProfesor((materiaProfesor) => [...materiaProfesor, newMateria]);
+
+    };
+
     const handleSelectOptionMateria = (e) => {
-        e.preventDefault();
-        setOptionSelected(e.target.value);
-
+      e.preventDefault();
+      setOptionSelected(e.target.value);
+    
+      
         setIdMateria(e.target.value);
-       // console.log(`Asigna la materia con id: ${e.target.value} a la clase con id: ${getClaseSelectedId()} `)
+       console.log(`Asigna la materia con id: ${e.target.value} a la clase con id: ${getClaseSelectedId()} `)
+      
+       const index = optionsMaterias.findIndex(a => a.value === parseInt(e.target.value))
 
-        if (/^[0-9]+$/.test(e.target.value)) {
-            const index = optionsMaterias.findIndex(a => a.value === parseInt(e.target.value))
+       addMateriaToList(optionsMaterias[index].label);
 
-            addMateriaToList(optionsMaterias[index].label)
-            optionsMaterias[index].status = "selected";
+     
+       
+       optionsMaterias[index].status = "selected";
+       setOptionsMaterias([...optionsMaterias]);
+       
+       //cargar a la lista de materias principal
+       setOptionSelected("")
 
-            setOptionsMaterias([...optionsMaterias]);
-            //cargar a la lista de materias principal
-            setOptionSelected("")
-        }
+       //addMateriaToList(optionsMaterias[index].label);
+
+       
+
     }
 
     useEffect(() => {
-        const listaMateriasProfesores = async () => {
-          try {
-            const dataList = await ClassesService.getMateriasProfesores(getClaseSelectedId(),getToken());
-            setMateriaProfesores(dataList ?? []);
-            console.log('materiaProfesores:', dataList);
-          } catch (e) {
-            setMateriaProfesores([]);
-          }
-        };
-      
-        listaMateriasProfesores();
-      }, []);
+      const listaMateriasProfesores = async () => {
+        try {
+          const dataList = await ClassesService.getMateriasProfesores(getClaseSelectedId(),getToken());
+          setMateriaProfesores(dataList ?? []);
+        
 
+        } catch (e) {
+          setMateriaProfesores([]);
+        }
+      };
+    
+      listaMateriasProfesores();
+    }, []);
+
+
+let listaFusionada = [...materiaProfesor];
+
+if (Array.isArray(materiaProfesores.data)) {
+  listaFusionada = [...listaFusionada, ...materiaProfesores.data];
+}
+
+    
     let materiasList = {
         onSubmit: () => console.log("Guardado"),
         enabled: true,
@@ -412,15 +412,12 @@ useMemo(() => {
         addTitle: "Agregar Materias",
         selectTitle: "Seleccionar Materia",
         options: optionsMaterias,
-        list: materiaProfesores.data ?? [],
+        list:  listaFusionada ?? [],
     }
-
     return <>
 
         <Container>
-
-
-    <ScrollTable>
+            <ScrollTable>
                 {materiasList?.header &&
                     <SHeader>
                         {materiasList?.header?.title}
@@ -429,38 +426,45 @@ useMemo(() => {
                 {materiasList?.list &&
                     <SBody background={materiasList?.background ?? "gray"}>
                         <List>
-                           {materiasList?.list?.map((materia, index) => (
+                            {materiasList?.list?.map((materia, index) => (
                                 <ListItem key={index}
                                     idMateria={materia.id}
                                     index={index + 1}
+                                   // nombre={materia.nombre}
                                     nombre={materia.nombre}
+
+                                  //  nombre={materiaSelected}
                                     profesores={materia.profesores}
                                     profeProfesor={profeProfesor}
                                     type={materia.status}
 
                                     onClick={() => { console.log(`${materia.nombre} 'seleccionado'`,"profesores", materia.profesores.map(profesor => profesor.id), "profeProfesor",profeProfesor);setIdMateria(materia.id) ;setStatusMateria(materia.id, (materia.status === "new" ? "reload" : "new")); }}
+                                   
+
                                     
                                    
                                   
                                       />
                             ))}
-                        
                         </List>
                     </SBody>}
-
         
                 <SForm onSubmit={materiasList?.onSubmit ?? null} >
                     <span>{materiasList?.addTitle}</span>
                     <Select value={optionSelected} onChange={(e) => { handleSelectOptionMateria(e) }}>
                         <option value="" disabled>{materiasList?.selectTitle}</option>
-                        {map(materiasList?.options, (option, index) => (
+                        {materiasList?.options.filter(option => option.status === "not_used").length > 0 ? 
+                        materiasList?.options.map((option, index) => (
                             option.status === "not_used" && <option key={index} value={option.value}>
-                                {option.label}
+                            {option.label}
                             </option>
-                        ))}
+                        )) :
+                        <option value="" disabled>No hay materias sin asignar</option>
+                        }
                     </Select>
                     <div style={{ textAlign: 'right' }}>
-                     
+                      {/*   <TextButton buttonType={'save-changes'} enabled={materiasList?.enabled ?? false} onClick={(e) => { "enviando..." } handleCrearMateriaProfesor()} />
+                     */}
                                     <TextButton 
                         buttonType={'save-changes'} 
                         enabled={materiasList?.enabled ?? false} 
@@ -475,8 +479,6 @@ useMemo(() => {
                     </div>
                 </SForm>
             </ScrollTable>
-
-       
         </Container>
 
     </>
