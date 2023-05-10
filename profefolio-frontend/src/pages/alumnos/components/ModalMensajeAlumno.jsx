@@ -50,7 +50,6 @@ const ModalMensajeAlumno = ({ student, isOpen, onAdd, onCancel, onSuccess}) => {
       error: "Hubo un error al guardar el alumno, intente nuevamente.",
     })
       .then((res) => {
-        console.log(res);
         onAdd()
         onCancel()
         onSuccess()

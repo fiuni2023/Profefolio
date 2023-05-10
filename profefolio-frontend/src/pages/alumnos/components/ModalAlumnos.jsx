@@ -16,13 +16,10 @@ function ModalAlumnos({
 }) {
     const { getToken } = useGeneralContext()
     const disabled = false
-    console.log(selected_data)
-    console.log(editing)
     const [alumno, setAlumno] = useState("")
     const [openAviso, setOpenAviso] = useState(false)
     const handleCreateSubmit = (e) => {
         e.preventDefault()
-        console.log("creando")
         const nombre = document.getElementById("nombreAlu").value;
         const apellido = document.getElementById("apellido").value;
         const fecha = document.getElementById("fecha").value;
@@ -57,7 +54,6 @@ function ModalAlumnos({
         axios(config)
             .then(function (response) {
                 if (response.status === 230){
-                    console.log(response)
                     setAlumno(response.data)
                     setOpenAviso(true)
                 }
@@ -80,7 +76,6 @@ function ModalAlumnos({
     
     const handleEditSubmit = (e) => {
         e.preventDefault()
-        console.log("editando")
         const nombre = document.getElementById("nombreAlu").value;
         const apellido = document.getElementById("apellido").value;
         const fecha = document.getElementById("fecha").value;
@@ -128,7 +123,6 @@ function ModalAlumnos({
     }
 
     const handleDelete = () => {
-        console.log("borrando")
         let config = {
             method: 'delete',
             maxBodyLength: Infinity,
