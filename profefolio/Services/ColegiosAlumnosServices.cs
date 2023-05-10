@@ -127,6 +127,13 @@ namespace profefolio.Services
 
         public async Task<IEnumerable<ColegiosAlumnos>> FindNotAssigned(string user, int idClase, int page, int cantPerPage)
         {
+            var existClase = _context.Clases
+                .Any(x => !x.Deleted && x.Id == idClase);
+
+            if(!existClase)
+            {
+                throw new FileNotFoundException();
+            }
             var query = await this.FindAllNoAssignedToClaseByEmailAdminAndIdClase(user, idClase);
 
             var result = query

@@ -179,6 +179,11 @@ namespace profefolio.Controllers
                 return Ok(result);
 
             }
+            catch (FileNotFoundException e)
+            {
+                Console.WriteLine(e.Message);
+                return NotFound();
+            }
             catch (BadHttpRequestException ex)
             {
                 Console.WriteLine(ex.Message);
