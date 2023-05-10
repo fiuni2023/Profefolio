@@ -102,7 +102,7 @@ namespace profefolio.Controllers
 
         [HttpGet("NoAssignedAlumnos/{claseId:int}/page/{page:int}")]
         [Authorize(Roles = "Administrador de Colegio")]
-        public async Task<ActionResult<DataListDTO<AlumnoGetDTO>>> GetAll(int claseId, int page)
+        public async Task<ActionResult<DataListDTO<ColegioAlumnosDTO>>> GetAll(int claseId, int page)
         {
             
             var adminEmail = User.FindFirstValue(ClaimTypes.Name);
@@ -126,6 +126,8 @@ namespace profefolio.Controllers
                     
 
                 var data = _mapper.Map<List<ColegioAlumnosDTO>>(listAlumnosColegio);
+
+                
 
                 var result = new DataListDTO<ColegioAlumnosDTO>();
 
