@@ -18,6 +18,8 @@ namespace profefolio.Helpers.Mappers
                 .ForMember(dest => dest.Nombre,
                     opt => opt.MapFrom(v => v.Colegio != null ? v.Colegio.Nombre : ""))
                 .ForMember(dest => dest.Clases,
+                    opt => opt.MapFrom(v => new List<string>()))
+                .ForMember(dest => dest.Horarios,
                     opt => opt.MapFrom(v => new List<ClasesHorariosProfesorDbDTO>()));
 
 
@@ -26,14 +28,10 @@ namespace profefolio.Helpers.Mappers
             CreateMap<HorasCatedrasMaterias, ClasesHorariosProfesorDbDTO>()
                 .ForMember(dest => dest.Id,
                     opt => opt.MapFrom(v => v.MateriaListaId))
-                .ForMember(dest => dest.Nombre,
-                    opt => opt.MapFrom(v => v.MateriaLista != null ? v.MateriaLista.Clase.Nombre : ""))
                 .ForMember(dest => dest.Dia,
                     opt => opt.MapFrom(v => v.Dia))
                 .ForMember(dest => dest.Inicio,
-                    opt => opt.MapFrom(v => v.HoraCatedra != null ? v.HoraCatedra.Inicio : ""))
-                .ForMember(dest => dest.Fin,
-                    opt => opt.MapFrom(v => v.HoraCatedra != null ? v.HoraCatedra.Fin : ""));
+                    opt => opt.MapFrom(v => v.HoraCatedra != null ? v.HoraCatedra.Inicio : ""));
 
         }
 

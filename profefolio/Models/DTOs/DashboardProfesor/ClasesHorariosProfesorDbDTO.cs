@@ -7,9 +7,7 @@ namespace profefolio.Models.DTOs.DashboardProfesor
 {
     public class ClasesHorariosProfesorDbDTO : DataDTO
     {
-        public string Nombre { get; set; } = "";
         public string Dia { get; set; } = "";
         public string Inicio { get; set;} = "";
-        public string Fin { get; set; } = "";
     }
 }
