@@ -94,6 +94,21 @@ const MapperHorariosByColegio = (eventos) => {
     })
 }
 
-const Tools = { compararStringsSinAcentos, GetColors, MapperHorariosByColegio, SelectColor }
+const GetColorEvento = (evento = "") => {
+    switch (evento.toLowerCase()) {
+        case "evento":
+            return SelectColor("purple");
+        case "examen":
+            return SelectColor("yellow");
+        case "parcial":
+            return SelectColor("bluesky");
+        case "prueba sumativa":
+            return SelectColor("salmon");
+        default:
+            return "#DDDDDD";
+    }
+}
+
+const Tools = { compararStringsSinAcentos, GetColors, MapperHorariosByColegio, SelectColor, GetColorEvento}
 
 export default Tools

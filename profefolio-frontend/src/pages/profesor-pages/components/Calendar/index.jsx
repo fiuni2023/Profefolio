@@ -70,7 +70,7 @@ const SCalendar = memo(({events = []}) => {
                 }
 
                 .rbc-time-header.rbc-overflowing{
-                    margin-right: 8px !important;
+                    margin-right: 9px !important;
                 }
 
                 .rbc-time-content::-webkit-scrollbar {
