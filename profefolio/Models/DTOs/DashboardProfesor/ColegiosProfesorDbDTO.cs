@@ -8,6 +8,6 @@ namespace profefolio.Models.DTOs.DashboardProfesor
     public class ColegiosProfesorDbDTO : DataDTO
     {
         public string Nombre { get; set; } = "";
-        public List<ClasesProfesorDbDTO> Clases { get; set; } = new(); 
+        public List<ClasesHorariosProfesorDbDTO> Clases { get; set; } = new(); 
     }
 }

@@ -23,18 +23,18 @@ namespace profefolio.Helpers.Mappers
 
 
 
-        CreateMap<HorasCatedrasMaterias, ClasesHorariosProfesorDbDTO>()
-            .ForMember(dest => dest.Id, 
-                opt => opt.MapFrom(v => v.Id))
-            .ForMember(dest => dest.Nombre, 
-                opt => opt.MapFrom(v => v.MateriaLista != null ? v.MateriaLista.Clase.Nombre : ""))
-            .ForMember(dest => dest.Dia, 
-                opt => opt.MapFrom(v => v.Dia))
-            .ForMember(dest => dest.Inicio, 
-                opt => opt.MapFrom(v => v.HoraCatedra != null ? v.HoraCatedra.Inicio : ""))
-            .ForMember(dest => dest.Fin, 
-                opt => opt.MapFrom(v => v.HoraCatedra != null ? v.HoraCatedra.Fin : ""));
-        
+            CreateMap<HorasCatedrasMaterias, ClasesHorariosProfesorDbDTO>()
+                .ForMember(dest => dest.Id,
+                    opt => opt.MapFrom(v => v.Id))
+                .ForMember(dest => dest.Nombre,
+                    opt => opt.MapFrom(v => v.MateriaLista != null ? v.MateriaLista.Clase.Nombre : ""))
+                .ForMember(dest => dest.Dia,
+                    opt => opt.MapFrom(v => v.Dia))
+                .ForMember(dest => dest.Inicio,
+                    opt => opt.MapFrom(v => v.HoraCatedra != null ? v.HoraCatedra.Inicio : ""))
+                .ForMember(dest => dest.Fin,
+                    opt => opt.MapFrom(v => v.HoraCatedra != null ? v.HoraCatedra.Fin : ""));
+
         }
 
 
