@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace profefolio.Models.DTOs.DashboardProfesor
 {
-    public class ClasesProfesorDbDTO : DataDTO
+    public class ClasesHorariosProfesorDbDTO : DataDTO
     {
         public string Nombre { get; set; } = "";
         public string Dia { get; set; } = "";

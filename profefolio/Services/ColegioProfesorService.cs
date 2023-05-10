@@ -117,17 +117,25 @@ namespace profefolio.Services
 
         public async Task<(List<ColegioProfesor>, List<HorasCatedrasMaterias>)> FindAllClases(string emailProfesor = "")
         {
+            /*
+                se buscan los colegios en donde el profesor tenga clases en el anho actual y 
+                los horarios que correspondan a las clases del anho actual
+            */
             var colegios = await _context.ColegiosProfesors
-                    .Where(a => !a.Deleted && emailProfesor.Equals(a.Persona.Email))
+                    .Where(a => !a.Deleted 
+                        && emailProfesor.Equals(a.Persona.Email)
+                        && a.Colegio.ListaClases.Where(b => b.Anho == DateTime.Now.Year).Any())
                     .Include(a => a.Colegio)
                     .Include(a => a.Colegio.ListaClases)
                     .ToListAsync();
+
             if(colegios.Any()){
                 var horarios = await _context.HorasCatedrasMaterias
                     .Where(a => !a.Deleted 
                         && !a.MateriaLista.Deleted 
                         && !a.MateriaLista.Profesor.Deleted 
-                        && emailProfesor.Equals(a.MateriaLista.Profesor.Email))
+                        && emailProfesor.Equals(a.MateriaLista.Profesor.Email)
+                        && a.MateriaLista.Clase.Anho == DateTime.Now.Year)
                     .Include(a => a.HoraCatedra)
                     .Include(a => a.MateriaLista)
                     .ToListAsync();
