@@ -124,7 +124,7 @@ function ModalAlumnos({
                 } else {
                 }
             });
-        // fetchFunc()
+        fetchFunc()
     }
 
     const handleDelete = () => {
@@ -177,7 +177,7 @@ function ModalAlumnos({
         setDatosModal({
             header: selected_data? deleting? "ELIMINAR ALUMNO?" : "Editar Alumno" : "Agregar Alumno",
             form: {
-                onSubmit: deleting ? {action: (e)=>{noAction(e)}} : editing ? {action: ()=>{ handleEditSubmit()}} : {action: ()=>{handleCreateSubmit()}},
+                onSubmit: deleting ? {action: (e)=>{noAction(e)}} : editing ? {action: (e)=>{ handleEditSubmit(e)}} : {action: (e)=>{handleCreateSubmit(e)}},
                 inputs: [
                     {
                         key: "nombreAlu", label: "Nombre del Alumno",

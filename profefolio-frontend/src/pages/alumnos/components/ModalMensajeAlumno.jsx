@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import TextButton from '../../../components/TextButton';
-import { useClaseContext } from '../../clases/context/ClaseContext';
 import { useGeneralContext } from '../../../context/GeneralContext';
 import StudentHelper from '../helpers/StudentHelper'
 import { toast } from 'react-hot-toast';
