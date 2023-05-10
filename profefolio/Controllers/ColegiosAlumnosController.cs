@@ -75,7 +75,7 @@ namespace profefolio.Controllers
             }
         }
 
-        [HttpGet("/all/page/{page:int}")]
+        [HttpGet("all/page/{page:int}")]
         [Authorize(Roles = "Administrador de Colegio")]
         public async Task<ActionResult<DataListDTO<ColegioAlumnosDTO>>> FindAll(int page)
         {
