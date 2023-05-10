@@ -12,6 +12,7 @@
     "formik": "^2.2.9",
     "jasmine": "^4.5.0",
     "react": "^18.2.0",
+    "react-big-calendar": "^1.6.9",
     "react-bootstrap": "^2.7.2",
     "react-dom": "^18.2.0",
     "react-hot-toast": "^2.4.0",
