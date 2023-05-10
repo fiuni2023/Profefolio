@@ -16,6 +16,7 @@ export const StudentProvider = ({ children }) => {
             nombre: "asd",
             apellido: "",
             nacimiento: new Date().toISOString(),
+            IdColegio: "",
             documento: "",
             documentoTipo: "",
             genero: "",
@@ -47,6 +48,7 @@ export const StudentProvider = ({ children }) => {
 
     const setSelectedStudent = (student) => {
         studentFormik.setFieldValue("id", student.id)
+        studentFormik.setFieldValue("idColegio", student.idColegio)
         studentFormik.setFieldValue("nombre", student.nombre)
         studentFormik.setFieldValue("apellido", student.apellido)
         studentFormik.setFieldValue("nacimiento", `${student.nacimiento.split("T")[0]}`)
