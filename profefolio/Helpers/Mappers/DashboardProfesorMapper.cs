@@ -25,7 +25,7 @@ namespace profefolio.Helpers.Mappers
 
             CreateMap<HorasCatedrasMaterias, ClasesHorariosProfesorDbDTO>()
                 .ForMember(dest => dest.Id,
-                    opt => opt.MapFrom(v => v.Id))
+                    opt => opt.MapFrom(v => v.MateriaListaId))
                 .ForMember(dest => dest.Nombre,
                     opt => opt.MapFrom(v => v.MateriaLista != null ? v.MateriaLista.Clase.Nombre : ""))
                 .ForMember(dest => dest.Dia,
