@@ -11,16 +11,18 @@ function ModalAlumnos({
     setShow = () => {},
     fetchFunc = ()=>{},
     selected_data,
-    handleExistingStudent = () =>{},
+    editing=false,
     onHide= () => {}
 }) {
     const { getToken } = useGeneralContext()
     const disabled = false
     console.log(selected_data)
+    console.log(editing)
     const [alumno, setAlumno] = useState("")
     const [openAviso, setOpenAviso] = useState(false)
     const handleCreateSubmit = (e) => {
         e.preventDefault()
+        console.log("creando")
         const nombre = document.getElementById("nombreAlu").value;
         const apellido = document.getElementById("apellido").value;
         const fecha = document.getElementById("fecha").value;
@@ -76,7 +78,9 @@ function ModalAlumnos({
         setOpenAviso(false)
     }
     
-    const handleEditSubmit = () => {
+    const handleEditSubmit = (e) => {
+        e.preventDefault()
+        console.log("editando")
         const nombre = document.getElementById("nombreAlu").value;
         const apellido = document.getElementById("apellido").value;
         const fecha = document.getElementById("fecha").value;
@@ -120,10 +124,11 @@ function ModalAlumnos({
                 } else {
                 }
             });
-        fetchFunc()
+        // fetchFunc()
     }
 
     const handleDelete = () => {
+        console.log("borrando")
         let config = {
             method: 'delete',
             maxBodyLength: Infinity,
@@ -165,12 +170,14 @@ function ModalAlumnos({
 
     const [datosModal, setDatosModal] = useState(null);
     const [deleting, setDeleting] = useState(false)
-
+    const noAction =(e)=>{
+        e.preventDefault()
+    }
     useEffect(() => {
         setDatosModal({
             header: selected_data? deleting? "ELIMINAR ALUMNO?" : "Editar Alumno" : "Agregar Alumno",
             form: {
-                onSubmit: {action: (e)=>{handleCreateSubmit(e)}},
+                onSubmit: deleting ? {action: (e)=>{noAction(e)}} : editing ? {action: ()=>{ handleEditSubmit()}} : {action: ()=>{handleCreateSubmit()}},
                 inputs: [
                     {
                         key: "nombreAlu", label: "Nombre del Alumno",
@@ -264,7 +271,7 @@ function ModalAlumnos({
                         {
                             style: "text",
                             type: "save",
-                            onclick: {action: ()=>{handleEditSubmit()}}
+                            submit: true,
                         },
                     ]
                     :

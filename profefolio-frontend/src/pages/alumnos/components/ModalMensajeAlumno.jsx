@@ -43,10 +43,8 @@ const ButtonContainer = styled.div`
 const ModalMensajeAlumno = ({ student, isOpen, onAdd, onCancel, onSuccess}) => {
   const { getColegioId, getToken } = useGeneralContext()
   const colegioId = getColegioId()
-  console.log(student)
   const addStudent = () => {
     let newStudent = { "colegioId": colegioId, "alumnoId": student.id }
-    console.log(newStudent)
     toast.promise(StudentHelper.addStudentToSchool(newStudent, getToken()), {
       loading: "Grardando Alumno...",
       success: "Alumno guardado",
