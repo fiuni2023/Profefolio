@@ -115,6 +115,31 @@ namespace profefolio.Services
                     .ToListAsync();
         }
 
+        public async Task<(List<ColegioProfesor>, List<HorasCatedrasMaterias>)> FindAllClases(string emailProfesor = "")
+        {
+            var colegios = await _context.ColegiosProfesors
+                    .Where(a => !a.Deleted && emailProfesor.Equals(a.Persona.Email))
+                    .Include(a => a.Colegio)
+                    .Include(a => a.Colegio.ListaClases)
+                    .ToListAsync();
+            if(colegios.Any()){
+                var horarios = await _context.HorasCatedrasMaterias
+                    .Where(a => !a.Deleted 
+                        && !a.MateriaLista.Deleted 
+                        && !a.MateriaLista.Profesor.Deleted 
+                        && emailProfesor.Equals(a.MateriaLista.Profesor.Email))
+                    .Include(a => a.HoraCatedra)
+                    .Include(a => a.MateriaLista)
+                    .ToListAsync();
+                
+                if(horarios.Any()){
+                    return (colegios, horarios);
+                }
+            }
+
+            throw new FileNotFoundException("No se tienen Clases asignadas en ningun Colegio.");
+        }
+
         public async Task<ColegioProfesor> FindById(int id)
         {
             return await _context
