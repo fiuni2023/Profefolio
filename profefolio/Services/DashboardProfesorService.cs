@@ -55,33 +55,41 @@ namespace profefolio.Services
 
         public async Task<IEnumerable<Clase>> GetClasesForCardClases(int idColegio, string emailProfesor = "", int anho = 0)
         {
-            var profesor = await _context.Users.FirstOrDefaultAsync(a => emailProfesor.Equals(a.Email));
+            var profesor = await _context.Users
+                .FirstOrDefaultAsync(a => !a.Deleted
+                    && emailProfesor.Equals(a.Email)
+                    && a.ColegiosProfesor.Any(c => !c.Deleted && c.ColegioId == idColegio));
 
-            if(profesor == null){
+            if (profesor == null)
+            {
                 throw new FileNotFoundException("El usuario no es un profesor");
             }
+            var clases = await _context.MateriaListas
+                        .Where(a => !a.Deleted
+                            && profesor.Id.Equals(a.ProfesorId)
+                            && a.Clase.ColegioId == idColegio
+                            && a.Clase.Anho == anho)
+                        .Include(a => a.Clase.Ciclo)
+                        .Include(a => a.Clase.ClasesAlumnosColegios)
+                        .Include(a => a.Clase.MateriaListas)
+                        .Select(a => a.Clase)
+                        .ToListAsync();
 
-            return await _context.Clases
-                                .Where(c => !c.Deleted 
-                                    && c.Anho == anho 
-                                    && c.ColegioId == idColegio
-                                    && c.Colegio != null
-                                    && !c.Colegio.Deleted
-                                    && c.Colegio.ColegioProfesores.Any(cp => !cp.Deleted
-                                        && cp.Persona != null
-                                        && !cp.Persona.Deleted 
-                                        && profesor.Id.Equals(cp.PersonaId))
-                                    && c.MateriaListas != null
-                                    && c.MateriaListas.Any(mt => !mt.Deleted && profesor.Email.Equals(mt.ProfesorId)))
-                                .Include(c => c.Ciclo)
-                                .Include(c => c.MateriaListas)
-                                .Include(c => c.ClasesAlumnosColegios).ToListAsync();
+            clases.ForEach(async a =>
+            {
+                a.MateriaListas = await _context.MateriaListas
+                    .Include(w => w.Materia)
+                    .Where(b => b.ClaseId == a.Id && profesor.Id.Equals(b.ProfesorId))
+                    .ToListAsync();
+            });
+
+            return clases;
         }
 
         public Task Save()
         {
             throw new NotImplementedException();
         }
-        
+
     }
 }

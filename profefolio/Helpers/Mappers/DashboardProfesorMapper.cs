@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using profefolio.Models.DTOs.DashboardProfesor;
+using profefolio.Models.DTOs.DashboardProfesor.GetWithOpcions;
 using profefolio.Models.Entities;
 
 namespace profefolio.Helpers.Mappers
@@ -33,9 +34,20 @@ namespace profefolio.Helpers.Mappers
                 .ForMember(dest => dest.Inicio,
                     opt => opt.MapFrom(v => v.HoraCatedra != null ? v.HoraCatedra.Inicio : ""));
 
+
+            CreateMap<Clase, DBCardClasesDTO>()
+                .ForMember(dest => dest.Id,
+                    opt => opt.MapFrom(v => v.Id))
+                .ForMember(dest => dest.Ciclo,
+                    opt => opt.MapFrom(v => v.Ciclo.Nombre))
+                .ForMember(dest => dest.Anho,
+                    opt => opt.MapFrom(v => v.Anho))
+                .ForMember(dest => dest.Alumnos, 
+                    opt => opt.MapFrom(v => v.ClasesAlumnosColegios.Count()))
+                .ForMember(dest => dest.Materias, 
+                    opt => opt.MapFrom(v => v.MateriaListas.DistinctBy(a => a.MateriaId).Select(a => a.Materia.Nombre_Materia)))
+                .ForMember(dest => dest.Horario, 
+                    opt => opt.MapFrom(v => new DBCardClasesHorariosDTO()));
         }
-
-
-
     }
 }

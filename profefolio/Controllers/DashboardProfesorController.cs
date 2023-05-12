@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using profefolio.Helpers;
 using profefolio.Repository;
 using profefolio.Models.DTOs.DashboardProfesor;
+using profefolio.Models.DTOs.DashboardProfesor.GetWithOpcions;
 
 namespace profefolio.Controllers
 {
@@ -145,7 +146,7 @@ namespace profefolio.Controllers
                 return BadRequest("Identificador Invalido");
             }
 
-
+            //DateTime.Now.
 
             try
             {
@@ -160,8 +161,8 @@ namespace profefolio.Controllers
                     case "card-clases":
                         //id colegio, //anho
                         var clases = await _dashBoardService.GetClasesForCardClases(dto.Id, userEmail, dto.Anho);
-                        
-                        return Ok();
+
+                        return Ok(_mapper.Map<List<DBCardClasesDTO>>(clases));
                     default:
                         return BadRequest("Opcion Invalida");
                 }
