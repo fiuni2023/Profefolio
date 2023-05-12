@@ -19,18 +19,20 @@ namespace profefolio.Controllers
     {
         private IPersona _personaService;
         private IColegioProfesor _cProfService;
+        private IDashboardProfesor _dashBoardService;
         private IColegio _colegioService;
         private IMapper _mapper;
 
         private static int CantPorPage => Constantes.CANT_ITEMS_POR_PAGE;
 
 
-        public DashboardProfesorController(IPersona personaService, IColegioProfesor colegioProfesorService, IColegio colegioService, IMapper mapper)
+        public DashboardProfesorController(IPersona personaService, IColegioProfesor colegioProfesorService, IDashboardProfesor dashboardProfesor, IColegio colegioService, IMapper mapper)
         {
             _personaService = personaService;
             _cProfService = colegioProfesorService;
             _colegioService = colegioService;
             _mapper = mapper;
+            _dashBoardService = dashboardProfesor;
         }
 
         ///<summary>
@@ -91,16 +93,18 @@ namespace profefolio.Controllers
                 foreach (var cp in colegiosProfesors)
                 {
                     var dtoCp = _mapper.Map<ColegiosProfesorDbDTO>(cp);
-                    
+
                     foreach (var clase in clases)
                     {
-                        if(clase.ColegioId == cp.ColegioId){
+                        if (clase.ColegioId == cp.ColegioId)
+                        {
                             dtoCp.Clases.Add(clase.Nombre);
                         }
                     }
                     foreach (var horario in horarios)
                     {
-                        if(horario.MateriaLista.Clase.ColegioId == cp.ColegioId){
+                        if (horario.MateriaLista.Clase.ColegioId == cp.ColegioId)
+                        {
                             dtoCp.Horarios.Add(_mapper.Map<ClasesHorariosProfesorDbDTO>(horario));
                         }
                     }
@@ -124,6 +128,49 @@ namespace profefolio.Controllers
             }
 
 
+        }
+
+
+
+        [HttpGet]
+        [Authorize(Roles = "Profesor")]
+        public async Task<ActionResult> Get([FromBody] GetDashboardOptionsDTO dto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Peticion invalida");
+            }
+            if (dto.Id <= 0)
+            {
+                return BadRequest("Identificador Invalido");
+            }
+
+
+
+            try
+            {
+                var userEmail = User.FindFirstValue(ClaimTypes.Name);
+
+                /*
+                    "card-clases", "card-materias", "cards-materia", "horarios-clases", "eventos-clases", 
+                    "eventos-materias", "lista-alumnos", "promedio-puntajes", "promedio-asistencias"
+                */
+                switch (dto.Opcion.ToLower())
+                {
+                    case "card-clases":
+                        //id colegio, //anho
+                        var clases = await _dashBoardService.GetClasesForCardClases(dto.Id, userEmail, dto.Anho);
+                        
+                        return Ok();
+                    default:
+                        return BadRequest("Opcion Invalida");
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"{e}");
+                return BadRequest("Error durante la obtencion de datos.");
+            }
         }
 
     }
