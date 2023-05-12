@@ -8,6 +8,6 @@ namespace profefolio.Repository
 {
     public interface IDashboardProfesor : IRepository<ColegioProfesor> 
     {
-        
+        Task<IEnumerable<Clase>> GetClasesForCardClases(int idColegio, string emailProfesor, int anho);
     }
 }

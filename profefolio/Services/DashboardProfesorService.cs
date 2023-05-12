@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using profefolio.Models;
 using profefolio.Models.Entities;
 using profefolio.Repository;
@@ -50,6 +51,31 @@ namespace profefolio.Services
         public IEnumerable<ColegioProfesor> GetAll(int page, int cantPorPag)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<IEnumerable<Clase>> GetClasesForCardClases(int idColegio, string emailProfesor = "", int anho = 0)
+        {
+            var profesor = await _context.Users.FirstOrDefaultAsync(a => emailProfesor.Equals(a.Email));
+
+            if(profesor == null){
+                throw new FileNotFoundException("El usuario no es un profesor");
+            }
+
+            return await _context.Clases
+                                .Where(c => !c.Deleted 
+                                    && c.Anho == anho 
+                                    && c.ColegioId == idColegio
+                                    && c.Colegio != null
+                                    && !c.Colegio.Deleted
+                                    && c.Colegio.ColegioProfesores.Any(cp => !cp.Deleted
+                                        && cp.Persona != null
+                                        && !cp.Persona.Deleted 
+                                        && profesor.Id.Equals(cp.PersonaId))
+                                    && c.MateriaListas != null
+                                    && c.MateriaListas.Any(mt => !mt.Deleted && profesor.Email.Equals(mt.ProfesorId)))
+                                .Include(c => c.Ciclo)
+                                .Include(c => c.MateriaListas)
+                                .Include(c => c.ClasesAlumnosColegios).ToListAsync();
         }
 
         public Task Save()
