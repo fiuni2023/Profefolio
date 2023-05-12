@@ -113,6 +113,7 @@ namespace profefolio.Services
                                 ca.ClasesAlumnosColegios.Any(a => (a.Deleted && a.ClaseId == idClase) || a.ClaseId != idClase))
                                 .Where(ca => ca.ClasesAlumnosColegios == null || !(ca.ClasesAlumnosColegios.Any(a => a.ClaseId == idClase && !a.Deleted)))
                                 .Include(a => a.Persona)
+                                .Include(a => a.ClasesAlumnosColegios)
                                 .ToListAsync();
             return query;
         }
@@ -195,7 +196,35 @@ namespace profefolio.Services
 
             var query = await this.FindAllNoAssignedToClaseByEmailAdminAndIdClase(user, idClase);
 
-            throw new NotImplementedException();
+            var listResult = new List<ColegiosAlumnos>();
+
+            foreach (var item in query)
+            {
+                var colegiosAlumnos = item;
+
+                var colegioClaseAlumno = item.ClasesAlumnosColegios;
+                colegiosAlumnos.ClasesAlumnosColegios = new List<ClasesAlumnosColegio>();
+
+
+                if(colegioClaseAlumno == null)
+                {
+                    throw new BadHttpRequestException("Error al buscar los resultados");
+                }
+
+                foreach (var cca in colegioClaseAlumno)
+                {
+                    var cl = await _context.Clases.FindAsync(cca.ClaseId);
+
+                    if(cl != null && cl.Anho == year)
+                    {
+                        colegiosAlumnos.ClasesAlumnosColegios.Add(cca);
+                    }
+                }
+
+                listResult.Add(colegiosAlumnos);
+            }
+
+            return listResult;
         }
     }
 }
