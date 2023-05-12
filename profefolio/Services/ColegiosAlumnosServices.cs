@@ -186,5 +186,10 @@ namespace profefolio.Services
         {
             return _context.SaveChangesAsync();
         }
+
+        public Task<IEnumerable<ColegiosAlumnos>> FindNotAssignedByYear(string user, int idClase, int page, int cantPerPage)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
