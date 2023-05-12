@@ -25,14 +25,14 @@ public class Evento : Data
 
     [Required(ErrorMessage = "Se tiene que agregar la materia relacionada al evento")]
     public Materia Materias { get; set; }
-    public int? MateriaId{ get; set; }
+    public int MateriaId{ get; set; }
 
     [Required(ErrorMessage = "Se tiene que agregar la clase relacionada al evento")]
     public Clase Clases { get; set; }
-    public int? ClaseId { get; set; }
+    public int ClaseId { get; set; }
 
     [Required(ErrorMessage = "Se tiene que agregar el colegio relacionado al evento")]
     public Colegio Colegios { get; set; }
-    public int? ColegioId { get; set; }
+    public int ColegioId { get; set; }
 
 }
