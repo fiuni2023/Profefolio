@@ -100,7 +100,7 @@ namespace profefolio.Services
             var clase = await _context.Clases
                     .AnyAsync(c => !c.Deleted && c.Id == idClase);
 
-            if(!clase)
+            if (!clase)
             {
                 throw new BadHttpRequestException("clase no valida");
             }
@@ -108,8 +108,8 @@ namespace profefolio.Services
             var query = await _context.ColegiosAlumnos
                         .Where(ca => !ca.Deleted)
                         .Where(ca => ca.Colegio.personas.Email.Equals(adminEmail))
-                        .Where(ca => ca.ClasesAlumnosColegios == null || 
-                            !ca.ClasesAlumnosColegios.Any() || 
+                        .Where(ca => ca.ClasesAlumnosColegios == null ||
+                            !ca.ClasesAlumnosColegios.Any() ||
                                 ca.ClasesAlumnosColegios.Any(a => (a.Deleted && a.ClaseId == idClase) || a.ClaseId != idClase))
                                 .Where(ca => ca.ClasesAlumnosColegios == null || !(ca.ClasesAlumnosColegios.Any(a => a.ClaseId == idClase && !a.Deleted)))
                                 .Include(a => a.Persona)
@@ -130,17 +130,17 @@ namespace profefolio.Services
             var existClase = _context.Clases
                 .Any(x => !x.Deleted && x.Id == idClase);
 
-            if(!existClase)
+            if (!existClase)
             {
                 throw new FileNotFoundException();
             }
             var query = await this.FindAllNoAssignedToClaseByEmailAdminAndIdClase(user, idClase);
 
             var result = query
-                .Skip(cantPerPage*page)
+                .Skip(cantPerPage * page)
                 .Take(cantPerPage);
-                
-            
+
+
             return result;
         }
 
@@ -151,7 +151,7 @@ namespace profefolio.Services
                 .Where(t => t.Email.Equals(user))
                 .FirstOrDefaultAsync();
 
-            if(userLogged == null)
+            if (userLogged == null)
             {
                 throw new BadHttpRequestException("Admin no valido");
             }
@@ -162,7 +162,7 @@ namespace profefolio.Services
                 .Where(t => t.personas != null && t.personas.Id.Equals(userLogged.Id))
                 .FirstOrDefaultAsync();
 
-            if(colegio == null)
+            if (colegio == null)
             {
                 throw new BadHttpRequestException("Colegio no valido");
             }
@@ -171,7 +171,7 @@ namespace profefolio.Services
                 .Include(ca => ca.Colegio)
                 .Where(ca => !ca.Deleted)
                 .Where(ca => ca.ColegioId == colegio.Id)
-                .Skip(cantPerPage*page)
+                .Skip(cantPerPage * page)
                 .Take(cantPerPage);
 
             return colegiosAlumnos;
@@ -187,8 +187,14 @@ namespace profefolio.Services
             return _context.SaveChangesAsync();
         }
 
-        public Task<IEnumerable<ColegiosAlumnos>> FindNotAssignedByYear(string user, int idClase, int page, int cantPerPage)
+        public async Task<IEnumerable<ColegiosAlumnos>> FindNotAssignedByYear(string user, int idClase, int page, int cantPerPage)
         {
+            var date = DateTime.Now;
+
+            var year = date.Year;
+
+            var query = await this.FindAllNoAssignedToClaseByEmailAdminAndIdClase(user, idClase);
+
             throw new NotImplementedException();
         }
     }
