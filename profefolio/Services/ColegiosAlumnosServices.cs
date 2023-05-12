@@ -224,7 +224,9 @@ namespace profefolio.Services
                 listResult.Add(colegiosAlumnos);
             }
 
-            return listResult;
+            return listResult
+                .Skip(page*cantPerPage)
+                .Take(cantPerPage);
         }
     }
 }
