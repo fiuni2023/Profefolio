@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using profefolio.Models;
 using profefolio.Models.Entities;
@@ -123,7 +119,7 @@ namespace profefolio.Services
             return await _context.ColegiosAlumnos
                 .Include(a => a.Colegio)
                 .Include(a => a.Colegio.personas)
-                .FirstOrDefaultAsync(ca => !ca.Deleted && ca.Id == id);
+                .FirstAsync(ca => !ca.Deleted && ca.Id == id);
         }
 
         public async Task<IEnumerable<ColegiosAlumnos>> FindNotAssigned(string user, int idClase, int page, int cantPerPage)
@@ -234,6 +230,13 @@ namespace profefolio.Services
 
             return listResult as IEnumerable<ColegiosAlumnos>;
 
+        }
+
+        public async Task<int> ContNotAssignedByYear(int year, string user, int idClase)
+        {
+            var query = await this.GetNotAssignedByYear(year, user, idClase);
+
+            return query.Count();
         }
     }
 }
