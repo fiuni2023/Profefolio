@@ -132,7 +132,87 @@ namespace profefolio.Controllers
         }
 
 
-
+        ///<summary>
+        ///Dependiendo de las opciones mandadas se retornara los datos necesarios para cargar en los componentes del dashboard de Profesor 
+        /// 
+        /// 
+        ///</summary>
+        ///
+        ///<remarks>
+        ///Body del Get:
+        ///     
+        ///     {
+        ///         opcion: "opcion",
+        ///         id: 0,
+        ///         anho: 2023
+        ///     
+        ///     }
+        ///     
+	    /// Descripcion:
+        ///
+		///     * opcion: "card-clases", "card-materias", "cards-materia", "horarios-clases", "eventos-clases", "eventos-materias", "lista-alumnos", "promedio-puntajes", "promedio-asistencias"
+        ///
+		///     * id: el id mandado dependera de la opcion:
+        ///
+		///		        - card-clases: pasar en el id del colegio.
+        ///
+		///		        - card-materias: pasar el id de la clase.
+        ///
+		///			    - cards-materia: pasar el id de la materia.
+        ///
+		///			    - horarios-clases: pasar id del colegio.
+        ///
+		///		    	- eventos-clases: pasar id del colegio.
+        ///
+		///			    - eventos-materias: pasar id de la clase.
+        ///
+		///			    - lista-alumnos: pasar id de la materia en MateriaLista.
+        ///
+		///	    		- promedio-puntajes: pasar id de la materia en MateriaLista.
+        /// 
+		/// 			- promedio-asistencias: pasar id de la materia en MateriaListas.
+        ///
+		///		* anho: año del cual se quiere obtener los datos, sera util en la pagina de clase donde se tiene que traer las clases del profesor dentro de un colegio en el año actual, en los demas casos no se tedra en cuenta. 
+        ///
+        ///
+        /// ***************************************************************************************************************************
+        /// Caso de Opcion "card-clases"
+        ///
+        ///
+        /// Ticket <a href="https://nande-y.atlassian.net/browse/PF-292">PF-292</a>
+        ///     
+        /// Body:
+        ///     
+		///		{
+		///			opcion: "card-clases",
+		///			id: 0,                              // id colegio
+		///			anho: 2023                          // necesario
+		///		}
+        ///     
+        /// Respuesta:
+        /// 
+        ///     [
+		///			{
+		///				id: 1,                          // id de clase
+		///				ciclo: "1er ciclo",             // nombre del ciclo
+		///				nombre: "Primer Grado",         //nombre de clase
+		///				anho: 2023,                     //año de la clase
+		///				alumnos: 10,                    //cantidad de alumnos de la clase
+		///				materias: [
+		///					"Matematicas", "Ciencias", "Quimica", "Historia"
+		///				],
+		///				horario: {                      //horario mas proximo al dia actual
+		///					dia: "Jueves",
+		///					inicio: "08:00",
+		///					horas: "3hs"                // horas de clase en la clase ese dia 
+		///				} 			
+		///			}
+		///		]
+        ///     
+        ///     
+        ///     
+        /// ***************************************************************************************************************************
+        ///</remarks>
         [HttpGet]
         [Authorize(Roles = "Profesor")]
         public async Task<ActionResult> Get([FromBody] GetDashboardOptionsDTO dto)
