@@ -174,6 +174,22 @@ namespace profefolio.Controllers
                         }
                         
                         return Ok(results);
+                    case "card-materias":
+                        return BadRequest("Opcion en implementacion");
+                    case "cards-materia":
+                        return BadRequest("Opcion en implementacion");
+                    case "horarios-clases":
+                        return BadRequest("Opcion en implementacion");
+                    case "eventos-clases":
+                        return BadRequest("Opcion en implementacion");
+                    case "eventos-materias":
+                        return BadRequest("Opcion en implementacion");
+                    case "lista-alumnos":
+                        return BadRequest("Opcion en implementacion");
+                    case "promedio-puntajes":
+                        return BadRequest("Opcion en implementacion");
+                    case "promedio-asistencias":
+                        return BadRequest("Opcion en implementacion");
                     default:
                         return BadRequest("Opcion Invalida");
                 }
