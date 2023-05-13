@@ -40,14 +40,24 @@ namespace profefolio.Helpers.Mappers
                     opt => opt.MapFrom(v => v.Id))
                 .ForMember(dest => dest.Ciclo,
                     opt => opt.MapFrom(v => v.Ciclo.Nombre))
+                .ForMember(dest => dest.Nombre,
+                    opt => opt.MapFrom(v => v.Nombre))
                 .ForMember(dest => dest.Anho,
                     opt => opt.MapFrom(v => v.Anho))
                 .ForMember(dest => dest.Alumnos, 
                     opt => opt.MapFrom(v => v.ClasesAlumnosColegios.Count()))
                 .ForMember(dest => dest.Materias, 
-                    opt => opt.MapFrom(v => v.MateriaListas.DistinctBy(a => a.MateriaId).Select(a => a.Materia.Nombre_Materia)))
+                    opt => opt.MapFrom(v => new List<string>()))
                 .ForMember(dest => dest.Horario, 
                     opt => opt.MapFrom(v => new DBCardClasesHorariosDTO()));
+            
+            CreateMap<HorasCatedrasMaterias, DBCardClasesHorariosDTO>()
+                .ForMember(dest => dest.Dia, 
+                    opt => opt.MapFrom(v => v.Dia))
+                .ForMember(dest => dest.Inicio, 
+                    opt => opt.MapFrom(v => v.HoraCatedra.Inicio))
+                .ForMember(dest => dest.Horas, 
+                    opt => opt.MapFrom(v => ""));
         }
     }
 }
