@@ -275,22 +275,23 @@ useMemo(() => {
   
 
  
- const idProfesoresArray = profeProfesor.map(profesor => profesor.id);
-
+ //const idProfesoresArray = profeProfesor.map(profesor => profesor.id);
 
  const handleCrearMateriaProfesor = async () => {
-
-    const body = { "idProfesores": idProfesoresArray, "idMateria": idMateria , "idClase": getClaseSelectedId()}
+    const idProfesoresArray = profeProfesor.filter((materia) => materia.selected)
+                                            .map((materia) => materia.id);
+  
+    const body = { "idProfesores": idProfesoresArray, "idMateria": idMateria, "idClase": getClaseSelectedId() };
     ClassesService.createMateriaProfesor(body, getToken())
-        .then(() => {
-            toast.success("Los datos fueron enviados correctamente.")
-            window.location.reload()
-        })
-        .catch(() => {
-            toast.error("No se pudieron guardar los cambios. Intente de nuevo o recargue la página.")
-        })
-
+      .then(() => {
+        toast.success("Los datos fueron enviados correctamente.");
+        window.location.reload();
+      })
+      .catch(() => {
+        toast.error("No se pudieron guardar los cambios. Intente de nuevo o recargue la página.");
+      });
   };
+  
   
   
   
@@ -385,6 +386,10 @@ useMemo(() => {
         try {
           const dataList = await ClassesService.getMateriasProfesores(getClaseSelectedId(),getToken());
           setMateriaProfesores(dataList ?? []);
+
+          console.log('materiaProfesores',materiaProfesores);
+
+
         
 
         } catch (e) {
@@ -395,12 +400,23 @@ useMemo(() => {
       listaMateriasProfesores();
     }, []);
 
+    //console.log('materiaProfesores', materiaProfesores.data);
 
-let listaFusionada = [...materiaProfesor];
+    //console.log('materiaProfesores', materiaProfesores.data.materiaProfesores);
 
-if (Array.isArray(materiaProfesores.data)) {
-  listaFusionada = [...listaFusionada, ...materiaProfesores.data];
-}
+
+  //  console.log('materiaProfesores', materiaProfesores.data.materiaProfesores);
+
+
+
+//let listaFusionada = [...materiaProfesor];
+
+//console.log('listaFusionada',listaFusionada);
+
+//if (Array.isArray(materiaProfesores.data.materiaProfesores)) {
+//  listaFusionada = [...listaFusionada, ...materiaProfesores.data.materiaProfesores];
+//}
+
 
     
     let materiasList = {
@@ -412,7 +428,9 @@ if (Array.isArray(materiaProfesores.data)) {
         addTitle: "Agregar Materias",
         selectTitle: "Seleccionar Materia",
         options: optionsMaterias,
-        list:  listaFusionada ?? [],
+        list: materiaProfesores.data.materiaProfesores ?? [],
+        // list: materiaProfesores.data.materiaProfesores ?? [],
+       // list:  listaFusionada ?? [],
     }
     return <>
 
@@ -426,14 +444,11 @@ if (Array.isArray(materiaProfesores.data)) {
                 {materiasList?.list &&
                     <SBody background={materiasList?.background ?? "gray"}>
                         <List>
-                            {materiasList?.list?.map((materia, index) => (
+                           {Array.isArray(materiasList?.list) && materiasList.list.map((materia, index) => (
                                 <ListItem key={index}
                                     idMateria={materia.id}
                                     index={index + 1}
-                                   // nombre={materia.nombre}
-                                    nombre={materia.nombre}
-
-                                  //  nombre={materiaSelected}
+                                    nombre={materia.materia}
                                     profesores={materia.profesores}
                                     profeProfesor={profeProfesor}
                                     type={materia.status}
@@ -463,14 +478,12 @@ if (Array.isArray(materiaProfesores.data)) {
                         }
                     </Select>
                     <div style={{ textAlign: 'right' }}>
-                      {/*   <TextButton buttonType={'save-changes'} enabled={materiasList?.enabled ?? false} onClick={(e) => { "enviando..." } handleCrearMateriaProfesor()} />
-                     */}
                                     <TextButton 
-                        buttonType={'save-changes'} 
-                        enabled={materiasList?.enabled ?? false} 
-                        onClick={(e) => { 
-                    e.preventDefault(); // prevent the default behavior of the onClick event
-                    handleCrearMateriaProfesor(); 
+                                buttonType={'save-changes'} 
+                                enabled={materiasList?.enabled ?? false} 
+                                onClick={(e) => { 
+                                e.preventDefault(); // prevent the default behavior of the onClick event
+                                 handleCrearMateriaProfesor(); 
                   ///  console.log("enviando..."); // or alert("enviando...") to display the message to the user
                 }} 
                 />
