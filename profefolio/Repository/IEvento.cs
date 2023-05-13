@@ -4,7 +4,6 @@ namespace profefolio.Repository;
 
 public interface IEvento : IRepository<Evento>
 {
-    //Task<Evento> FindByNameEventoId(string nombre, int id);
-    //Task<Materia> FindByNameMateria(string nombre);
-    Task<List<Evento>> GetAll();
+    Task<Evento> FindByEventoRepetido(String tipo, DateTime fecha, int clase, int materia, int colegio);
+    //Task<List<Evento>> GetAll();
 }

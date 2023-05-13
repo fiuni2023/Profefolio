@@ -21,12 +21,15 @@ public class EventoService : IEvento
             .FirstOrDefaultAsync();
     }
 
-    /*public async Task<Evento> FindByNameMateria(string n)
+    public async Task<Evento> FindByEventoRepetido(String t, DateTime f, int c, int m, int col)
     {
-        return await _dbContext.Materias
-            .Where(p => !p.Deleted && p.Nombre_Materia == n)
+        return await _dbContext.Eventos
+            .Where(p => !p.Deleted && p.Tipo == t && p.Fecha == f
+             && p.MateriaId == m && p.ClaseId == c && p.ColegioId == col)
             .FirstOrDefaultAsync();
     }
+
+    /*
     public async Task<Materia> FindByNameMateriaId(string n, int id)
     {
         return await _dbContext.Materias
@@ -39,7 +42,7 @@ public class EventoService : IEvento
         return await _dbContext.Eventos.Where(p => !p.Deleted).ToListAsync();
     }
 
-    public Materia Edit(Evento t)
+    public Evento Edit(Evento t)
     {
         _dbContext.Entry(t).State = EntityState.Modified;
         return t;
@@ -47,7 +50,7 @@ public class EventoService : IEvento
 
     public async Task<Evento> Add(Evento t)
     {
-        var result = await _dbContext.Evento.AddAsync(t);
+        var result = await _dbContext.Eventos.AddAsync(t);
         return result.Entity;
     }
 
