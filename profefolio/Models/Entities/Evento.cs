@@ -5,11 +5,12 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 using Models.DTOs.Materia;
 using Models.DTOs.Clase;
 using Models.DTOs.Colegio;
-
+using Models.DTOs.Persona;
 public class Evento : Data
 {
     //tipo: examen, parcial, prueba sumatoria, examen
@@ -34,5 +35,9 @@ public class Evento : Data
     [Required(ErrorMessage = "Se tiene que agregar el colegio relacionado al evento")]
     public Colegio Colegios { get; set; }
     public int ColegioId { get; set; }
+
+    [JsonIgnore]
+    public String? ProfesorId { get; set; }
+    public Persona Profesores { get; set; }
 
 }

@@ -1,4 +1,5 @@
 namespace profefolio.Models.DTOs.Evento;
+using Newtonsoft.Json;
 
 public class EventoDTO
 {
@@ -7,5 +8,8 @@ public class EventoDTO
      public int MateriaId{ get; set; }
      public int ClaseId { get; set; }
      public int ColegioId { get; set; }
+     
+     [JsonIgnore] // Agrega el atributo JsonIgnore al campo ProfesorId
+     public String? ProfesorId { get; set; }
     
 }

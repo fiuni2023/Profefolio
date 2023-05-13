@@ -24,9 +24,11 @@ namespace profefolio.Controllers
         private readonly IClase _claseService;
         private readonly IColegio _colegioService;
         private readonly IColegioProfesor _colegioProfesorService;
+        private readonly IProfesor _profesorService;
 
         public EventoController(IEvento eventoService, IMapper mapper, IMateria materiaService,
-        IClase claseService, IColegio colegioService, IColegioProfesor colegioProfesorService )
+        IClase claseService, IColegio colegioService, IColegioProfesor colegioProfesorService,
+        IProfesor profesorService)
         {
             _eventoService = eventoService;
             _mapper = mapper;
@@ -34,8 +36,9 @@ namespace profefolio.Controllers
             _claseService = claseService;
             _colegioService = colegioService;
             _colegioProfesorService = colegioProfesorService;
+            _profesorService = profesorService;
         }
-    
+
 
         /// <summary>
         /// Guarda un Evento. 
@@ -54,18 +57,18 @@ namespace profefolio.Controllers
             {
                 return BadRequest("Objeto No valido");
             }
-            if (!(evento.Tipo.Equals("Examen") || evento.Tipo.Equals("Parcial") 
+            if (!(evento.Tipo.Equals("Examen") || evento.Tipo.Equals("Parcial")
             || evento.Tipo.Equals("Prueba sumatoria") || evento.Tipo.Equals("Evento")))
             {
                 return BadRequest("Tipo de evento invalido");
             }
-            
-            if (evento.MateriaId == null || evento.Fecha == null || evento.ClaseId == null 
+
+            if (evento.MateriaId == null || evento.Fecha == null || evento.ClaseId == null
             || evento.ColegioId == null || evento.Tipo == null)
             {
                 return BadRequest("Datos no validos");
             }
-            
+
             //VERIFICAR ID materia
             var materia = await _materiaService.FindById(evento.MateriaId);
             if (materia == null)
@@ -86,7 +89,11 @@ namespace profefolio.Controllers
             }
             //verificar que no se agregue un evento a una clase que no sea del profesor logueado
             var userEmail = User.FindFirstValue(ClaimTypes.Name);
-            if (clase.ColegioId != evento.ColegioId )
+           
+            var profId = await _profesorService.GetProfesorIdByEmail(userEmail);
+            evento.ProfesorId = profId;
+
+            if (clase.ColegioId != evento.ColegioId)
             {
                 return BadRequest("No puede matipular datos ajenos.");
             }
@@ -97,7 +104,7 @@ namespace profefolio.Controllers
             {
                 return BadRequest("No puede agregar eventos en otros colegios.");
             }
-            
+
             //verificar que no haya el mismo tipo de evento la misma fecha en la misma materia de una clase
             var verificarEvento = await _eventoService.FindByEventoRepetido(evento.Tipo, evento.Fecha,
             evento.ClaseId, evento.MateriaId, evento.ColegioId);
@@ -108,7 +115,7 @@ namespace profefolio.Controllers
             try
             {
                 var p = _mapper.Map<Evento>(evento);
-                p.ModifiedBy = userEmail;
+                p.CreatedBy= userEmail;
                 p.Deleted = false;
 
                 var saved = await _eventoService.Add(p);
