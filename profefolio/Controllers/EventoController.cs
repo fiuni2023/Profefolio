@@ -18,7 +18,6 @@ namespace profefolio.Controllers
     {
         private static readonly ILog _log = LogManager.GetLogger(typeof(EventoController));
         private readonly IEvento _eventoService;
-        //private readonly IMateriaLista _materiaListaService;
         private static int _cantPorPag => Constantes.CANT_ITEMS_POR_PAGE;
         private readonly IMapper _mapper;
         private readonly IMateria _materiaService;
@@ -62,7 +61,7 @@ namespace profefolio.Controllers
             }
             
             if (evento.MateriaId == null || evento.Fecha == null || evento.ClaseId == null 
-               || evento.ColegioId == null || evento.Tipo == null)
+            || evento.ColegioId == null || evento.Tipo == null)
             {
                 return BadRequest("Datos no validos");
             }

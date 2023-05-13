@@ -29,14 +29,6 @@ public class EventoService : IEvento
             .FirstOrDefaultAsync();
     }
 
-    /*
-    public async Task<Materia> FindByNameMateriaId(string n, int id)
-    {
-        return await _dbContext.Materias
-            .Where(p => !p.Deleted && p.Nombre_Materia == n && p.Id != id)
-            .FirstOrDefaultAsync();
-    }*/
-
     public async Task<List<Evento>> GetAll()
     {
         return await _dbContext.Eventos.Where(p => !p.Deleted).ToListAsync();
@@ -95,5 +87,4 @@ public class EventoService : IEvento
          .Take(cantPorPag);
     }
 
-    
 }
