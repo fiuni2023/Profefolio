@@ -19,5 +19,6 @@ namespace profefolio.Repository
         Task<int> CountNotAssigned(string user, int idClase);
         Task<int> ContNotAssignedByYear(int year, string user, int idClase);
         Task<IEnumerable<ColegiosAlumnos>> FindAll(string user, int page, int cantPerPage);
+        Task<IEnumerable<ColegiosAlumnos>> GetNotAssignedByYear(int year, string user, int idClase);
     }
 }
