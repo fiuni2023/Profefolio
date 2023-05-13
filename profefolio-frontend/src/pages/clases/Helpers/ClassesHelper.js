@@ -44,7 +44,7 @@ const getClassesByIdNombre = async (id, token) => {
 
 //
 const getMateriasProfesores= async (id, token) => {
-      const result = await axios.get(`${APILINK}/api/lista/materias/ConProfesores/${id}`, {
+      const result = await axios.get(`${APILINK}/api/administrador/materia/profesores/${id}`, {
         headers: {
             "Authorization": 'Bearer ' + token,
             "Content-Type": "application/json"
