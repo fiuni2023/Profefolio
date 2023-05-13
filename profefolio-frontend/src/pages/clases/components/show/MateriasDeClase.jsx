@@ -349,7 +349,7 @@ useMemo(() => {
             id: Date.now().toString(),
             nombre,
            // status: "new",
-            profesores: []
+            profesores: {}
         };
         setMateriaProfesor((materiaProfesor) => [...materiaProfesor, newMateria]);
 
@@ -402,7 +402,7 @@ useMemo(() => {
 
     //console.log('materiaProfesores', materiaProfesores.data);
 
-    //console.log('materiaProfesores', materiaProfesores.data.materiaProfesores);
+   // console.log('materiaProfesores', materiaProfesores.data.materiaProfesores);
 
 
   //  console.log('materiaProfesores', materiaProfesores.data.materiaProfesores);
@@ -428,7 +428,7 @@ useMemo(() => {
         addTitle: "Agregar Materias",
         selectTitle: "Seleccionar Materia",
         options: optionsMaterias,
-        list: materiaProfesores.data.materiaProfesores ?? [],
+        list: materiaProfesores.data?.materiaProfesores ?? [],
         // list: materiaProfesores.data.materiaProfesores ?? [],
        // list:  listaFusionada ?? [],
     }
