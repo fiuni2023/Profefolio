@@ -160,9 +160,20 @@ namespace profefolio.Controllers
                 {
                     case "card-clases":
                         //id colegio, //anho
-                        var clases = await _dashBoardService.GetClasesForCardClases(dto.Id, userEmail, dto.Anho);
+                        var (profesor, clases) = await _dashBoardService.GetClasesForCardClases(dto.Id, userEmail, dto.Anho);
+                        var results = _mapper.Map<List<DBCardClasesDTO>>(clases);
 
-                        return Ok(_mapper.Map<List<DBCardClasesDTO>>(clases));
+                        foreach (var result in results)
+                        {
+                            result.Materias = await _dashBoardService.FindMateriasOfClase(profesor, result.Id);
+                            var horarioMasCercano = await _dashBoardService.FindHorarioMasCercano(profesor, result.Id);
+                            if(horarioMasCercano != null){
+                                result.Horario = _mapper.Map<DBCardClasesHorariosDTO>(horarioMasCercano);
+                                result.Horario.Horas = await _dashBoardService.GetHorasOfClaseInDay(profesor, result.Id, horarioMasCercano.Dia);
+                            }
+                        }
+                        
+                        return Ok(results);
                     default:
                         return BadRequest("Opcion Invalida");
                 }
