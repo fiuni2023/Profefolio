@@ -41,7 +41,7 @@ namespace profefolio.Helpers
             }
             else
             {
-                throw new Exception("Fatal Error");
+                throw new SystemException("Fatal Error");
             }
 
             // Obtener el próximo día de la semana especificado a partir de la fecha actual

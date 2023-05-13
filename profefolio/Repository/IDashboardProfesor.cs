@@ -8,6 +8,9 @@ namespace profefolio.Repository
 {
     public interface IDashboardProfesor : IRepository<ColegioProfesor> 
     {
-        Task<IEnumerable<Clase>> GetClasesForCardClases(int idColegio, string emailProfesor, int anho);
+        Task<(Persona, List<Clase>)> GetClasesForCardClases(int idColegio, string emailProfesor, int anho);
+        Task<List<string>> FindMateriasOfClase(Persona profesor, int idClase);
+        Task<HorasCatedrasMaterias> FindHorarioMasCercano(Persona profesor, int idClase);
+        Task<string> GetHorasOfClaseInDay(Persona profesor, int idClase, string dia);
     }
 }

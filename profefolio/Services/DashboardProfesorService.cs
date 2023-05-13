@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using profefolio.Helpers;
 using profefolio.Models;
 using profefolio.Models.Entities;
 using profefolio.Repository;
@@ -53,7 +54,7 @@ namespace profefolio.Services
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<Clase>> GetClasesForCardClases(int idColegio, string emailProfesor = "", int anho = 0)
+        public async Task<(Persona, List<Clase>)> GetClasesForCardClases(int idColegio, string emailProfesor = "", int anho = 0)
         {
             var profesor = await _context.Users
                 .FirstOrDefaultAsync(a => !a.Deleted
@@ -65,31 +66,70 @@ namespace profefolio.Services
                 throw new FileNotFoundException("El usuario no es un profesor");
             }
             var clases = await _context.MateriaListas
+                        .Include(a => a.Clase.Ciclo)
+                        .Include(a => a.Clase.ClasesAlumnosColegios)
                         .Where(a => !a.Deleted
                             && profesor.Id.Equals(a.ProfesorId)
                             && a.Clase.ColegioId == idColegio
                             && a.Clase.Anho == anho)
-                        .Include(a => a.Clase.Ciclo)
-                        .Include(a => a.Clase.ClasesAlumnosColegios)
-                        .Include(a => a.Clase.MateriaListas)
                         .Select(a => a.Clase)
                         .ToListAsync();
 
-            clases.ForEach(async a =>
-            {
-                a.MateriaListas = await _context.MateriaListas
-                    .Include(w => w.Materia)
-                    .Where(b => b.ClaseId == a.Id && profesor.Id.Equals(b.ProfesorId))
-                    .ToListAsync();
-            });
 
-            return clases;
+            return (profesor, clases);
         }
 
+
+        public async Task<List<string>> FindMateriasOfClase(Persona profesor, int idClase)
+        {
+            return await _context.MateriaListas.Where(a => !a.Deleted 
+                        && profesor.Id.Equals(a.ProfesorId) 
+                        && a.ClaseId == idClase)
+                        .Select(a => a.Materia.Nombre_Materia).ToListAsync();
+        }
+
+        public async Task<HorasCatedrasMaterias> FindHorarioMasCercano(Persona profesor, int idClase){
+            var horas = await _context.HorasCatedrasMaterias
+                        .Where(a => !a.Deleted
+                            && a.MateriaLista != null
+                            && profesor.Id.Equals(a.MateriaLista.ProfesorId)
+                            && a.MateriaLista.ClaseId == idClase)
+                        .Include(a => a.HoraCatedra)
+                        .ToListAsync();
+            
+            horas.Sort((a, b) => TimeComparator.MissingMinutes(DateTime.Now, a.Dia, a.HoraCatedra.Inicio) - TimeComparator.MissingMinutes(DateTime.Now, b.Dia, b.HoraCatedra.Inicio));
+            
+            return horas.FirstOrDefault();
+        }
         public Task Save()
         {
             throw new NotImplementedException();
         }
 
+        public async Task<string> GetHorasOfClaseInDay(Persona profesor, int idClase, string dia)
+        {
+            var duraciones = await _context.HorasCatedrasMaterias
+                .Where(a => !a.Deleted
+                    && !a.MateriaLista.Deleted
+                    && profesor.Id.Equals(a.MateriaLista.ProfesorId)
+                    && a.MateriaLista.ClaseId == idClase
+                    && dia.ToLower().Equals(a.Dia.ToLower()))
+                .Select(a => (DateTime.Parse(a.HoraCatedra.Fin) - DateTime.Parse(a.HoraCatedra.Inicio)).Duration())
+                .ToListAsync();
+            
+            var horas = new TimeSpan();
+            duraciones.ForEach(a => {
+                horas += a;
+            });
+            var hora = horas.Hours > 0 ? $"{horas.Hours}h" : "";
+            var minuto = horas.Minutes > 0 ? $"{horas.Minutes}m" : "";
+            if(hora.Equals("")){
+                return minuto;
+            }else if(minuto.Equals("")){
+                return hora;
+            }else {
+                return $"{hora} {minuto}";
+            }
+        }
     }
 }
