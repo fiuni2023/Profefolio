@@ -337,7 +337,10 @@ namespace profefolio.Controllers
 
                 var query = await _cAlumnosService.GetNotAssignedByYear(year, adminEmail, idClase);
 
-                var queryMapper = _mapper.Map<List<ColegioAlumnosDTO>>(query.ToList());
+                var queryMapper = _mapper.Map<List<ColegioAlumnosDTO>>(query.ToList())
+                    .OrderBy(p => p.Apellido)
+                    .ThenBy(p => p.Nombre)
+                    .ThenBy(p => p.Documento);
 
                 return Ok(queryMapper);
 
