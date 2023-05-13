@@ -13,5 +13,6 @@ namespace profefolio.Repository
         Task<List<Persona>> FindAllProfesoresOfColegio(int idColegio);
 
         Task<bool> IsProfesorInMateria(int idMateriaLista, string emailProfesor);
+        Task<String?> GetProfesorIdByEmail(string userEmail);
     }
 }
