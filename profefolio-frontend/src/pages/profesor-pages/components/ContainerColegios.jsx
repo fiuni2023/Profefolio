@@ -1,20 +1,25 @@
-import React from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { map } from "lodash"
 import Card from '../../../components/Card'
 import { SRow } from '../../../components/componentsStyles/StyledDashComponent'
-
+import HorarioService from '../helpers/HorariosHelpers'
+import { useGeneralContext } from '../../../context/GeneralContext'
 
 
 const ContainerColegios = () => {
+
+    const { getToken } = useGeneralContext();
+    const [horariosColegios, setHorariosColegios] = useState([]);
+
 
     const getColor = (pos) => {
         const colores = ["yellow", "blue", "purple", "orange"]
         // se obtienen siempre colores de las posiciones dentro del rango del array
         return colores[Math.abs(colores.length - pos) % (colores.length - 1)]
     }
+    
 
-
-    const mapper = (colegio = {}, indice) => {
+    const mapper = useCallback((colegio = {}, indice) => {
         return {
             xs: 12, sm: 12, md: 6, lg: 3,
             background: getColor(indice),
@@ -26,106 +31,44 @@ const ContainerColegios = () => {
             body: {
                 first: {
                     title: `${colegio?.clases?.length} clases: `,
-                    subtitle: `${map(colegio?.clases, (clase) => `${clase.nombre}`).join(", ")}`
+                    subtitle: `${colegio?.clases?.join(", ")}`
                 },
                 schedule: {
-                    main: `${map(colegio?.horario, (h) => `${h.dia} ${new Date(h.hora).toLocaleTimeString("en-EN", {
-                        hour12: true,
-                        hour: "numeric",
-                        minute: "numeric",
-                    })}`).join(" - ")}`,
+                    main: `${map(colegio?.horarios, (h) => `${h.dia} ${h.inicio}`).join(" - ")}`,
                 }
             }
         }
-    }
-    const peticionResult = [
-        {
-            id: 1, //id colegio
-            nombre: 'Colegio 1',
-            clases: [
-                {
-                    id: 1, //id clase
-                    nombre: "Primero A"
-                },
-                {
-                    id: 2,
-                    nombre: "Primero B"
-                }
-            ],
-            horario: [
-                {
-                    id: 1, // id horario
-                    dia: "Lunes",
-                    hora: new Date()
-                },
-                {
-                    id: 2,
-                    dia: "Martes",
-                    hora: new Date()
-                }
-            ]
-        },
-        {
-            id: 2, //id colegio
-            nombre: 'Colegio 2',
-            clases: [
-                {
-                    id: 3, //id clase
-                    nombre: "Segundo A"
-                },
-                {
-                    id: 4,
-                    nombre: "Primero E"
-                }
-            ],
-            horario: [
-                {
-                    id: 4, // id horario
-                    dia: "Martes",
-                    hora: new Date()
-                },
-                {
-                    id: 5,
-                    dia: "Miercoles",
-                    hora: new Date()
-                }
-            ]
-        },
-        {
-            id: 3, //id colegio
-            nombre: 'Colegio 3',
-            clases: [
-                {
-                    id: 3, //id clase
-                    nombre: "Segundo A"
-                },
-                {
-                    id: 4,
-                    nombre: "Primero E"
-                }
-            ],
-            horario: [
-                {
-                    id: 4, // id horario
-                    dia: "Martes",
-                    hora: new Date()
-                },
-                {
-                    id: 5,
-                    dia: "Miercoles",
-                    hora: new Date()
-                }
-            ]
-        }
-    ]
+    }, [])
 
-    const colegios = map(peticionResult, (colegio, i) => mapper(colegio, i))
+
+
+    useEffect(() => {
+        const getHorarios = async () => {
+            
+            const result = await HorarioService.getColegiosAndHorarios(getToken());
+            if (result !== null) {
+                setHorariosColegios(map(result, (r, i) => mapper(r, i)))
+            } else {
+                console.log("Error al obtener el horario")
+            }
+        }
+        
+        getHorarios();
+        
+    }, [getToken, mapper]);
+
     return <>
         <SRow>
-            {colegios.map((element, i) => {
-                if (element?.goto) return <Card key={i} cardInfo={element}></Card>
-                else return 0
-            })}
+            {horariosColegios 
+                ? horariosColegios.length === 0 
+                ? <h5>No tiene Clases asignadas</h5> 
+                : horariosColegios.map((element, i) => {
+                    if (element?.goto) return <Card key={i} cardInfo={element}></Card>
+                    else return 0
+                }) 
+                : <h5>Hubo un problema, recargue la pagina o 
+                    comuniquese con el Administrador de su colegio para verificar 
+                    que tenga clases asignadas</h5>  }
         </SRow>
     </>
 }
