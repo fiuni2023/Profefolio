@@ -239,13 +239,26 @@ const MateriasDeClase = () => {
 
     const [materiaProfesor, setMateriaProfesor] = useState([]);
 
-    const [materiaSelected, setMateriaSelected] = useState("");
+    const [profesoresSeleccionados, setProfesoresSeleccionados] = useState([]);
 
     const { getListaMaterias, setStatusMateria, getClaseSelectedId, setProfesoresOptions } = useClaseContext();
     const { getToken } = useGeneralContext();
 
     const [materiaProfesores, setMateriaProfesores] = useState([]);
 
+
+    const handleClickProfesor = (materia) => {
+        console.log('entro');
+        const nuevosProfesores = materia.profesores.map((profesor) => profesor.id);
+        setProfesoresSeleccionados([...profesoresSeleccionados, ...nuevosProfesores]);
+        console.log('profesoresSeleccionados',profesoresSeleccionados);
+      };
+
+      useEffect(() => {
+        console.log('profesoresSeleccionados', profesoresSeleccionados);
+      }, [profesoresSeleccionados]);
+      
+     
 
     /**
      * 
@@ -274,13 +287,17 @@ useMemo(() => {
   }, [getToken]);
   
 
+  const idProfesoresArraya = profeProfesor.filter((materia) => materia.selected)
+  .map((materia) => materia.id);
+
+  console.log('idProfesoresArraya',idProfesoresArraya)
  
- //const idProfesoresArray = profeProfesor.map(profesor => profesor.id);
+ const idProfesoresArray = profeProfesor.map(profesor => profesor.id);
+
+ console.log('idProfesoresArrayaaaa',idProfesoresArray)
 
  const handleCrearMateriaProfesor = async () => {
-    const idProfesoresArray = profeProfesor.filter((materia) => materia.selected)
-                                            .map((materia) => materia.id);
-  
+   
     const body = { "idProfesores": idProfesoresArray, "idMateria": idMateria, "idClase": getClaseSelectedId() };
     ClassesService.createMateriaProfesor(body, getToken())
       .then(() => {
@@ -344,10 +361,10 @@ useMemo(() => {
 
 
 
-    const addMateriaToList = (nombre) => {
+    const addMateriaToList = (materia) => {
         const newMateria = {
-            id: Date.now().toString(),
-            nombre,
+            idMateria: Date.now().toString(),
+            materia,
            // status: "new",
             profesores: {}
         };
@@ -400,22 +417,20 @@ useMemo(() => {
       listaMateriasProfesores();
     }, []);
 
-    //console.log('materiaProfesores', materiaProfesores.data);
-
-   // console.log('materiaProfesores', materiaProfesores.data.materiaProfesores);
-
-
-  //  console.log('materiaProfesores', materiaProfesores.data.materiaProfesores);
+    if (materiaProfesores.data) {
+        console.log('materiaProfesores', materiaProfesores.data.materiaProfesores);
+      }
+      
 
 
+let listaFusionada = [...materiaProfesor];
 
-//let listaFusionada = [...materiaProfesor];
+console.log('listaFusionada',listaFusionada);
 
-//console.log('listaFusionada',listaFusionada);
+if (materiaProfesores && materiaProfesores.data && Array.isArray(materiaProfesores.data.materiaProfesores)) {
+  listaFusionada = [...listaFusionada, ...materiaProfesores.data.materiaProfesores];
+}
 
-//if (Array.isArray(materiaProfesores.data.materiaProfesores)) {
-//  listaFusionada = [...listaFusionada, ...materiaProfesores.data.materiaProfesores];
-//}
 
 
     
@@ -428,9 +443,9 @@ useMemo(() => {
         addTitle: "Agregar Materias",
         selectTitle: "Seleccionar Materia",
         options: optionsMaterias,
-        list: materiaProfesores.data?.materiaProfesores ?? [],
+        //list: materiaProfesores.data?.materiaProfesores ?? [],
         // list: materiaProfesores.data.materiaProfesores ?? [],
-       // list:  listaFusionada ?? [],
+        list:  listaFusionada ?? [],
     }
     return <>
 
