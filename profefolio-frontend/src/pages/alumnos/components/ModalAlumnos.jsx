@@ -236,7 +236,7 @@ function ModalAlumnos({
                             },
                             {
                                 style: "text",
-                                type: "danger",
+                                type: "confirm",
                                 onclick: { action: () => { handleDelete() } }
                             },
                         ]
