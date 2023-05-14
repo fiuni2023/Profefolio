@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using profefolio.Models;
 using profefolio.Models.Entities;
@@ -100,7 +96,7 @@ namespace profefolio.Services
             var clase = await _context.Clases
                     .AnyAsync(c => !c.Deleted && c.Id == idClase);
 
-            if(!clase)
+            if (!clase)
             {
                 throw new BadHttpRequestException("clase no valida");
             }
@@ -108,12 +104,13 @@ namespace profefolio.Services
             var query = await _context.ColegiosAlumnos
                         .Where(ca => !ca.Deleted)
                         .Where(ca => ca.Colegio.personas.Email.Equals(adminEmail))
-                        .Where(ca => ca.ClasesAlumnosColegios == null || 
-                            !ca.ClasesAlumnosColegios.Any() || 
+                        .Where(ca => ca.ClasesAlumnosColegios == null ||
+                            !ca.ClasesAlumnosColegios.Any() ||
                                 ca.ClasesAlumnosColegios.Any(a => (a.Deleted && a.ClaseId == idClase) || a.ClaseId != idClase))
-                                .Where(ca => ca.ClasesAlumnosColegios == null || !(ca.ClasesAlumnosColegios.Any(a => a.ClaseId == idClase && !a.Deleted)))
-                                .Include(a => a.Persona)
-                                .ToListAsync();
+                        .Where(ca => ca.ClasesAlumnosColegios == null || !(ca.ClasesAlumnosColegios.Any(a => a.ClaseId == idClase && !a.Deleted)))
+                        .Include(a => a.Persona)
+                        .Include(a => a.ClasesAlumnosColegios)
+                        .ToListAsync();
             return query;
         }
 
@@ -122,7 +119,7 @@ namespace profefolio.Services
             return await _context.ColegiosAlumnos
                 .Include(a => a.Colegio)
                 .Include(a => a.Colegio.personas)
-                .FirstOrDefaultAsync(ca => !ca.Deleted && ca.Id == id);
+                .FirstAsync(ca => !ca.Deleted && ca.Id == id);
         }
 
         public async Task<IEnumerable<ColegiosAlumnos>> FindNotAssigned(string user, int idClase, int page, int cantPerPage)
@@ -130,17 +127,17 @@ namespace profefolio.Services
             var existClase = _context.Clases
                 .Any(x => !x.Deleted && x.Id == idClase);
 
-            if(!existClase)
+            if (!existClase)
             {
                 throw new FileNotFoundException();
             }
             var query = await this.FindAllNoAssignedToClaseByEmailAdminAndIdClase(user, idClase);
 
             var result = query
-                .Skip(cantPerPage*page)
+                .Skip(cantPerPage * page)
                 .Take(cantPerPage);
-                
-            
+
+
             return result;
         }
 
@@ -151,7 +148,7 @@ namespace profefolio.Services
                 .Where(t => t.Email.Equals(user))
                 .FirstOrDefaultAsync();
 
-            if(userLogged == null)
+            if (userLogged == null)
             {
                 throw new BadHttpRequestException("Admin no valido");
             }
@@ -162,16 +159,17 @@ namespace profefolio.Services
                 .Where(t => t.personas != null && t.personas.Id.Equals(userLogged.Id))
                 .FirstOrDefaultAsync();
 
-            if(colegio == null)
+            if (colegio == null)
             {
                 throw new BadHttpRequestException("Colegio no valido");
             }
 
             var colegiosAlumnos = _context.ColegiosAlumnos
                 .Include(ca => ca.Colegio)
+                .Include(ca => ca.Persona)
                 .Where(ca => !ca.Deleted)
                 .Where(ca => ca.ColegioId == colegio.Id)
-                .Skip(cantPerPage*page)
+                .Skip(cantPerPage * page)
                 .Take(cantPerPage);
 
             return colegiosAlumnos;
@@ -185,6 +183,74 @@ namespace profefolio.Services
         public Task Save()
         {
             return _context.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<ColegiosAlumnos>> FindNotAssignedByYear(string user, int idClase, int page, int cantPerPage)
+        {
+            var date = DateTime.Now;
+
+            var year = date.Year;
+
+            var query = await GetNotAssignedByYear(year, user, idClase);
+
+            return query.Skip(page * cantPerPage).Take(cantPerPage);
+
+        }
+
+        public async Task<IEnumerable<ColegiosAlumnos>> GetNotAssignedByYear(int year, string user, int idClase)
+        {
+
+            
+            var query = await this.FindAllNoAssignedToClaseByEmailAdminAndIdClase(user, idClase);
+
+            var yearClase = await _context.Clases
+                .Where(c => !c.Deleted)
+                .Where(c => c.Id == idClase)
+                .Select(c => c.Anho)
+                .FirstOrDefaultAsync();
+
+            if(yearClase != year)
+            {
+                throw new BadHttpRequestException("No existe esa clase en el presente año lectivo");
+            }
+
+            var listResult = new List<ColegiosAlumnos>();
+
+            foreach (var item in query)
+            {
+                var colegiosAlumnos = item;
+
+                var colegioClaseAlumno = item.ClasesAlumnosColegios;
+                colegiosAlumnos.ClasesAlumnosColegios = new List<ClasesAlumnosColegio>();
+
+
+                if (colegioClaseAlumno == null)
+                {
+                    throw new BadHttpRequestException("Error al buscar los resultados");
+                }
+
+                foreach (var cca in colegioClaseAlumno)
+                {
+                    var cl = await _context.Clases.FindAsync(cca.ClaseId);
+
+                    if (cl != null && cl.Anho == year)
+                    {
+                        colegiosAlumnos.ClasesAlumnosColegios.Add(cca);
+                    }
+                }
+
+                listResult.Add(colegiosAlumnos);
+            }
+
+            return listResult as IEnumerable<ColegiosAlumnos>;
+
+        }
+
+        public async Task<int> ContNotAssignedByYear(int year, string user, int idClase)
+        {
+            var query = await this.GetNotAssignedByYear(year, user, idClase);
+
+            return query.Count();
         }
     }
 }
