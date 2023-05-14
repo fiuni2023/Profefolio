@@ -53,7 +53,6 @@ const Alumnos = () => {
             condition: condFetch,
             handleSuccess: (r) => {
                 setNext(r.data.next)
-                console.log(r.data)
                 setTotalPages(r.data.totalPage)
                 setDatosTabla({
                     ...datosTabla, clickable: { action: doChangeStudent },
