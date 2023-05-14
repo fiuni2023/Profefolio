@@ -151,6 +151,9 @@ namespace profefolio.Services
                                 && a.MateriaLista.Clase.Anho == anho
                                 && profesor.Id.Equals(a.MateriaLista.ProfesorId)
                                 && a.MateriaLista.Clase.ColegioId == idColegio)
+                            .Include(a => a.HoraCatedra)
+                            .Include(a => a.MateriaLista)
+                            .Include(a => a.MateriaLista.Clase)
                             .ToListAsync(); 
             
             return result;

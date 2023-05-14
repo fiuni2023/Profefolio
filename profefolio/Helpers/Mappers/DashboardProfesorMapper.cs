@@ -58,6 +58,20 @@ namespace profefolio.Helpers.Mappers
                     opt => opt.MapFrom(v => v.HoraCatedra.Inicio))
                 .ForMember(dest => dest.Horas, 
                     opt => opt.MapFrom(v => ""));
+
+
+
+            CreateMap<HorasCatedrasMaterias, DBHorariosClasesCalendarDTO>()
+                .ForMember(dest => dest.Id, 
+                    opt => opt.MapFrom(v => v.MateriaLista.ClaseId))
+                .ForMember(dest => dest.Nombre,
+                    opt => opt.MapFrom(v => v.MateriaLista.Clase.Nombre))
+                .ForMember(dest => dest.Dia, 
+                    opt => opt.MapFrom(v => v.Dia))
+                .ForMember(dest => dest.Inicio, 
+                    opt => opt.MapFrom(v => v.HoraCatedra.Inicio))
+                .ForMember(dest => dest.Fin, 
+                    opt => opt.MapFrom(v => v.HoraCatedra.Fin));
         }
     }
 }
