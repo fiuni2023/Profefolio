@@ -107,10 +107,10 @@ namespace profefolio.Services
                         .Where(ca => ca.ClasesAlumnosColegios == null ||
                             !ca.ClasesAlumnosColegios.Any() ||
                                 ca.ClasesAlumnosColegios.Any(a => (a.Deleted && a.ClaseId == idClase) || a.ClaseId != idClase))
-                                .Where(ca => ca.ClasesAlumnosColegios == null || !(ca.ClasesAlumnosColegios.Any(a => a.ClaseId == idClase && !a.Deleted)))
-                                .Include(a => a.Persona)
-                                .Include(a => a.ClasesAlumnosColegios)
-                                .ToListAsync();
+                        .Where(ca => ca.ClasesAlumnosColegios == null || !(ca.ClasesAlumnosColegios.Any(a => a.ClaseId == idClase && !a.Deleted)))
+                        .Include(a => a.Persona)
+                        .Include(a => a.ClasesAlumnosColegios)
+                        .ToListAsync();
             return query;
         }
 
@@ -166,6 +166,7 @@ namespace profefolio.Services
 
             var colegiosAlumnos = _context.ColegiosAlumnos
                 .Include(ca => ca.Colegio)
+                .Include(ca => ca.Persona)
                 .Where(ca => !ca.Deleted)
                 .Where(ca => ca.ColegioId == colegio.Id)
                 .Skip(cantPerPage * page)
@@ -190,15 +191,28 @@ namespace profefolio.Services
 
             var year = date.Year;
 
-            var query =  await GetNotAssignedByYear(year, user, idClase);
-                
+            var query = await GetNotAssignedByYear(year, user, idClase);
+
             return query.Skip(page * cantPerPage).Take(cantPerPage);
-                
+
         }
 
-        private async Task<IEnumerable<ColegiosAlumnos>> GetNotAssignedByYear(int year, string user, int idClase)
+        public async Task<IEnumerable<ColegiosAlumnos>> GetNotAssignedByYear(int year, string user, int idClase)
         {
+
+            
             var query = await this.FindAllNoAssignedToClaseByEmailAdminAndIdClase(user, idClase);
+
+            var yearClase = await _context.Clases
+                .Where(c => !c.Deleted)
+                .Where(c => c.Id == idClase)
+                .Select(c => c.Anho)
+                .FirstOrDefaultAsync();
+
+            if(yearClase != year)
+            {
+                throw new BadHttpRequestException("No existe esa clase en el presente año lectivo");
+            }
 
             var listResult = new List<ColegiosAlumnos>();
 
