@@ -2,7 +2,7 @@ import axios from "axios";
 import APILINK from "../../../components/link";
 
 const getStudentsPage = async (page, token) => {
-    const result = await axios.get(`${APILINK}/api/ColegiosAlumnos/page/${page}`,
+    const result = await axios.get(`${APILINK}/api/ColegiosAlumnos/all/page/${page}`,
         {
             headers: {
                 Authorization: 'Bearer ' + token
@@ -58,7 +58,7 @@ const updateStudent = async (id, body, token) => {
 }
 
 const deleteStudent = async (id, token) => {
-    const result = await axios.delete(`${APILINK}/api/ColegiosAlumnos/${id}`,
+    const result = await axios.delete(`${APILINK}/api/colegiosalumnos/${id}`,
         {
             headers: {
                 "Authorization": 'Bearer ' + token,
