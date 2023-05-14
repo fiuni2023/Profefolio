@@ -18,7 +18,6 @@ const Alumnos = () => {
     const [next, setNext] = useState(true)
     const [total_pages, setTotalPages] = useState(0)
     const [selected_student, setSelectedStudent] = useState(null)
-    const [editing, setEditing] = useState(false)
 
     const [datosTabla, setDatosTabla] = useState({
         tituloTabla: "studentsList",
@@ -41,7 +40,6 @@ const Alumnos = () => {
     }, [cancan, verifyToken, nav])
 
     const doChangeStudent = (data) => {
-        setEditing(true)
         setSelectedStudent(data)
         setShow(true)
     }
@@ -84,7 +82,6 @@ const Alumnos = () => {
     const handleHideModal = () => {
         setSelectedStudent(null)
         setShow(false)
-        setEditing(false)
     }
 
     return (
