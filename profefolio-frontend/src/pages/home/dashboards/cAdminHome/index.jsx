@@ -109,7 +109,7 @@ const CAdminHome = () => {
                         table: {
                             small: true, 
                             titulos: [ {titulo: "Nombre y Apellido"}], 
-                            filas: listaAlumno.map(a=>{return {datos:[{dato: a.nombre}]}})
+                            filas: listaAlumno.length === 0? [{datos:[{dato: "No hay datos nuevos"}]}]:listaAlumno.map(a=>{return {datos:[{dato: a.nombre}]}})
                         }
                     }
                 
@@ -133,7 +133,7 @@ const CAdminHome = () => {
                         table: {
                             small: true, 
                             titulos: [ {titulo: "Nombre y Apellido"} ], 
-                            filas: listaProfesor.map(a=>{return {datos:[{dato: a.nombre}]}})
+                            filas: listaProfesor.length === 0? [{datos:[{dato: "No hay datos nuevos"}]}] : listaProfesor.map(a=>{return {datos:[{dato: a.nombre}]}})
                         }
                     }
                 })
@@ -162,12 +162,12 @@ const CAdminHome = () => {
                                 table: {
                                     small: true, 
                                     titulos: [ {titulo: "Nombre"} ], 
-                                    filas: materias.map(d=>{return {datos:[{dato: d.nombre_Materia}]}})
+                                    filas: materias.length === 0? [{datos:[{dato: "No hay datos nuevos"}]}]: materias.map(d=>{return {datos:[{dato: d.nombre_Materia}]}})
                                 },
                                 table2: {
                                     small: true, 
                                     titulos: [ {titulo: "Ciclo"}], 
-                                    filas: ciclos.map(b=>{return {datos:[{dato: b.nombre}]}})
+                                    filas: ciclos.length === 0? [{datos:[{dato: "No hay datos nuevos"}]}]:ciclos.map(b=>{return {datos:[{dato: b.nombre}]}})
                                 }
                             }
                         })
@@ -179,8 +179,7 @@ const CAdminHome = () => {
         ClaseService.getFirstPage(colegioId, token)
         .then(r=>{
             if(r.data){
-                let clases =  r.data.dataList.length>4? r.data.dataList.slice(0,5) : r.data.dataList
-                console.log(clases)
+                let clases =  r.data.length>4? r.data.slice(0,5) : r.data
                 setClases({
                     xs: 12, sm:12, md: 6, lg:3,
                     background: "purple",
@@ -194,7 +193,7 @@ const CAdminHome = () => {
                         table: {
                             small: true, 
                             titulos: [ {titulo: "Titulo"},  {titulo: "Ciclo"}  ], 
-                            filas: clases.map(b=>{return {datos:[{dato: b.nombre}, {dato: b.ciclo}]}})
+                            filas: clases.length === 0? [{datos:[{dato: "No hay datos nuevos"},{dato: ""}]}]:clases.map(b=>{return {datos:[{dato: b.nombre}, {dato: b.ciclo}]}})
                         }
                     }
                 })

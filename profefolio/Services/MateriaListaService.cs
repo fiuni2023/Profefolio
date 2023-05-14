@@ -181,7 +181,7 @@ namespace profefolio.Services
 
                     profeSimple.Apellido = profesor.Apellido;
                     profeSimple.IdProfesor = profesor.Id;
-                    profeSimple.Nombre = profesor.Apellido;
+                    profeSimple.Nombre = profesor.Nombre;
 
                     profesorSimpleList.Add(profeSimple);
                 }

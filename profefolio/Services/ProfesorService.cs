@@ -147,10 +147,16 @@ namespace profefolio.Services
         public async Task<List<Persona>> FindAllProfesoresOfColegio(int idColegio)
         {
             return await _context.Users
-                        .Where(p => !p.Deleted 
+                        .Where(p => !p.Deleted
                             && p.ColegiosProfesor
                                 .Any(pr => !pr.Deleted && pr.ColegioId == idColegio))
                         .ToListAsync();
+        }
+        public async Task<String?> GetProfesorIdByEmail(string userEmail)
+        {
+            var profesor = await _context.Users
+                .FirstOrDefaultAsync(p => p.Email == userEmail);
+            return profesor?.Id;
         }
 
         public async Task<bool> IsProfesorInMateria(int idMateriaLista, string emailProfesor)

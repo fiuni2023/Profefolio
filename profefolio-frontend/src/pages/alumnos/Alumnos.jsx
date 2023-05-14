@@ -18,7 +18,7 @@ const Alumnos = () => {
     const [next, setNext] = useState(true)
     const [total_pages, setTotalPages] = useState(0)
     const [selected_student, setSelectedStudent] = useState(null)
-
+    const [editing, setEditing] = useState(false)
 
     const [datosTabla, setDatosTabla] = useState({
         tituloTabla: "studentsList",
@@ -41,6 +41,7 @@ const Alumnos = () => {
     }, [cancan, verifyToken, nav])
 
     const doChangeStudent = (data) => {
+        setEditing(true)
         setSelectedStudent(data)
         setShow(true)
     }
@@ -63,7 +64,7 @@ const Alumnos = () => {
                             datos: [
                                 { dato: dato?.documento ? dato.documento : "" },
                                 { dato: dato?.nombre && dato.apellido ? dato.nombre + " " + dato.apellido : "" },
-                                { dato: dato?.fechaNacimiento ? parseToDate(new Date(dato.fechaNacimiento)) : "" },
+                                { dato: dato?.nacimiento ? parseToDate(new Date(dato.nacimiento)) : "" },
                                 { dato: dato?.direccion ? dato.direccion : "" }]
                         }
                     })
@@ -80,6 +81,7 @@ const Alumnos = () => {
     const handleHideModal = () => {
         setSelectedStudent(null)
         setShow(false)
+        setEditing(false)
     }
 
     return (
@@ -93,7 +95,7 @@ const Alumnos = () => {
                         <AiOutlinePlus size={"35px"} />
                     </AddButton>
                 </TableContainer >
-                <ModalAlumnos show={show} fetchFunc={doFetch} onHide={handleHideModal} selected_data={selected_student} />
+                <ModalAlumnos show={show} fetchFunc={doFetch} onHide={handleHideModal} selected_data={selected_student} handleExistingStudent={setSelectedStudent} setShow={setShow} editing={editing}/>
             </MainContainer >
         </>
     )
