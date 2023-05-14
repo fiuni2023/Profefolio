@@ -212,6 +212,35 @@ namespace profefolio.Controllers
         ///     
         ///     
         /// ***************************************************************************************************************************
+        /// Caso de Opcion "horarios-clases"
+        ///        
+        ///
+        /// Ticket <a href="https://nande-y.atlassian.net/browse/PF-294">PF-294</a>
+        ///     
+        /// Body:
+        ///     
+		///		{
+		///			opcion: "horarios-clases",
+		///			id: 1,                              // id colegio
+		///			anho: 2023                          // necesario
+		///		}      
+        ///     
+        ///     
+        /// Respuesta:
+        ///     
+        ///     [
+        ///         {
+        ///             "nombre": "Septimo Grado",
+        ///             "dia": "Lunes",
+        ///             "inicio": "13:40",
+        ///             "fin": "14:20",
+        ///             "id": 2                         // id de la clase
+        ///         }
+        ///     ]     
+        ///     
+        ///     
+        ///     
+        /// ***************************************************************************************************************************
         ///</remarks>
         [HttpGet]
         [Authorize(Roles = "Profesor")]
@@ -254,7 +283,7 @@ namespace profefolio.Controllers
                         }
                         
                         return Ok(results);
-                        
+
                     case "horarios-clases":
                         var horarios = await _dashBoardService.FindAllHorariosClasesByEmailProfesorAndIdColegio(dto.Id, userEmail, dto.Anho);
                         return Ok(_mapper.Map<List<DBHorariosClasesCalendarDTO>>(horarios));
