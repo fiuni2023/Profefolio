@@ -99,35 +99,22 @@ const TagProfesor = memo(({ id, nombre,apellido, state = "new", onClick = () => 
 
   
 
-const ListItem = memo(({ index, idMateria, nombre,apellido, profesores = [] ,profeProfesor = [], type ,onClick }) => {
+const ListItem = memo(({ index, idMateria, nombre,apellido, profesores = [] ,profeProfesor = [], type ,onClick,guardarProfesorSeleccionado }) => {
+
+   // const [profesoresSeleccionados, setProfesoresSeleccionados] = useState([]);
+
 
     const [profesoresSeleccionados, setProfesoresSeleccionados] = useState([]);
-
-    const [selectedData,setSelectedData ]= useState([]);
-
-   
 
     const { setStatusProfesorMateria } = useClaseContext();
 
     const [isSelectOpen, setIsSelectOpen] = useState(false);
-
- 
-
- 
-
-    /*const seleccionarProfesor = (e) => {
-        setIdProfesorSeleccionado(e.target.value);
-      };*/
-
 
 
     const handleSelectOpenProfesores = () => {
         setIsSelectOpen(true);
 
       };
-
-
-     
 
 const seleccionarProfesor = (event) => {
   const idProfesorSeleccionado = event.target.value;
@@ -138,7 +125,15 @@ const seleccionarProfesor = (event) => {
       : [...prevSeleccionados, idProfesorSeleccionado]
   );
 
+  guardarProfesorSeleccionado(profesoresSeleccionados);
 };
+
+useEffect(() => {
+    guardarProfesorSeleccionado(profesoresSeleccionados);
+  }, [profesoresSeleccionados]);
+  
+
+
 
 
 
@@ -239,24 +234,25 @@ const MateriasDeClase = () => {
 
     const [materiaProfesor, setMateriaProfesor] = useState([]);
 
-    const [profesoresSeleccionados, setProfesoresSeleccionados] = useState([]);
+
+    const [selectProfesores, setSelectProfesores]= useState([]);
 
     const { getListaMaterias, setStatusMateria, getClaseSelectedId, setProfesoresOptions } = useClaseContext();
     const { getToken } = useGeneralContext();
 
     const [materiaProfesores, setMateriaProfesores] = useState([]);
 
+    const [profesoresSeleccionados, setProfesoresSeleccionados] = useState([]);
 
     const handleClickProfesor = (materia) => {
-        console.log('entro');
         const nuevosProfesores = materia.profesores.map((profesor) => profesor.id);
         setProfesoresSeleccionados([...profesoresSeleccionados, ...nuevosProfesores]);
-        console.log('profesoresSeleccionados',profesoresSeleccionados);
       };
+      
 
-      useEffect(() => {
-        console.log('profesoresSeleccionados', profesoresSeleccionados);
-      }, [profesoresSeleccionados]);
+
+
+  
       
      
 
@@ -287,27 +283,19 @@ useMemo(() => {
   }, [getToken]);
   
 
-  const idProfesoresArraya = profeProfesor.filter((materia) => materia.selected)
-  .map((materia) => materia.id);
-
-  console.log('idProfesoresArraya',idProfesoresArraya)
- 
- const idProfesoresArray = profeProfesor.map(profesor => profesor.id);
-
- console.log('idProfesoresArrayaaaa',idProfesoresArray)
-
- const handleCrearMateriaProfesor = async () => {
-   
-    const body = { "idProfesores": idProfesoresArray, "idMateria": idMateria, "idClase": getClaseSelectedId() };
-    ClassesService.createMateriaProfesor(body, getToken())
-      .then(() => {
-        toast.success("Los datos fueron enviados correctamente.");
-        window.location.reload();
-      })
-      .catch(() => {
-        toast.error("No se pudieron guardar los cambios. Intente de nuevo o recargue la página.");
-      });
-  };
+  const idProfesoresArray = profesoresSeleccionados;
+  const handleCrearMateriaProfesor = async () => {   
+      const body = { "idProfesores": idProfesoresArray, "idMateria": idMateria, "idClase": getClaseSelectedId() };
+      ClassesService.createMateriaProfesor(body, getToken())
+        .then(() => {
+          toast.success("Los datos fueron enviados correctamente.");
+          window.location.reload();
+        })
+        .catch(() => {
+          toast.error("No se pudieron guardar los cambios. Intente de nuevo o recargue la página.");
+        });
+    };
+  
   
   
   
@@ -378,7 +366,7 @@ useMemo(() => {
     
       
         setIdMateria(e.target.value);
-       console.log(`Asigna la materia con id: ${e.target.value} a la clase con id: ${getClaseSelectedId()} `)
+       //console.log(`Asigna la materia con id: ${e.target.value} a la clase con id: ${getClaseSelectedId()} `)
       
        const index = optionsMaterias.findIndex(a => a.value === parseInt(e.target.value))
 
@@ -402,12 +390,7 @@ useMemo(() => {
       const listaMateriasProfesores = async () => {
         try {
           const dataList = await ClassesService.getMateriasProfesores(getClaseSelectedId(),getToken());
-          setMateriaProfesores(dataList ?? []);
-
-          console.log('materiaProfesores',materiaProfesores);
-
-
-        
+          setMateriaProfesores(dataList ?? []);        
 
         } catch (e) {
           setMateriaProfesores([]);
@@ -417,25 +400,29 @@ useMemo(() => {
       listaMateriasProfesores();
     }, []);
 
-    if (materiaProfesores.data) {
-        console.log('materiaProfesores', materiaProfesores.data.materiaProfesores);
-      }
-      
-
+   
+    
 
 let listaFusionada = [...materiaProfesor];
-
-console.log('listaFusionada',listaFusionada);
 
 if (materiaProfesores && materiaProfesores.data && Array.isArray(materiaProfesores.data.materiaProfesores)) {
   listaFusionada = [...listaFusionada, ...materiaProfesores.data.materiaProfesores];
 }
 
+//const [profesoresSeleccionados, setProfesoresSeleccionados] = useState([]);
+
+    const guardarProfesorSeleccionado = (profesoresSeleccionados) => {
+        setProfesoresSeleccionados(profesoresSeleccionados);
+
+    };
 
 
+    useEffect(() => {
+        //console.log('profesoresSeleccionados',profesoresSeleccionados);
+      }, [profesoresSeleccionados]);
     
     let materiasList = {
-        onSubmit: () => console.log("Guardado"),
+        onSubmit: () => handleClickProfesor(materia),
         enabled: true,
         header: {
             title: "Lista de Materias de la Clase",
@@ -467,9 +454,17 @@ if (materiaProfesores && materiaProfesores.data && Array.isArray(materiaProfesor
                                     profesores={materia.profesores}
                                     profeProfesor={profeProfesor}
                                     type={materia.status}
+                                    guardarProfesorSeleccionado={guardarProfesorSeleccionado}
 
-                                    onClick={() => { console.log(`${materia.nombre} 'seleccionado'`,"profesores", materia.profesores.map(profesor => profesor.id), "profeProfesor",profeProfesor);setIdMateria(materia.id) ;setStatusMateria(materia.id, (materia.status === "new" ? "reload" : "new")); }}
-                                   
+                                   onClick={() => {
+                                       // console.log(`${materia.nombre} seleccionado`, "profesores", materia.profesores.map(profesor => profesor.id), "profeProfesor", profeProfesor);
+                                        setSelectProfesores(profeProfesor)
+                                        setIdMateria(materia.id);
+                                        setStatusMateria(materia.id, materia.status === "new" ? "reload" : "new");
+                                      }}        
+                                      
+                                      
+                                      
 
                                     
                                    
