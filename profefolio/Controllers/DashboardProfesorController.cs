@@ -254,11 +254,14 @@ namespace profefolio.Controllers
                         }
                         
                         return Ok(results);
+                        
+                    case "horarios-clases":
+                        var horarios = await _dashBoardService.FindAllHorariosClasesByEmailProfesorAndIdColegio(dto.Id, userEmail, dto.Anho);
+                        return Ok(_mapper.Map<List<DBHorariosClasesCalendarDTO>>(horarios));
+
                     case "card-materias":
                         return BadRequest("Opcion en implementacion");
                     case "cards-materia":
-                        return BadRequest("Opcion en implementacion");
-                    case "horarios-clases":
                         return BadRequest("Opcion en implementacion");
                     case "eventos-clases":
                         return BadRequest("Opcion en implementacion");
@@ -273,6 +276,10 @@ namespace profefolio.Controllers
                     default:
                         return BadRequest("Opcion Invalida");
                 }
+            }
+            catch(FileNotFoundException e){
+                Console.WriteLine($"{e}");
+                return NotFound(e.Message);
             }
             catch (Exception e)
             {
