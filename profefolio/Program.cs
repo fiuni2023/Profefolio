@@ -97,7 +97,7 @@ builder.Services.AddScoped<IRol, RolService>();
 builder.Services.AddScoped<IAuth, AuthService>();
 builder.Services.AddScoped<IMateriaLista, MateriaListaService>();
 builder.Services.AddScoped<IAdmin, AdminReportService>();
-
+builder.Services.AddScoped<IEvento, EventoService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
