@@ -41,7 +41,7 @@ const createStudent = async (body, token) => {
             },
 
         })
-    return result.status === 200 ? result : null
+    return result.status === 200 || result.status === 230 ? result : null
 }
 
 const updateStudent = async (id, body, token) => {
