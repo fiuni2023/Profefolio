@@ -39,6 +39,24 @@ namespace profefolio.Controllers
             _profesorService = profesorService;
         }
 
+        
+        /// <summary>
+        /// Retorna el evento creado por el prf que hace la petición.
+        /// Solo un profesor puede realizar la peticion
+        /// https://localhost:7063/api/Evento/{id[int]}
+        /// </summary>
+        /// 
+        /// {
+        /// "tipo": "Prueba sumatoria",
+        /// "fecha": "2023-05-13T03:14:14.061",
+        /// "nombreMateria": "Filosofia",
+        /// "nombreClase": "primero",
+        /// "nombreColegio": "Monseñor",
+        /// "id": 1
+        /// }
+        /// 
+        /// <remarks>
+        /// </remarks>
         [HttpGet("{id}")]
         [Authorize(Roles = "Profesor")]
         public async Task<ActionResult<EventoResultFullDTO>> GetEvento(int id)
@@ -69,7 +87,23 @@ namespace profefolio.Controllers
             }
         }
 
-       
+        /// <summary>
+        /// Retorna todos los eventos creados por el prf que hace la petición.
+        /// 
+        /// https://localhost:7063/api/Evento
+        /// </summary>
+        /// [
+        /// {
+        /// "tipo": "Prueba sumatoria",
+        /// "fecha": "2023-05-13T03:14:14.061",
+        /// "nombreMateria": "Filosofia",
+        /// "nombreClase": "primero",
+        /// "nombreColegio": "Monseñor",
+        /// "id": 1
+        /// }
+        /// ]
+        /// <remarks>
+        /// </remarks>
         [HttpGet]
         [Authorize(Roles = "Profesor")]
         public async Task<ActionResult<List<EventoResultFullDTO>>> GetAll()
