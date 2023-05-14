@@ -131,5 +131,32 @@ namespace profefolio.Services
                 return $"{hora} {minuto}";
             }
         }
+
+        public async Task<List<HorasCatedrasMaterias>> FindAllHorariosClasesByEmailProfesorAndIdColegio(int idColegio, string email, int anho)
+        {
+            var profesor = await _context.Users
+                            .FirstOrDefaultAsync(a => !a.Deleted 
+                                && email.Equals(a.Email)
+                                && a.ColegiosProfesor
+                                    .Any(b => !b.Deleted 
+                                        && b.ColegioId == idColegio));
+            if(profesor == null){
+                throw new FileNotFoundException("El usuario no fue encontrado.");
+            } 
+            var result = await _context.HorasCatedrasMaterias
+                            .Where(a => !a.Deleted 
+                                && a.MateriaLista != null
+                                && !a.MateriaLista.Deleted 
+                                && !a.MateriaLista.Clase.Deleted
+                                && a.MateriaLista.Clase.Anho == anho
+                                && profesor.Id.Equals(a.MateriaLista.ProfesorId)
+                                && a.MateriaLista.Clase.ColegioId == idColegio)
+                            .Include(a => a.HoraCatedra)
+                            .Include(a => a.MateriaLista)
+                            .Include(a => a.MateriaLista.Clase)
+                            .ToListAsync(); 
+            
+            return result;
+        }
     }
 }
