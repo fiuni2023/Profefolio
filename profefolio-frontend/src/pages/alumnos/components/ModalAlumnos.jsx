@@ -1,177 +1,136 @@
 import React, { useState, useEffect } from 'react'
-import axios from "axios";
 import { useGeneralContext } from "../../../context/GeneralContext";
-import APILINK from '../../../components/link';
 import Modal from '../../../components/Modal';
 import { toast } from 'react-hot-toast';
 import ModalMensajeAlumno from './ModalMensajeAlumno';
-
+import StudentsService from '../helpers/StudentHelper';
 function ModalAlumnos({
-    show = false, 
-    setShow = () => {},
-    fetchFunc = ()=>{},
     selected_data,
-    editing=false,
-    onHide= () => {}
+    show = false,
+    fetchFunc = () => { },
+    onHide = () => { }
 }) {
     const { getToken } = useGeneralContext()
+    const { updateStudent, createStudent, deleteStudent } = StudentsService
     const disabled = false
     const [alumno, setAlumno] = useState("")
     const [openAviso, setOpenAviso] = useState(false)
-    const handleCreateSubmit = (e) => {
-        e.preventDefault()
-        const nombre = document.getElementById("nombreAlu").value;
-        const apellido = document.getElementById("apellido").value;
-        const fecha = document.getElementById("fecha").value;
-        const email = document.getElementById("email").value;
-        const direccion = document.getElementById("direccion").value;
-        const genero = document.getElementById("genero").value;
-        const documento = document.getElementById("documento").value;
-        const tipoDocumento = document.getElementById("tipoDocumento").value;
 
-        let data = JSON.stringify({
-            "nombre": nombre,
-            "apellido": apellido,
-            "nacimiento": fecha,
-            "documento": documento,
-            "genero": genero,
-            "direccion":direccion,
-            "email": email,
-            "documentoTipo": tipoDocumento
-        });
-        let config = {
-            method: 'post',
-            maxBodyLength: Infinity,
-            url: `${APILINK}/api/Alumnos`,
-            headers: {
-                'Authorization': `Bearer ${getToken()}`,
-                'Content-Type': 'application/json'
-            },
-            data: data
-        };
-
-
-        axios(config)
-            .then(function (response) {
-                if (response.status === 230){
-                    setAlumno(response.data)
-                    setOpenAviso(true)
-                }
-                else if (response.status === 200) {
-                    handleHide();
-                    fetchFunc()
-                    toast.success("Guardado correctamente");
-                }
-            })
-            .catch(function (error) {
-                if (typeof (error.response.data) === "string" ? true : false) {
-                    toast.error(error.response.data)
-                } else {
-                }
-            });
-    }
-    const handleCancelAviso = ()=>{
-        setOpenAviso(false)
-    }
-    
-    const handleEditSubmit = (e) => {
-        e.preventDefault()
-        const nombre = document.getElementById("nombreAlu").value;
-        const apellido = document.getElementById("apellido").value;
-        const fecha = document.getElementById("fecha").value;
-        const email = document.getElementById("email").value;
-        const direccion = document.getElementById("direccion").value;
-        const genero = document.getElementById("genero").value;
-        const documento = document.getElementById("documento").value;
-        const tipoDocumento = document.getElementById("tipoDocumento").value;
-        let data = JSON.stringify({
-            "id": selected_data.id,
-            "nombre": nombre,
-            "apellido": apellido,
-            "nacimiento": fecha,
-            "documento": documento,
-            "genero": genero,
-            "direccion":direccion,
-            "email": email,
-            "documentoTipo": tipoDocumento
-        });
-        let config = {
-            method: 'put',
-            maxBodyLength: Infinity,
-            url: `${APILINK}/api/Alumnos/${selected_data.id}`,
-            headers: {
-                'Authorization': `Bearer ${getToken()}`,
-                'Content-Type': 'application/json'
-            },
-            data: data
-        };
-        axios(config)
-            .then(function (response) {
-                if (response.status >= 200) {
-                    handleHide();
-                    fetchFunc()
-                    toast.success("Editado correctamente");
-                }
-            })
-            .catch(function (error) {
-                if (typeof (error.response.data) === "string" ? true : false) {
-                    toast.error(error.response.data)
-                } else {
-                }
-            });
-        fetchFunc()
-    }
-
-    const handleDelete = () => {
-        let config = {
-            method: 'delete',
-            maxBodyLength: Infinity,
-            url: `${APILINK}/api/Alumnos/${selected_data.id}`,
-            headers: {
-                'Authorization': `Bearer ${getToken()}`,
-                'Content-Type': 'application/json'
-            },
-        };
-        axios(config)
-            .then(function (response) {
-                if (response.status >= 200) {
-                    handleHide();
-                    fetchFunc()
-                    toast.success("Borrado correctamente");
-                }
-            })
-            .catch(function (error) {
-                if (typeof (error.response.data) === "string" ? true : false) {
-                    toast.error(error.response.data)
-                } else {
-                }
-            });
-        fetchFunc()
-    }
-
-    useEffect(()=>{
-        if(selected_data){
+    useEffect(() => {
+        if (selected_data) {
             document.getElementById("nombreAlu").value = selected_data.nombre
             document.getElementById("apellido").value = selected_data.apellido
             document.getElementById("fecha").value = selected_data.nacimiento.split('T')[0]
             document.getElementById("email").value = selected_data.email
             document.getElementById("direccion").value = selected_data.direccion
-            document.getElementById("genero").value = selected_data.genero === "Masculino"? "M": "F"
-            document.getElementById("documento").value = selected_data.documento 
+            document.getElementById("genero").value = selected_data.genero === "Masculino" ? "M" : "F"
+            document.getElementById("documento").value = selected_data.documento
             document.getElementById("tipoDocumento").value = selected_data.documentoTipo
         }
-    },[selected_data])
+    }, [selected_data])
+
+    let nombre, apellido, fecha, email, direccion, genero, documento, tipoDocumento;
+
+    const setValues = () => {
+        nombre = document.getElementById("nombreAlu").value;
+        apellido = document.getElementById("apellido").value;
+        fecha = document.getElementById("fecha").value;
+        email = document.getElementById("email").value;
+        direccion = document.getElementById("direccion").value;
+        genero = document.getElementById("genero").value;
+        documento = document.getElementById("documento").value;
+        tipoDocumento = document.getElementById("tipoDocumento").value;
+    };
+
+
+    const handleCreateSubmit = async (e) => {
+        e.preventDefault()
+        setValues();
+
+        const body = JSON.stringify({
+            nombre: nombre,
+            apellido: apellido,
+            nacimiento: fecha,
+            documento: documento,
+            genero: genero,
+            direccion: direccion,
+            email: email,
+            documentoTipo: tipoDocumento
+        });
+
+        try {
+            const result = await createStudent(body, getToken());
+            if (result && result.status === 200) {
+                handleHide();
+                fetchFunc();
+                toast.success("Guardado correctamente");
+            } else if (result && result.status === 230) {
+                setAlumno(result.data);
+                setOpenAviso(true);
+            }
+        } catch (error) {
+            if (typeof error.response.data === "string") toast.error(error.response.data);
+        }
+    };
+    const handleCancelAviso = () => {
+        setOpenAviso(false)
+    }
+
+    const handleEditSubmit = async (e) => {
+        e.preventDefault()
+        setValues();
+        const body = JSON.stringify({
+            id: selected_data.id,
+            nombre: nombre,
+            apellido: apellido,
+            nacimiento: fecha,
+            documento: documento,
+            genero: genero,
+            direccion: direccion,
+            email: email,
+            documentoTipo: tipoDocumento
+        });
+
+        try {
+            const result = await updateStudent(selected_data.id, body, getToken());
+            if (result && result.status === 200) {
+                handleHide();
+                fetchFunc();
+                toast.success("Editado correctamente");
+            }
+        } catch (error) {
+            if (typeof error.response.data === "string") toast.error(error.response.data);
+        }
+
+        fetchFunc();
+    };
+
+    const handleDelete = async () => {
+        try {
+            const result = await deleteStudent(selected_data.idColegioAlumno, getToken());
+            if (result && result.status === 200) {
+                handleHide();
+                fetchFunc();
+                toast.success("Borrado correctamente");
+            }
+        } catch (error) {
+            if (typeof error.response.data === "string") {
+                toast.error(error.response.data);
+            }
+        }
+    };
+
 
     const [datosModal, setDatosModal] = useState(null);
     const [deleting, setDeleting] = useState(false)
-    const noAction =(e)=>{
+    const noAction = (e) => {
         e.preventDefault()
     }
     useEffect(() => {
         setDatosModal({
-            header: selected_data? deleting? "ELIMINAR ALUMNO?" : "Editar Alumno" : "Agregar Alumno",
+            header: selected_data ? deleting ? "¿DESEA ELIMINAR EL ALUMNO?" : "Editar Alumno" : "Agregar Alumno",
             form: {
-                onSubmit: deleting ? {action: (e)=>{noAction(e)}} : editing ? {action: (e)=>{ handleEditSubmit(e)}} : {action: (e)=>{handleCreateSubmit(e)}},
+                onSubmit: deleting ? { action: (e) => { noAction(e) } } : selected_data ? { action: (e) => { handleEditSubmit(e) } } : { action: (e) => { handleCreateSubmit(e) } },
                 inputs: [
                     {
                         key: "nombreAlu", label: "Nombre del Alumno",
@@ -254,59 +213,59 @@ function ModalAlumnos({
                         }
                     },
                 ],
-                buttons: selected_data?
-                    !deleting?
+                buttons: selected_data ?
+                    !deleting ?
+                        [
+                            {
+                                style: "text",
+                                type: "danger",
+                                onclick: { action: () => { setDeleting(true) } }
+                            },
+                            {
+                                style: "text",
+                                type: "save",
+                                submit: true,
+                            },
+                        ]
+                        :
+                        [
+                            {
+                                style: "text",
+                                type: 'cancel',
+                                onclick: { action: () => { setDeleting(false) } }
+                            },
+                            {
+                                style: "text",
+                                type: "danger",
+                                onclick: { action: () => { handleDelete() } }
+                            },
+                        ]
+                    :
                     [
                         {
                             style: "text",
-                            type: "danger",
-                            onclick: {action: ()=>{setDeleting(true)}}
-                        },
-                        {
-                            style: "text",
-                            type: "save",
+                            type: "create",
                             submit: true,
                         },
                     ]
-                    :
-                    [  
-                        {
-                            style: "text",
-                            type: 'cancel',
-                            onclick: {action: ()=>{setDeleting(false)}}
-                        },
-                        {
-                            style: "text",
-                            type: "danger",
-                            onclick: {action: ()=>{handleDelete()}}
-                        },
-                    ]
-                :
-                [
-                    {
-                        style: "text",
-                        type: "create",
-                        submit: true,
-                    },
-                ]
             }
         })
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [ disabled, selected_data, deleting ]);
+    }, [disabled, selected_data, deleting]);
 
     const handleHide = () => {
         setDeleting(false)
         onHide()
     }
 
-    const addNewExistingSuccess=()=>{
+    const addNewExistingSuccess = () => {
         handleHide()
         fetchFunc()
     }
     return (
         <>
-            <Modal show={show} onHide={handleHide} datosModal={datosModal}/>
-            <ModalMensajeAlumno isOpen={openAviso} onAdd={onHide} student={alumno} onCancel={handleCancelAviso} onSuccess={addNewExistingSuccess}/>
+            <Modal show={show} onHide={handleHide} datosModal={datosModal} />
+            <ModalMensajeAlumno isOpen={openAviso} onAdd={onHide} student={alumno} onCancel={handleCancelAviso} onSuccess={addNewExistingSuccess} />
         </>
     )
 }
