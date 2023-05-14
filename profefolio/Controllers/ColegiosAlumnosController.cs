@@ -317,9 +317,43 @@ namespace profefolio.Controllers
             catch (Exception e)
             {
                 Console.WriteLine($"{e}");
-                return BadRequest("Error durante ele eliminado");
+                return BadRequest("Error durante el eliminado");
 
             }
+
+
+        }
+        [HttpGet]
+        [Route("not/assigned/year/{idClase}")]
+        public async Task<ActionResult<List<ColegioAlumnosDTO>>> NotAssigned(int idClase)
+        {
+            try
+            {
+                var adminEmail = User.FindFirstValue(ClaimTypes.Name);
+
+                var date = DateTime.Now;
+
+                var year = date.Year;
+
+                var query = await _cAlumnosService.GetNotAssignedByYear(year, adminEmail, idClase);
+
+                var queryMapper = _mapper.Map<List<ColegioAlumnosDTO>>(query.ToList())
+                    .OrderBy(p => p.Apellido)
+                    .ThenBy(p => p.Nombre)
+                    .ThenBy(p => p.Documento);
+
+                return Ok(queryMapper);
+
+            }
+            catch(BadHttpRequestException e)
+            {
+                return BadRequest(e.Message);
+            }
+            catch(FileNotFoundException)
+            {
+                return NotFound();
+            }
+
 
 
         }
