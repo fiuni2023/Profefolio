@@ -20,6 +20,16 @@ public class EventoService : IEvento
             .Where(p => !p.Deleted && p.Id == id)
             .FirstOrDefaultAsync();
     }
+    public async Task<Evento> FindById2(int id)
+    {
+        return await _dbContext.Eventos
+            .Where(p => !p.Deleted && p.Id == id)
+            .Include(e => e.Materias)
+            .Include(e => e.Clases)
+            .Include(e => e.Colegios)
+            .FirstOrDefaultAsync();
+    }
+
 
     public async Task<Evento> FindByEventoRepetido(String t, DateTime f, int c, int m, int col)
     {
@@ -29,9 +39,15 @@ public class EventoService : IEvento
             .FirstOrDefaultAsync();
     }
 
-    public async Task<List<Evento>> GetAll()
+    public async Task<List<Evento>> GetAll(String prfId)
     {
-        return await _dbContext.Eventos.Where(p => !p.Deleted).ToListAsync();
+        return await _dbContext.Eventos
+        .Where(p => !p.Deleted)
+        .Where(p => p.ProfesorId == prfId)
+        .Include(e => e.Materias)
+        .Include(e => e.Clases)
+        .Include(e => e.Colegios)
+        .ToListAsync();
     }
 
     public Evento Edit(Evento t)
