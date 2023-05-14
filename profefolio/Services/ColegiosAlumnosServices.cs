@@ -166,6 +166,7 @@ namespace profefolio.Services
 
             var colegiosAlumnos = _context.ColegiosAlumnos
                 .Include(ca => ca.Colegio)
+                .Include(ca => ca.Persona)
                 .Where(ca => !ca.Deleted)
                 .Where(ca => ca.ColegioId == colegio.Id)
                 .Skip(cantPerPage * page)
@@ -198,7 +199,20 @@ namespace profefolio.Services
 
         public async Task<IEnumerable<ColegiosAlumnos>> GetNotAssignedByYear(int year, string user, int idClase)
         {
+
+            
             var query = await this.FindAllNoAssignedToClaseByEmailAdminAndIdClase(user, idClase);
+
+            var yearClase = await _context.Clases
+                .Where(c => !c.Deleted)
+                .Where(c => c.Id == idClase)
+                .Select(c => c.Anho)
+                .FirstOrDefaultAsync();
+
+            if(yearClase != year)
+            {
+                throw new BadHttpRequestException("No existe esa clase en el presente año lectivo");
+            }
 
             var listResult = new List<ColegiosAlumnos>();
 
