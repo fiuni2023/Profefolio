@@ -120,7 +120,7 @@ namespace profefolio.Services
 
         }
 
-        public async Task<List<MateriaLista>> FindByIdClase(int idClase, string user)
+        public async Task<ClaseDetallesDTO> FindByIdClase(int idClase, string user)
         {
             var colegio = await _db.Colegios
                 .Include(c => c.personas)
@@ -132,18 +132,69 @@ namespace profefolio.Services
             {
                 throw new BadHttpRequestException("Accion no valida");
             }
+
+            var profesores = _db.Users.ToList();
+
             var clase = await _db.Clases
                 .Include(c => c.MateriaListas)
                 .Where(c => !c.Deleted)
                 .Where(c => c.Id == idClase)
                 .FirstOrDefaultAsync();
 
-            if (clase == null || (colegio.Id != clase.ColegioId) || clase.MateriaListas == null)
+            if (clase == null || clase.Nombre == null|| (colegio.Id != clase.ColegioId) || clase.MateriaListas == null)
             {
                 throw new FileNotFoundException();
             }
 
-            return clase.MateriaListas.ToList();
+            
+
+            var materias = _db.Materias
+                .Include(x => x.MateriaListas)
+                .Where(x => !x.Deleted)
+                .Where(x => x.MateriaListas.Any(y => y.ClaseId == clase.Id));
+                
+            
+            var result = new ClaseDetallesDTO();
+
+            result.ClaseId = clase.Id;
+            result.NombreClase = clase.Nombre;
+
+            var materiaProfesoresList = new List<MateriaProfesoresDTO>();
+
+            foreach (var item in materias)
+            {
+                var materiaLista = item.MateriaListas;
+
+                var materiaProfesores = new MateriaProfesoresDTO();
+
+                materiaProfesores.IdMateria = item.Id;
+                materiaProfesores.Materia = item.Nombre_Materia;
+
+                var profesorSimpleList = new List<ProfesorSimpleDTO>();
+
+                foreach (var itemLista in materiaLista)
+                {
+                    var profesor = profesores.Find(x => x.Id.Equals(itemLista.ProfesorId));
+
+
+                    var profeSimple = new ProfesorSimpleDTO();
+
+                    profeSimple.Apellido = profesor.Apellido;
+                    profeSimple.IdProfesor = profesor.Id;
+                    profeSimple.Nombre = profesor.Nombre;
+
+                    profesorSimpleList.Add(profeSimple);
+                }
+
+                materiaProfesores.Profesores = profesorSimpleList;
+
+                materiaProfesoresList.Add(materiaProfesores);
+
+            }
+
+            result.MateriaProfesores = materiaProfesoresList;
+            
+            return result;
         }
 
         public async Task<bool> DeleteByIdClase(int idClase, string user)

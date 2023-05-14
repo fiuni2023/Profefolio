@@ -144,27 +144,19 @@ namespace profefolio.Controllers
         {
             try
             {
+                //Obtenemos el username del usuario
                 var user = User.Identity.Name;
+
                 var result = await _materiaListaService.FindByIdClase(idClase, user);
 
-                var response = _mapper.Map<ClaseDetallesDTO>(result[0]);
-
-                var profesores = _mapper.Map<List<ProfesorSimpleDTO>>(result.ConvertAll(x => x.Profesor));
-
-                var materias = result.ConvertAll(x => x.Materia);
-
-                var materiasUnified = materias.DistinctBy(x => x.Id);
-
-                response.Profesores = profesores;
-                response.Materias = _mapper.Map<List<MateriaDTO>>(materiasUnified);
-                return Ok(profesores);
+                return Ok(result);
 
 
             }
             catch (BadHttpRequestException e)
             {
                 Console.WriteLine(e.Message);
-                return BadRequest();
+                return BadRequest(e.Message);
             }
             catch (FileNotFoundException e)
             {
@@ -183,11 +175,11 @@ namespace profefolio.Controllers
             {
                 var userEmail = User.FindFirstValue(ClaimTypes.Name);
                 var userRole = User.FindFirstValue(ClaimTypes.Role);
-                
+
                 var materiaLista = await _materiaListaService.FindByIdClaseAndUser(idClase, userEmail, userRole);
 
                 var dto = _mapper.Map<List<ClaseMateriaResultDTO>>(materiaLista);
-                
+
                 //se carga los profesores a cada materia de la lista
                 materiaLista.ForEach(a =>
                 {

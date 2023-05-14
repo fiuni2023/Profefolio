@@ -25,7 +25,7 @@ const Clases = () => {
     const [{ id: colegioId, nombre: colegioNombre }, loadingColegio, errorColegio, /* setColegio */] = useAxiosGet(`api/administrador/${getUserMail()}`, getToken());
 
 
-    
+
     const handleShowModal = () => {
         setShowModal(true);
     }
@@ -43,27 +43,27 @@ const Clases = () => {
         }
     }, [cancan, verifyToken, nav])
 
-    const {setClaseSelectedId, setColegioId} = useClaseContext();
+    const { setClaseSelectedId, /*setColegioId*/ } = useClaseContext();
     useEffect(() => {
-      setColegioId(colegioId)
-    // eslint-disable-next-line no-unused-vars
-    }, [colegioId,setColegioId])
-    
-    const doChangeClase= useCallback((data) => {
+        setColegio(colegioId)
+        // eslint-disable-next-line no-unused-vars
+    }, [colegioId, setColegio])
+
+    const doChangeClase = useCallback((data) => {
         setClaseSelectedId(data.id)
         nav(`/clases/view/${data.id}`)
     }, [nav, setClaseSelectedId])
-    
+
     useEffect(() => {
         if (colegioId !== null) {
-            setTabla(<ClasesTable condFetch={condFetch} colegioId={colegioId} getToken={getToken} doChangeClase={doChangeClase} triggerUpdate={triggerUpdate}/>);
-        }else if(colegioId && colegioNombre){
+            setTabla(<ClasesTable condFetch={condFetch} colegioId={colegioId} getToken={getToken} doChangeClase={doChangeClase} triggerUpdate={triggerUpdate} />);
+        } else if (colegioId && colegioNombre) {
             setColegio({
                 "id": colegioId,
                 "nombre": colegioNombre
             });
         }
-        
+
     }, [colegioId, colegioNombre, condFetch, doChangeClase, getToken, setColegio, triggerUpdate])
 
     const handleChangeTable = () => {
@@ -71,19 +71,19 @@ const Clases = () => {
     }
 
     return <>
-        
-            <MainContainer>
-                <StyleComponentBreadcrumb nombre="Clases" />
 
-                {tabla}
+        <MainContainer>
+            <StyleComponentBreadcrumb nombre="Clases" />
 
-                <AddButton>
-                    <AiOutlinePlus size={"35px"} onClick={handleShowModal} />
-                </AddButton>
+            {tabla}
 
-                <ModalCreateClase title="Agregar Clase" handleClose={handelCloseModal} show={showModal} triggerState={handleChangeTable} />
+            <AddButton>
+                <AiOutlinePlus size={"35px"} onClick={handleShowModal} />
+            </AddButton>
 
-            </MainContainer >
+            <ModalCreateClase title="Agregar Clase" handleClose={handelCloseModal} show={showModal} triggerState={handleChangeTable} />
+
+        </MainContainer >
 
 
         <style jsx='true'>{`

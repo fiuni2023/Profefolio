@@ -27,15 +27,11 @@ namespace profefolio.Helpers.Mappers
                     opt => opt.MapFrom(v => new List<ClaseMateriaProfesorDTO>()));
 
             CreateMap<MateriaLista, ClaseDetallesDTO>()
-                .ForMember(dest => dest.MateriaId,
-                    opt => opt.MapFrom(src => src.MateriaId))
                 .ForMember(dest => dest.ClaseId,
                     opt => opt.MapFrom(src => src.ClaseId))
                 .ForMember(dest => dest.NombreClase,
                     opt => opt.MapFrom(src => src.Clase == null ? "" : src.Clase.Nombre))
-                .ForMember(dest => dest.Materia,
-                    opt => opt.MapFrom(src => src.Materia == null ? "" : src.Materia.Nombre_Materia))
-                .ForMember(dest => dest.Profesores, opt => opt.Ignore());
+                .ForMember(dest => dest.MateriaProfesores, opt => opt.Ignore());
 
 
         }

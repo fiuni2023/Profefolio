@@ -38,7 +38,7 @@ namespace profefolio.Helpers.Mappers
                     opt => opt.MapFrom(v => v.Persona.Nombre))
                 .ForMember(dest => dest.Apellido,
                     opt => opt.MapFrom(v => v.Persona.Apellido))
-                .ForMember(dest => dest.FechaNacimiento,
+                .ForMember(dest => dest.Nacimiento,
                     opt => opt.MapFrom(v => v.Persona.Nacimiento))
                 .ForMember(dest => dest.Direccion,
                     opt => opt.MapFrom(v => v.Persona.Direccion))

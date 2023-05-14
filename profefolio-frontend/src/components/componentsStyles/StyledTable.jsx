@@ -24,8 +24,6 @@ const handleSmall = (small, element) => {
 
 const Table = styled.table`
         width: ${props => props.width};
-        box-shadow: 2px 2px 10px 2px rgba(0, 0, 0, 0.1);
-        border-radius: 20px;
 
         tr:first-child th:first-child {
             border-top-left-radius: 20px;
@@ -90,6 +88,8 @@ const TD = styled.td`
     `;
 
 const ScrollTable = styled.div`
+    box-shadow: 2px 2px 10px 2px rgba(0, 0, 0, 0.1);
+    border-radius: 20px;
     overflow: auto; 
     width: 100%;
 `;    

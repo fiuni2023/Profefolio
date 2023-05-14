@@ -1,9 +1,5 @@
-import React, { useContext, useState,useEffect } from "react";
+import React, { useContext, useState } from "react";
 import { createContext } from "react";
-
-import ClassesService from '../Helpers/ClassesHelper';
-
-
 
 
 
@@ -109,12 +105,6 @@ export const ClaseProvider = ({ children }) => {
     const setProfesoresOptions = (profes) => {
         setProfesoresOption(profes)
     }
-    const setColegioId = (colegioId) => {
-        localStorage.setItem("id-colegio", colegioId)
-    }
-    const getColegioId = () => {
-        if (localStorage.getItem('id-colegio') ? true : false) return JSON.parse(localStorage.getItem('id-colegio'))
-    }
 
     const values = {
         getClaseSelectedId,
@@ -124,9 +114,7 @@ export const ClaseProvider = ({ children }) => {
         setStatusMateria,
         addMateriaToList,
         getProfesoresOption,
-        setProfesoresOptions,
-        setColegioId,
-        getColegioId
+        setProfesoresOptions
     }
 
     return (

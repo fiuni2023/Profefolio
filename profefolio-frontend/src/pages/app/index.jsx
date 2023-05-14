@@ -26,18 +26,21 @@ import Home from "../home/index.jsx";
 import TestPage from "../../components/TestPage.jsx";
 import PruebaMateria from "../materias/list/PruebaMaterias.jsx"
 import { ClaseProvider } from "../clases/context/ClaseContext.jsx";
+import UserDD from "../../components/UserDD.jsx";
 
 
 const App = () => {
     const [showSB, setShowSB] = useState(false)
+    const [showDD, setShowDD] = useState(false)
     return (
         <>
             <BrowserRouter>
                 <GeneralProvider>
                     <div className="page">
-                        <Navbar showSB={showSB} setShowSB={setShowSB} />
+                        <Navbar showSB={showSB} setShowSB={setShowSB} showDD={showDD} setShowDD={setShowDD} />
                         <ClaseProvider>
                             <div className="content">
+                                <UserDD showSB={showDD} setShowSB={setShowDD} />
                                 <SideBar showSB = {showSB} setShowSB={setShowSB}/>
                                 <Routes>
 

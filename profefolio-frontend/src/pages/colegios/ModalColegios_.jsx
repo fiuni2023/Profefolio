@@ -130,7 +130,7 @@ function ModalColegio({
                         invalidText: "Ingrese un nombre",
                     },
                     {
-                        key: "administradorColegio", label: "Tipo de Documento",
+                        key: "administradorColegio", label: "Administrador",
                         type: "select",
                         disabled: disabled, required: true,
                         invalidText: "Seleccione un Administrador",
