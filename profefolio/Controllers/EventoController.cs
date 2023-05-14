@@ -39,6 +39,55 @@ namespace profefolio.Controllers
             _profesorService = profesorService;
         }
 
+        [HttpGet("{id}")]
+        [Authorize(Roles = "Profesor")]
+        public async Task<ActionResult<EventoResultFullDTO>> GetEvento(int id)
+        {
+            try
+            {
+                var evento = await _eventoService.FindById2(id);
+                if (evento == null)
+                {
+                    return BadRequest("Evento inexistente");
+                }
+
+                var userEmail = User.FindFirstValue(ClaimTypes.Name);
+                var profId = await _profesorService.GetProfesorIdByEmail(userEmail);
+
+                if (profId != evento.ProfesorId)
+                {
+                    return BadRequest("No puede acceder al evento");
+                }
+
+                var response = _mapper.Map<EventoResultFullDTO>(evento);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                _log.Error("An error occurred in the GetEvento method", ex);
+                return BadRequest("Error inesperado durante la busqueda");
+            }
+        }
+
+       
+        [HttpGet]
+        [Authorize(Roles = "Profesor")]
+        public async Task<ActionResult<List<EventoResultFullDTO>>> GetAll()
+        {
+            try
+            {
+                var userEmail = User.FindFirstValue(ClaimTypes.Name);
+                var profId = await _profesorService.GetProfesorIdByEmail(userEmail);
+
+                var eventos = await _eventoService.GetAll(profId);
+                return Ok(_mapper.Map<List<EventoResultFullDTO>>(eventos));
+            }
+            catch (Exception e)
+            {
+                 _log.Error("An error occurred in the GetAll method", e);
+                return BadRequest("Error inesperado durante la busqueda");
+            }
+        }
 
         /// <summary>
         /// Guarda un Evento. 
@@ -89,7 +138,7 @@ namespace profefolio.Controllers
             }
             //verificar que no se agregue un evento a una clase que no sea del profesor logueado
             var userEmail = User.FindFirstValue(ClaimTypes.Name);
-           
+
             var profId = await _profesorService.GetProfesorIdByEmail(userEmail);
             evento.ProfesorId = profId;
 
@@ -115,7 +164,7 @@ namespace profefolio.Controllers
             try
             {
                 var p = _mapper.Map<Evento>(evento);
-                p.CreatedBy= userEmail;
+                p.CreatedBy = userEmail;
                 p.Deleted = false;
 
                 var saved = await _eventoService.Add(p);
