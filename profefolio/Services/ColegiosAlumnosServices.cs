@@ -107,10 +107,10 @@ namespace profefolio.Services
                         .Where(ca => ca.ClasesAlumnosColegios == null ||
                             !ca.ClasesAlumnosColegios.Any() ||
                                 ca.ClasesAlumnosColegios.Any(a => (a.Deleted && a.ClaseId == idClase) || a.ClaseId != idClase))
-                                .Where(ca => ca.ClasesAlumnosColegios == null || !(ca.ClasesAlumnosColegios.Any(a => a.ClaseId == idClase && !a.Deleted)))
-                                .Include(a => a.Persona)
-                                .Include(a => a.ClasesAlumnosColegios)
-                                .ToListAsync();
+                        .Where(ca => ca.ClasesAlumnosColegios == null || !(ca.ClasesAlumnosColegios.Any(a => a.ClaseId == idClase && !a.Deleted)))
+                        .Include(a => a.Persona)
+                        .Include(a => a.ClasesAlumnosColegios)
+                        .ToListAsync();
             return query;
         }
 
@@ -190,10 +190,10 @@ namespace profefolio.Services
 
             var year = date.Year;
 
-            var query =  await GetNotAssignedByYear(year, user, idClase);
-                
+            var query = await GetNotAssignedByYear(year, user, idClase);
+
             return query.Skip(page * cantPerPage).Take(cantPerPage);
-                
+
         }
 
         public async Task<IEnumerable<ColegiosAlumnos>> GetNotAssignedByYear(int year, string user, int idClase)
