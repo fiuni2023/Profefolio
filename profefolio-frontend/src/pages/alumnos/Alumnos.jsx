@@ -46,7 +46,7 @@ const Alumnos = () => {
         setShow(true)
     }
 
-    const { doFetch } = useFetchEffect(
+    const { doFetch, isLoading, isError} = useFetchEffect(
         () => {
             return StudentHelper.getStudentsPage(currentPage, getToken())
         },
@@ -55,6 +55,7 @@ const Alumnos = () => {
             condition: condFetch,
             handleSuccess: (r) => {
                 setNext(r.data.next)
+                console.log(r.data)
                 setTotalPages(r.data.totalPage)
                 setDatosTabla({
                     ...datosTabla, clickable: { action: doChangeStudent },
@@ -72,7 +73,9 @@ const Alumnos = () => {
                 })
             },
             handleError: () => {
-                toast.error("No se pudieron obtener los datos. Intente recargar la página")
+                if (!isLoading) {
+                    toast.error('No se pudieron obtener los datos. Intente recargar la página');
+                }
             }
         }
     )
@@ -95,8 +98,11 @@ const Alumnos = () => {
                         <AiOutlinePlus size={"35px"} />
                     </AddButton>
                 </TableContainer >
-                <ModalAlumnos show={show} fetchFunc={doFetch} onHide={handleHideModal} selected_data={selected_student} handleExistingStudent={setSelectedStudent} setShow={setShow} editing={editing}/>
+                <ModalAlumnos show={show} fetchFunc={doFetch} onHide={handleHideModal} selected_data={selected_student} handleExistingStudent={setSelectedStudent} setShow={setShow} />
             </MainContainer >
+            {isError && !isLoading && (
+                toast.error('No se pudieron obtener los datos. Intente recargar la página')
+            )}
         </>
     )
 }
