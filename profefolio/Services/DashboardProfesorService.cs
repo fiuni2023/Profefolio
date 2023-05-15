@@ -97,7 +97,8 @@ namespace profefolio.Services
                 {
                     Id = a.Materia.Id,
                     Nombre_Materia = a.Materia.Nombre_Materia,
-                    MateriaListaId = a.Id
+                    MateriaListaId = a.Id,
+                    MateriaId = a.Materia.Id
                     // Asigna los valores de las propiedades restantes si es necesario
                 })
                 .ToListAsync();
@@ -136,7 +137,7 @@ namespace profefolio.Services
             }
             else
             {
-                return null; 
+                return null;
             }
         }
         public Task Save()
@@ -207,6 +208,19 @@ namespace profefolio.Services
                 return $"{hora} {minuto}";
             }
         }
+
+        public async Task<int> GetEventosOfMateria(string idProfesor, int materia, int idClase)
+        {
+            List<Evento> duraciones = await _context.Eventos
+                .Where(a => !a.Deleted
+                    && idProfesor.Equals(a.ProfesorId)
+                    && materia.Equals(a.MateriaId)
+                    && idClase.Equals(a.ClaseId))
+                .ToListAsync();
+          
+            return duraciones.Count;
+        }
+
         public async Task<List<HorasCatedrasMaterias>> FindAllHorariosClasesByEmailProfesorAndIdColegio(int idColegio, string email, int anho)
         {
             var profesor = await _context.Users

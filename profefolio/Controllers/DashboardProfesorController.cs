@@ -294,21 +294,20 @@ namespace profefolio.Controllers
                     case "card-materias":
                          //id clase, //anho
 
-                         //anotaciones int
-                         //calificaciones int
-                         //eventos int
-                         //horario: dia, hora, cantidad de horas
                            var profId = await _profesorService.GetProfesorIdByEmail(userEmail);
                            var profesor2 = await _personaService.FindById(profId);
                            var materiasClase = await _dashBoardService._FindMateriasOfClase(profesor2, dto.Id);
 
                            var resultsMaterias = _mapper.Map<List<DBCardMateriasDTO>>(materiasClase);
-
+                           
                         foreach (var result in resultsMaterias)
                         {
+                            result.Eventos = await _dashBoardService.GetEventosOfMateria(profId, 
+                            result.MateriaId, dto.Id);
+
                             var horarioMasCercano = await _dashBoardService.FindHorarioMasCercanoMateria(profesor2, 
                             result.Id);
-                            
+                           
                             if(horarioMasCercano != null){
                                 result.Horario = _mapper.Map<DBCardClasesHorariosDTO>(horarioMasCercano);
                                 result.Horario.Horas = await _dashBoardService.GetHorasOfMateriaInDay(profesor2, 

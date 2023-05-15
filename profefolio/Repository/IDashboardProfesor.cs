@@ -15,6 +15,7 @@ namespace profefolio.Repository
         Task<HorasCatedrasMaterias> FindHorarioMasCercanoMateria(Persona profesor, int idMateriaLista);
         Task<string> GetHorasOfClaseInDay(Persona profesor, int idClase, string dia);
         Task<string> GetHorasOfMateriaInDay(Persona profesor, int idMateriaLista, string dia);
+        Task<int> GetEventosOfMateria(string idProfesor, int materia, int idClase);
 
         // horarios de materias en cada clase
         Task<List<HorasCatedrasMaterias>> FindAllHorariosClasesByEmailProfesorAndIdColegio(int idColegio, string email, int anho); 
