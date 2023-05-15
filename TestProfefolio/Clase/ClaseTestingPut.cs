@@ -84,7 +84,8 @@ namespace TestProfefolio.Clase
                 PersonaId = "123456789"
             };
 
-            claseService.Setup(c => c.FindById(It.IsAny<int>())).ReturnsAsync(clase);
+            claseService.Setup(c => c.FindByIdAndUser(It.IsAny<int>(), It.IsAny<string>()))
+                .ReturnsAsync(clase);
 
             cicloService.Setup(c => c.FindById(It.IsAny<int>())).ReturnsAsync(ciclo);
 
@@ -224,13 +225,14 @@ namespace TestProfefolio.Clase
                 ColegioId = 1
             };
 
-            claseService.Setup(c => c.FindById(It.IsAny<int>()));
+            claseService.Setup(c => c.FindByIdAndUser(It.IsAny<int>(), It.IsAny<string>()))
+                .Throws<Exception>();
 
             var result = await controller.Put(id, dto);
 
-            var response = Assert.IsType<NotFoundObjectResult>(result);
+            var response = Assert.IsType<BadRequestObjectResult>(result);
         
-            Assert.Equal("No se ha encontrado la Clase a editar", response.Value);
+            Assert.Equal("Error durante la edicion", response.Value);
         }
     
     
@@ -281,15 +283,14 @@ namespace TestProfefolio.Clase
                 CreatedBy = "juan.perez@gmail.com"
             };
 
-            claseService.Setup(c => c.FindById(It.IsAny<int>())).ReturnsAsync(clase);
+            claseService.Setup(c => c.FindByIdAndUser(It.IsAny<int>(), It.IsAny<string>()))
+                .ReturnsAsync(clase);
 
             cicloService.Setup(c => c.FindById(It.IsAny<int>()));
 
             var result = await controller.Put(id, dto);
 
-            var response = Assert.IsType<NotFoundObjectResult>(result);
-        
-            Assert.Equal("El campo de Ciclo es invalido", response.Value);
+            var response = Assert.IsType<BadRequestObjectResult>(result);
         }
 
 
@@ -377,7 +378,8 @@ namespace TestProfefolio.Clase
                 PersonaId = "123456789"
             };
 
-            claseService.Setup(c => c.FindById(It.IsAny<int>())).ReturnsAsync(clase);
+            claseService.Setup(c => c.FindByIdAndUser(It.IsAny<int>(), It.IsAny<string>()))
+                .ReturnsAsync(clase);
 
             cicloService.Setup(c => c.FindById(It.IsAny<int>())).ReturnsAsync(ciclo);;
 
@@ -452,7 +454,8 @@ namespace TestProfefolio.Clase
                 PersonaId = "123456789"
             };
 
-            claseService.Setup(c => c.FindById(It.IsAny<int>())).ReturnsAsync(clase);
+            claseService.Setup(c => c.FindByIdAndUser(It.IsAny<int>(), It.IsAny<string>()))
+                .ReturnsAsync(clase);
 
             cicloService.Setup(c => c.FindById(It.IsAny<int>())).ReturnsAsync(ciclo);
 

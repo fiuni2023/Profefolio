@@ -74,7 +74,8 @@ namespace TestProfefolio.Clase
                 Modified = DateTime.Now
             };
             
-            claseService.Setup(c => c.FindById(It.IsAny<int>())).ReturnsAsync(clase);
+            claseService.Setup(c => c.FindByIdAndUser(It.IsAny<int>(), It.IsAny<string>()))
+            .ReturnsAsync(clase);
 
             claseService.Setup(c => c.Edit(It.IsAny<profefolio.Models.Entities.Clase>())).Returns(claseEliminado);
         
@@ -143,11 +144,12 @@ namespace TestProfefolio.Clase
                 cicloService.Object, 
                 colegioService.Object);
             
-            claseService.Setup(c => c.FindById(It.IsAny<int>()));
+            claseService.Setup(c => c.FindByIdAndUser(It.IsAny<int>(), It.IsAny<string>()))
+                .Throws<Exception>();
 
             var result = controller.Delete(id);
 
-            Assert.IsType<NotFoundResult>(result.Result);
+            Assert.IsType<BadRequestObjectResult>(result.Result);
         }
 
 
@@ -211,7 +213,8 @@ namespace TestProfefolio.Clase
                 Modified = DateTime.Now
             };
             
-            claseService.Setup(c => c.FindById(It.IsAny<int>())).ReturnsAsync(clase);
+            claseService.Setup(c => c.FindByIdAndUser(It.IsAny<int>(), It.IsAny<string>()))
+            .ReturnsAsync(clase);
 
             claseService.Setup(c => c.Edit(It.IsAny<profefolio.Models.Entities.Clase>())).Returns(claseEliminado);
         
