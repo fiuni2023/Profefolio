@@ -299,7 +299,20 @@ namespace profefolio.Controllers
                     case "lista-alumnos":
                         //id clase
                         //id prf
+                        var clasesA = await _dashBoardService.GetColegioAlumnoId(dto.Id);
+                        var resultsA = _mapper.Map<List<DBClaseAlumnoColegioDTO>>(clasesA);
+
+                        foreach (var result in resultsA)
+                        {
+                            //a partir del colegioAlumnoId obtener el idAlumno
+                            Console.WriteLine("*********ID colegioAlumno: " + result.Id);
+                          //  var idAlumno = await _dashBoardService.FindAlumnoIdByColegioAlumnoId(result.ColegiosAlumnosId);
+                           // result.Nombres = alumno.Nombre;
+                           // result.Apellidos = alumno.Apellido;
+                           
+                        }
                         
+                        return Ok(resultsA);
                     case "promedio-puntajes":
                         return BadRequest("Opcion en implementacion");
                     case "promedio-asistencias":
