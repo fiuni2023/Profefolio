@@ -84,27 +84,19 @@ namespace profefolio.Services
             var ClaseAlumnosC = await _context.ClasesAlumnosColegios
                 .Where(a => !a.Deleted && a.ClaseId == idClase)
                 .ToListAsync();
-
-            foreach (var claseAlumno in ClaseAlumnosC)
-            {
-                Console.WriteLine("ClaseId: " + claseAlumno.ClaseId);
-                Console.WriteLine("ColegiosAlumnosId: " + claseAlumno.ColegiosAlumnosId);
-                // Agrega aquí cualquier otra propiedad que desees imprimir
-            }
-
             return ClaseAlumnosC;
         }
 
-        /* public async Task<ClasesAlumnosColegio> FindAlumnoIdByColegioAlumnoId( int idColegiosAlumnos)
+         public async Task<String> FindAlumnoIdByColegioAlumnoId( int idColegiosAlumnos)
          {
 
-             var ClaseAlumnosC = await _context.ClasesAlumnosColegios
+             var idAlumno = await _context.ColegiosAlumnos
                      .Where(a => !a.Deleted
-                             && a.ClaseId == idClase)
+                             && a.Id == idColegiosAlumnos)
                      .FirstOrDefaultAsync();
-
-             return ClaseAlumnosC;
-         }*/
+            Console.WriteLine("*****idAlumno: " +idAlumno.PersonaId);
+             return idAlumno.PersonaId;
+         }
         public async Task<List<string>> FindMateriasOfClase(Persona profesor, int idClase)
         {
             return await _context.MateriaListas.Where(a => !a.Deleted

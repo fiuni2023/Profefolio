@@ -306,9 +306,10 @@ namespace profefolio.Controllers
                         {
                             //a partir del colegioAlumnoId obtener el idAlumno
                             Console.WriteLine("*********ID colegioAlumno: " + result.Id);
-                          //  var idAlumno = await _dashBoardService.FindAlumnoIdByColegioAlumnoId(result.ColegiosAlumnosId);
-                           // result.Nombres = alumno.Nombre;
-                           // result.Apellidos = alumno.Apellido;
+                            var idAlumno = await _dashBoardService.FindAlumnoIdByColegioAlumnoId(result.Id);
+                            var alumno = await _personaService.FindById(idAlumno);
+                            result.Nombres = alumno.Nombre;
+                            result.Apellidos = alumno.Apellido;
                            
                         }
                         
