@@ -117,6 +117,28 @@ namespace profefolio.Services
 
             return horas.FirstOrDefault();
         }
+        public async Task<HorasCatedrasMaterias> FindHorarioMasCercanoMateria(Persona profesor,
+        int idMateriaLista)
+        {
+            var horas = await _context.HorasCatedrasMaterias
+                        .Where(a => !a.Deleted
+                            && a.MateriaLista != null
+                            && profesor.Id.Equals(a.MateriaLista.ProfesorId)
+                            && a.MateriaLista.Id == idMateriaLista)
+                        .Include(a => a.HoraCatedra)
+                        .ToListAsync();
+
+            if (horas.Any())
+            {
+                horas.Sort((a, b) => TimeComparator.MissingMinutes(DateTime.Now, a.Dia, a.HoraCatedra.Inicio) - TimeComparator.MissingMinutes(DateTime.Now, b.Dia, b.HoraCatedra.Inicio));
+
+                return horas.FirstOrDefault();
+            }
+            else
+            {
+                return null; 
+            }
+        }
         public Task Save()
         {
             throw new NotImplementedException();
@@ -154,6 +176,37 @@ namespace profefolio.Services
             }
         }
 
+        public async Task<string> GetHorasOfMateriaInDay(Persona profesor, int idMateriaLista, string dia)
+        {
+            var duraciones = await _context.HorasCatedrasMaterias
+                .Where(a => !a.Deleted
+                    && !a.MateriaLista.Deleted
+                    && profesor.Id.Equals(a.MateriaLista.ProfesorId)
+                    && a.MateriaLista.Id == idMateriaLista
+                    && dia.ToLower().Equals(a.Dia.ToLower()))
+                .Select(a => (DateTime.Parse(a.HoraCatedra.Fin) - DateTime.Parse(a.HoraCatedra.Inicio)).Duration())
+                .ToListAsync();
+
+            var horas = new TimeSpan();
+            duraciones.ForEach(a =>
+            {
+                horas += a;
+            });
+            var hora = horas.Hours > 0 ? $"{horas.Hours}h" : "";
+            var minuto = horas.Minutes > 0 ? $"{horas.Minutes}m" : "";
+            if (hora.Equals(""))
+            {
+                return minuto;
+            }
+            else if (minuto.Equals(""))
+            {
+                return hora;
+            }
+            else
+            {
+                return $"{hora} {minuto}";
+            }
+        }
         public async Task<List<HorasCatedrasMaterias>> FindAllHorariosClasesByEmailProfesorAndIdColegio(int idColegio, string email, int anho)
         {
             var profesor = await _context.Users

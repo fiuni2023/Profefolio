@@ -12,8 +12,9 @@ namespace profefolio.Repository
         Task<List<string>> FindMateriasOfClase(Persona profesor, int idClase);
         Task<List<MateriaResultFullDTO>> _FindMateriasOfClase(Persona profesor, int idClase);
         Task<HorasCatedrasMaterias> FindHorarioMasCercano(Persona profesor, int idClase);
+        Task<HorasCatedrasMaterias> FindHorarioMasCercanoMateria(Persona profesor, int idMateriaLista);
         Task<string> GetHorasOfClaseInDay(Persona profesor, int idClase, string dia);
-
+        Task<string> GetHorasOfMateriaInDay(Persona profesor, int idMateriaLista, string dia);
 
         // horarios de materias en cada clase
         Task<List<HorasCatedrasMaterias>> FindAllHorariosClasesByEmailProfesorAndIdColegio(int idColegio, string email, int anho); 

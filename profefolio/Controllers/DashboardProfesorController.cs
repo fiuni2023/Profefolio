@@ -304,14 +304,17 @@ namespace profefolio.Controllers
 
                            var resultsMaterias = _mapper.Map<List<DBCardMateriasDTO>>(materiasClase);
 
-                        /*foreach (var result in resultsMaterias)
+                        foreach (var result in resultsMaterias)
                         {
-                            var horarioMasCercano = await _dashBoardService.FindHorarioMasCercano(profesor2, dto.Id);
+                            var horarioMasCercano = await _dashBoardService.FindHorarioMasCercanoMateria(profesor2, 
+                            result.Id);
+                            
                             if(horarioMasCercano != null){
-                                resultsMaterias.Horario = _mapper.Map<DBCardClasesHorariosDTO>(horarioMasCercano);
-                                resultsMaterias.Horario.Horas = await _dashBoardService.GetHorasOfClaseInDay(profesor2, dto.Id, horarioMasCercano.Dia);
+                                result.Horario = _mapper.Map<DBCardClasesHorariosDTO>(horarioMasCercano);
+                                result.Horario.Horas = await _dashBoardService.GetHorasOfMateriaInDay(profesor2, 
+                                result.Id, horarioMasCercano.Dia);
                             }
-                        }*/
+                        }
                         
                         return Ok(resultsMaterias);
                     case "cards-materia":
