@@ -72,6 +72,14 @@ namespace profefolio.Helpers.Mappers
                     opt => opt.MapFrom(v => v.HoraCatedra.Inicio))
                 .ForMember(dest => dest.Fin, 
                     opt => opt.MapFrom(v => v.HoraCatedra.Fin));
+
+            CreateMap<Materia, DBCardMateriasDTO>()
+                .ForMember(dest => dest.Id,
+                    opt => opt.MapFrom(v => v.Id))
+                .ForMember(dest => dest.Nombre,
+                    opt => opt.MapFrom(v => v.Nombre_Materia))
+                .ForMember(dest => dest.Horario, 
+                    opt => opt.MapFrom(v => new DBCardClasesHorariosDTO()));
         }
     }
 }

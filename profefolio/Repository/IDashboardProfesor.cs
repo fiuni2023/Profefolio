@@ -10,6 +10,7 @@ namespace profefolio.Repository
     {
         Task<(Persona, List<Clase>)> GetClasesForCardClases(int idColegio, string emailProfesor, int anho);
         Task<List<string>> FindMateriasOfClase(Persona profesor, int idClase);
+        Task<List<Materia>> _FindMateriasOfClase(Persona profesor, int idClase);
         Task<HorasCatedrasMaterias> FindHorarioMasCercano(Persona profesor, int idClase);
         Task<string> GetHorasOfClaseInDay(Persona profesor, int idClase, string dia);
 

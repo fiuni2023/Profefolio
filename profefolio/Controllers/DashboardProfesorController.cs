@@ -23,17 +23,20 @@ namespace profefolio.Controllers
         private IDashboardProfesor _dashBoardService;
         private IColegio _colegioService;
         private IMapper _mapper;
-
+        private readonly IProfesor _profesorService;
         private static int CantPorPage => Constantes.CANT_ITEMS_POR_PAGE;
 
 
-        public DashboardProfesorController(IPersona personaService, IColegioProfesor colegioProfesorService, IDashboardProfesor dashboardProfesor, IColegio colegioService, IMapper mapper)
+        public DashboardProfesorController(IPersona personaService, IColegioProfesor colegioProfesorService, 
+        IDashboardProfesor dashboardProfesor, IColegio colegioService, IMapper mapper,
+        IProfesor profesorService)
         {
             _personaService = personaService;
             _cProfService = colegioProfesorService;
             _colegioService = colegioService;
             _mapper = mapper;
             _dashBoardService = dashboardProfesor;
+            _profesorService = profesorService;
         }
 
         ///<summary>
@@ -289,7 +292,28 @@ namespace profefolio.Controllers
                         return Ok(_mapper.Map<List<DBHorariosClasesCalendarDTO>>(horarios));
 
                     case "card-materias":
-                        return BadRequest("Opcion en implementacion");
+                         //id clase, //anho
+
+                         //anotaciones int
+                         //calificaciones int
+                         //eventos int
+                         //horario: dia, hora, cantidad de horas
+                           var profId = await _profesorService.GetProfesorIdByEmail(userEmail);
+                           var profesor2 = await _personaService.FindById(profId);
+                           var materiasClase = await _dashBoardService._FindMateriasOfClase(profesor2, dto.Id);
+
+                           var resultsMaterias = _mapper.Map<List<DBCardMateriasDTO>>(materiasClase);
+
+                        /*foreach (var result in resultsMaterias)
+                        {
+                            var horarioMasCercano = await _dashBoardService.FindHorarioMasCercano(profesor2, dto.Id);
+                            if(horarioMasCercano != null){
+                                resultsMaterias.Horario = _mapper.Map<DBCardClasesHorariosDTO>(horarioMasCercano);
+                                resultsMaterias.Horario.Horas = await _dashBoardService.GetHorasOfClaseInDay(profesor2, dto.Id, horarioMasCercano.Dia);
+                            }
+                        }*/
+                        
+                        return Ok(resultsMaterias);
                     case "cards-materia":
                         return BadRequest("Opcion en implementacion");
                     case "eventos-clases":
