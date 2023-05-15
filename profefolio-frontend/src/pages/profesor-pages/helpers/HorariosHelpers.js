@@ -10,6 +10,15 @@ const getHorariosColegios = async (token) => {
     });
     return response.status === 200 ? response.data : null
 }
-const HorarioService = { getHorariosColegios }
+
+const getColegiosAndHorarios = async (token) => {
+    const response = await axios.get(`${APILINK}/api/DashboardProfesor/colegios`, {
+        headers: {
+            Authorization: "Bearer " + token,
+        }
+    });
+    return response.status === 200 ? response.data : null
+}
+const HorarioService = { getHorariosColegios, getColegiosAndHorarios }
 
 export default HorarioService

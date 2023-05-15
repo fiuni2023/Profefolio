@@ -43,11 +43,11 @@ const Clases = () => {
         }
     }, [cancan, verifyToken, nav])
 
-    const { setClaseSelectedId, setColegioId } = useClaseContext();
+    const { setClaseSelectedId, /*setColegioId*/ } = useClaseContext();
     useEffect(() => {
-        setColegioId(colegioId)
+        setColegio(colegioId)
         // eslint-disable-next-line no-unused-vars
-    }, [colegioId, setColegioId])
+    }, [colegioId, setColegio])
 
     const doChangeClase = useCallback((data) => {
         setClaseSelectedId(data.id)

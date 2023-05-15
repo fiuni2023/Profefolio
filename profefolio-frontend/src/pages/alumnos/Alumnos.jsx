@@ -19,7 +19,6 @@ const Alumnos = () => {
     const [total_pages, setTotalPages] = useState(0)
     const [selected_student, setSelectedStudent] = useState(null)
 
-
     const [datosTabla, setDatosTabla] = useState({
         tituloTabla: "studentsList",
         titulos: [{ titulo: "CI" }, { titulo: "Nombre" }, { titulo: "Fecha de nacimiento" }, { titulo: "Dirección" }]
@@ -45,7 +44,7 @@ const Alumnos = () => {
         setShow(true)
     }
 
-    const { doFetch } = useFetchEffect(
+    const { doFetch, isLoading, isError} = useFetchEffect(
         () => {
             return StudentHelper.getStudentsPage(currentPage, getToken())
         },
@@ -63,7 +62,7 @@ const Alumnos = () => {
                             datos: [
                                 { dato: dato?.documento ? dato.documento : "" },
                                 { dato: dato?.nombre && dato.apellido ? dato.nombre + " " + dato.apellido : "" },
-                                { dato: dato?.fechaNacimiento ? parseToDate(new Date(dato.fechaNacimiento)) : "" },
+                                { dato: dato?.nacimiento ? parseToDate(new Date(dato.nacimiento)) : "" },
                                 { dato: dato?.direccion ? dato.direccion : "" }]
                         }
                     })
@@ -71,7 +70,9 @@ const Alumnos = () => {
                 })
             },
             handleError: () => {
-                toast.error("No se pudieron obtener los datos. Intente recargar la página")
+                if (!isLoading) {
+                    toast.error('No se pudieron obtener los datos. Intente recargar la página');
+                }
             }
         }
     )
@@ -93,8 +94,11 @@ const Alumnos = () => {
                         <AiOutlinePlus size={"35px"} />
                     </AddButton>
                 </TableContainer >
-                <ModalAlumnos show={show} fetchFunc={doFetch} onHide={handleHideModal} selected_data={selected_student} />
+                <ModalAlumnos show={show} fetchFunc={doFetch} onHide={handleHideModal} selected_data={selected_student} handleExistingStudent={setSelectedStudent} setShow={setShow} />
             </MainContainer >
+            {isError && !isLoading && (
+                toast.error('No se pudieron obtener los datos. Intente recargar la página')
+            )}
         </>
     )
 }

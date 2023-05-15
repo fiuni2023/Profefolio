@@ -445,6 +445,16 @@ namespace TestProfefolio.Clase
                 cicloService.Object,
                 colegioService.Object);
 
+            var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+            {
+                new Claim(ClaimTypes.Name, "user1")
+            }, "mock"));
+
+            controller.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext() { User = user }
+            };
+
             var clase = new profefolio.Models.Entities.Clase()
             {
                 Id = id,
@@ -470,9 +480,11 @@ namespace TestProfefolio.Clase
                     Nombre = "Primer grado"
                 };
 
-            claseService.Setup(c => c.FindById(It.IsAny<int>())).ReturnsAsync(clase);
+            claseService.Setup(c => c.FindByIdAndUser(It.IsAny<int>(), It.IsAny<string>()))
+                .ReturnsAsync(clase);
 
-            mapper.Setup(m => m.Map<ClaseResultDTO>(It.IsAny<List<profefolio.Models.Entities.Clase>>())).Returns(resultClase);
+            mapper.Setup(m => m.Map<ClaseResultDTO>(It.IsAny<List<profefolio.Models.Entities.Clase>>()))
+                .Returns(resultClase);
 
             var result = await controller.GetById(id);
 
@@ -523,12 +535,12 @@ namespace TestProfefolio.Clase
                 CreatedBy = "juan.perez@gmail.com"
             };
 
-            claseService.Setup(c => c.FindById(It.IsAny<int>()));
+            claseService.Setup(c => c.FindByIdAndUser(It.IsAny<int>(), It.IsAny<string>()));
 
             var result = await controller.GetById(id);
 
-            var response = Assert.IsType<NotFoundObjectResult>(result.Result);
-            Assert.Equal("No se encontro la Clase", response.Value);
+            var response = Assert.IsType<BadRequestObjectResult>(result.Result);
+            Assert.Equal("Error durante la busqueda", response.Value);
         }
 
 
