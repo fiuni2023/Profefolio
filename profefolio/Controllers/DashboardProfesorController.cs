@@ -22,18 +22,22 @@ namespace profefolio.Controllers
         private IColegioProfesor _cProfService;
         private IDashboardProfesor _dashBoardService;
         private IColegio _colegioService;
+        private IProfesor _profesorService;
         private IMapper _mapper;
 
         private static int CantPorPage => Constantes.CANT_ITEMS_POR_PAGE;
 
 
-        public DashboardProfesorController(IPersona personaService, IColegioProfesor colegioProfesorService, IDashboardProfesor dashboardProfesor, IColegio colegioService, IMapper mapper)
+        public DashboardProfesorController(IPersona personaService, IColegioProfesor colegioProfesorService, 
+        IDashboardProfesor dashboardProfesor, IColegio colegioService, 
+        IMapper mapper, IProfesor profesorService)
         {
             _personaService = personaService;
             _cProfService = colegioProfesorService;
             _colegioService = colegioService;
             _mapper = mapper;
             _dashBoardService = dashboardProfesor;
+            _profesorService = profesorService;
         }
 
         ///<summary>
@@ -299,7 +303,9 @@ namespace profefolio.Controllers
                     case "lista-alumnos":
                         //id clase
                         //id prf
-                        var clasesA = await _dashBoardService.GetColegioAlumnoId(dto.Id);
+                        
+                        var profId = await _profesorService.GetProfesorIdByEmail(userEmail);
+                        var clasesA = await _dashBoardService.GetColegioAlumnoId(dto.Id, profId);
                         var resultsA = _mapper.Map<List<DBClaseAlumnoColegioDTO>>(clasesA);
 
                         foreach (var result in resultsA)

@@ -79,24 +79,38 @@ namespace profefolio.Services
             return (profesor, clases.DistinctBy(a => a.Id).ToList());
         }
 
-        public async Task<List<ClasesAlumnosColegio>> GetColegioAlumnoId(int idClase)
+        public async Task<List<ClasesAlumnosColegio>> GetColegioAlumnoId(int idClase, string idProfesor)
         {
             var ClaseAlumnosC = await _context.ClasesAlumnosColegios
-                .Where(a => !a.Deleted && a.ClaseId == idClase)
+                .Join(_context.MateriaListas,
+                    cac => cac.ClaseId,
+                    ml => ml.ClaseId,
+                    (cac, ml) => new { ClasesAlumnosColegio = cac, MateriaLista = ml })
+                .Where(a => !a.ClasesAlumnosColegio.Deleted &&
+                            a.ClasesAlumnosColegio.ClaseId == idClase &&
+                            a.MateriaLista.ProfesorId == idProfesor)
+                .Select(a => a.ClasesAlumnosColegio)
+                .Distinct()
                 .ToListAsync();
+            foreach (var item in ClaseAlumnosC)
+            {
+                Console.WriteLine("*******:" + item.ColegiosAlumnosId);
+            }
             return ClaseAlumnosC;
         }
 
-         public async Task<String> FindAlumnoIdByColegioAlumnoId( int idColegiosAlumnos)
-         {
 
-             var idAlumno = await _context.ColegiosAlumnos
-                     .Where(a => !a.Deleted
-                             && a.Id == idColegiosAlumnos)
-                     .FirstOrDefaultAsync();
-            Console.WriteLine("*****idAlumno: " +idAlumno.PersonaId);
-             return idAlumno.PersonaId;
-         }
+
+        public async Task<String> FindAlumnoIdByColegioAlumnoId(int idColegiosAlumnos)
+        {
+
+            var idAlumno = await _context.ColegiosAlumnos
+                    .Where(a => !a.Deleted
+                            && a.Id == idColegiosAlumnos)
+                    .FirstOrDefaultAsync();
+            Console.WriteLine("*****idAlumno: " + idAlumno.PersonaId);
+            return idAlumno.PersonaId;
+        }
         public async Task<List<string>> FindMateriasOfClase(Persona profesor, int idClase)
         {
             return await _context.MateriaListas.Where(a => !a.Deleted
