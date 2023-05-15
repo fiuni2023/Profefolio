@@ -311,14 +311,13 @@ namespace profefolio.Controllers
                         foreach (var result in resultsA)
                         {
                             //a partir del colegioAlumnoId obtener el idAlumno
-                            Console.WriteLine("*********ID colegioAlumno: " + result.Id);
                             var idAlumno = await _dashBoardService.FindAlumnoIdByColegioAlumnoId(result.Id);
                             var alumno = await _personaService.FindById(idAlumno);
                             result.Nombres = alumno.Nombre;
                             result.Apellidos = alumno.Apellido;
                            
                         }
-                        
+                        resultsA = resultsA.OrderBy(r => r.Apellidos).ToList();
                         return Ok(resultsA);
                     case "promedio-puntajes":
                         return BadRequest("Opcion en implementacion");
