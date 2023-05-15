@@ -77,7 +77,7 @@ namespace profefolio.Services
                         .ToListAsync();
 
 
-            return (profesor, clases);
+            return (profesor, clases.DistinctBy(a => a.Id).ToList());
         }
 
 
