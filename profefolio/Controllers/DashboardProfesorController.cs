@@ -297,7 +297,9 @@ namespace profefolio.Controllers
                     case "eventos-materias":
                         return BadRequest("Opcion en implementacion");
                     case "lista-alumnos":
-                        return BadRequest("Opcion en implementacion");
+                        //id clase
+                        //id prf
+                        
                     case "promedio-puntajes":
                         return BadRequest("Opcion en implementacion");
                     case "promedio-asistencias":
