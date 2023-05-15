@@ -76,7 +76,7 @@ namespace profefolio.Services
                         .ToListAsync();
 
 
-            return (profesor, clases);
+            return (profesor, clases.DistinctBy(a => a.Id).ToList());
         }
 
 
@@ -96,8 +96,11 @@ namespace profefolio.Services
                             && a.MateriaLista.ClaseId == idClase)
                         .Include(a => a.HoraCatedra)
                         .ToListAsync();
+            Console.WriteLine($"\n\n\n\ncantidad de horarios:{horas.Count}\n\n\n\n\n");
             
             horas.Sort((a, b) => TimeComparator.MissingMinutes(DateTime.Now, a.Dia, a.HoraCatedra.Inicio) - TimeComparator.MissingMinutes(DateTime.Now, b.Dia, b.HoraCatedra.Inicio));
+            
+            Console.WriteLine($"\n\n\n\ncantidad de horarios ordenados:{horas.Count}\n\n\n\n\n");
             
             return horas.FirstOrDefault();
         }
