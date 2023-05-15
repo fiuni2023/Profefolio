@@ -6,7 +6,7 @@ using AutoMapper;
 using profefolio.Models.DTOs.DashboardProfesor;
 using profefolio.Models.DTOs.DashboardProfesor.GetWithOpcions;
 using profefolio.Models.Entities;
-
+using profefolio.Models.DTOs.Materia;
 namespace profefolio.Helpers.Mappers
 {
     public class DashboardProfesorMapper : Profile
@@ -73,9 +73,9 @@ namespace profefolio.Helpers.Mappers
                 .ForMember(dest => dest.Fin, 
                     opt => opt.MapFrom(v => v.HoraCatedra.Fin));
 
-            CreateMap<Materia, DBCardMateriasDTO>()
+            CreateMap<MateriaResultFullDTO, DBCardMateriasDTO>()
                 .ForMember(dest => dest.Id,
-                    opt => opt.MapFrom(v => v.Id))
+                    opt => opt.MapFrom(v => v.MateriaListaId))
                 .ForMember(dest => dest.Nombre,
                     opt => opt.MapFrom(v => v.Nombre_Materia))
                 .ForMember(dest => dest.Horario, 

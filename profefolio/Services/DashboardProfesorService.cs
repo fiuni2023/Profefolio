@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using profefolio.Helpers;
 using profefolio.Models;
 using profefolio.Models.Entities;
+using profefolio.Models.DTOs.Materia;
 using profefolio.Repository;
 
 namespace profefolio.Services
@@ -88,14 +89,15 @@ namespace profefolio.Services
                         .Select(a => a.Materia.Nombre_Materia).ToListAsync();
         }
 
-        public async Task<List<Materia>> _FindMateriasOfClase(Persona profesor, int idClase)
+        public async Task<List<MateriaResultFullDTO>> _FindMateriasOfClase(Persona profesor, int idClase)
         {
             return await _context.MateriaListas
                 .Where(a => !a.Deleted && profesor.Id.Equals(a.ProfesorId) && a.ClaseId == idClase)
-                .Select(a => new Materia
+                .Select(a => new MateriaResultFullDTO
                 {
                     Id = a.Materia.Id,
-                    Nombre_Materia = a.Materia.Nombre_Materia
+                    Nombre_Materia = a.Materia.Nombre_Materia,
+                    MateriaListaId = a.Id
                     // Asigna los valores de las propiedades restantes si es necesario
                 })
                 .ToListAsync();
