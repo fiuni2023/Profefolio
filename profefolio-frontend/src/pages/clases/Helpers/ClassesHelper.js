@@ -57,6 +57,20 @@ const getMateriasProfesores= async (id, token) => {
   };
 
 
+  const updateMateriaProdesores= async (id, body, token) => {
+    const result = await axios.put(`${APILINK}/api/administrador/materia/profesores/${id}`,
+        body,
+        {
+            headers: {
+                "Authorization": 'Bearer ' + token,
+                "Content-Type": "application/json"
+            },
+
+        })
+    return result
+}
+
+
 
 //
 
@@ -153,5 +167,5 @@ const getProfesores = (token) => {
 
 
 
-const ClassesService = { getClassesPage, getClassesByIdNombre,getClassesById, createClasse, updateClasse, deleteClasse, getProfesoresParaClase ,getProfesores, createMateriaProfesor,getMateriasProfesores}
+const ClassesService = { getClassesPage, updateMateriaProdesores,getClassesByIdNombre,getClassesById, createClasse, updateClasse, deleteClasse, getProfesoresParaClase ,getProfesores, createMateriaProfesor,getMateriasProfesores}
 export default ClassesService
