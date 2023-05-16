@@ -14,5 +14,6 @@ namespace profefolio.Repository
 
         Task<bool> IsProfesorInMateria(int idMateriaLista, string emailProfesor);
         Task<String?> GetProfesorIdByEmail(string userEmail);
+        Task<int> GetColegioIdByProfesorId(string idProfesor);
     }
 }
