@@ -180,11 +180,6 @@ namespace profefolio.Controllers
             {
                 var name = User.Identity.Name;
                 var clase = await _claseService.FindByIdAndUser(id, name);
-                if (clase == null)
-                {
-                    return NotFound("No se ha encontrado la Clase a editar");
-                }
-
                 var ciclo = await _cicloService.FindById(dto.CicloId);
                 if (ciclo == null)
                 {
