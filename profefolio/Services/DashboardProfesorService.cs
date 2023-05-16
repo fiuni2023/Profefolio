@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using profefolio.Helpers;
 using profefolio.Models;
 using profefolio.Models.Entities;
+using profefolio.Models.DTOs.Materia;
 using profefolio.Repository;
 
 namespace profefolio.Services
@@ -76,19 +77,35 @@ namespace profefolio.Services
                         .ToListAsync();
 
 
-            return (profesor, clases);
+            return (profesor, clases.DistinctBy(a => a.Id).ToList());
         }
 
 
         public async Task<List<string>> FindMateriasOfClase(Persona profesor, int idClase)
         {
-            return await _context.MateriaListas.Where(a => !a.Deleted 
-                        && profesor.Id.Equals(a.ProfesorId) 
+            return await _context.MateriaListas.Where(a => !a.Deleted
+                        && profesor.Id.Equals(a.ProfesorId)
                         && a.ClaseId == idClase)
                         .Select(a => a.Materia.Nombre_Materia).ToListAsync();
         }
 
-        public async Task<HorasCatedrasMaterias> FindHorarioMasCercano(Persona profesor, int idClase){
+        public async Task<List<MateriaResultFullDTO>> _FindMateriasOfClase(Persona profesor, int idClase)
+        {
+            return await _context.MateriaListas
+                .Where(a => !a.Deleted && profesor.Id.Equals(a.ProfesorId) && a.ClaseId == idClase)
+                .Select(a => new MateriaResultFullDTO
+                {
+                    Id = a.Materia.Id,
+                    Nombre_Materia = a.Materia.Nombre_Materia,
+                    MateriaListaId = a.Id,
+                    MateriaId = a.Materia.Id
+                    // Asigna los valores de las propiedades restantes si es necesario
+                })
+                .ToListAsync();
+        }
+
+        public async Task<HorasCatedrasMaterias> FindHorarioMasCercano(Persona profesor, int idClase)
+        {
             var horas = await _context.HorasCatedrasMaterias
                         .Where(a => !a.Deleted
                             && a.MateriaLista != null
@@ -96,10 +113,32 @@ namespace profefolio.Services
                             && a.MateriaLista.ClaseId == idClase)
                         .Include(a => a.HoraCatedra)
                         .ToListAsync();
-            
+
             horas.Sort((a, b) => TimeComparator.MissingMinutes(DateTime.Now, a.Dia, a.HoraCatedra.Inicio) - TimeComparator.MissingMinutes(DateTime.Now, b.Dia, b.HoraCatedra.Inicio));
-            
+
             return horas.FirstOrDefault();
+        }
+        public async Task<HorasCatedrasMaterias> FindHorarioMasCercanoMateria(Persona profesor,
+        int idMateriaLista)
+        {
+            var horas = await _context.HorasCatedrasMaterias
+                        .Where(a => !a.Deleted
+                            && a.MateriaLista != null
+                            && profesor.Id.Equals(a.MateriaLista.ProfesorId)
+                            && a.MateriaLista.Id == idMateriaLista)
+                        .Include(a => a.HoraCatedra)
+                        .ToListAsync();
+
+            if (horas.Any())
+            {
+                horas.Sort((a, b) => TimeComparator.MissingMinutes(DateTime.Now, a.Dia, a.HoraCatedra.Inicio) - TimeComparator.MissingMinutes(DateTime.Now, b.Dia, b.HoraCatedra.Inicio));
+
+                return horas.FirstOrDefault();
+            }
+            else
+            {
+                return null;
+            }
         }
         public Task Save()
         {
@@ -116,37 +155,88 @@ namespace profefolio.Services
                     && dia.ToLower().Equals(a.Dia.ToLower()))
                 .Select(a => (DateTime.Parse(a.HoraCatedra.Fin) - DateTime.Parse(a.HoraCatedra.Inicio)).Duration())
                 .ToListAsync();
-            
+
             var horas = new TimeSpan();
-            duraciones.ForEach(a => {
+            duraciones.ForEach(a =>
+            {
                 horas += a;
             });
             var hora = horas.Hours > 0 ? $"{horas.Hours}h" : "";
             var minuto = horas.Minutes > 0 ? $"{horas.Minutes}m" : "";
-            if(hora.Equals("")){
+            if (hora.Equals(""))
+            {
                 return minuto;
-            }else if(minuto.Equals("")){
+            }
+            else if (minuto.Equals(""))
+            {
                 return hora;
-            }else {
+            }
+            else
+            {
                 return $"{hora} {minuto}";
             }
+        }
+
+        public async Task<string> GetHorasOfMateriaInDay(Persona profesor, int idMateriaLista, string dia)
+        {
+            var duraciones = await _context.HorasCatedrasMaterias
+                .Where(a => !a.Deleted
+                    && !a.MateriaLista.Deleted
+                    && profesor.Id.Equals(a.MateriaLista.ProfesorId)
+                    && a.MateriaLista.Id == idMateriaLista
+                    && dia.ToLower().Equals(a.Dia.ToLower()))
+                .Select(a => (DateTime.Parse(a.HoraCatedra.Fin) - DateTime.Parse(a.HoraCatedra.Inicio)).Duration())
+                .ToListAsync();
+
+            var horas = new TimeSpan();
+            duraciones.ForEach(a =>
+            {
+                horas += a;
+            });
+            var hora = horas.Hours > 0 ? $"{horas.Hours}h" : "";
+            var minuto = horas.Minutes > 0 ? $"{horas.Minutes}m" : "";
+            if (hora.Equals(""))
+            {
+                return minuto;
+            }
+            else if (minuto.Equals(""))
+            {
+                return hora;
+            }
+            else
+            {
+                return $"{hora} {minuto}";
+            }
+        }
+
+        public async Task<int> GetEventosOfMateria(string idProfesor, int materia, int idClase)
+        {
+            List<Evento> duraciones = await _context.Eventos
+                .Where(a => !a.Deleted
+                    && idProfesor.Equals(a.ProfesorId)
+                    && materia.Equals(a.MateriaId)
+                    && idClase.Equals(a.ClaseId))
+                .ToListAsync();
+          
+            return duraciones.Count;
         }
 
         public async Task<List<HorasCatedrasMaterias>> FindAllHorariosClasesByEmailProfesorAndIdColegio(int idColegio, string email, int anho)
         {
             var profesor = await _context.Users
-                            .FirstOrDefaultAsync(a => !a.Deleted 
+                            .FirstOrDefaultAsync(a => !a.Deleted
                                 && email.Equals(a.Email)
                                 && a.ColegiosProfesor
-                                    .Any(b => !b.Deleted 
+                                    .Any(b => !b.Deleted
                                         && b.ColegioId == idColegio));
-            if(profesor == null){
+            if (profesor == null)
+            {
                 throw new FileNotFoundException("El usuario no fue encontrado.");
-            } 
+            }
             var result = await _context.HorasCatedrasMaterias
-                            .Where(a => !a.Deleted 
+                            .Where(a => !a.Deleted
                                 && a.MateriaLista != null
-                                && !a.MateriaLista.Deleted 
+                                && !a.MateriaLista.Deleted
                                 && !a.MateriaLista.Clase.Deleted
                                 && a.MateriaLista.Clase.Anho == anho
                                 && profesor.Id.Equals(a.MateriaLista.ProfesorId)
@@ -154,8 +244,8 @@ namespace profefolio.Services
                             .Include(a => a.HoraCatedra)
                             .Include(a => a.MateriaLista)
                             .Include(a => a.MateriaLista.Clase)
-                            .ToListAsync(); 
-            
+                            .ToListAsync();
+
             return result;
         }
     }
