@@ -169,6 +169,9 @@ namespace profefolio.Services
                 .Include(ca => ca.Persona)
                 .Where(ca => !ca.Deleted)
                 .Where(ca => ca.ColegioId == colegio.Id)
+                .OrderBy(ca => ca.Persona.Apellido)
+                .ThenBy(ca => ca.Persona.Nombre)
+                .ThenBy(ca => ca.Persona.Documento)
                 .Skip(cantPerPage * page)
                 .Take(cantPerPage);
 
