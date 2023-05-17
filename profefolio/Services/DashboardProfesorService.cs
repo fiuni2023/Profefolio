@@ -280,12 +280,17 @@ namespace profefolio.Services
             return result;
         }
 
-        public Task<MateriaLista> FindDataForCardOfInfoMateria(int idMateriaLista)
+        public async Task<MateriaLista> FindDataForCardOfInfoMateria(int idMateriaLista, string emailProfesor)
         {
             Console.WriteLine($"\n\n\n\n\n\n\n\n\nHace falta terminar de implementar, ya que falta que se creen todavia las tablas de claificaciones y otros mas parque este completo este servicio \n\n\n\n\n\n\n\n\n");
             
-            return _context.MateriaListas
-                    .FirstOrDefaultAsync(a => !a.Deleted && a.Id == idMateriaLista);
+            var materia = await _context.MateriaListas
+                    .Include(a => a.Profesor)
+                    .FirstOrDefaultAsync(a => !a.Deleted && a.Id == idMateriaLista && emailProfesor.Equals(a.Profesor.Email));
+            if(materia == null){
+                throw new FileNotFoundException("La materia no fue encontrada.");
+            }
+            return materia;
         }
     }
 }

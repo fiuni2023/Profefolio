@@ -22,6 +22,6 @@ namespace profefolio.Repository
         // horarios de materias en cada clase
         Task<List<HorasCatedrasMaterias>> FindAllHorariosClasesByEmailProfesorAndIdColegio(int idColegio, string email, int anho); 
 
-        Task<MateriaLista> FindDataForCardOfInfoMateria(int idMateriaLista);
+        Task<MateriaLista> FindDataForCardOfInfoMateria(int idMateriaLista, string emailProfesor);
     }
 }
