@@ -304,6 +304,35 @@ namespace profefolio.Controllers
         ///     
         /// ***************************************************************************************************************************
         ///
+        /// Caso de Opcion "promedio-asistencias"
+        ///        
+        ///
+        /// Ticket <a href="#">Sin ticket hasta el momento</a>
+        ///     
+        /// Body:
+        ///     
+		///		{
+		///			opcion: "promedio-asistencias",
+		///			id: 1,                              // id materiaLista
+		///			anho: 2023                          
+		///		}      
+        ///     
+        ///     
+        /// Respuesta:
+        ///     
+        ///     [
+		///			{
+		///				mes: "enero",
+		///				presentes: 30.0,
+		///				ausentes: 20.0,
+		///				justificados: 10.0
+		///			}
+		///		]   
+        ///     
+        ///     
+        ///     
+        /// ***************************************************************************************************************************
+        ///
         ///</remarks>
         [HttpGet]
         [Authorize(Roles = "Profesor")]
@@ -389,6 +418,10 @@ namespace profefolio.Controllers
                         return BadRequest("Opcion en implementacion");
                     case "eventos-materias":
                         return BadRequest("Opcion en implementacion");
+
+
+
+
                     case "lista-alumnos":
                         //id clase
                         //id prf
@@ -443,7 +476,43 @@ namespace profefolio.Controllers
 
 
                     case "promedio-asistencias":
-                        return BadRequest("Opcion en implementacion");
+                        /*
+                            TODO
+
+                            HACER QUE SE OBTENGAN LOS VALORES DE LA BASE DE DATOS DESPUES DE QUE SE CREEN LAS 
+                            TABLAS RELACIONADAS A ASISTENCIAS
+                        */
+                        var promediosAsistencias = await _dashBoardService.GetPromediosAsistenciasByIdMateriaAndProfesorEmail(dto.Id, userEmail);
+
+                        var promedioAsistencia1 = new DBPromedioAsistenciasDTO(){
+                            Mes = "Enero",
+                            Presentes = 50,
+                            Ausentes = 10,
+                            Justificados = 40
+                        };
+                        var promedioAsistencia2 = new DBPromedioAsistenciasDTO(){
+                            Mes = "Febrero",
+                            Presentes = 80,
+                            Ausentes = 10,
+                            Justificados = 210
+                        };
+                        var promedioAsistencia3 = new DBPromedioAsistenciasDTO(){
+                            Mes = "Marzo",
+                            Presentes = 90,
+                            Ausentes = 5,
+                            Justificados = 5
+                        };
+                        var promedioAsistencia4 = new DBPromedioAsistenciasDTO(){
+                            Mes = "Abril",
+                            Presentes = 70,
+                            Ausentes = 10,
+                            Justificados = 20
+                        };
+
+                        return Ok(new List<DBPromedioAsistenciasDTO>(){
+                            promedioAsistencia1, promedioAsistencia2, promedioAsistencia3, promedioAsistencia4
+                        });
+
                     default:
                         return BadRequest("Opcion Invalida");
                 }
