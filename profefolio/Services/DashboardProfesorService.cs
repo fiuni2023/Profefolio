@@ -297,9 +297,25 @@ namespace profefolio.Services
         {
             /*
                 TODO 
-                AGREGAR LA IMPLEMENTACION PARA OBTENER EL PROMEDIO DE LOS PUNTAJES CUANDO SE AGREGUE LA TAVLA DE CALIFICACIONES
+                AGREGAR LA IMPLEMENTACION PARA OBTENER EL PROMEDIO DE LOS PUNTAJES CUANDO SE AGREGUE LA TABLA DE CALIFICACIONES
             */
             var result = await _context.MateriaListas.Include(a => a.Profesor).FirstOrDefaultAsync(a => !a.Deleted && a.Id == idMateriaLista && emailProfesor.Equals(a.Profesor.Email));
+
+            if(result == null){
+                throw new FileNotFoundException("La materia no fue encontrada.");
+            }
+            return result;
+        }
+
+        public async Task<MateriaLista> GetPromediosAsistenciasByIdMateriaAndProfesorEmail(int idMateriaLista, string emailProfesor)
+        {
+            /*
+                TODO 
+                AGREGAR LA IMPLEMENTACION PARA OBTENER EL PROMEDIO DE LAS ASISTENCIAS CUANDO SE AGREGUE LA TABLA DE ASISTENCIAS
+            */
+            var result = await _context.MateriaListas
+                            .Include(a => a.Profesor)
+                            .FirstOrDefaultAsync(a => !a.Deleted && a.Id == idMateriaLista && emailProfesor.Equals(a.Profesor.Email));
 
             if(result == null){
                 throw new FileNotFoundException("La materia no fue encontrada.");

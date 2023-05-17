@@ -23,5 +23,6 @@ namespace profefolio.Repository
         Task<List<HorasCatedrasMaterias>> FindAllHorariosClasesByEmailProfesorAndIdColegio(int idColegio, string email, int anho); 
         Task<MateriaLista> FindDataForCardOfInfoMateria(int idMateriaLista, string emailProfesor);
         Task<MateriaLista> GetPromediosPuntajesByIdMateriaLista(int idMateriaLista, string emailProfesor);
+        Task<MateriaLista> GetPromediosAsistenciasByIdMateriaAndProfesorEmail(int idMateriaLista, string emailProfesor);
     }
 }
