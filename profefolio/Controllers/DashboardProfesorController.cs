@@ -380,8 +380,40 @@ namespace profefolio.Controllers
                         }
                         resultsA = resultsA.OrderBy(r => r.Apellidos).ToList();
                         return Ok(resultsA);
+                    
+                    
+                    
                     case "promedio-puntajes":
-                        return BadRequest("Opcion en implementacion");
+                        /*
+                            TODO
+                            
+                            HACER QUE SE OBTENGAN LOS VALORES DE LA BASE DE DATOS DESPUES DE QUE SE CREEN LAS 
+                            TABLAS RELACIONADAS A CALIFICACIONES
+                        */
+                        var promedios = await _dashBoardService.GetPromediosPuntajesByIdMateriaLista(dto.Id, userEmail);
+                        
+                        var promedio1 = new DBPromedioPuntajesDTO(){
+                            Evaluacion = "Prueba 1",
+                            Puntaje = 45.5
+                        };
+                        var promedio2 = new DBPromedioPuntajesDTO(){
+                            Evaluacion = "Prueba 1",
+                            Puntaje = 85.2
+                        };
+                        var promedio3 = new DBPromedioPuntajesDTO(){
+                            Evaluacion = "Prueba 1",
+                            Puntaje = 68.0
+                        };
+                        var promedio4 = new DBPromedioPuntajesDTO(){
+                            Evaluacion = "Prueba 1",
+                            Puntaje = 90.0
+                        };
+                        var listPromedios = new List<DBPromedioPuntajesDTO>(){promedio1, promedio2, promedio3, promedio4};
+                        
+                        return Ok(listPromedios);
+
+
+
                     case "promedio-asistencias":
                         return BadRequest("Opcion en implementacion");
                     default:
