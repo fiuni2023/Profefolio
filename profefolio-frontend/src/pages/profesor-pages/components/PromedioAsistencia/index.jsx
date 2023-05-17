@@ -13,7 +13,7 @@ const PromedioAsistencia = () => {
             },
             title: {
                 display: true,
-                text: 'Chart.js Bar Chart',
+                text: 'Promedio de Asistencias',
             },
         },
     };
