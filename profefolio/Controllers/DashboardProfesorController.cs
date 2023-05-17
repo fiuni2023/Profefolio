@@ -276,6 +276,34 @@ namespace profefolio.Controllers
         ///     
         /// ***************************************************************************************************************************
         ///
+        ///
+        /// Caso de Opcion "promedio-puntajes"
+        ///        
+        ///
+        /// Ticket <a href="#">Sin ticket hasta el momento</a>
+        ///     
+        /// Body:
+        ///     
+		///		{
+		///			opcion: "promedio-puntajes",
+		///			id: 1,                              // id materiaLista
+		///			anho: 2023                          
+		///		}      
+        ///     
+        ///     
+        /// Respuesta:
+        ///     
+        ///     [
+		///			{
+		///				evaluacion: "Pueba 1",
+		///				puntaje: 30.0
+		///			},
+		///		]   
+        ///     
+        ///     
+        ///     
+        /// ***************************************************************************************************************************
+        ///
         ///</remarks>
         [HttpGet]
         [Authorize(Roles = "Profesor")]
@@ -386,7 +414,7 @@ namespace profefolio.Controllers
                     case "promedio-puntajes":
                         /*
                             TODO
-                            
+
                             HACER QUE SE OBTENGAN LOS VALORES DE LA BASE DE DATOS DESPUES DE QUE SE CREEN LAS 
                             TABLAS RELACIONADAS A CALIFICACIONES
                         */
