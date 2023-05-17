@@ -158,7 +158,11 @@ namespace profefolio.Services
                 .FirstOrDefaultAsync(p => p.Email == userEmail);
             return profesor?.Id;
         }
-
+        public async Task<int> GetColegioIdByProfesorId(string idProfesor) {
+            var colegio = await _context.ColegiosProfesors
+                .FirstOrDefaultAsync(p => p.PersonaId == idProfesor);
+            return colegio.Id;
+        }
         public async Task<bool> IsProfesorInMateria(int idMateriaLista, string emailProfesor)
         {
             return await _context
