@@ -295,6 +295,10 @@ namespace profefolio.Services
 
         public async Task<MateriaLista> GetPromediosPuntajesByIdMateriaLista(int idMateriaLista, string emailProfesor)
         {
+            /*
+                TODO 
+                AGREGAR LA IMPLEMENTACION PARA OBTENER EL PROMEDIO DE LOS PUNTAJES CUANDO SE AGREGUE LA TAVLA DE CALIFICACIONES
+            */
             var result = await _context.MateriaListas.Include(a => a.Profesor).FirstOrDefaultAsync(a => !a.Deleted && a.Id == idMateriaLista && emailProfesor.Equals(a.Profesor.Email));
 
             if(result == null){
