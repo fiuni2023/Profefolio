@@ -1,6 +1,7 @@
 import React from 'react'
 import { SBody, SCard, SHeader } from '../../../../components/componentsStyles/StyledDashComponent'
 import { Col, Row } from 'react-bootstrap'
+import styled from 'styled-components';
 
 const EventTagDiv = styled.div`
     display: flex;
