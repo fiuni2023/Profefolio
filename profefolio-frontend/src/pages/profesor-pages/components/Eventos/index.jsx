@@ -1,24 +1,73 @@
 import React from 'react'
+import { SBody, SCard, SHeader } from '../../../../components/componentsStyles/StyledDashComponent'
+import { Col, Row } from 'react-bootstrap'
 
-const Eventos = () => {
+const EventTagDiv = styled.div`
+    display: flex;
+    align-items: center;
+
+`;
+
+const ColorDot = styled.div`
+    display: flex;
+    align-items: center;
+    background-color: ${props => props.color ?? "red"};
+`;
+
+const EventText = styled.div`
+    margin: 0;
+    font-weight: 600;
+
+`;
+
+const GridDiv = styled.div`
+    display: grid;
+    grid-template-columns: 23% 23% 23% 23%;
+    gap: 1%;
+`;
+
+
+const Eventos = ({
+    lista_de_eventos = [],
+    key_colors = []
+}) => {
     return <>
-        <div className="container-visualizacion">
-            Eventos
-        </div>
-
-        {/* <style jsx="true">
-            {
-                `
-                    .container-visualizacion{
-                        border: 1px solid black;
-                        border-radius: 20px;
-                        background-color: rgb(238, 238, 238)
-                        min-height: 300px;
-                    }
-                `
-            }
-        </style> */}
+        <SCard>
+            <SHeader>Eventos</SHeader>
+            <SBody>
+                    <Row>
+                        <Col>
+                        
+                        </Col>
+                    </Row>
+                    <Row>
+                        <GridDiv>
+                            {lista_de_eventos.map((evento,i)=>{
+                                return (<EventTag />)
+                            })}
+                        </GridDiv>
+                    </Row>
+            </SBody>
+        </SCard>
     </>
 }
+
+
+
+const EventTag = ({
+    color = "",
+    evento = {id: 1, texto: "algo"}
+}) => {
+    console.log(evento)
+
+    return(
+        <EventTagDiv>
+            <ColorDot color={color} />
+            <EventText>{evento.texto}</EventText>
+        </EventTagDiv>
+    )
+}
+
+
 
 export default Eventos
