@@ -279,5 +279,13 @@ namespace profefolio.Services
 
             return result;
         }
+
+        public Task<MateriaLista> FindDataForCardOfInfoMateria(int idMateriaLista)
+        {
+            Console.WriteLine($"\n\n\n\n\n\n\n\n\nHace falta terminar de implementar, ya que falta que se creen todavia las tablas de claificaciones y otros mas parque este completo este servicio \n\n\n\n\n\n\n\n\n");
+            
+            return _context.MateriaListas
+                    .FirstOrDefaultAsync(a => !a.Deleted && a.Id == idMateriaLista);
+        }
     }
 }
