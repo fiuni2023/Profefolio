@@ -245,6 +245,37 @@ namespace profefolio.Controllers
         ///     
         ///     
         /// ***************************************************************************************************************************
+        ///
+        /// Caso de Opcion "cards-materia"
+        ///        
+        ///
+        /// Ticket <a href="#">Sin ticket hasta el momento</a>
+        ///     
+        /// Body:
+        ///     
+		///		{
+		///			opcion: "cards-materia",
+		///			id: 1,                              // id materiaLista
+		///			anho: 2023                          
+		///		}      
+        ///     
+        ///     
+        /// Respuesta:
+        ///     
+        ///     {
+		///			anotaciones: 25,
+		///			calificaciones: { 
+		///				calificaciones:	4,
+		///				sinCalificaciones: 3
+		///			},
+		///			asistencias: 8,
+		///			documentos: 4
+		///		}    
+        ///     
+        ///     
+        ///     
+        /// ***************************************************************************************************************************
+        ///
         ///</remarks>
         [HttpGet]
         [Authorize(Roles = "Profesor")]
