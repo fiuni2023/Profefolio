@@ -292,5 +292,15 @@ namespace profefolio.Services
             }
             return materia;
         }
+
+        public async Task<MateriaLista> GetPromediosPuntajesByIdMateriaLista(int idMateriaLista, string emailProfesor)
+        {
+            var result = await _context.MateriaListas.Include(a => a.Profesor).FirstOrDefaultAsync(a => !a.Deleted && a.Id == idMateriaLista && emailProfesor.Equals(a.Profesor.Email));
+
+            if(result == null){
+                throw new FileNotFoundException("La materia no fue encontrada.");
+            }
+            return result;
+        }
     }
 }
