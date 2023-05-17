@@ -66,8 +66,12 @@ const getMateriasProfesores= async (id, token) => {
                 "Content-Type": "application/json"
             },
 
-        })
+        }
+        )
+
+        console.log(result);
     return result
+    console.log(result);
 }
 
 
