@@ -24,11 +24,11 @@ namespace profefolio.Controllers
         private IColegio _colegioService;
         private IProfesor _profesorService;
         private IMapper _mapper;
-      
+
         private static int CantPorPage => Constantes.CANT_ITEMS_POR_PAGE;
 
 
-        public DashboardProfesorController(IPersona personaService, IColegioProfesor colegioProfesorService, 
+        public DashboardProfesorController(IPersona personaService, IColegioProfesor colegioProfesorService,
         IDashboardProfesor dashboardProfesor, IColegio colegioService, IMapper mapper,
         IProfesor profesorService)
         {
@@ -280,12 +280,13 @@ namespace profefolio.Controllers
                         {
                             result.Materias = await _dashBoardService.FindMateriasOfClase(profesor, result.Id);
                             var horarioMasCercano = await _dashBoardService.FindHorarioMasCercano(profesor, result.Id);
-                            if(horarioMasCercano != null){
+                            if (horarioMasCercano != null)
+                            {
                                 result.Horario = _mapper.Map<DBCardClasesHorariosDTO>(horarioMasCercano);
                                 result.Horario.Horas = await _dashBoardService.GetHorasOfClaseInDay(profesor, result.Id, horarioMasCercano.Dia);
                             }
                         }
-                        
+
                         return Ok(results);
 
                     case "horarios-clases":
@@ -293,32 +294,38 @@ namespace profefolio.Controllers
                         return Ok(_mapper.Map<List<DBHorariosClasesCalendarDTO>>(horarios));
 
                     case "card-materias":
-                         //id clase, //anho
+                        //id clase, //anho
 
-                           var profId = await _profesorService.GetProfesorIdByEmail(userEmail);
-                           var profesor2 = await _personaService.FindById(profId);
-                           var materiasClase = await _dashBoardService._FindMateriasOfClase(profesor2, dto.Id);
+                        var profId = await _profesorService.GetProfesorIdByEmail(userEmail);
+                        var profesor2 = await _personaService.FindById(profId);
+                        var materiasClase = await _dashBoardService._FindMateriasOfClase(profesor2, dto.Id);
 
-                           var resultsMaterias = _mapper.Map<List<DBCardMateriasDTO>>(materiasClase);
-                           
+                        var resultsMaterias = _mapper.Map<List<DBCardMateriasDTO>>(materiasClase);
+
                         foreach (var result in resultsMaterias)
                         {
-                            result.Eventos = await _dashBoardService.GetEventosOfMateria(profId, 
+                            result.Eventos = await _dashBoardService.GetEventosOfMateria(profId,
                             result.MateriaId, dto.Id);
 
-                            var horarioMasCercano = await _dashBoardService.FindHorarioMasCercanoMateria(profesor2, 
+                            var horarioMasCercano = await _dashBoardService.FindHorarioMasCercanoMateria(profesor2,
                             result.Id);
-                           
-                            if(horarioMasCercano != null){
+
+                            if (horarioMasCercano != null)
+                            {
                                 result.Horario = _mapper.Map<DBCardClasesHorariosDTO>(horarioMasCercano);
-                                result.Horario.Horas = await _dashBoardService.GetHorasOfMateriaInDay(profesor2, 
+                                result.Horario.Horas = await _dashBoardService.GetHorasOfMateriaInDay(profesor2,
                                 result.Id, horarioMasCercano.Dia);
                             }
                         }
-                        
+
                         return Ok(resultsMaterias);
+
+
                     case "cards-materia":
-                        return BadRequest("Opcion en implementacion");
+                        var materia = await _dashBoardService.FindDataForCardOfInfoMateria(dto.Id, userEmail);
+                        return Ok(_mapper.Map<DBCardsMateriaInfo>(materia));
+
+
                     case "eventos-clases":
                         return BadRequest("Opcion en implementacion");
                     case "eventos-materias":
@@ -326,7 +333,7 @@ namespace profefolio.Controllers
                     case "lista-alumnos":
                         //id clase
                         //id prf
-                        
+
                         var _profId = await _profesorService.GetProfesorIdByEmail(userEmail);
                         var clasesA = await _dashBoardService.GetColegioAlumnoId(dto.Id, _profId);
                         var resultsA = _mapper.Map<List<DBClaseAlumnoColegioDTO>>(clasesA);
@@ -338,7 +345,7 @@ namespace profefolio.Controllers
                             var alumno = await _personaService.FindById(idAlumno);
                             result.Nombres = alumno.Nombre;
                             result.Apellidos = alumno.Apellido;
-                           
+
                         }
                         resultsA = resultsA.OrderBy(r => r.Apellidos).ToList();
                         return Ok(resultsA);
@@ -350,7 +357,8 @@ namespace profefolio.Controllers
                         return BadRequest("Opcion Invalida");
                 }
             }
-            catch(FileNotFoundException e){
+            catch (FileNotFoundException e)
+            {
                 Console.WriteLine($"{e}");
                 return NotFound(e.Message);
             }
