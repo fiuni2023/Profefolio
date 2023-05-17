@@ -103,7 +103,7 @@ const ProfesorPage = () => {
                 <ContainerColegios onClick={handleClickCards} lista={staticClases}/>
             </SRow>,
             <Horarios/>,
-            <Eventos/>
+            <Eventos has_clase={true} has_colegio={true} />
         ]
     };
     return <>

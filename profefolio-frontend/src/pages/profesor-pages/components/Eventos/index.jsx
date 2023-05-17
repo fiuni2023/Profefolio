@@ -2,17 +2,23 @@ import React from 'react'
 import { SBody, SCard, SHeader } from '../../../../components/componentsStyles/StyledDashComponent'
 import { Col, Row } from 'react-bootstrap'
 import styled from 'styled-components';
+import EventosTabla from '../EventosTabla';
 
 const EventTagDiv = styled.div`
     display: flex;
     align-items: center;
-
+    gap: 5px;
+    margin-top: 15%;
+    justify-content: center;
 `;
 
 const ColorDot = styled.div`
     display: flex;
     align-items: center;
     background-color: ${props => props.color ?? "red"};
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
 `;
 
 const EventText = styled.div`
@@ -23,28 +29,53 @@ const EventText = styled.div`
 
 const GridDiv = styled.div`
     display: grid;
-    grid-template-columns: 23% 23% 23% 23%;
+    grid-template-columns: 25% 25% 25% 25%;
     gap: 1%;
+    font-size: 10px;
 `;
 
 
 const Eventos = ({
     lista_de_eventos = [],
-    key_colors = []
+    key_colors = [],
+    has_colegio = false,
+    has_clase = false
 }) => {
+    const tipos_eventos = [
+        {
+            id: 1,
+            texto: "Evento",
+            color: "#C8BFD9"
+        },
+        {
+            id: 2,
+            texto: "Parcial",
+            color: "#C1E1FA"
+        },
+        {
+            id: 3,
+            texto: "Prueba Sumativa",
+            color: "#FCC6AC"
+        },
+        {
+            id: 4,
+            texto: "Examen",
+            color: "#F6E7A7"
+        }
+    ]
     return <>
         <SCard>
             <SHeader>Eventos</SHeader>
             <SBody>
                     <Row>
                         <Col>
-                        
+                            <EventosTabla has_colegio={has_colegio} has_clase={has_clase} />
                         </Col>
                     </Row>
                     <Row>
                         <GridDiv>
-                            {lista_de_eventos.map((evento,i)=>{
-                                return (<EventTag />)
+                            {tipos_eventos.map((tipo,i)=>{
+                                return (<EventTag key={i} tipo={tipo} />)
                             })}
                         </GridDiv>
                     </Row>
@@ -56,15 +87,13 @@ const Eventos = ({
 
 
 const EventTag = ({
-    color = "",
-    evento = {id: 1, texto: "algo"}
+    tipo = {id:0, color: "", texto: ""}
 }) => {
-    console.log(evento)
 
     return(
         <EventTagDiv>
-            <ColorDot color={color} />
-            <EventText>{evento.texto}</EventText>
+            <ColorDot color={tipo?.color} />
+            <EventText>{tipo?.texto}</EventText>
         </EventTagDiv>
     )
 }

@@ -6,6 +6,7 @@ import { SRow } from "../../../../components/componentsStyles/StyledDashComponen
 import { useGeneralContext } from "../../../../context/GeneralContext";
 import { useModularContext } from "../../context";
 import ShowContainer from "../../../clases/components/ShowContainer";
+import BackButton from "../../components/BackButton";
 
 const ProfesorClase = () => {
     const {getUserName} = useGeneralContext()
@@ -109,6 +110,7 @@ const ProfesorClase = () => {
     };
     return (
         <>
+            <BackButton to="dashboard" />
             <ShowContainer data={componentes}/>
         </>
     )

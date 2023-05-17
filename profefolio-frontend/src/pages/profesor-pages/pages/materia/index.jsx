@@ -6,6 +6,7 @@ import ShowContainer from "../../../clases/components/ShowContainer";
 import PromedioPuntaje from "../../components/PromedioPuntaje";
 import PromedioAsistencia from "../../components/PromedioAsistencia";
 import MateriaCards from "../../components/MateriaCards";
+import BackButton from "../../components/BackButton";
 
 const ProfesorMateria = () => {
     const {getUserName} = useGeneralContext()
@@ -31,7 +32,8 @@ const ProfesorMateria = () => {
         ]
     };
     return (
-        <>
+        <>  
+            <BackButton to="clase" />
             <ShowContainer data={componentes}/>
         </>
     )
