@@ -17,14 +17,6 @@ namespace profefolio.Services
             _db = db;
         }
 
-       
-
-        public MateriaLista Edit(MateriaLista t)
-        {
-            _db.Entry(t).State = EntityState.Modified;
-            return t;
-        }
-
         public bool Exist()
         {
             throw new NotImplementedException();
