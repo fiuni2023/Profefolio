@@ -12,13 +12,13 @@ const ProfesorMateriaShow = () => {
     const {getUserName} = useGeneralContext()
     const {setPage} = useModularContext()
 
-    const handleClickCards = () => {
-        setPage("dashboard")
-    }
+    // const handleClickCards = () => {
+    //     setPage("dashboard")
+    // }
 
 
     const config = {
-        onAnotation: handleClickCards
+        onAnotation: ()=>setPage("anotaciones")
     }
 
     const componentes = {

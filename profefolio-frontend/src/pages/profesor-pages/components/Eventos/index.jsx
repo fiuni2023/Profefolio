@@ -82,7 +82,7 @@ const Eventos = ({
             </SBody>
         </SCard>
     </>
-})
+}
 
 
 
