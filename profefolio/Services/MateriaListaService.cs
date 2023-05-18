@@ -167,5 +167,10 @@ namespace profefolio.Services
 
             throw new BadHttpRequestException("El usuario no tienen acceso");
         }
+
+        public Task<bool> Put(string idUser, MateriaListaPutDTO dto)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
