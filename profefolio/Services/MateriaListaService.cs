@@ -17,18 +17,6 @@ namespace profefolio.Services
             _db = db;
         }
 
-       
-
-        public async Task<MateriaLista> FindById(int id)
-        {
-            var query = await _db.MateriaListas
-                .FirstOrDefaultAsync(p => p.Id == id && !p.Deleted);
-
-            if (query == null) throw new FileNotFoundException();
-
-            return query;
-        }
-
         public IEnumerable<MateriaLista> GetAll(int page, int cantPorPag)
         {
             return _db.MateriaListas
