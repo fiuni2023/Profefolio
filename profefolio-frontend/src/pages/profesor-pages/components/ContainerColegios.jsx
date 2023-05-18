@@ -36,19 +36,38 @@ const ContainerColegios = ({
             },
             body: {
                 first: {
-                    title: objeto?.clases ? `${objeto?.clases?.length} clases: ` : objeto?.materias? `${objeto?.materias?.length} Materias: ` : "",
+
+                    title: objeto?.clases ? 
+                    `${objeto?.clases?.length} clases: ` 
+                    : 
+                    objeto?.materias? 
+                    `${objeto?.materias?.length} Materias: ` 
+                    :
+                    objeto?.materia_anotaciones?
+                    `${objeto.materia_anotaciones} Anotaciones`
+                    :
+                    "",
+
                     subtitle: 
                         objeto?.clases ? `${map(objeto?.clases, (clase) => `${clase.nombre}`).join(", ")}` 
                         : 
                         objeto?.materias? getMateriasSubtitle(objeto?.materias)
                         :
-                        ""
+                        null
                 },
                 second: objeto?.alumnos ? {
                     title: `${objeto.alumnos} Alumnos`
                 }
                 :
+                objeto?.materia_calif?
+                {
+                    title: `${objeto.materia_calif} Calificaciones`
+                }
+                :
                 null,
+                third: objeto?.materia_evento ? {
+                    title: `${objeto.materia_evento} Eventos`
+                }:null,
                 schedule: {
                     main: `${map(objeto?.horario, (h) => `${h.dia} ${new Date(h.hora).toLocaleTimeString("en-EN", {
                         hour12: true,

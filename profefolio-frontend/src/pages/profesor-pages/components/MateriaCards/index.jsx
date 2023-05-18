@@ -38,7 +38,7 @@ const MateriaCards = ({
         hover: true,
         action: onAnotation,
         header: {
-            title: `Anotaciones`,
+            title: `Calificaciones`,
         },
         body: {
             first: {
