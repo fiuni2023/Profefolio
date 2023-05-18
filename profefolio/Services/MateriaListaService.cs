@@ -171,6 +171,7 @@ namespace profefolio.Services
         public async Task<bool> Put(string email, MateriaListaPutDTO dto)
         {
             var user =  await _db.Users
+                .Where(u => !u.Deleted)
                 .Where(u => u.Email.Equals(email))
                 .FirstOrDefaultAsync();
 
@@ -179,7 +180,32 @@ namespace profefolio.Services
                 throw new UnauthorizedAccessException();
             }
 
+            var colegio = await _db.Colegios
+                .Include(c => c.personas)
+                .Where(c => !c.Deleted)
+                .Where(c => c.personas != null && c.personas.Id.Equals(user.Id))
+                .FirstOrDefaultAsync();
+
             
+            if(colegio == null)
+            {
+                throw new UnauthorizedAccessException();
+            }
+
+            var clase = await _db.Clases
+                .Where(c => !c.Deleted)
+                .Where(c => c.Id == dto.IdClase)
+                .Where(c => c.ColegioId == colegio.Id)
+                .FirstOrDefaultAsync();
+
+            if(clase == null)
+            {
+                throw new UnauthorizedAccessException();
+            }
+
+            
+
+
             throw new NotImplementedException();
         }
     }
