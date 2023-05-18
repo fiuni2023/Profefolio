@@ -2,7 +2,7 @@ import axios from "axios";
 import APILINK from "../../../components/link";
 
 const getStudentsPage = async (page, token) => {
-    const result = await axios.get(`${APILINK}/api/ColegiosAlumnos/page/${page}`,
+    const result = await axios.get(`${APILINK}/api/ColegiosAlumnos/all/page/${page}`,
         {
             headers: {
                 Authorization: 'Bearer ' + token
@@ -41,7 +41,7 @@ const createStudent = async (body, token) => {
             },
 
         })
-    return result.status === 200 ? result : null
+    return result.status === 200 || result.status === 230 ? result : null
 }
 
 const updateStudent = async (id, body, token) => {
@@ -58,7 +58,7 @@ const updateStudent = async (id, body, token) => {
 }
 
 const deleteStudent = async (id, token) => {
-    const result = await axios.delete(`${APILINK}/api/alumnos/${id}`,
+    const result = await axios.delete(`${APILINK}/api/colegiosalumnos/${id}`,
         {
             headers: {
                 "Authorization": 'Bearer ' + token,
@@ -81,5 +81,18 @@ const updateStudentsList = async (body, token) => {
     return result.status === 200 ? result : null
 }
 
-const StudentsService = { getStudentsPage, getAllNotClassStudents, createStudent, updateStudent, deleteStudent, getAllClassStudents, updateStudentsList }
+const addStudentToSchool = async (body, token) =>{
+    const result = await axios.post(`${APILINK}/api/ColegiosAlumnos`,
+        body,
+        {
+            headers: {
+                "Authorization": 'Bearer ' + token,
+                "Content-Type": "application/json"
+            },
+
+        })
+    return result.status === 200 ? result : null
+}
+
+const StudentsService = { getStudentsPage, getAllNotClassStudents, createStudent, updateStudent, deleteStudent, getAllClassStudents, updateStudentsList, addStudentToSchool }
 export default StudentsService

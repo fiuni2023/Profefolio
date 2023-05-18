@@ -115,6 +115,43 @@ namespace profefolio.Services
                     .ToListAsync();
         }
 
+        public async Task<(List<ColegioProfesor>, List<Clase>, List<HorasCatedrasMaterias>)> FindAllClases(string emailProfesor = "")
+        {
+            /*
+                se buscan los colegios en donde el profesor tenga clases en el anho actual y 
+                los horarios que correspondan a las clases del anho actual
+            */
+            var colegios = await _context.ColegiosProfesors
+                    .Where(a => !a.Deleted 
+                        && emailProfesor.Equals(a.Persona.Email)
+                        && a.Colegio.ListaClases.Where(b => !b.Deleted && b.Anho == DateTime.Now.Year).Any())
+                    .Include(a => a.Colegio)
+                    .Include(a => a.Colegio.ListaClases)
+                    .ToListAsync();
+
+            var clases = await _context.Clases
+                .Where(a => !a.Deleted 
+                    && a.Colegio.ColegioProfesores.Any(c => !c.Deleted && emailProfesor.Equals(c.Persona.Email))
+                    && a.MateriaListas.Any(m => !m.Deleted && !m.Profesor.Deleted && emailProfesor.Equals(m.Profesor.Email)))
+                .ToListAsync();
+
+            var horarios = await _context.HorasCatedrasMaterias
+                    .Where(a => !a.Deleted 
+                        && !a.MateriaLista.Deleted 
+                        && !a.MateriaLista.Profesor.Deleted 
+                        && emailProfesor.Equals(a.MateriaLista.Profesor.Email)
+                        //&& clases.Any(c => c.Id == a.MateriaLista.ClaseId)
+                        && a.MateriaLista.Clase.Anho == DateTime.Now.Year)
+                    .Include(a => a.HoraCatedra)
+                    .Include(a => a.MateriaLista)
+                    .ToListAsync();
+                
+                    return (colegios, clases, horarios);
+                
+            
+            throw new FileNotFoundException("No se tienen Clases asignadas en ningun Colegio.");
+        }
+
         public async Task<ColegioProfesor> FindById(int id)
         {
             return await _context

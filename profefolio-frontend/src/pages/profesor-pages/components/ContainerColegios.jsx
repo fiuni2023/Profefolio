@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { map } from "lodash"
 import Card from '../../../components/Card'
 import { SRow } from '../../../components/componentsStyles/StyledDashComponent'
-
+import HorarioService from '../helpers/HorariosHelpers'
+import { useGeneralContext } from '../../../context/GeneralContext'
 
 
 const ContainerColegios = ({
@@ -10,12 +11,16 @@ const ContainerColegios = ({
     lista = []
 }) => {
 
+    const { getToken } = useGeneralContext();
+    const [horariosColegios, setHorariosColegios] = useState([]);
+
+
     const getColor = (pos) => {
         const colores = ["yellow", "blue", "purple", "orange"]
         // se obtienen siempre colores de las posiciones dentro del rango del array
         return colores[Math.abs(colores.length - pos) % (colores.length - 1)]
     }
-
+    
     const getMateriasSubtitle = (materias = []) =>{
         let materiaLista = materias.length > 3? materias.slice(0,3) : materias
         return materias.length > 3? 
@@ -36,7 +41,6 @@ const ContainerColegios = ({
             },
             body: {
                 first: {
-
                     title: objeto?.clases ? 
                     `${objeto?.clases?.length} clases: ` 
                     : 

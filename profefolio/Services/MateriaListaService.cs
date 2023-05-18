@@ -181,7 +181,7 @@ namespace profefolio.Services
 
                     profeSimple.Apellido = profesor.Apellido;
                     profeSimple.IdProfesor = profesor.Id;
-                    profeSimple.Nombre = profesor.Apellido;
+                    profeSimple.Nombre = profesor.Nombre;
 
                     profesorSimpleList.Add(profeSimple);
                 }
@@ -354,7 +354,9 @@ namespace profefolio.Services
                 throw new BadHttpRequestException("Accion no valida");
             }
 
-            foreach (var item in dto.IdProfesores.Distinct())
+            var itemDistinct = dto.IdProfesores.Distinct();
+
+            foreach (var item in itemDistinct)
             {
                 var p = await _db.Users
                     .FirstOrDefaultAsync(x => !x.Deleted && x.Id.Equals(item));
@@ -377,37 +379,21 @@ namespace profefolio.Services
                 }
                 var listaDetalle = await Find(dto.IdClase, item, dto.IdMateria, user);
 
-                if (listaDetalle == null)
+                if (listaDetalle != null)
                 {
-                    await _db.MateriaListas.AddAsync(new MateriaLista
-                    {
-                        ClaseId = dto.IdClase,
-                        ProfesorId = item,
-                        MateriaId = dto.IdMateria,
-                        Created = DateTime.Now,
-                        CreatedBy = user
-                    });
+                    _db.MateriaListas.Remove(listaDetalle);
                 }
-                else
-                {
-                    listaDetalle.ClaseId = dto.IdClase;
-                    listaDetalle.MateriaId = dto.IdMateria;
-                    listaDetalle.ProfesorId = item;
-                    listaDetalle.ModifiedBy = "user";
-                    listaDetalle.Modified = DateTime.Now;
-                }
+            }
 
-                try
+            try
                 {
+            
                     await this.Save();
                 }
                 catch (Exception e)
                 {
                     return false;
                 }
-
-
-            }
             return true;
         }
 
