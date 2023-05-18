@@ -161,50 +161,7 @@ namespace profefolio.Services
             return result;
         }
 
-        public async Task<bool> DeleteByIdClase(int idClase, string user)
-        {
-            try
-            {
-                var colegio = await _db.Colegios
-                .Include(c => c.personas)
-                .Where(c => !c.Deleted)
-                .Where(c => c.personas.Email.Equals(user))
-                .FirstOrDefaultAsync();
-
-                if (colegio == null)
-                {
-                    throw new BadHttpRequestException("Accion no valida");
-                }
-                var clase = await _db.Clases
-                    .Include(c => c.MateriaListas)
-                    .Where(c => !c.Deleted)
-                    .Where(c => c.Id == idClase)
-                    .FirstOrDefaultAsync();
-
-                if (clase == null || (colegio.Id != clase.ColegioId) || clase.MateriaListas == null)
-                {
-                    throw new FileNotFoundException();
-                }
-
-                foreach (var item in clase.MateriaListas)
-                {
-
-                    _db.MateriaListas.Remove(item);
-
-                }
-
-                await _db.SaveChangesAsync();
-                return true;
-
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                return false;
-            }
-
-
-        }
+        
 
         public async Task<bool> SaveMateriaLista(ClaseMateriaCreateDTO dto, string user)
         {
