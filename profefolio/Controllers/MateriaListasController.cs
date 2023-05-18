@@ -91,16 +91,16 @@ namespace profefolio.Controllers
 
 
         [HttpPut]
-        [Route("{idClase:int}")]
-        public async Task<ActionResult> Put(int idClase, [FromBody] ClaseMateriaEditDTO dto)
+        public async Task<ActionResult> Put([FromBody] ClaseMateriaEditDTO dto)
         {
+            
             var user = User.Identity.Name;
             try
             {
                 var query = await _materiaListaService.EditMateriaLista(dto, user);
                 if (query) return Ok();
             }
-            catch (FileNotFoundException e)
+            catch (FileNotFoundException)
             {
                 return NotFound();
             }
@@ -108,7 +108,7 @@ namespace profefolio.Controllers
             {
                 return BadRequest(e.Message);
             }
-            catch (UnauthorizedAccessException e)
+            catch (UnauthorizedAccessException)
             {
                 return Unauthorized();
             }
