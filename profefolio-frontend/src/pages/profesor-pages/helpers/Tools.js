@@ -18,7 +18,7 @@ const compararStringsSinAcentos = function (str1, str2) {
 };
 
 
-const getColors = (color) => {
+const SelectColor = (color) => {
     switch (color) {
         case "bluesky":
             return "#C1E1FA";
@@ -50,14 +50,14 @@ const GetColors = (idElement) => {
     const value = find(idsWithColor, a => a.id === idElement)
 
     if (!!value) {
-        return getColors(value.colorName)
+        return SelectColor(value.colorName)
     }
     else {
         const colorName = listColorsName[idsWithColor.length]
         const colorElement = { id: idElement, colorName: colorName }
         idsWithColor.push(colorElement)
 
-        return getColors(colorName)
+        return SelectColor(colorName)
     }
 }
 
@@ -94,6 +94,21 @@ const MapperHorariosByColegio = (eventos) => {
     })
 }
 
-const Tools = { compararStringsSinAcentos, GetColors, MapperHorariosByColegio }
+const GetColorEvento = (evento = "") => {
+    switch (evento.toLowerCase()) {
+        case "evento":
+            return SelectColor("purple");
+        case "examen":
+            return SelectColor("yellow");
+        case "parcial":
+            return SelectColor("bluesky");
+        case "prueba sumativa":
+            return SelectColor("salmon");
+        default:
+            return "#DDDDDD";
+    }
+}
+
+const Tools = { compararStringsSinAcentos, GetColors, MapperHorariosByColegio, SelectColor, GetColorEvento}
 
 export default Tools

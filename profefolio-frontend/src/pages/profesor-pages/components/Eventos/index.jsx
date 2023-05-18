@@ -1,24 +1,27 @@
-import React from 'react'
+import React, { memo } from 'react'
+import { SBody, SCard, SHeader } from '../../../../components/componentsStyles/StyledDashComponent'
+import { ListTypeEvent } from '../ComponentStyles/ComponentsEvent';
+import { TableEvents } from './TableEvents'
+import TagEvent from './TagEvent.jsx';
 
-const Eventos = () => {
+
+
+
+const Eventos = memo(() => {
     return <>
-        <div className="container-visualizacion">
-            Eventos
-        </div>
-
-        {/* <style jsx="true">
-            {
-                `
-                    .container-visualizacion{
-                        border: 1px solid black;
-                        border-radius: 20px;
-                        background-color: rgb(238, 238, 238)
-                        min-height: 300px;
-                    }
-                `
-            }
-        </style> */}
+        <SCard>
+            <SHeader>Proximos Eventos</SHeader>
+            <SBody style={{ height: "430px" }}>
+                <TableEvents />
+                <ListTypeEvent>
+                    <TagEvent name={"Evento"} />
+                    <TagEvent name={"Parcial"} />
+                    <TagEvent name={"Prueba Sumativa"} />
+                    <TagEvent name={"Examen"} />
+                </ListTypeEvent>
+            </SBody>
+        </SCard>
     </>
-}
+})
 
 export default Eventos

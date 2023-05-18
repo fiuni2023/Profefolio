@@ -1,8 +1,6 @@
 import React, { memo, useEffect, useState} from 'react'
 import { SBody, SCard, SHeader } from '../../../../components/componentsStyles/StyledDashComponent';
 import { useGeneralContext } from '../../../../context/GeneralContext';
-
-
 import HorarioService from "../../helpers/HorariosHelpers.js"
 import SCalendar from '../Calendar';
 import Tools from "../../helpers/Tools.js";
@@ -28,7 +26,7 @@ const Horarios = memo(() => {
 
 
     return <>
-        <SCard>
+        <SCard style={{width: "100%"}}>
             <SHeader>Horarios de Clases</SHeader>
             <SBody>
                 <SCalendar events={events}/>
