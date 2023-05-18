@@ -17,10 +17,7 @@ namespace profefolio.Services
             _db = db;
         }
 
-        public int Count()
-        {
-            throw new NotImplementedException();
-        }
+       
 
         public MateriaLista Edit(MateriaLista t)
         {
