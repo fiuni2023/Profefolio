@@ -29,32 +29,6 @@ namespace profefolio.Controllers
             _claseService = claseService;
             _mapper = mapper;
         }
-
-        [HttpPost]
-        public async Task<ActionResult> Post([FromBody] ClaseMateriaCreateDTO dto)
-        {
-            var user = User.Identity.Name;
-            try
-            {
-                var query = await _materiaListaService.SaveMateriaLista(dto, user);
-                if (query) return Ok();
-            }
-            catch (FileNotFoundException e)
-            {
-                return NotFound();
-            }
-            catch (BadHttpRequestException e)
-            {
-                return BadRequest(e.Message);
-            }
-            catch (UnauthorizedAccessException e)
-            {
-                return Unauthorized();
-            }
-            return BadRequest("Error al ejecutar la secuencia de intrucciones");
-        }
-
-
         //Este metodo GET NO SE DEBE IMPLEMENTAR EN EL FRONT-END, es con fines de Testing
         [HttpGet]
         public ActionResult GetAllTemp()
@@ -87,55 +61,6 @@ namespace profefolio.Controllers
 
             return Ok(query);
 
-        }
-
-
-        [HttpPut]
-        public async Task<ActionResult> Put([FromBody] ClaseMateriaEditDTO dto)
-        {
-            
-            var user = User.Identity.Name;
-            try
-            {
-                var query = await _materiaListaService.EditMateriaLista(dto, user);
-                if (query) return Ok();
-            }
-            catch (FileNotFoundException)
-            {
-                return NotFound();
-            }
-            catch (BadHttpRequestException e)
-            {
-                return BadRequest(e.Message);
-            }
-            catch (UnauthorizedAccessException)
-            {
-                return Unauthorized();
-            }
-            return BadRequest("Error al ejecutar la secuencia de intrucciones");
-
-        }
-
-        [HttpDelete]
-        [Route("{idClase:int}")]
-        public async Task<ActionResult> DeleteByIdClase(int idClase)
-        {
-            try
-            {
-                var user = User.Identity.Name;
-
-                await _materiaListaService.DeleteByIdClase(idClase, user);
-            }
-            catch (FileNotFoundException e)
-            {
-                return NotFound();
-            }
-            catch (BadHttpRequestException e)
-            {
-                return BadRequest();
-            }
-
-            return Ok();
         }
 
         [HttpGet]
