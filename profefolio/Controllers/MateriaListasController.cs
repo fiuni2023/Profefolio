@@ -29,39 +29,6 @@ namespace profefolio.Controllers
             _claseService = claseService;
             _mapper = mapper;
         }
-        //Este metodo GET NO SE DEBE IMPLEMENTAR EN EL FRONT-END, es con fines de Testing
-        [HttpGet]
-        public ActionResult GetAllTemp()
-        {
-
-            var query = _materiaListaService
-                .GetAll(0, 0)
-                .ToList()
-                .ConvertAll(p => new
-                {
-                    Id = p.Id,
-                    Profes = new
-                    {
-                        IdProfesor = p.ProfesorId,
-                        ProfesorMail = p.Profesor.Email,
-                    },
-                    Clase = new
-                    {
-                        ClaseName = p.Clase.Nombre,
-                        Id = p.ClaseId
-                    },
-                    Materia = new
-                    {
-                        Id = p.MateriaId,
-                        Materia = p.Materia.Nombre_Materia
-                    }
-
-                });
-
-
-            return Ok(query);
-
-        }
 
         [HttpGet]
         [Route("{idClase:int}")]
