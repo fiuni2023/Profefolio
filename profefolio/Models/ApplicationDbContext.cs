@@ -182,6 +182,26 @@ public class ApplicationDbContext : IdentityDbContext<Persona>
         .HasOne<MateriaLista>(p => p.MateriaLista)
         .WithMany(p => p.Horarios)
         .HasForeignKey(p => p.MateriaListaId);
+
+
+
+
+        /* Relacion muchos a muchos entre ClasesAlumnosColegio y MateriaLista en la Tabla de Asistencia*/
+
+        // definicio de primary key de la tabla Asistencia
+        modelBuilder.Entity<Asistencia>().HasKey(ca => new { ca.Id });
+
+        //definimos el foreign key de ClasesAlumnosColegio
+        modelBuilder.Entity<Asistencia>()
+        .HasOne<ClasesAlumnosColegio>(ca => ca.Alumno)
+        .WithMany(c => c.Asistencias)
+        .HasForeignKey(c => c.ClasesAlumnosColegioId);
+
+        //definimos el foreign key de MateriaLista
+        modelBuilder.Entity<Asistencia>()
+        .HasOne<MateriaLista>(p => p.MateriaLista)
+        .WithMany(p => p.ListaAsistencias)
+        .HasForeignKey(p => p.MateriaListaId);
     }
 
 
@@ -196,4 +216,5 @@ public class ApplicationDbContext : IdentityDbContext<Persona>
     public DbSet<HoraCatedra> HorasCatedras { get; set; }
     public DbSet<HorasCatedrasMaterias> HorasCatedrasMaterias { get; set; }
     public DbSet<Evento> Eventos { get; set; }
+    public DbSet<Asistencia> Asistencias { get; set; }
 }
