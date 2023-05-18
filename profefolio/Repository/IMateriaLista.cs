@@ -3,7 +3,7 @@ using profefolio.Models.Entities;
 
 namespace profefolio.Repository
 {
-    public interface IMateriaLista : IRepository<MateriaLista>
+    public interface IMateriaLista : IDisposable
     {
         Task<bool> IsUsedMateria(int idMateria);
         Task<MateriaLista> Find(int idClase, string idProfesor, int idMateria, string userLogged);
