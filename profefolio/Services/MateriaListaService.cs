@@ -17,13 +17,6 @@ namespace profefolio.Services
             _db = db;
         }
 
-        public async Task<MateriaLista> Add(MateriaLista t)
-        {
-            var saved = await _db.MateriaListas.AddAsync(t);
-
-            return saved.Entity;
-        }
-
         public int Count()
         {
             throw new NotImplementedException();
