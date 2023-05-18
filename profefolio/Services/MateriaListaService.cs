@@ -181,6 +181,7 @@ namespace profefolio.Services
             }
 
             var colegio = await _db.Colegios
+                .Include(c => c.ColegioProfesores)
                 .Include(c => c.personas)
                 .Where(c => !c.Deleted)
                 .Where(c => c.personas != null && c.personas.Id.Equals(user.Id))
@@ -248,9 +249,19 @@ namespace profefolio.Services
 
 
                     //Validando si el profesor es de mi colegio
-                        
 
+                    var existProfeEnColeg = colegio.ColegioProfesores
+                        .Where(cp => cp.Deleted)
+                        .Any(cp => cp.ColegioId == colegio.Id 
+                            && cp.PersonaId != null 
+                            &&cp.PersonaId.Equals(profesor.IdProfesor));
 
+                    if(!existProfeEnColeg)
+                    {
+                        throw new BadHttpRequestException("Profesor no valido");
+                    }  
+
+                    //Agregando las relaciones
 
                     switch (profesor.Estado)
                     {
