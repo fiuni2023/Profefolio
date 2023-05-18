@@ -25,10 +25,7 @@ namespace profefolio.Services
                 .Include(p => p.Materia);
         }
 
-        public async Task Save()
-        {
-            await _db.SaveChangesAsync();
-        }
+        
 
         protected virtual void Dispose(bool disposing)
         {
