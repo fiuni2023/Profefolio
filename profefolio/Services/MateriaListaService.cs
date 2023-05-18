@@ -168,8 +168,18 @@ namespace profefolio.Services
             throw new BadHttpRequestException("El usuario no tienen acceso");
         }
 
-        public Task<bool> Put(string idUser, MateriaListaPutDTO dto)
+        public async Task<bool> Put(string email, MateriaListaPutDTO dto)
         {
+            var user =  await _db.Users
+                .Where(u => u.Email.Equals(email))
+                .FirstOrDefaultAsync();
+
+            if(user == null)
+            {
+                throw new UnauthorizedAccessException();
+            }
+
+            
             throw new NotImplementedException();
         }
     }
