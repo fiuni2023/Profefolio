@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using profefolio.Models;
 using profefolio.Models.DTOs.ClaseMateria;
 using profefolio.Models.Entities;
