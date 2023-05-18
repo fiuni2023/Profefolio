@@ -203,7 +203,87 @@ namespace profefolio.Services
                 throw new UnauthorizedAccessException();
             }
 
-            
+            foreach (var materia in dto.Materias)
+            {
+                var existMateria = _db.Materias
+                    .Where(m => !m.Deleted)
+                    .Where(m => m.Id == materia.IdMateria)
+                    .Count() > 0;
+
+
+                if(!existMateria)
+                {
+                    throw new FileNotFoundException();
+                }
+                var profesorDist = materia.Profesores.DistinctBy(mp => mp.IdProfesor);
+
+                foreach(var profesor in profesorDist)
+                {
+
+                    //Validar los roles del profesor
+                    var profe = await _db.Users.FindAsync(profesor.IdProfesor);
+
+                    if(profe == null)
+                    {
+                        throw new FileNotFoundException();
+                    }
+
+                    var role = await _db.Roles
+                        .FirstOrDefaultAsync(r => r.Name.Equals("Profesor"));
+
+                    if(role == null)
+                    {
+                        throw new FileNotFoundException();
+                    }
+
+
+                    var HasRole = _db.UserRoles
+                        .Any(ur => ur.RoleId.Equals(role.Id) && ur.UserId.Equals(profe.Id));
+
+
+                    if(!HasRole)
+                    {
+                        throw new UnauthorizedAccessException();
+                    }
+
+
+                    //Validando si el profesor es de mi colegio
+                        
+
+
+
+                    switch (profesor.Estado)
+                    {
+                        case 'N' :
+                            var materiaLista = new MateriaLista()
+                            {
+                                ClaseId = dto.IdClase,
+                                MateriaId = materia.IdMateria,
+                                ProfesorId = profesor.IdProfesor
+
+                            };
+                            await _db.MateriaListas.AddAsync(materiaLista);
+                            break;
+                        case 'D' :
+                            var materiaListaD = await _db.MateriaListas
+                                .Include(ml => ml.Horarios)
+                                .Where(ml => ml.ClaseId == dto.IdClase 
+                                    && ml.MateriaId == materia.IdMateria
+                                    && ml.ProfesorId.Equals(profesor.IdProfesor))
+                                .FirstOrDefaultAsync();
+
+                            if(materiaListaD != null && materiaListaD.Horarios != null && materiaListaD.Horarios.Count() > 0)
+                            {
+                                throw new BadHttpRequestException($"No puedes borrar este profesor {profe.Nombre} {profe.Apellido}");
+                            }
+                            break;
+                            
+                        default: break;
+                    }
+                }
+            }
+
+
 
 
             throw new NotImplementedException();
