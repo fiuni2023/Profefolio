@@ -52,37 +52,7 @@ namespace profefolio.Services
             return await _db.MateriaListas.AnyAsync(d => d.MateriaId == idMateria);
         }
 
-        public async Task<MateriaLista> Find(int idClase, string idProfesor, int idMateria, string userLogged)
-        {
-            var colegio = _db.Colegios
-                .FirstOrDefault(c => c.personas.UserName.Equals(userLogged));
-
-
-            if (colegio == null) throw new FileNotFoundException();
-
-            var clase = await _db.Clases
-                .Include(c => c.MateriaListas)
-                .Where(c => !c.Deleted)
-                .Where(c => c.ColegioId == colegio.Id)
-                .Where(c => c.Id == idClase)
-                .FirstOrDefaultAsync();
-
-            if (clase == null || clase.MateriaListas == null)
-            {
-                throw new FileNotFoundException();
-            }
-
-
-            var materiaListas = clase.MateriaListas
-                .Where(p => p.ClaseId == idClase)
-                .Where(p => p.MateriaId == idMateria)
-                .Where(p => p.ProfesorId == idProfesor)
-                .FirstOrDefault();
-
-            return materiaListas;
-
-
-        }
+        
 
         public async Task<ClaseDetallesDTO> FindByIdClase(int idClase, string user)
         {
