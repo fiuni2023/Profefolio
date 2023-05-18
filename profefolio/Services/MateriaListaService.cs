@@ -17,10 +17,7 @@ namespace profefolio.Services
             _db = db;
         }
 
-        public bool Exist()
-        {
-            throw new NotImplementedException();
-        }
+       
 
         public async Task<MateriaLista> FindById(int id)
         {
