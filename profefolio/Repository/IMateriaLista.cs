@@ -8,6 +8,7 @@ namespace profefolio.Repository
         Task<bool> IsUsedMateria(int idMateria);
         Task<ClaseDetallesDTO> FindByIdClase(int idClase, string user);
         Task<List<MateriaLista>> FindByIdClaseAndUser(int idClase, string userEmail, string role);
+        Task<bool> Put(string idUser, MateriaListaPutDTO dto);
 
     }
 }
