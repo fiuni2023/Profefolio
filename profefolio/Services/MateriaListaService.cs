@@ -291,13 +291,19 @@ namespace profefolio.Services
                             
                         default: break;
                     }
+
+                    try
+                    {
+                        await _db.SaveChangesAsync();
+                        return true;
+                    }
+                    catch(Exception)
+                    {
+                        throw;
+                    }
                 }
             }
-
-
-
-
-            throw new NotImplementedException();
+            return false;
         }
     }
 }
