@@ -88,7 +88,7 @@ const Alumnos = () => {
     return (
         <MainContainer>
             <StyleComponentBreadcrumb nombre="Alumnos" />
-            {loading ? <Spinner width={'100%'} height={'calc(100vh - 80px)'} />
+            {loading ? <Spinner height={'calc(100vh - 80px)'} />
                 : error ? <Text>Lamentamos esto, ha ocurrido un error al obtener los datos.</Text>
                     : <>
                         <TableContainer>
