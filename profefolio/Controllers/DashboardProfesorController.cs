@@ -23,11 +23,10 @@ namespace profefolio.Controllers
         private IDashboardProfesor _dashBoardService;
         private IColegio _colegioService;
         private IMapper _mapper;
-        private readonly IProfesor _profesorService;
         private static int CantPorPage => Constantes.CANT_ITEMS_POR_PAGE;
 
 
-        public DashboardProfesorController(IPersona personaService, IColegioProfesor colegioProfesorService, 
+        public DashboardProfesorController(IPersona personaService, IColegioProfesor colegioProfesorService,
         IDashboardProfesor dashboardProfesor, IColegio colegioService, IMapper mapper,
         IProfesor profesorService)
         {
@@ -244,6 +243,94 @@ namespace profefolio.Controllers
         ///     
         ///     
         /// ***************************************************************************************************************************
+        ///
+        /// Caso de Opcion "cards-materia"
+        ///        
+        ///
+        /// Ticket <a href="#">Sin ticket hasta el momento</a>
+        ///     
+        /// Body:
+        ///     
+		///		{
+		///			opcion: "cards-materia",
+		///			id: 1,                              // id materiaLista
+		///			anho: 2023                          
+		///		}      
+        ///     
+        ///     
+        /// Respuesta:
+        ///     
+        ///     {
+		///			anotaciones: 25,
+		///			calificaciones: { 
+		///				calificaciones:	4,
+		///				sinCalificaciones: 3
+		///			},
+		///			asistencias: 8,
+		///			documentos: 4
+		///		}    
+        ///     
+        ///     
+        ///     
+        /// ***************************************************************************************************************************
+        ///
+        ///
+        /// Caso de Opcion "promedio-puntajes"
+        ///        
+        ///
+        /// Ticket <a href="#">Sin ticket hasta el momento</a>
+        ///     
+        /// Body:
+        ///     
+		///		{
+		///			opcion: "promedio-puntajes",
+		///			id: 1,                              // id materiaLista
+		///			anho: 2023                          
+		///		}      
+        ///     
+        ///     
+        /// Respuesta:
+        ///     
+        ///     [
+		///			{
+		///				evaluacion: "Pueba 1",
+		///				puntaje: 30.0
+		///			},
+		///		]   
+        ///     
+        ///     
+        ///     
+        /// ***************************************************************************************************************************
+        ///
+        /// Caso de Opcion "promedio-asistencias"
+        ///        
+        ///
+        /// Ticket <a href="#">Sin ticket hasta el momento</a>
+        ///     
+        /// Body:
+        ///     
+		///		{
+		///			opcion: "promedio-asistencias",
+		///			id: 1,                              // id materiaLista
+		///			anho: 2023                          
+		///		}      
+        ///     
+        ///     
+        /// Respuesta:
+        ///     
+        ///     [
+		///			{
+		///				mes: "enero",
+		///				presentes: 30.0,
+		///				ausentes: 20.0,
+		///				justificados: 10.0
+		///			}
+		///		]   
+        ///     
+        ///     
+        ///     
+        /// ***************************************************************************************************************************
+        ///
         ///</remarks>
         [HttpGet]
         [Authorize(Roles = "Profesor")]
@@ -279,12 +366,13 @@ namespace profefolio.Controllers
                         {
                             result.Materias = await _dashBoardService.FindMateriasOfClase(profesor, result.Id);
                             var horarioMasCercano = await _dashBoardService.FindHorarioMasCercano(profesor, result.Id);
-                            if(horarioMasCercano != null){
+                            if (horarioMasCercano != null)
+                            {
                                 result.Horario = _mapper.Map<DBCardClasesHorariosDTO>(horarioMasCercano);
                                 result.Horario.Horas = await _dashBoardService.GetHorasOfClaseInDay(profesor, result.Id, horarioMasCercano.Dia);
                             }
                         }
-                        
+
                         return Ok(results);
 
                     case "horarios-clases":
@@ -292,47 +380,143 @@ namespace profefolio.Controllers
                         return Ok(_mapper.Map<List<DBHorariosClasesCalendarDTO>>(horarios));
 
                     case "card-materias":
-                         //id clase, //anho
+                        //id clase, //anho
 
-                           var profId = await _profesorService.GetProfesorIdByEmail(userEmail);
-                           var profesor2 = await _personaService.FindById(profId);
-                           var materiasClase = await _dashBoardService._FindMateriasOfClase(profesor2, dto.Id);
+                        var profId = await _profesorService.GetProfesorIdByEmail(userEmail);
+                        var profesor2 = await _personaService.FindById(profId);
+                        var materiasClase = await _dashBoardService._FindMateriasOfClase(profesor2, dto.Id);
 
-                           var resultsMaterias = _mapper.Map<List<DBCardMateriasDTO>>(materiasClase);
-                           
+                        var resultsMaterias = _mapper.Map<List<DBCardMateriasDTO>>(materiasClase);
+
                         foreach (var result in resultsMaterias)
                         {
-                            result.Eventos = await _dashBoardService.GetEventosOfMateria(profId, 
+                            result.Eventos = await _dashBoardService.GetEventosOfMateria(profId,
                             result.MateriaId, dto.Id);
 
-                            var horarioMasCercano = await _dashBoardService.FindHorarioMasCercanoMateria(profesor2, 
+                            var horarioMasCercano = await _dashBoardService.FindHorarioMasCercanoMateria(profesor2,
                             result.Id);
-                           
-                            if(horarioMasCercano != null){
+
+                            if (horarioMasCercano != null)
+                            {
                                 result.Horario = _mapper.Map<DBCardClasesHorariosDTO>(horarioMasCercano);
-                                result.Horario.Horas = await _dashBoardService.GetHorasOfMateriaInDay(profesor2, 
+                                result.Horario.Horas = await _dashBoardService.GetHorasOfMateriaInDay(profesor2,
                                 result.Id, horarioMasCercano.Dia);
                             }
                         }
-                        
+
                         return Ok(resultsMaterias);
+
+
                     case "cards-materia":
-                        return BadRequest("Opcion en implementacion");
+                        var materia = await _dashBoardService.FindDataForCardOfInfoMateria(dto.Id, userEmail);
+                        return Ok(_mapper.Map<DBCardsMateriaInfo>(materia));
+
+
                     case "eventos-clases":
                         return BadRequest("Opcion en implementacion");
                     case "eventos-materias":
                         return BadRequest("Opcion en implementacion");
+
+
+
+
                     case "lista-alumnos":
-                        return BadRequest("Opcion en implementacion");
+                        //id clase
+                        //id prf
+
+                        var _profId = await _profesorService.GetProfesorIdByEmail(userEmail);
+                        var clasesA = await _dashBoardService.GetColegioAlumnoId(dto.Id, _profId);
+                        var resultsA = _mapper.Map<List<DBClaseAlumnoColegioDTO>>(clasesA);
+
+                        foreach (var result in resultsA)
+                        {
+                            //a partir del colegioAlumnoId obtener el idAlumno
+                            var idAlumno = await _dashBoardService.FindAlumnoIdByColegioAlumnoId(result.Id);
+                            var alumno = await _personaService.FindById(idAlumno);
+                            result.Nombres = alumno.Nombre;
+                            result.Apellidos = alumno.Apellido;
+
+                        }
+                        resultsA = resultsA.OrderBy(r => r.Apellidos).ToList();
+                        return Ok(resultsA);
+                    
+                    
+                    
                     case "promedio-puntajes":
-                        return BadRequest("Opcion en implementacion");
+                        /*
+                            TODO
+
+                            HACER QUE SE OBTENGAN LOS VALORES DE LA BASE DE DATOS DESPUES DE QUE SE CREEN LAS 
+                            TABLAS RELACIONADAS A CALIFICACIONES
+                        */
+                        var promedios = await _dashBoardService.GetPromediosPuntajesByIdMateriaLista(dto.Id, userEmail);
+                        
+                        var promedio1 = new DBPromedioPuntajesDTO(){
+                            Evaluacion = "Prueba 1",
+                            Puntaje = 45.5
+                        };
+                        var promedio2 = new DBPromedioPuntajesDTO(){
+                            Evaluacion = "Prueba 1",
+                            Puntaje = 85.2
+                        };
+                        var promedio3 = new DBPromedioPuntajesDTO(){
+                            Evaluacion = "Prueba 1",
+                            Puntaje = 68.0
+                        };
+                        var promedio4 = new DBPromedioPuntajesDTO(){
+                            Evaluacion = "Prueba 1",
+                            Puntaje = 90.0
+                        };
+                        var listPromedios = new List<DBPromedioPuntajesDTO>(){promedio1, promedio2, promedio3, promedio4};
+                        
+                        return Ok(listPromedios);
+
+
+
                     case "promedio-asistencias":
-                        return BadRequest("Opcion en implementacion");
+                        /*
+                            TODO
+
+                            HACER QUE SE OBTENGAN LOS VALORES DE LA BASE DE DATOS DESPUES DE QUE SE CREEN LAS 
+                            TABLAS RELACIONADAS A ASISTENCIAS
+                        */
+                        var promediosAsistencias = await _dashBoardService.GetPromediosAsistenciasByIdMateriaAndProfesorEmail(dto.Id, userEmail);
+
+                        var promedioAsistencia1 = new DBPromedioAsistenciasDTO(){
+                            Mes = "Enero",
+                            Presentes = 50,
+                            Ausentes = 10,
+                            Justificados = 40
+                        };
+                        var promedioAsistencia2 = new DBPromedioAsistenciasDTO(){
+                            Mes = "Febrero",
+                            Presentes = 80,
+                            Ausentes = 10,
+                            Justificados = 210
+                        };
+                        var promedioAsistencia3 = new DBPromedioAsistenciasDTO(){
+                            Mes = "Marzo",
+                            Presentes = 90,
+                            Ausentes = 5,
+                            Justificados = 5
+                        };
+                        var promedioAsistencia4 = new DBPromedioAsistenciasDTO(){
+                            Mes = "Abril",
+                            Presentes = 70,
+                            Ausentes = 10,
+                            Justificados = 20
+                        };
+
+                        return Ok(new List<DBPromedioAsistenciasDTO>(){
+                            promedioAsistencia1, promedioAsistencia2, promedioAsistencia3, promedioAsistencia4
+                        });
+
                     default:
                         return BadRequest("Opcion Invalida");
                 }
             }
-            catch(FileNotFoundException e){
+            catch (FileNotFoundException e)
+            {
                 Console.WriteLine($"{e}");
                 return NotFound(e.Message);
             }
