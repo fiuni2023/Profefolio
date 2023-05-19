@@ -2,7 +2,7 @@ import React from "react";
 //import { useGeneralContext } from "../../../../context/GeneralContext";
 import styles from "./index.module.css";
 //import { Row, Col } from "react-bootstrap";
-import ProfesorPage from "../../../profesor-pages";
+import ProfPages from "../../../profesor-pages";
 
 const ProfeHome = () => {
 
@@ -10,7 +10,7 @@ const ProfeHome = () => {
 
     return(
         <div className={styles.HomeDiv}>
-            <ProfesorPage/>
+            <ProfPages/>
             {/* <Row className="mb-3">
                 <Col>
                     <h3>Bienvenido,</h3>  

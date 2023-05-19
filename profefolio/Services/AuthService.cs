@@ -68,7 +68,6 @@ public class AuthService : IAuth
         {
             authClaims.Add(new Claim(ClaimTypes.Role, role));
         }
-            
         var token = new TokenGenerator(_configuration);
 
         var tokenValues = token.GetToken(authClaims);
