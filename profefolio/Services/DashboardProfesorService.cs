@@ -248,48 +248,5 @@ namespace profefolio.Services
 
             return result;
         }
-
-        public async Task<MateriaLista> FindDataForCardOfInfoMateria(int idMateriaLista, string emailProfesor)
-        {
-            Console.WriteLine($"\n\n\n\n\n\n\n\n\nHace falta terminar de implementar, ya que falta que se creen todavia las tablas de claificaciones y otros mas parque este completo este servicio \n\n\n\n\n\n\n\n\n");
-            
-            var materia = await _context.MateriaListas
-                    .Include(a => a.Profesor)
-                    .FirstOrDefaultAsync(a => !a.Deleted && a.Id == idMateriaLista && emailProfesor.Equals(a.Profesor.Email));
-            if(materia == null){
-                throw new FileNotFoundException("La materia no fue encontrada.");
-            }
-            return materia;
-        }
-
-        public async Task<MateriaLista> GetPromediosPuntajesByIdMateriaLista(int idMateriaLista, string emailProfesor)
-        {
-            /*
-                TODO 
-                AGREGAR LA IMPLEMENTACION PARA OBTENER EL PROMEDIO DE LOS PUNTAJES CUANDO SE AGREGUE LA TABLA DE CALIFICACIONES
-            */
-            var result = await _context.MateriaListas.Include(a => a.Profesor).FirstOrDefaultAsync(a => !a.Deleted && a.Id == idMateriaLista && emailProfesor.Equals(a.Profesor.Email));
-
-            if(result == null){
-                throw new FileNotFoundException("La materia no fue encontrada.");
-            }
-            return result;
-        }
-
-        public async Task<MateriaLista> GetPromediosAsistenciasByIdMateriaAndProfesorEmail(int idMateriaLista, string emailProfesor)
-        {
-            /*
-                TODO 
-                AGREGAR LA IMPLEMENTACION PARA OBTENER EL PROMEDIO DE LAS ASISTENCIAS CUANDO SE AGREGUE LA TABLA DE ASISTENCIAS
-            */
-            var result = await _context.MateriaListas
-                            .Include(a => a.Profesor)
-                            .FirstOrDefaultAsync(a => !a.Deleted && a.Id == idMateriaLista && emailProfesor.Equals(a.Profesor.Email));
-
-            if(result == null){
-                throw new FileNotFoundException("La materia no fue encontrada.");
-            }
-            return result;
-        }
     }
 }

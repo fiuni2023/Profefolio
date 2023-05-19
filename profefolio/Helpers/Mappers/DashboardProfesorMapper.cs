@@ -44,62 +44,42 @@ namespace profefolio.Helpers.Mappers
                     opt => opt.MapFrom(v => v.Nombre))
                 .ForMember(dest => dest.Anho,
                     opt => opt.MapFrom(v => v.Anho))
-                .ForMember(dest => dest.Alumnos,
+                .ForMember(dest => dest.Alumnos, 
                     opt => opt.MapFrom(v => v.ClasesAlumnosColegios.Count()))
-                .ForMember(dest => dest.Materias,
+                .ForMember(dest => dest.Materias, 
                     opt => opt.MapFrom(v => new List<string>()))
-                .ForMember(dest => dest.Horario,
+                .ForMember(dest => dest.Horario, 
                     opt => opt.MapFrom(v => new DBCardClasesHorariosDTO()));
-
+            
             CreateMap<HorasCatedrasMaterias, DBCardClasesHorariosDTO>()
-                .ForMember(dest => dest.Dia,
+                .ForMember(dest => dest.Dia, 
                     opt => opt.MapFrom(v => v.Dia))
-                .ForMember(dest => dest.Inicio,
+                .ForMember(dest => dest.Inicio, 
                     opt => opt.MapFrom(v => v.HoraCatedra.Inicio))
-                .ForMember(dest => dest.Horas,
+                .ForMember(dest => dest.Horas, 
                     opt => opt.MapFrom(v => ""));
 
 
 
             CreateMap<HorasCatedrasMaterias, DBHorariosClasesCalendarDTO>()
-                .ForMember(dest => dest.Id,
+                .ForMember(dest => dest.Id, 
                     opt => opt.MapFrom(v => v.MateriaLista.ClaseId))
                 .ForMember(dest => dest.Nombre,
                     opt => opt.MapFrom(v => v.MateriaLista.Clase.Nombre))
-                .ForMember(dest => dest.Dia,
+                .ForMember(dest => dest.Dia, 
                     opt => opt.MapFrom(v => v.Dia))
-                .ForMember(dest => dest.Inicio,
+                .ForMember(dest => dest.Inicio, 
                     opt => opt.MapFrom(v => v.HoraCatedra.Inicio))
-                .ForMember(dest => dest.Fin,
+                .ForMember(dest => dest.Fin, 
                     opt => opt.MapFrom(v => v.HoraCatedra.Fin));
-
-            CreateMap<ClasesAlumnosColegio, DBClaseAlumnoColegioDTO>()
-                .ForMember(dest => dest.Id,
-                    opt => opt.MapFrom(v => v.ColegiosAlumnosId));
-
 
             CreateMap<MateriaResultFullDTO, DBCardMateriasDTO>()
                 .ForMember(dest => dest.Id,
                     opt => opt.MapFrom(v => v.MateriaListaId))
                 .ForMember(dest => dest.Nombre,
                     opt => opt.MapFrom(v => v.Nombre_Materia))
-                .ForMember(dest => dest.Horario,
+                .ForMember(dest => dest.Horario, 
                     opt => opt.MapFrom(v => new DBCardClasesHorariosDTO()));
-
-
-
-            CreateMap<MateriaLista, DBCardsMateriaInfo>()
-                .ForMember(dest => dest.Documentos,
-                    opt => opt.MapFrom(v => 10))
-                .ForMember(dest => dest.Anotaciones,
-                    opt => opt.MapFrom(v => 15))
-                .ForMember(dest => dest.Asistencias,
-                    opt => opt.MapFrom(v => 25))
-                .ForMember(dest => dest.Calificaciones,
-                    opt => opt.MapFrom(v => new DBCardsMateriaInfoCalificaciones(){
-                        Calificaciones = 32,
-                        SinCalificaciones = 5
-                    }) );
         }
     }
 }
