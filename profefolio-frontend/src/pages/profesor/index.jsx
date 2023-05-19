@@ -18,6 +18,8 @@ import styled from 'styled-components';
 import { AiOutlinePlus } from 'react-icons/ai';
 import ModalProfesor from './components/ModalProfesor.jsx';
 import Paginations from '../../components/Paginations.jsx';
+import Spinner from '../../components/componentsStyles/SyledSpinner.jsx';
+import Text from '../../components/componentsStyles/StyledText.jsx';
 
 
 
@@ -42,6 +44,8 @@ function Profesores() {
 
 
   const nav = useNavigate()
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
 
   useEffect(() => {
     verifyToken()
@@ -50,6 +54,7 @@ function Profesores() {
     }else{
       //axios.get(`https://miapi.com/products?page=${page}&size=${size}`, {
   
+      setLoading(true);
       axios.get(`${APILINK}/api/profesor/page/${page}`, {
         headers: {
           Authorization: `Bearer ${getToken()}`,
@@ -67,6 +72,10 @@ function Profesores() {
         })
         .catch(error => {
           console.error(error);
+          setError(true)
+        })
+        .finally(() => {
+          setLoading(false);
         });
     }
   }, [page, cancan, verifyToken, nav, getToken, fetch_data]);
@@ -109,8 +118,12 @@ const btndetalles = (data) => {
     <>
 
       <div>
-      <StyleComponentBreadcrumb nombre="Profesor" />
+      <StyleComponentBreadcrumb nombre="Profesores" />
 
+      {loading ? <Spinner height={'calc(100vh - 80px)'} />
+        : error ? <Text>Lamentamos esto, ha ocurrido un error al obtener los datos.</Text>
+          :
+          <>
         <PanelContainerBG>
 
 
@@ -170,6 +183,7 @@ const btndetalles = (data) => {
           <ModalProfesor onHide={handleHide} selected_data={selected_data} show={show}  />
         </PanelContainerBG>
         
+        </>}
 
       </div>
 
