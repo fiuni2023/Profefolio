@@ -24,7 +24,7 @@ namespace profefolio.Services
                 .Include(p => p.Materia);
         }
 
-        
+
 
         protected virtual void Dispose(bool disposing)
         {
@@ -51,7 +51,7 @@ namespace profefolio.Services
             return await _db.MateriaListas.AnyAsync(d => d.MateriaId == idMateria);
         }
 
-        
+
 
         public async Task<ClaseDetallesDTO> FindByIdClase(int idClase, string user)
         {
@@ -74,19 +74,19 @@ namespace profefolio.Services
                 .Where(c => c.Id == idClase)
                 .FirstOrDefaultAsync();
 
-            if (clase == null || clase.Nombre == null|| (colegio.Id != clase.ColegioId) || clase.MateriaListas == null)
+            if (clase == null || clase.Nombre == null || (colegio.Id != clase.ColegioId) || clase.MateriaListas == null)
             {
                 throw new FileNotFoundException();
             }
 
-            
+
 
             var materias = _db.Materias
                 .Include(x => x.MateriaListas)
                 .Where(x => !x.Deleted)
                 .Where(x => x.MateriaListas.Any(y => y.ClaseId == clase.Id));
-                
-            
+
+
             var result = new ClaseDetallesDTO();
 
             result.ClaseId = clase.Id;
@@ -98,38 +98,47 @@ namespace profefolio.Services
             {
                 var materiaLista = item.MateriaListas.Where(d => !d.Deleted);
 
-                var materiaProfesores = new MateriaProfesoresDTO();
-
-                materiaProfesores.IdMateria = item.Id;
-                materiaProfesores.Materia = item.Nombre_Materia;
-
-                var profesorSimpleList = new List<ProfesorSimpleDTO>();
-
-                foreach (var itemLista in materiaLista)
+                if (item.MateriaListas.All(x => x.Deleted))
                 {
-                    var profesor = profesores.Find(x => x.Id.Equals(itemLista.ProfesorId));
+                    continue;
+                }
+                else
+                {
+                    var materiaProfesores = new MateriaProfesoresDTO();
+
+                    materiaProfesores.IdMateria = item.Id;
+                    materiaProfesores.Materia = item.Nombre_Materia;
+
+                    var profesorSimpleList = new List<ProfesorSimpleDTO>();
+
+                    foreach (var itemLista in materiaLista)
+                    {
+                        var profesor = profesores.Find(x => x.Id.Equals(itemLista.ProfesorId));
 
 
-                    var profeSimple = new ProfesorSimpleDTO();
+                        var profeSimple = new ProfesorSimpleDTO();
 
-                    profeSimple.Apellido = profesor.Apellido;
-                    profeSimple.IdProfesor = profesor.Id;
-                    profeSimple.Nombre = profesor.Nombre;
+                        profeSimple.Apellido = profesor.Apellido;
+                        profeSimple.IdProfesor = profesor.Id;
+                        profeSimple.Nombre = profesor.Nombre;
 
-                    profesorSimpleList.Add(profeSimple);
+                        profesorSimpleList.Add(profeSimple);
+                    }
+
+                    materiaProfesores.Profesores = profesorSimpleList;
+
+                    materiaProfesoresList.Add(materiaProfesores);
                 }
 
-                materiaProfesores.Profesores = profesorSimpleList;
 
-                materiaProfesoresList.Add(materiaProfesores);
 
             }
 
             result.MateriaProfesores = materiaProfesoresList;
-            
+
             return result;
         }
-       
+
 
 
         public async Task<List<MateriaLista>> FindByIdClaseAndUser(int idClase, string userEmail = "", string role = "")
@@ -169,12 +178,12 @@ namespace profefolio.Services
 
         public async Task<bool> Put(string email, MateriaListaPutDTO dto)
         {
-            var user =  await _db.Users
+            var user = await _db.Users
                 .Where(u => !u.Deleted)
                 .Where(u => u.Email.Equals(email))
                 .FirstOrDefaultAsync();
 
-            if(user == null)
+            if (user == null)
             {
                 throw new UnauthorizedAccessException();
             }
@@ -186,8 +195,8 @@ namespace profefolio.Services
                 .Where(c => c.personas != null && c.personas.Id.Equals(user.Id))
                 .FirstOrDefaultAsync();
 
-            
-            if(colegio == null)
+
+            if (colegio == null)
             {
                 throw new UnauthorizedAccessException();
             }
@@ -198,7 +207,7 @@ namespace profefolio.Services
                 .Where(c => c.ColegioId == colegio.Id)
                 .FirstOrDefaultAsync();
 
-            if(clase == null)
+            if (clase == null)
             {
                 throw new UnauthorizedAccessException();
             }
@@ -211,19 +220,19 @@ namespace profefolio.Services
                     .Count() > 0;
 
 
-                if(!existMateria)
+                if (!existMateria)
                 {
                     throw new FileNotFoundException();
                 }
                 var profesorDist = materia.Profesores.DistinctBy(mp => mp.IdProfesor);
 
-                foreach(var profesor in profesorDist)
+                foreach (var profesor in profesorDist)
                 {
 
                     //Validar los roles del profesor
                     var profe = await _db.Users.FindAsync(profesor.IdProfesor);
 
-                    if(profe == null)
+                    if (profe == null)
                     {
                         throw new FileNotFoundException();
                     }
@@ -231,7 +240,7 @@ namespace profefolio.Services
                     var role = await _db.Roles
                         .FirstOrDefaultAsync(r => r.Name.Equals("Profesor"));
 
-                    if(role == null)
+                    if (role == null)
                     {
                         throw new FileNotFoundException();
                     }
@@ -241,7 +250,7 @@ namespace profefolio.Services
                         .Any(ur => ur.RoleId.Equals(role.Id) && ur.UserId.Equals(profe.Id));
 
 
-                    if(!HasRole)
+                    if (!HasRole)
                     {
                         throw new UnauthorizedAccessException();
                     }
@@ -250,21 +259,21 @@ namespace profefolio.Services
                     //Validando si el profesor es de mi colegio
 
                     var existProfeEnColeg = colegio.ColegioProfesores
-                        .Where(cp => cp.Deleted)
-                        .Any(cp => cp.ColegioId == colegio.Id 
-                            && cp.PersonaId != null 
-                            &&cp.PersonaId.Equals(profesor.IdProfesor));
+                        .Where(cp => !cp.Deleted)
+                        .Any(cp => cp.ColegioId == colegio.Id
+                            && cp.PersonaId != null
+                            && cp.PersonaId.Equals(profesor.IdProfesor));
 
-                    if(!existProfeEnColeg)
+                    if (!existProfeEnColeg)
                     {
                         throw new BadHttpRequestException("Profesor no valido");
-                    }  
+                    }
 
                     //Agregando las relaciones
 
                     switch (profesor.Estado)
                     {
-                        case 'N' :
+                        case 'N':
                             var materiaLista = new MateriaLista()
                             {
                                 ClaseId = dto.IdClase,
@@ -272,20 +281,20 @@ namespace profefolio.Services
                                 ProfesorId = profesor.IdProfesor,
                                 Deleted = false,
                                 CreatedBy = email,
-                                Created = DateTime.Now      
+                                Created = DateTime.Now
 
                             };
                             await _db.MateriaListas.AddAsync(materiaLista);
                             break;
-                        case 'D' :
+                        case 'D':
                             var materiaListaD = await _db.MateriaListas
                                 .Include(ml => ml.Horarios)
-                                .Where(ml => ml.ClaseId == dto.IdClase 
+                                .Where(ml => ml.ClaseId == dto.IdClase
                                     && ml.MateriaId == materia.IdMateria
                                     && ml.ProfesorId.Equals(profesor.IdProfesor))
                                 .FirstOrDefaultAsync();
 
-                            if(materiaListaD == null)
+                            if (materiaListaD == null)
                             {
                                 throw new FileNotFoundException();
                             }
@@ -293,22 +302,23 @@ namespace profefolio.Services
                             materiaListaD.Modified = DateTime.Now;
                             materiaListaD.Deleted = true;
                             break;
-                            
+
                         default: break;
                     }
 
-                    try
-                    {
-                        await _db.SaveChangesAsync();
-                        return true;
-                    }
-                    catch(Exception)
-                    {
-                        throw;
-                    }
+
                 }
             }
-            return false;
+            try
+            {
+                await _db.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
         }
     }
 }
