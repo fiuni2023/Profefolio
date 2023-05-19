@@ -22,7 +22,7 @@ const SpinnerContainer = styled.div`
     justify-content: center;
 `;
 
-const Spinner = ({ width = 50, height = 50 }) => {
+const Spinner = ({ width = '100%', height = 50 }) => {
     return (
         <SpinnerContainer width={width} height={height}>
             <SpinnerDiv>
