@@ -42,21 +42,29 @@ namespace profefolio.Services
             throw new NotImplementedException();
         }
 
-        public async Task<List<IGrouping<int, Asistencia>>> FindAll(int idMateriaLista, string userEmail)
+        public async Task<List<ClasesAlumnosColegio>> FindAll(int idMateriaLista, string userEmail)
         {
-            var limit = DateTime.Now;
-            limit.AddDays(limit.Day - 5);
-            return await _context.Asistencias
-                        .OrderBy(a => a.Fecha)
-                        .TakeWhile(a => !a.Deleted 
-                                    && a.Fecha > limit 
-                                    && a.MateriaListaId == idMateriaLista
-                                    && !a.MateriaLista.Deleted
-                                    && !a.MateriaLista.Profesor.Deleted
-                                    && userEmail.Equals(a.MateriaLista.Profesor.Email))
-                                    .GroupBy(a => a.ClasesAlumnosColegioId).ToListAsync();
-        }
 
+            var materiaLista = await _context.MateriaListas
+                .Where(a => !a.Deleted 
+                            && a.Id == idMateriaLista 
+                            && userEmail.Equals(a.Profesor.Email))
+                .FirstOrDefaultAsync();
+            
+            if(materiaLista == null){
+                throw new FileNotFoundException("No se encontraron materias asignadas");
+            }
+            
+            return await _context.ClasesAlumnosColegios
+                .Where(a => !a.Deleted 
+                    && a.Clase.MateriaListas.Any(m => m.Id == idMateriaLista))
+                .Include(a => a.Asistencias)
+                .Include(a => a.ColegiosAlumnos)
+                .Include(a => a.ColegiosAlumnos.Persona)
+                .OrderBy(a => a.ColegiosAlumnos.Persona.Apellido)
+                .ToListAsync();
+        }
+        
         public Task<Asistencia> FindById(int id)
         {
             throw new NotImplementedException();

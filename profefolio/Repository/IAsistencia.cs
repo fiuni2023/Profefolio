@@ -8,6 +8,6 @@ namespace profefolio.Repository
 {
     public interface IAsistencia : IRepository<Asistencia>
     {
-        Task<List<IGrouping<int, Asistencia>>> FindAll(int idMateriaLista, string userEmail);
+        Task<List<ClasesAlumnosColegio>> FindAll(int idMateriaLista, string userEmail);
     }
 }
