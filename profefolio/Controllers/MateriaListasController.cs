@@ -1,11 +1,8 @@
-﻿using System.Collections.ObjectModel;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using profefolio.Models.DTOs.ClaseMateria;
-using profefolio.Models.DTOs.Materia;
-using profefolio.Models.Entities;
 using profefolio.Repository;
 
 namespace profefolio.Controllers
@@ -97,6 +94,39 @@ namespace profefolio.Controllers
             {
                 Console.WriteLine($"{e}");
                 return BadRequest("Sucedio un error inesperado durante la busqueda.");
+            }
+
+        }
+
+
+        [HttpPut]
+        public async Task<ActionResult> Put(MateriaListaPutDTO dto)
+        {
+            var userEmail = User.FindFirstValue(ClaimTypes.Name);
+
+            try
+            {
+              var result = await _materiaListaService.Put(userEmail, dto);
+
+              return result ? Ok() : BadRequest("Error al realizar la consulta");
+            }
+
+            catch(FileNotFoundException)
+            {
+                return NotFound();
+            }
+
+            catch(UnauthorizedAccessException)
+            {
+                return Unauthorized();
+            }
+            catch(BadHttpRequestException e)
+            {
+                return BadRequest(e.Message);
+            }
+            catch(Exception)
+            {
+                return BadRequest("Error a realizar la peticion");
             }
 
         }
