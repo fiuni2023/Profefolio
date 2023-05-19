@@ -96,7 +96,7 @@ namespace profefolio.Services
 
             foreach (var item in materias)
             {
-                var materiaLista = item.MateriaListas;
+                var materiaLista = item.MateriaListas.Where(d => !d.Deleted);
 
                 var materiaProfesores = new MateriaProfesoresDTO();
 
@@ -282,10 +282,13 @@ namespace profefolio.Services
                                     && ml.ProfesorId.Equals(profesor.IdProfesor))
                                 .FirstOrDefaultAsync();
 
-                            if(materiaListaD != null && materiaListaD.Horarios != null && materiaListaD.Horarios.Count() > 0)
+                            if(materiaListaD == null)
                             {
-                                throw new BadHttpRequestException($"No puedes borrar este profesor {profe.Nombre} {profe.Apellido}");
+                                throw new FileNotFoundException();
                             }
+                            materiaListaD.ModifiedBy = email;
+                            materiaListaD.Modified = DateTime.Now;
+                            materiaListaD.Deleted = true;
                             break;
                             
                         default: break;
