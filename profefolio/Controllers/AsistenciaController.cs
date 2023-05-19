@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using profefolio.Helpers;
 using profefolio.Models.DTOs.Asistencia;
@@ -25,16 +26,41 @@ namespace profefolio.Controllers
             _asistenciaService = asistencia;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<AsistenciaResultDTO>> GetAll(int idMateriaLista)
+        [HttpGet("{idMateriaLista:int}")]
+        [Authorize(Roles = "Profesor")]
+        public async Task<ActionResult<List<AsistenciaResultDTO>>> GetAll(int idMateriaLista)
         {
             var userEmail = User.FindFirstValue(ClaimTypes.Name);
             try
             {
                 var alumnosColegios = await _asistenciaService.FindAll(idMateriaLista, userEmail);
-                var result = _mapper.Map<AsistenciaResultDTO>(alumnosColegios);
-                return Ok(result);
-                
+
+                var results = new List<AsistenciaResultDTO>();
+
+                foreach (var alumnoColegio in alumnosColegios.GroupBy(a => a.ColegiosAlumnosId).ToList())
+                {
+
+
+                    foreach (var item in alumnoColegio)
+                    {
+                        var resultDto = _mapper.Map<AsistenciaResultDTO>(item);
+                        resultDto.Asistencias = item.Asistencias.OrderBy(a => a.Fecha)
+                                .TakeWhile(a => a.Fecha > a.Fecha.AddDays(-5))
+                                .Select(b => new AssitenciasFechaResult()
+                                {
+                                    Fecha = b.Fecha,
+                                    Id = b.Id,
+                                    Estado = b.Estado,
+                                    Observacion = b.Observacion
+                                })
+                                .ToList();
+                        results.Add(resultDto);
+                    }
+
+                }
+
+                return Ok(results);
+
             }
             catch (FileNotFoundException e)
             {

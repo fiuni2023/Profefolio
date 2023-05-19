@@ -14,6 +14,8 @@ namespace profefolio.Helpers.Mappers
         {
 
             CreateMap<ClasesAlumnosColegio, AsistenciaResultDTO>()
+                .ForMember(dest => dest.Id,
+                    opt => opt.MapFrom(v => v.Id))
                 .ForMember(dest => dest.Nombre,
                     opt => opt.MapFrom(v => v.ColegiosAlumnos.Persona.Nombre))
                 .ForMember(dest => dest.Apellido,
@@ -21,15 +23,7 @@ namespace profefolio.Helpers.Mappers
                 .ForMember(dest => dest.Documento,
                     opt => opt.MapFrom(v => v.ColegiosAlumnos.Persona.Documento))
                 .ForMember(dest => dest.Asistencias,
-                    opt => opt.MapFrom(v =>
-                        v.Asistencias.OrderBy(a => a.Fecha).TakeWhile(a => a.Fecha > a.Fecha.AddDays(-5)).Select(b => new AssitenciasFechaResult()
-                        {
-                            Fecha = b.Fecha,
-                            Id = b.Id,
-                            Estado = b.Estado,
-                            Observacion = b.Observacion
-                        }))
-                );
+                    opt => opt.MapFrom(v => new List<AssitenciasFechaResult>()));
         }
     }
 }

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace profefolio.Models.DTOs.Asistencia
 {
-    public class AsistenciaResultDTO
+    public class AsistenciaResultDTO : DataDTO
     {
         public string Documento { get; set; } = "";
         public string Apellido { get; set; } = "";
