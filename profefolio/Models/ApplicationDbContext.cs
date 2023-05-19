@@ -119,8 +119,8 @@ public class ApplicationDbContext : IdentityDbContext<Persona>
         .HasOne<Persona>(p => p.Persona)
         .WithMany(p => p.ColegiosProfesor)
         .HasForeignKey(p => p.PersonaId);
-        
-        
+
+
         // definicio de primary key de la tabla ColegiosAlumnos
         modelBuilder.Entity<ColegiosAlumnos>().HasKey(ca => new { ca.Id });
 
@@ -144,7 +144,7 @@ public class ApplicationDbContext : IdentityDbContext<Persona>
             .HasPrincipalKey(c => c.Id);
 
 
-        
+
         /* Relacion muchos a muchos entre clases y alumnoscolegios */
 
         // definicio de primary key de la tabla ClaseAlumnosColegio
@@ -186,7 +186,7 @@ public class ApplicationDbContext : IdentityDbContext<Persona>
 
 
     public DbSet<Materia> Materias { get; set; }
-    public DbSet<Colegio> Colegios{ get;set; }
+    public DbSet<Colegio> Colegios { get; set; }
     public DbSet<Ciclo> Ciclos { get; set; }
     public DbSet<Clase> Clases { get; set; }
     public DbSet<ColegioProfesor> ColegiosProfesors { get; set; }
@@ -195,4 +195,5 @@ public class ApplicationDbContext : IdentityDbContext<Persona>
     public DbSet<ClasesAlumnosColegio> ClasesAlumnosColegios { get; set; }
     public DbSet<HoraCatedra> HorasCatedras { get; set; }
     public DbSet<HorasCatedrasMaterias> HorasCatedrasMaterias { get; set; }
+    public DbSet<Anotacion> Anotacion { get; set; }
 }

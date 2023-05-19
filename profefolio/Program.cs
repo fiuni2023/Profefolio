@@ -96,6 +96,7 @@ builder.Services.AddScoped<IRol, RolService>();
 builder.Services.AddScoped<IAuth, AuthService>();
 builder.Services.AddScoped<IMateriaLista, MateriaListaService>();
 builder.Services.AddScoped<IAdmin, AdminReportService>();
+builder.Services.AddScoped<IAnotacion, AnotacionService>();
 
 var app = builder.Build();
 

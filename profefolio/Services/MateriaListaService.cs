@@ -43,6 +43,7 @@ namespace profefolio.Services
         public async Task<MateriaLista> FindById(int id)
         {
             var query = await _db.MateriaListas
+                .Include(a=>a.Profesor)
                 .FirstOrDefaultAsync(p => p.Id == id && !p.Deleted);
 
             if (query == null) throw new FileNotFoundException();
