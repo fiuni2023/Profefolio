@@ -6,7 +6,10 @@ import HorarioService from '../helpers/HorariosHelpers'
 import { useGeneralContext } from '../../../context/GeneralContext'
 
 
-const ContainerColegios = () => {
+const ContainerColegios = ({
+    onClick=()=>{},
+    lista = []
+}) => {
 
     const { getToken } = useGeneralContext();
     const [horariosColegios, setHorariosColegios] = useState([]);
@@ -18,57 +21,76 @@ const ContainerColegios = () => {
         return colores[Math.abs(colores.length - pos) % (colores.length - 1)]
     }
     
+    const getMateriasSubtitle = (materias = []) =>{
+        let materiaLista = materias.length > 3? materias.slice(0,3) : materias
+        return materias.length > 3? 
+            `${map(materiaLista, (materia) => `${materia.nombre}`).join(", ")}, ...`
+            :
+            `${map(materiaLista, (materia) => `${materia.nombre}`).join(", ")}`
+    }   
 
-    const mapper = useCallback((colegio = {}, indice) => {
+
+    const mapper = (objeto = {}, indice) => {
         return {
             xs: 12, sm: 12, md: 6, lg: 3,
             background: getColor(indice),
             hover: true,
-            goto: `/colegio/${colegio?.id}`,
+            action: onClick,
             header: {
-                title: `${colegio?.nombre}`,
+                title: `${objeto?.nombre}`,
             },
             body: {
                 first: {
-                    title: `${colegio?.clases?.length} clases: `,
-                    subtitle: `${colegio?.clases?.join(", ")}`
+                    title: objeto?.clases ? 
+                    `${objeto?.clases?.length} clases: ` 
+                    : 
+                    objeto?.materias? 
+                    `${objeto?.materias?.length} Materias: ` 
+                    :
+                    objeto?.materia_anotaciones?
+                    `${objeto.materia_anotaciones} Anotaciones`
+                    :
+                    "",
+
+                    subtitle: 
+                        objeto?.clases ? `${map(objeto?.clases, (clase) => `${clase.nombre}`).join(", ")}` 
+                        : 
+                        objeto?.materias? getMateriasSubtitle(objeto?.materias)
+                        :
+                        null
                 },
+                second: objeto?.alumnos ? {
+                    title: `${objeto.alumnos} Alumnos`
+                }
+                :
+                objeto?.materia_calif?
+                {
+                    title: `${objeto.materia_calif} Calificaciones`
+                }
+                :
+                null,
+                third: objeto?.materia_evento ? {
+                    title: `${objeto.materia_evento} Eventos`
+                }:null,
                 schedule: {
-                    main: `${map(colegio?.horarios, (h) => `${h.dia} ${h.inicio}`).join(" - ")}`,
+                    main: `${map(objeto?.horario, (h) => `${h.dia} ${new Date(h.hora).toLocaleTimeString("en-EN", {
+                        hour12: true,
+                        hour: "numeric",
+                        minute: "numeric",
+                    })}`).join(" - ")}`,
+                    secondary: objeto?.duracionHrs? objeto?.duracionHrs : null
                 }
             }
         }
-    }, [])
-
-
-
-    useEffect(() => {
-        const getHorarios = async () => {
-            
-            const result = await HorarioService.getColegiosAndHorarios(getToken());
-            if (result !== null) {
-                setHorariosColegios(map(result, (r, i) => mapper(r, i)))
-            } else {
-                console.log("Error al obtener el horario")
-            }
-        }
-        
-        getHorarios();
-        
-    }, [getToken, mapper]);
-
+    }
+    
+    const colegios = map(lista, (colegio, i) => mapper(colegio, i))
     return <>
         <SRow>
-            {horariosColegios 
-                ? horariosColegios.length === 0 
-                ? <h5>No tiene Clases asignadas</h5> 
-                : horariosColegios.map((element, i) => {
-                    if (element?.goto) return <Card key={i} cardInfo={element}></Card>
-                    else return 0
-                }) 
-                : <h5>Hubo un problema, recargue la pagina o 
-                    comuniquese con el Administrador de su colegio para verificar 
-                    que tenga clases asignadas</h5>  }
+            {colegios.map((element, i) => {
+                if (element?.goto || element?.action ) return <Card key={i} cardInfo={element}></Card>
+                else return 0
+            })}
         </SRow>
     </>
 }

@@ -27,7 +27,7 @@ function Card({ cardInfo }) {
     }
     return (
         <SCol xs={cardInfo?.xs ?? 12} sm={cardInfo?.sm ?? 12} md={cardInfo?.md ?? 6} lg={cardInfo?.lg ?? 4}>
-            <SCard onClick={cardInfo?.goto ? () => handleClick(cardInfo.goto) : null} hover={cardInfo?.hover ? "true" : "false"}>
+            <SCard onClick={cardInfo?.goto ? () => handleClick(cardInfo.goto) : cardInfo?.action ? cardInfo.action : null } hover={cardInfo?.hover ? "true" : "false"}>
                 {cardInfo?.header &&
                     <SHeader background={cardInfo?.background ?? "gray"}>
                         {cardInfo?.header?.title}</SHeader>}
