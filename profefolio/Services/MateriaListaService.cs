@@ -269,7 +269,10 @@ namespace profefolio.Services
                             {
                                 ClaseId = dto.IdClase,
                                 MateriaId = materia.IdMateria,
-                                ProfesorId = profesor.IdProfesor
+                                ProfesorId = profesor.IdProfesor,
+                                Deleted = false,
+                                CreatedBy = email,
+                                Created = DateTime.Now      
 
                             };
                             await _db.MateriaListas.AddAsync(materiaLista);
