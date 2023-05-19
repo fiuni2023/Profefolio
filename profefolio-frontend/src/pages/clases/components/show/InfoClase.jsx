@@ -214,7 +214,7 @@ const InfoClase = ({ idClase }) => {
 
     return <>
         <ContainerBlock>
-            <STitle>Editar Datos del Grado</STitle>
+            <STitle>Editar Datos de la Clase</STitle>
             <Form form={form} />
         </ContainerBlock>
     </>
