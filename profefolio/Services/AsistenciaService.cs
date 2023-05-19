@@ -18,13 +18,19 @@ namespace profefolio.Services
         }
         public async Task<Asistencia> Add(Asistencia t)
         {
-            var result = await _context.Asistencias.AddAsync(t);
-            return result.Entity;
+            _context.Entry(t).State = EntityState.Added;
+            return await Task.FromResult(t);
         }
 
         public int Count()
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<Asistencia> Delete(Asistencia t)
+        {
+            _context.Entry(t).State = EntityState.Deleted;
+            return await Task.FromResult(t);
         }
 
         public async void Dispose()
@@ -34,7 +40,8 @@ namespace profefolio.Services
 
         public Asistencia Edit(Asistencia t)
         {
-            throw new NotImplementedException();
+            _context.Entry(t).State = EntityState.Modified;
+            return t;
         }
 
         public bool Exist()
@@ -70,14 +77,27 @@ namespace profefolio.Services
             throw new NotImplementedException();
         }
 
+        public async Task<Asistencia> FindByIdAndProfesorId(int id, string profesorId)
+        {
+            var asistencia = await _context.Asistencias
+                .FirstOrDefaultAsync(a => !a.Deleted 
+                    && a.Id == id
+                    && profesorId.Equals(a.MateriaLista.ProfesorId));
+            
+            if(asistencia == null){
+                throw new FileNotFoundException("No se encontro la asistencia");
+            }
+            return asistencia;
+        }
+
         public IEnumerable<Asistencia> GetAll(int page, int cantPorPag)
         {
             throw new NotImplementedException();
         }
 
-        public Task Save()
+        public async Task Save()
         {
-            throw new NotImplementedException();
+            await _context.SaveChangesAsync();
         }
     }
 }

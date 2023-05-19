@@ -141,19 +141,19 @@ namespace profefolio.Services
                 .Where(c => c.Id == idClase)
                 .FirstOrDefaultAsync();
 
-            if (clase == null || clase.Nombre == null|| (colegio.Id != clase.ColegioId) || clase.MateriaListas == null)
+            if (clase == null || clase.Nombre == null || (colegio.Id != clase.ColegioId) || clase.MateriaListas == null)
             {
                 throw new FileNotFoundException();
             }
 
-            
+
 
             var materias = _db.Materias
                 .Include(x => x.MateriaListas)
                 .Where(x => !x.Deleted)
                 .Where(x => x.MateriaListas.Any(y => y.ClaseId == clase.Id));
-                
-            
+
+
             var result = new ClaseDetallesDTO();
 
             result.ClaseId = clase.Id;
@@ -193,7 +193,7 @@ namespace profefolio.Services
             }
 
             result.MateriaProfesores = materiaProfesoresList;
-            
+
             return result;
         }
 
@@ -386,14 +386,14 @@ namespace profefolio.Services
             }
 
             try
-                {
-            
-                    await this.Save();
-                }
-                catch (Exception e)
-                {
-                    return false;
-                }
+            {
+
+                await this.Save();
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
             return true;
         }
 
@@ -430,6 +430,20 @@ namespace profefolio.Services
             }
 
             throw new BadHttpRequestException("El usuario no tienen acceso");
+        }
+
+        public async Task<Persona> GetProfesorOfMateria(int idMateriaLista, string profesorEmail)
+        {
+            var materia = await _db.MateriaListas
+                    .Include(a => a.Profesor)
+                    .FirstOrDefaultAsync(a => !a.Deleted 
+                        && a.Id == idMateriaLista
+                        && profesorEmail.Equals(a.Profesor.Email));
+
+            if(materia == null){
+                throw new FileNotFoundException("No es Profesor de la Materia");
+            }
+            return materia.Profesor;
         }
     }
 }

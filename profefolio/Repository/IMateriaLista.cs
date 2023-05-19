@@ -12,6 +12,6 @@ namespace profefolio.Repository
         Task<bool> DeleteByIdClase(int idClase, string user);
         Task<bool> SaveMateriaLista(ClaseMateriaCreateDTO dto, string user);
         Task<bool> EditMateriaLista(ClaseMateriaEditDTO dto, string user);
-
+        Task<Persona> GetProfesorOfMateria(int idMateriaLista, string profesorEmail);
     }
 }

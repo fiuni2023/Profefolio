@@ -89,6 +89,16 @@ namespace profefolio.Services
             throw new NotImplementedException();
         }
 
+        public async Task<bool> IsAlumnoOfClaseAndMateria(int idAlumno, int idMateria)
+        {
+            return await _context.ClasesAlumnosColegios
+                .AnyAsync(a => !a.Deleted 
+                    && a.Clase != null 
+                    && !a.Clase.Deleted 
+                    && a.Clase.MateriaListas != null
+                    && a.Clase.MateriaListas.Any(b => !b.Deleted && b.Id == idAlumno));
+        }
+
         public Task Save()
         {
             return _context.SaveChangesAsync();
