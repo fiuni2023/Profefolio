@@ -354,9 +354,7 @@ namespace profefolio.Services
                 throw new BadHttpRequestException("Accion no valida");
             }
 
-            var itemDistinct = dto.IdProfesores.Distinct();
-
-            foreach (var item in itemDistinct)
+            foreach (var item in dto.IdProfesores.Distinct())
             {
                 var p = await _db.Users
                     .FirstOrDefaultAsync(x => !x.Deleted && x.Id.Equals(item));
@@ -379,21 +377,37 @@ namespace profefolio.Services
                 }
                 var listaDetalle = await Find(dto.IdClase, item, dto.IdMateria, user);
 
-                if (listaDetalle != null)
+                if (listaDetalle == null)
                 {
-                    _db.MateriaListas.Remove(listaDetalle);
+                    await _db.MateriaListas.AddAsync(new MateriaLista
+                    {
+                        ClaseId = dto.IdClase,
+                        ProfesorId = item,
+                        MateriaId = dto.IdMateria,
+                        Created = DateTime.Now,
+                        CreatedBy = user
+                    });
                 }
-            }
-
-            try
+                else
                 {
-            
+                    listaDetalle.ClaseId = dto.IdClase;
+                    listaDetalle.MateriaId = dto.IdMateria;
+                    listaDetalle.ProfesorId = item;
+                    listaDetalle.ModifiedBy = "user";
+                    listaDetalle.Modified = DateTime.Now;
+                }
+
+                try
+                {
                     await this.Save();
                 }
                 catch (Exception e)
                 {
                     return false;
                 }
+
+
+            }
             return true;
         }
 

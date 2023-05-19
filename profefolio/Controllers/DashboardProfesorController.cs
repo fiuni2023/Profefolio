@@ -22,9 +22,8 @@ namespace profefolio.Controllers
         private IColegioProfesor _cProfService;
         private IDashboardProfesor _dashBoardService;
         private IColegio _colegioService;
-        private IProfesor _profesorService;
         private IMapper _mapper;
-      
+        private readonly IProfesor _profesorService;
         private static int CantPorPage => Constantes.CANT_ITEMS_POR_PAGE;
 
 
@@ -324,24 +323,7 @@ namespace profefolio.Controllers
                     case "eventos-materias":
                         return BadRequest("Opcion en implementacion");
                     case "lista-alumnos":
-                        //id clase
-                        //id prf
-                        
-                        var _profId = await _profesorService.GetProfesorIdByEmail(userEmail);
-                        var clasesA = await _dashBoardService.GetColegioAlumnoId(dto.Id, _profId);
-                        var resultsA = _mapper.Map<List<DBClaseAlumnoColegioDTO>>(clasesA);
-
-                        foreach (var result in resultsA)
-                        {
-                            //a partir del colegioAlumnoId obtener el idAlumno
-                            var idAlumno = await _dashBoardService.FindAlumnoIdByColegioAlumnoId(result.Id);
-                            var alumno = await _personaService.FindById(idAlumno);
-                            result.Nombres = alumno.Nombre;
-                            result.Apellidos = alumno.Apellido;
-                           
-                        }
-                        resultsA = resultsA.OrderBy(r => r.Apellidos).ToList();
-                        return Ok(resultsA);
+                        return BadRequest("Opcion en implementacion");
                     case "promedio-puntajes":
                         return BadRequest("Opcion en implementacion");
                     case "promedio-asistencias":

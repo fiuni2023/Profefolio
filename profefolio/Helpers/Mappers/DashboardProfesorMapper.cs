@@ -73,11 +73,6 @@ namespace profefolio.Helpers.Mappers
                 .ForMember(dest => dest.Fin, 
                     opt => opt.MapFrom(v => v.HoraCatedra.Fin));
 
-             CreateMap<ClasesAlumnosColegio, DBClaseAlumnoColegioDTO>()
-                .ForMember(dest => dest.Id,
-                    opt => opt.MapFrom(v => v.ColegiosAlumnosId));
-               
-            
             CreateMap<MateriaResultFullDTO, DBCardMateriasDTO>()
                 .ForMember(dest => dest.Id,
                     opt => opt.MapFrom(v => v.MateriaListaId))
