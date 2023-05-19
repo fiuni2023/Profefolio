@@ -212,6 +212,11 @@ namespace profefolio.Services
                 throw new UnauthorizedAccessException();
             }
 
+            if(dto.Materias.Count < 1)
+            {
+                throw new BadHttpRequestException("No se admiten elementos vacios");
+            }
+
             foreach (var materia in dto.Materias)
             {
                 var existMateria = _db.Materias
@@ -289,6 +294,7 @@ namespace profefolio.Services
                         case 'D':
                             var materiaListaD = await _db.MateriaListas
                                 .Include(ml => ml.Horarios)
+                                .Where(ml => !ml.Deleted)
                                 .Where(ml => ml.ClaseId == dto.IdClase
                                     && ml.MateriaId == materia.IdMateria
                                     && ml.ProfesorId.Equals(profesor.IdProfesor))
