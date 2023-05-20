@@ -48,9 +48,16 @@ namespace profefolio.Services
             throw new NotImplementedException();
         }
 
+        public async Task<IEnumerable<Anotacion>> GetAll()
+        {
+            return await _context.Anotacion.Where(a=> !a.Deleted).ToArrayAsync();
+        
+        }
+
         public IEnumerable<Anotacion> GetAll(int page, int cantPorPag)
         {
-            throw new NotImplementedException();
+            return _context.Anotacion.Where(a => !a.Deleted).Skip(page * cantPorPag).Take(cantPorPag).ToList();
+        
         }
 
         public async Task Save()

@@ -8,6 +8,6 @@ namespace profefolio.Repository
 {
     public interface IAnotacion : IRepository<Anotacion>
     {
-        
+        Task<IEnumerable<Anotacion>> GetAll();
     }
 }

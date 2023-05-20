@@ -30,6 +30,25 @@ namespace profefolio.Controllers
             _mapper = mapper;
         }
 
+        [HttpGet]
+        [Authorize(Roles = "Profesor")]
+        public async Task<ActionResult<AnotacionResultDTO>> Get ()
+        {
+            try
+            {
+
+                var result = await _anotacionService.GetAll();
+                return Ok(_mapper.Map<List<AnotacionResultDTO>>(result));
+
+            }
+            catch (Exception e)
+            {
+                
+                return BadRequest("Error durante la busqueda");
+
+            }
+        }
+
         [HttpPost]
         [Authorize(Roles = "Profesor")]
         public async Task<ActionResult<AnotacionResultDTO>> Post([FromBody] AnotacionCreateDTO dTO)
@@ -50,7 +69,38 @@ namespace profefolio.Controllers
 
             await _anotacionService.Add(model);
             await _anotacionService.Save();
-            return Ok();
+            return Ok(_mapper.Map<AnotacionResultDTO>(model));
+        }
+
+        [HttpDelete("{id:int}")]
+        [Authorize(Roles = "Administrador de Colegio")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            try
+            {
+                var anotacion = await _anotacionService.FindById(id);
+                if (anotacion == null)
+                {
+                    return BadRequest("Ciclo no encontrado");
+                }
+
+                var name = User.FindFirstValue(ClaimTypes.Name);
+                anotacion.ModifiedBy = name;
+                anotacion.Modified = DateTime.Now;
+                anotacion.Deleted = true;
+
+                _anotacionService.Edit(anotacion);
+                await _anotacionService.Save();
+
+                return Ok();
+
+            }
+            catch (Exception e)
+            {
+                _anotacionService.Dispose();
+                Console.WriteLine(e);
+                return BadRequest("Error durante la eliminacion");
+            }
         }
     }
 }

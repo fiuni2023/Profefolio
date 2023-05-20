@@ -13,6 +13,8 @@ namespace profefolio.Helpers.Mappers
         public AnotacionMapper()
         {
             CreateMap<AnotacionCreateDTO, Anotacion>();
+            
+            CreateMap<Anotacion, AnotacionResultDTO>();
         }
     }
 }
