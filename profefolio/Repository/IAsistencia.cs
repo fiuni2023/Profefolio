@@ -11,5 +11,6 @@ namespace profefolio.Repository
         Task<List<ClasesAlumnosColegio>> FindAll(int idMateriaLista, string userEmail);
         Task<Asistencia> FindByIdAndProfesorId(int idMateriaLista, string profesorId);
         Task<Asistencia> Delete(Asistencia t);
+        Task<bool> ExistAsistenciaInDate(int idMateriaLista, int idClaseColegioAlumno, DateTime fecha);
     }
 }

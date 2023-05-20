@@ -49,6 +49,15 @@ namespace profefolio.Services
             throw new NotImplementedException();
         }
 
+        public async Task<bool> ExistAsistenciaInDate(int idMateriaLista, int idClaseColegioAlumno, DateTime fecha)
+        {
+            return await _context.Asistencias
+                    .AnyAsync(a => !a.Deleted 
+                        && a.MateriaListaId == idMateriaLista
+                        && a.ClasesAlumnosColegioId == idClaseColegioAlumno
+                        && a.Fecha.Date == fecha.Date);
+        }
+
         public async Task<List<ClasesAlumnosColegio>> FindAll(int idMateriaLista, string userEmail)
         {
 

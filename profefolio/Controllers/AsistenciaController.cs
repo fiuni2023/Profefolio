@@ -31,6 +31,34 @@ namespace profefolio.Controllers
             _claseAlumColgService = clasesAlumnosColegio;
         }
 
+
+        /// <summary>
+        /// Obtiene todas las asistencias, recibe en el link el id de MateriaLista
+        /// </summary>
+        ///
+        /// <remarks>
+        /// Recibe en el link el Id de MateriaLista. 
+        /// <a href="https://nande-y.atlassian.net/browse/PF-316">Ticket PF-316</a>
+        /// Respuesta:
+        ///
+        ///     [
+        ///        {
+        ///            "id": 0,                                     // id del alumno en ClaseAlumnoColegio
+        ///            "documento": "string",
+        ///            "apellido": "string",
+        ///            "nombre": "string",
+        ///            "asistencias": [
+        ///                 {
+        ///                     "id": 0,                            // id de la asistencia
+        ///                     "fecha": "2023-05-20T06:32:34.578Z",
+        ///                     "estado": "char",                 // retorna P, A, J
+        ///                     "observacion": "string"
+        ///                 }
+        ///            ]
+        ///        }
+        ///     ]
+        /// </remarks>
+        ///
         [HttpGet("{idMateriaLista:int}")]
         [Authorize(Roles = "Profesor")]
         public async Task<ActionResult<List<AsistenciaResultDTO>>> GetAll(int idMateriaLista)
@@ -84,7 +112,7 @@ namespace profefolio.Controllers
         ///     Actualiza, Agrega y Elimina una lista de asistecias
         /// </summary>
         /// <remarks>
-        /// <a href="https://nande-y.atlassian.net/browse/PF-316">Ticket PF-316</a>
+        /// <a href="https://nande-y.atlassian.net/browse/PF-320">Ticket PF-320</a>
         /// 
         /// La utilidad del ID recibido en los objetos de la lista va a variar de acuerdo a la accion
         /// 
@@ -126,8 +154,15 @@ namespace profefolio.Controllers
                         if (!(await _claseAlumColgService.IsAlumnoOfClaseAndMateria(item.Id, idMateriaLista)))
                         {
                             _asistenciaService.Dispose();
-                            return BadRequest("El id no es de un alumno de la materia");
+                            return BadRequest("El alumno es invalido");
                         }
+
+                        // validar que el alumno no tenga ya una fecha relacionada con la materia
+                        if((await _asistenciaService.ExistAsistenciaInDate(idMateriaLista, item.Id, item.Fecha))){
+                            _asistenciaService.Dispose();
+                            return BadRequest("El alumno ya tiene una asistencia para la fecha");
+                        }
+
                         var asistencia = new Asistencia()
                         {
                             ClasesAlumnosColegioId = item.Id,

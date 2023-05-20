@@ -92,11 +92,14 @@ namespace profefolio.Services
         public async Task<bool> IsAlumnoOfClaseAndMateria(int idAlumno, int idMateria)
         {
             return await _context.ClasesAlumnosColegios
+                .Include(a => a.Clase)
+                .Include(a => a.Clase.MateriaListas)
                 .AnyAsync(a => !a.Deleted 
+                    && a.Id == idAlumno
                     && a.Clase != null 
                     && !a.Clase.Deleted 
                     && a.Clase.MateriaListas != null
-                    && a.Clase.MateriaListas.Any(b => !b.Deleted && b.Id == idAlumno));
+                    && a.Clase.MateriaListas.Any(b => !b.Deleted && b.Id == idMateria));
         }
 
         public Task Save()
