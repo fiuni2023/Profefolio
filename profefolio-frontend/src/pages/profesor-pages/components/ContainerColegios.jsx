@@ -1,18 +1,13 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React from 'react'
 import { map } from "lodash"
 import Card from '../../../components/Card'
 import { SRow } from '../../../components/componentsStyles/StyledDashComponent'
-import HorarioService from '../helpers/HorariosHelpers'
-import { useGeneralContext } from '../../../context/GeneralContext'
 
 
 const ContainerColegios = ({
     onClick=()=>{},
     lista = []
 }) => {
-
-    const { getToken } = useGeneralContext();
-    const [horariosColegios, setHorariosColegios] = useState([]);
 
 
     const getColor = (pos) => {
