@@ -11,5 +11,7 @@ namespace profefolio.Repository
         Task<bool> Exist(int ClaseId, int ColegioA);
         Task<ClasesAlumnosColegio?> FindByClaseIdAndColegioAlumnoId(int ClaseId, int ColegioA);
         Task<List<ClasesAlumnosColegio>?> FindAllByClaseIdAndAdminEmail(int ClaseId, string adminEmail);
+        Task<bool> IsAlumnoOfClaseAndMateria(int idAlumno, int idMateria);
+
     }
 }
