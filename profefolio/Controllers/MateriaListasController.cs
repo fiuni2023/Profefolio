@@ -1,11 +1,8 @@
-﻿using System.Collections.ObjectModel;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using profefolio.Models.DTOs.ClaseMateria;
-using profefolio.Models.DTOs.Materia;
-using profefolio.Models.Entities;
 using profefolio.Repository;
 
 namespace profefolio.Controllers
@@ -28,114 +25,6 @@ namespace profefolio.Controllers
             _materiaService = materiaService;
             _claseService = claseService;
             _mapper = mapper;
-        }
-
-        [HttpPost]
-        public async Task<ActionResult> Post([FromBody] ClaseMateriaCreateDTO dto)
-        {
-            var user = User.Identity.Name;
-            try
-            {
-                var query = await _materiaListaService.SaveMateriaLista(dto, user);
-                if (query) return Ok();
-            }
-            catch (FileNotFoundException e)
-            {
-                return NotFound();
-            }
-            catch (BadHttpRequestException e)
-            {
-                return BadRequest(e.Message);
-            }
-            catch (UnauthorizedAccessException e)
-            {
-                return Unauthorized();
-            }
-            return BadRequest("Error al ejecutar la secuencia de intrucciones");
-        }
-
-
-        //Este metodo GET NO SE DEBE IMPLEMENTAR EN EL FRONT-END, es con fines de Testing
-        [HttpGet]
-        public ActionResult GetAllTemp()
-        {
-
-            var query = _materiaListaService
-                .GetAll(0, 0)
-                .ToList()
-                .ConvertAll(p => new
-                {
-                    Id = p.Id,
-                    Profes = new
-                    {
-                        IdProfesor = p.ProfesorId,
-                        ProfesorMail = p.Profesor.Email,
-                    },
-                    Clase = new
-                    {
-                        ClaseName = p.Clase.Nombre,
-                        Id = p.ClaseId
-                    },
-                    Materia = new
-                    {
-                        Id = p.MateriaId,
-                        Materia = p.Materia.Nombre_Materia
-                    }
-
-                });
-
-
-            return Ok(query);
-
-        }
-
-
-        [HttpPut]
-        [Route("{idClase:int}")]
-        public async Task<ActionResult> Put(int idClase, [FromBody] ClaseMateriaEditDTO dto)
-        {
-            var user = User.Identity.Name;
-            try
-            {
-                var query = await _materiaListaService.EditMateriaLista(dto, user);
-                if (query) return Ok();
-            }
-            catch (FileNotFoundException e)
-            {
-                return NotFound();
-            }
-            catch (BadHttpRequestException e)
-            {
-                return BadRequest(e.Message);
-            }
-            catch (UnauthorizedAccessException e)
-            {
-                return Unauthorized();
-            }
-            return BadRequest("Error al ejecutar la secuencia de intrucciones");
-
-        }
-
-        [HttpDelete]
-        [Route("{idClase:int}")]
-        public async Task<ActionResult> DeleteByIdClase(int idClase)
-        {
-            try
-            {
-                var user = User.Identity.Name;
-
-                await _materiaListaService.DeleteByIdClase(idClase, user);
-            }
-            catch (FileNotFoundException e)
-            {
-                return NotFound();
-            }
-            catch (BadHttpRequestException e)
-            {
-                return BadRequest();
-            }
-
-            return Ok();
         }
 
         [HttpGet]
@@ -205,6 +94,39 @@ namespace profefolio.Controllers
             {
                 Console.WriteLine($"{e}");
                 return BadRequest("Sucedio un error inesperado durante la busqueda.");
+            }
+
+        }
+
+
+        [HttpPut]
+        public async Task<ActionResult> Put(MateriaListaPutDTO dto)
+        {
+            var userEmail = User.FindFirstValue(ClaimTypes.Name);
+
+            try
+            {
+              var result = await _materiaListaService.Put(userEmail, dto);
+
+              return result ? Ok() : BadRequest("Error al realizar la consulta");
+            }
+
+            catch(FileNotFoundException)
+            {
+                return NotFound();
+            }
+
+            catch(UnauthorizedAccessException)
+            {
+                return Unauthorized();
+            }
+            catch(BadHttpRequestException e)
+            {
+                return BadRequest(e.Message);
+            }
+            catch(Exception)
+            {
+                return BadRequest("Error a realizar la peticion");
             }
 
         }
