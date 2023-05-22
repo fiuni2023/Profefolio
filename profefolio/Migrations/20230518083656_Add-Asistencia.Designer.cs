@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using profefolio.Models;
@@ -11,9 +12,10 @@ using profefolio.Models;
 namespace profefolio.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230518083656_Add-Asistencia")]
+    partial class AddAsistencia
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -54,6 +56,13 @@ namespace profefolio.Migrations
                             ConcurrencyStamp = "ca112ca7-d157-4f9b-8ac5-ee2fdfa66455",
                             Name = "Master",
                             NormalizedName = "MASTER"
+                        },
+                        new
+                        {
+                            Id = "3998cbe4-3b74-4019-ac2f-672e99c8c145",
+                            ConcurrencyStamp = "1fbbf43d-7094-4f35-a7d1-871c248ed09f",
+                            Name = "Alumno",
+                            NormalizedName = "ALUMNO"
                         },
                         new
                         {
@@ -235,47 +244,6 @@ namespace profefolio.Migrations
                     b.HasIndex("MateriaListaId");
 
                     b.ToTable("Asistencias");
-                });
-
-            modelBuilder.Entity("profefolio.Models.Entities.Anotacion", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Contenido")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("text");
-
-                    b.Property<bool>("Deleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<int>("MateriaListaId")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("Modified")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("ModifiedBy")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Titulo")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MateriaListaId");
-
-                    b.ToTable("Anotaciones");
                 });
 
             modelBuilder.Entity("profefolio.Models.Entities.Ciclo", b =>
@@ -936,18 +904,6 @@ namespace profefolio.Migrations
                         .IsRequired();
 
                     b.Navigation("Alumno");
-
-                    b.Navigation("MateriaLista");
-                });
-                
-            modelBuilder.Entity("profefolio.Models.Entities.Anotacion", b =>
-                {
-                    b.HasOne("profefolio.Models.Entities.MateriaLista", "MateriaLista")
-                        .WithMany()
-                        .HasForeignKey("MateriaListaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
 
                     b.Navigation("MateriaLista");
                 });
