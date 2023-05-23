@@ -9,58 +9,60 @@ import APILINK from '../../../../components/link';
 import axios from 'axios';
 import { useFetchEffect } from '../../../../components/utils/useFetchEffect';
 import { Container, Resumen, SideSection } from './componentes/StyledResumenAsistencia';
+import StudentHelper from '../../../alumnos/helpers/StudentHelper'
+import { useClaseContext } from '../../../clases/context/ClaseContext';
+import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 
-const Asistencia = () => {
-    const { getToken } = useGeneralContext()
-    // const [materia, setMateria] = useState("Matematicas")
-    // const [materiaLista, setMateriaLista] = useState(1)
-    // const [condFetch, setCondFetch] = useState(true)
-    let materia = "Matemáticas"
-    let materiaLista = 2
-    let condFetch = true
+const Asistencia = ({materia = {id: 1, nombre: "Matemáticas"}}) => {
+    const {getToken, cancan, verifyToken} = useGeneralContext()
+    const { getClaseSelectedId } = useClaseContext();
+    const [condFetch, setCondFetch] = useState(true)
     const [datosTabla, setDatosTabla] = useState([]);
+    const [listaAlumnos, setListaAlumnos] = useState([])
+    const nav = useNavigate()
 
-
-
-    // const nav = useNavigate()
-
-    // useEffect(() => {
-    //     verifyToken()
-    //     if (!cancan("Profesor")) {
-    //         nav('/')
-    //     } else {
-    //         setCondFetch(true)
-    //     }
-    // }, [cancan, verifyToken, nav])
-
+    useEffect(() => {
+        verifyToken()
+        if (!cancan("Profesor")) {
+            nav('/')
+        } else {
+            setCondFetch(true)
+        }
+    }, [cancan, verifyToken, nav])
     const { loading, error } = useFetchEffect(
         () => {
-            return axios.get(`${APILINK}/api/Asistencia/${materiaLista}`, {
+            return axios.get(`${APILINK}/api/Asistencia/${materia?.id}`, {
                 headers: {
-                    Authorization: getToken()
+                    Authorization: 'Bearer ' + getToken()
                 }
             }).then(response => response.data);
         },
-        [materiaLista, getToken, condFetch],
+        [],
         {
             condition: condFetch,
             handleSuccess: (r) => {
+                console.log(r)
+                setListaAlumnos(r)
                 setDatosTabla({
                     ...datosTabla,
                     clickable: { action: console.log("seleccionado") },
-                    filas: r.data.dataList.map((dato) => {
+                    filas: r.map((dato) => {
                         return {
                             fila: dato,
-                            datos: dato.asistencias.map((asistencia) => {
-                                return { dato: asistencia.estado }
-                            })
+                            datos:[
+                                {dato: dato?.nombre ? `${dato.apellido}, ${dato.nombre} `: " "},
+                                dato.asistencias.map((asistencia) => {
+                                    return { dato: asistencia.estado }
+                                })
+                            ] 
                         }
                     })
                 });
             },
-            handleError: () => {
+            handleError: (r) => {
                 if (!loading) {
-                    toast.error('No se pudieron obtener los datos. Intente recargar la página');
+                    {console.log(r)}
                 }
             }
         }
@@ -69,7 +71,7 @@ const Asistencia = () => {
     return (
         <>
             <MainContainer>
-                <StyleComponentBreadcrumb nombre={`Registro de Asistencia - ${materia}`} />
+                <StyleComponentBreadcrumb nombre={`Registro de Asistencia - ${materia?.nombre}`} />
                 <Container>
 
                     <SideSection>
