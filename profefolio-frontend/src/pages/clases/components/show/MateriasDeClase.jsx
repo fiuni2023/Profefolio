@@ -39,18 +39,18 @@ justify-content: space-around;
 
 
 
-const TagProfesor = memo(({ id, nombre,apellido, state = "new", onClick = () => { } }) => {
+const TagProfesor = memo(({ id, nombre,apellido, state = "n", onClick = () => { } }) => {
     const uid = useId();
     const unicId = uid.substring(1, uid.length - 1)
 
-    const [type, setType] = useState("new");
+    const [type, setType] = useState("n");
     const bgColor = (estado) => {
         switch (`${estado.toLowerCase()}`) {
             case "reload":
                 return "#F3E6AE";
-            case "new":
-                return "#D1F0E6";
             case "n":
+                return "#D1F0E6";
+            case "d":
                return "#F3E6AE";
         }
     }
@@ -99,7 +99,7 @@ const TagProfesor = memo(({ id, nombre,apellido, state = "new", onClick = () => 
 
   
 
-const ListItem = memo(({ index, idMateria, nombre,apellido, profesores = [] ,profeProfesor = [], type ,onClick,guardarProfesorSeleccionado,guardarProfesorSeleccionadoParaBorrar,guardarIdMateriaSeleccionado} ) => {
+const ListItem = memo(({ index, idMateria,estado ,nombre,apellido, profesores = [] ,profeProfesor = [], type ,onClick,guardarProfesorSeleccionado,guardarProfesorSeleccionadoParaBorrar,guardarIdMateriaSeleccionado} ) => {
 
 
   const [idMateriaSeleccionado, setIdMateriaSeleccionado] = useState([]);
@@ -110,15 +110,22 @@ const ListItem = memo(({ index, idMateria, nombre,apellido, profesores = [] ,pro
     const { setStatusProfesorMateria } = useClaseContext();
 
     const [isSelectOpen, setIsSelectOpen] = useState(false);
+    const [status, setStatus] = useState("");
+  
     
   const [usuariosSeleccionados, setUsuariosSeleccionados] = useState([]);
 
+  
 
   const handleClick = () => {
     setIdMateriaSeleccionado(idMateria); 
     guardarIdMateriaSeleccionado(idMateriaSeleccionado);
+    setStatus(estado);
   };
 
+
+  console.log('estado',estado);
+  console.log('type',type);
     const handleSelectOpenProfesores = () => {
         setIsSelectOpen(true);
 
@@ -184,7 +191,7 @@ useEffect(() => {
                         id={profesor.id}
                         nombre={`${profesor.nombre}${profesor.status}`}
                         apellido={`${profesor.apellido}${profesor.status}`}
-                        state={profesor.status}
+                        state={status}
                         idMateriaProfesor={idMateria} 
                         onClick={() => {
                             setProfesoresSeleccionados((prevSeleccionados) =>
@@ -203,11 +210,12 @@ useEffect(() => {
          id={e.idProfesor} 
          nombre={`${e.nombre}`} 
          apellido={`${e.apellido}`} 
-         state={e.status} 
+         state={type} 
          idMateriaProfesor={idMateria} 
          onClick={() => {
-            setStatusProfesorMateria(idMateria, e.id, e.status === "new" ? "reload" : "new");
-
+            setStatus(estado);
+            setStatusProfesorMateria(idMateria, e.id, type === "n" ? "reload" : "n");
+           
             setUsuariosSeleccionados([...usuariosSeleccionados, e.idProfesor]);
                     }
                     } />)}
@@ -307,9 +315,7 @@ useMemo(() => {
   //handleActualizarMateriaProfesor
   const handleCrearMateriaProfesor = async () => {
     const idProfesoresArray = profesoresSeleccionados;
-    const idProfesoresArrayBorrado = profesoresSeleccionadosBorrado;
-    const idMateria = idMateriaSeleccionada;
-  
+    const idProfesoresArrayBorrado = profesoresSeleccionadosBorrado;  
     const body = {
       "idClase": getClaseSelectedId(),
       "materias": []
@@ -336,7 +342,7 @@ useMemo(() => {
       };
   
       const materia = {
-        "idMateria": idMateria,
+        "idMateria": idMateriaSeleccionada,
         "profesores": [profesor]
       };
   
