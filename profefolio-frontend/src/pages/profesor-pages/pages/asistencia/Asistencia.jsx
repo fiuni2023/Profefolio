@@ -117,7 +117,7 @@ const Asistencia = () => {
                     <SideSection>
                         <Resumen>
                             <p>{cantAlumnos} alumnos</p>
-                            <p>{cantClases} clases</p>
+                            <p>{cantClases} {cantClases > 1 ? "clases": "clase"}</p>
                             <p>75% promedio de asistencias</p>
                         </Resumen>
                     </SideSection>
