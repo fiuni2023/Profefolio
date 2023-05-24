@@ -9,13 +9,19 @@ import APILINK from '../../../../components/link';
 import axios from 'axios';
 import { useFetchEffect } from '../../../../components/utils/useFetchEffect';
 import { Container, Resumen, SideSection } from './componentes/StyledResumenAsistencia';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect } from 'react';
 
-const Asistencia = ({ materia = { id: 1, nombre: "Matemáticas" } }) => {
+// const Asistencia = ({ materia = { id: 1, nombre: "Matemáticas" } }) => {
+const Asistencia = () => {
     const { getToken, cancan, verifyToken } = useGeneralContext()
     const [condFetch, setCondFetch] = useState(true)
     const [datosTabla, setDatosTabla] = useState([]);
+    const [cantAlumnos, setCantAlumnos] = useState(0)
+    const [cantClases, setCantClases] = useState(0)
+    const {idMateriaLista}= useParams()
+    const nombre= "Matemáticas"
+    
     // const [listaAsistencias, setListaAsistencias] = useState([])
     // const [listaNueva, setListaNueva] = useState([])
     const nav = useNavigate()
@@ -30,7 +36,8 @@ const Asistencia = ({ materia = { id: 1, nombre: "Matemáticas" } }) => {
     }, [cancan, verifyToken, nav])
     const { loading } = useFetchEffect(
         () => {
-            return axios.get(`${APILINK}/api/Asistencia/${materia?.id}`, {
+            // return axios.get(`${APILINK}/api/Asistencia/${materia?.id}`, {
+            return axios.get(`${APILINK}/api/Asistencia/${idMateriaLista}`, {
                 headers: {
                     Authorization: 'Bearer ' + getToken()
                 }
@@ -41,6 +48,8 @@ const Asistencia = ({ materia = { id: 1, nombre: "Matemáticas" } }) => {
             condition: condFetch,
             handleSuccess: (dataAsistencia) => {
                 console.log(dataAsistencia)
+                setCantAlumnos(dataAsistencia.length)
+                setCantClases(dataAsistencia[0]?.asistencias?.length)
                 // setListaAsistencias(dataAsistencia)
                 // setListaNueva(dataAsistencia)
                 setDatosTabla({
@@ -51,8 +60,10 @@ const Asistencia = ({ materia = { id: 1, nombre: "Matemáticas" } }) => {
                             ? dataAsistencia[0].asistencias.map((fecha) => {
                                 return { titulo: fecha?.fecha ? formatDate(fecha.fecha) : "" };
                             })
-                            : [])],
-                    clickable: { action: console.log("seleccionado") },
+                            : []),
+                        {titulo: "%"}
+                    ],
+                    clickable: { action: console.log("") },
                     filas: dataAsistencia.map((dato) => {
                         return {
                             fila: dato,
@@ -90,7 +101,8 @@ const Asistencia = ({ materia = { id: 1, nombre: "Matemáticas" } }) => {
     return (
         <>
             <MainContainer>
-                <StyleComponentBreadcrumb nombre={`Registro de Asistencia - ${materia?.nombre}`} />
+                {/* <StyleComponentBreadcrumb nombre={`Registro de Asistencia - ${materia?.nombre}`} /> */}
+                <StyleComponentBreadcrumb nombre={`Registro de Asistencia - ${nombre}`} />
                 <Container>
 
                     <SideSection>
@@ -103,8 +115,8 @@ const Asistencia = ({ materia = { id: 1, nombre: "Matemáticas" } }) => {
                     </SideSection>
                     <SideSection>
                         <Resumen>
-                            <p>20 alumnos</p>
-                            <p>5 clases - 1 semana</p>
+                            <p>{cantAlumnos} alumnos</p>
+                            <p>{cantClases} clases</p>
                             <p>75% promedio de asistencias</p>
                         </Resumen>
                     </SideSection>
