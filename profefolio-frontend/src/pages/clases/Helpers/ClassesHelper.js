@@ -116,7 +116,7 @@ const deleteClasse = async (id, token) => {
 
 const createMateriaProfesor = async (body, token) => {
     console.log('createMateriaProfesor body:', body);
-    const result = await axios.post(
+    const result = await axios.put(
       `${APILINK}/api/administrador/materia/profesores`,
       body,
       {
