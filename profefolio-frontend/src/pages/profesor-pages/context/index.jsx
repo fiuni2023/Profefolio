@@ -1,10 +1,12 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { createContext } from "react";
 import ProfesorPage from "../pages/dashboard";
 import ProfesorClase from "../pages/clase";
 import ProfesorMateriaShow from "../pages/materiashow";
 import ProfesorMateria from "../pages/materia";
 import Anotacion from "../pages/anotacion";
+import ProfesorPagesService from "../services/ProfesorPagesService";
+import { useGeneralContext } from "../../../context/GeneralContext";
 
 const ModularContext = createContext();
 
@@ -21,8 +23,42 @@ export const ModularProvider = ({ children }) => {
         materiashow: <ProfesorMateriaShow />,
         anotacion: <Anotacion />
     }
+    
+    const { getToken } = useGeneralContext()
+    const token = getToken()
 
-    const [currentPage, setCurrentPage] = useState(pages.dashboard)
+    
+    const [ fetch_data, setFetchData ] = useState(false)
+    const [ currentPage, setCurrentPage ] = useState(pages.dashboard)
+    const [ colegios, setColegios ] = useState([])
+    const [colegioId, setColegioId] = useState(0) 
+    const [ clases, setClases ] = useState([])
+    const [ claseId, setClaseId] = useState(0)
+    const [ materias, setMaterias ] = useState([])
+    const [ materiaId, setMateriaId ] = useState(0)
+
+    useEffect(()=>{
+        // const body = {opcion: 'card-clases', id: 1, anho: 2023}
+        ProfesorPagesService.GetColegios(token)
+        .then(d=>setColegios(d.data))
+    },[fetch_data, token])
+
+    useEffect(()=>{
+        if(colegioId){
+            const body = {opcion: 'card-clases', id: colegioId, anho: 2023}
+            ProfesorPagesService.Get(body, token)
+            .then(d=>setClases(d.data))
+        }
+    },[fetch_data, token, colegioId])
+
+    useEffect(()=>{
+        if(claseId){
+            const body = {opcion: 'card-materias', id: claseId, anho: 2023}
+            ProfesorPagesService.Get(body, token)
+            .then(d=>setMaterias(d.data))
+        }
+    },[fetch_data, token, claseId])
+
 
     const setPage = (page = "") =>{
         if(page === "dashboard") return setCurrentPage(pages.dashboard)
@@ -34,9 +70,31 @@ export const ModularProvider = ({ children }) => {
         
     }
 
+    const fetchData = () => {
+        setFetchData((before)=>{return !before})
+    }
+
+    const stateController = {
+        colegioId, 
+        setColegioId,
+        claseId,
+        setClaseId,
+        materiaId, 
+        setMateriaId
+    }
+
+    const dataSet = {
+        colegios,
+        clases,
+        materias,
+    }
+
     const values = {
         currentPage,
-        setPage
+        setPage,
+        fetchData,
+        stateController,
+        dataSet
     }
 
     return (
