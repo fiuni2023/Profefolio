@@ -476,42 +476,32 @@ namespace profefolio.Controllers
 
 
                     case "promedio-asistencias":
-                        /*
-                            TODO
+                        var profeId = await _profesorService.GetProfesorIdByEmail(userEmail);
+            
+                        if(profeId == null){
+                            return Unauthorized();
+                        }
 
-                            HACER QUE SE OBTENGAN LOS VALORES DE LA BASE DE DATOS DESPUES DE QUE SE CREEN LAS 
-                            TABLAS RELACIONADAS A ASISTENCIAS
-                        */
-                        var promediosAsistencias = await _dashBoardService.GetPromediosAsistenciasByIdMateriaAndProfesorEmail(dto.Id, userEmail);
+                        var year = DateTime.Now.Year;
+                        
+                        var resultList = new List<DBPromedioAsistenciasDTO>();
 
-                        var promedioAsistencia1 = new DBPromedioAsistenciasDTO(){
-                            Mes = "Enero",
-                            Presentes = 50,
-                            Ausentes = 10,
-                            Justificados = 40
-                        };
-                        var promedioAsistencia2 = new DBPromedioAsistenciasDTO(){
-                            Mes = "Febrero",
-                            Presentes = 80,
-                            Ausentes = 10,
-                            Justificados = 210
-                        };
-                        var promedioAsistencia3 = new DBPromedioAsistenciasDTO(){
-                            Mes = "Marzo",
-                            Presentes = 90,
-                            Ausentes = 5,
-                            Justificados = 5
-                        };
-                        var promedioAsistencia4 = new DBPromedioAsistenciasDTO(){
-                            Mes = "Abril",
-                            Presentes = 70,
-                            Ausentes = 10,
-                            Justificados = 20
-                        };
+                        for(int mes = 1; mes <= DateTime.Now.Month; mes++){
 
-                        return Ok(new List<DBPromedioAsistenciasDTO>(){
-                            promedioAsistencia1, promedioAsistencia2, promedioAsistencia3, promedioAsistencia4
-                        });
+                            var (presentes, ausentes, justificados) = await _dashBoardService.GetPromedioAsistenciasByMonth(year, mes, dto.Id, userEmail);
+                            
+                            var promedioAsistencias = new DBPromedioAsistenciasDTO(){
+                                Mes = TimeComparator.MonthToSpanish(mes),
+                                Presentes = presentes,
+                                Ausentes = ausentes,
+                                Justificados = justificados
+                            };
+
+                            resultList.Add(promedioAsistencias);
+                        }
+
+                        return Ok(resultList);
+
 
                     default:
                         return BadRequest("Opcion Invalida");
