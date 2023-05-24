@@ -1,16 +1,9 @@
-using System.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.ComponentModel.DataAnnotations;
+namespace profefolio.Models.DTOs.Evento;
 using Newtonsoft.Json;
 
-namespace profefolio.Models.Entities
+public class DocumentoDTO
 {
-    public class Documento : Data
-    {
-        [Required(ErrorMessage = "Se tiene que agregar un nombre")]
+     [Required(ErrorMessage = "Se tiene que agregar un nombre")]
         [MaxLength(32)]
         public string? Nombre { get; set; }
 
@@ -21,5 +14,5 @@ namespace profefolio.Models.Entities
         //profesor que creo el documento
         [JsonIgnore] // Agrega el atributo JsonIgnore al campo ProfesorId
         public String? ProfesorId { get; set; }
-    }
+    
 }
