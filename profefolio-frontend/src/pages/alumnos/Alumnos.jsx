@@ -10,6 +10,8 @@ import { useFetchEffect } from '../../components/utils/useFetchEffect';
 import StyleComponentBreadcrumb from '../../components/StyleComponentBreadcrumb';
 import ModalAlumnos from './components/ModalAlumnos'
 import Paginations from '../../components/Paginations'
+import Spinner from '../../components/componentsStyles/SyledSpinner'
+import Text from '../../components/componentsStyles/StyledText'
 
 const Alumnos = () => {
     const { getToken, cancan, verifyToken } = useGeneralContext()
@@ -44,7 +46,7 @@ const Alumnos = () => {
         setShow(true)
     }
 
-    const { doFetch, isLoading, isError} = useFetchEffect(
+    const { doFetch, loading, error } = useFetchEffect(
         () => {
             return StudentHelper.getStudentsPage(currentPage, getToken())
         },
@@ -70,7 +72,7 @@ const Alumnos = () => {
                 })
             },
             handleError: () => {
-                if (!isLoading) {
+                if (!loading) {
                     toast.error('No se pudieron obtener los datos. Intente recargar la página');
                 }
             }
@@ -84,19 +86,24 @@ const Alumnos = () => {
     }
 
     return (
-        <>
-            <MainContainer>
-                <StyleComponentBreadcrumb nombre="Alumnos" />
-                <TableContainer>
-                    <Tabla datosTabla={datosTabla} />
-                    <Paginations currentPage={currentPage} totalPage={total_pages} setCurrentPage={setCurrentPage} next={next}/>
-                    <AddButton onClick={()=>{setShow(true)}}>
-                        <AiOutlinePlus size={"35px"} />
-                    </AddButton>
-                </TableContainer >
-                <ModalAlumnos show={show} fetchFunc={doFetch} onHide={handleHideModal} selected_data={selected_student} handleExistingStudent={setSelectedStudent} setShow={setShow} />
+        <MainContainer>
+            <StyleComponentBreadcrumb nombre="Alumnos" />
+            {loading ? <Spinner height={'calc(100vh - 80px)'} />
+                : error ? <Text>Lamentamos esto, ha ocurrido un error al obtener los datos.</Text>
+                    : <>
+                        <TableContainer>
+                            <Tabla datosTabla={datosTabla} />
+                            <Paginations currentPage={currentPage} totalPage={total_pages} setCurrentPage={setCurrentPage} next={next} />
+                            <AddButton onClick={() => { setShow(true) }}>
+                                <AiOutlinePlus size={"35px"} />
+                            </AddButton>
+                        </TableContainer >
+                        <ModalAlumnos show={show} fetchFunc={doFetch} onHide={handleHideModal} selected_data={selected_student} handleExistingStudent={setSelectedStudent} setShow={setShow} />
+                    </>
+            }
             </MainContainer >
-        </>
+
+
     )
 }
 
