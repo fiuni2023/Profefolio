@@ -39,11 +39,11 @@ justify-content: space-around;
 
 
 
-const TagProfesor = memo(({ id, nombre,apellido, state = "n", onClick = () => { } }) => {
+const TagProfesor = memo(({ id, nombre,apellido, state, onClick = () => { } }) => {
   const uid = useId();
   const unicId = uid.substring(1, uid.length - 1)
 
-  const [type, setType] = useState("n");
+  const [type, setType] = useState("d");
   const bgColor = (estado) => {
       switch (`${estado.toLowerCase()}`) {
           case "reload":
@@ -119,6 +119,7 @@ const ListItem = memo(({ index, idMateria,estado ,nombre,apellido, profesores = 
     const [isSelectOpen, setIsSelectOpen] = useState(false);
     const [status, setStatus] = useState("");
   
+    const [newType, setType] = useState("");
     
   const [usuariosSeleccionados, setUsuariosSeleccionados] = useState([]);
 
@@ -213,28 +214,32 @@ useEffect(() => {
                     ))}
 
   {/* Este es un comentario en React*/}
-         {map(profesores, (e, i) => 
-         
-         <TagProfesor 
-         key={i} 
-         id={e.idProfesor} 
-         nombre={`${e.nombre}`} 
-         apellido={`${e.apellido}`} 
-         state={type} 
-         idMateriaProfesor={idMateria} 
-         onClick={() => {
+        {profesores.map((e, i) => (
+        <TagProfesor
+          key={i}
+          id={e.idProfesor}
+          nombre={`${e.nombre}`}
+          apellido={`${e.apellido}`}
+          state={type}
+          idMateriaProfesor={idMateria}
+          onClick={() => {
+            const newType = type === "n" ? "reload" : "n";
             setStatus(estado);
-            setStatusProfesorMateria(idMateria, e.id, type === "n" ? "reload" : "n");
+            setStatusProfesorMateria(idMateria, e.id, newType);
             setIdMateriaSeleccionado(idMateria);
             setUsuariosSeleccionados([...usuariosSeleccionados, e.idProfesor]);
-                    }
-                    } />)}
+            setType(newType);
+            console.log('newType',newType)
+          }}
+        />
+      ))}
+
             
 
                 </div>
             </div>
 
-            <ListButton onClick={onClick}>{type !== 'reload' ? 'X' : <RxReload style={{ fontSize: '24px' }} size={24} />} </ListButton>
+            <ListButton onClick={onClick}>{newType !== 'reload' ? 'X' : <RxReload style={{ fontSize: '24px' }} size={24} />} </ListButton>
         </ItemContainer>
 
         <style jsx="true">
