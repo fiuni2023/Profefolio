@@ -9,17 +9,15 @@ import APILINK from '../../../../components/link';
 import axios from 'axios';
 import { useFetchEffect } from '../../../../components/utils/useFetchEffect';
 import { Container, Resumen, SideSection } from './componentes/StyledResumenAsistencia';
-import StudentHelper from '../../../alumnos/helpers/StudentHelper'
-import { useClaseContext } from '../../../clases/context/ClaseContext';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 
 const Asistencia = ({ materia = { id: 1, nombre: "Matemáticas" } }) => {
     const { getToken, cancan, verifyToken } = useGeneralContext()
-    const { getClaseSelectedId } = useClaseContext();
     const [condFetch, setCondFetch] = useState(true)
     const [datosTabla, setDatosTabla] = useState([]);
-    const [listaAlumnos, setListaAlumnos] = useState([])
+    // const [listaAsistencias, setListaAsistencias] = useState([])
+    // const [listaNueva, setListaNueva] = useState([])
     const nav = useNavigate()
 
     useEffect(() => {
@@ -30,7 +28,7 @@ const Asistencia = ({ materia = { id: 1, nombre: "Matemáticas" } }) => {
             setCondFetch(true)
         }
     }, [cancan, verifyToken, nav])
-    const { loading, error } = useFetchEffect(
+    const { loading } = useFetchEffect(
         () => {
             return axios.get(`${APILINK}/api/Asistencia/${materia?.id}`, {
                 headers: {
@@ -41,20 +39,21 @@ const Asistencia = ({ materia = { id: 1, nombre: "Matemáticas" } }) => {
         [],
         {
             condition: condFetch,
-            handleSuccess: (r) => {
-                console.log(r)
-                setListaAlumnos(r)
+            handleSuccess: (dataAsistencia) => {
+                console.log(dataAsistencia)
+                // setListaAsistencias(dataAsistencia)
+                // setListaNueva(dataAsistencia)
                 setDatosTabla({
                     tituloTabla: "Asistencias",
                     titulos: [
                         { titulo: "Nombre Alumno" },
-                        ...(r[0].asistencias?.length > 0
-                            ? r[0].asistencias.map((fecha, index) => {
-                                return { key: index, dato: fecha?.fecha ? fecha.fecha : "" };
+                        ...(dataAsistencia[0]?.asistencias?.length > 0
+                            ? dataAsistencia[0].asistencias.map((fecha) => {
+                                return { titulo: fecha?.fecha ? formatDate(fecha.fecha) : "" };
                             })
                             : [])],
                     clickable: { action: console.log("seleccionado") },
-                    filas: r.map((dato) => {
+                    filas: dataAsistencia.map((dato) => {
                         return {
                             fila: dato,
                             datos: [
@@ -69,13 +68,24 @@ const Asistencia = ({ materia = { id: 1, nombre: "Matemáticas" } }) => {
                     })
                 });
             },
-            handleError: (r) => {
+            handleError: () => {
                 if (!loading) {
-                    { console.log(r) }
+                    toast.error("No se han podido obtener los datos. Intente recargar la página.")
                 }
             }
         }
     );
+
+    const formatDate = (date) => {
+        const newDate = new Date(date);
+        const day = newDate.getDate();
+        const month = newDate.getMonth() + 1;
+        return `${day < 10 ? '0' : ''}${day}/${month < 10 ? '0' : ''}${month}`;
+    }
+
+    // const addDate = () =>{
+    //     const fechaActual = new Date();
+    // }
 
     return (
         <>
