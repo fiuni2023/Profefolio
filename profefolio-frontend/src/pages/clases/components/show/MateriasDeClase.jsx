@@ -44,9 +44,6 @@ const TagProfesor = memo(({ id, nombre,apellido, state="n", onClick = () => { } 
   const unicId = uid.substring(1, uid.length - 1)
 
   const [type, setType] = useState("d");
-
-  console.log('state',state);
-
   const bgColor = (estado) => {
       switch (`${estado.toLowerCase()}`) {
           case "reload":
@@ -140,10 +137,6 @@ const ListItem = memo(({ index, idMateria,estado ,nombre,apellido, profesores = 
     const [status, setStatus] = useState("");
   const [usuariosSeleccionados, setUsuariosSeleccionados] = useState([]);
 
-  
-  //
-  console.log('newType',newType);
-
   const handleClick = () => {
     setIdMateriaSeleccionado(idMateria); 
     guardarIdMateriaSeleccionado(idMateriaSeleccionado);
@@ -169,8 +162,6 @@ const seleccionarProfesor = (event) => {
 
 useEffect(() => {
     guardarIdMateriaSeleccionado(idMateriaSeleccionado);
-
-    console.log('idMateriaSeleccionadoooooooooo',idMateriaSeleccionado);
   }, [idMateriaSeleccionado]);
 
   
@@ -248,8 +239,6 @@ useEffect(() => {
               setIdMateriaSeleccionado(idMateria);
               setUsuariosSeleccionados([...usuariosSeleccionados, e.idProfesor]);
               setType(newType);
-              console.log('newType', newType);
-              console.log('stateeeeeeeeeeeeeeee', type);
             }}
           />
         ))}
@@ -461,13 +450,9 @@ useMemo(() => {
     const handleSelectOptionMateria = (e) => {
       e.preventDefault();
       setOptionSelected(e.target.value);
-    
-      
-        setIdMateria(e.target.value);
-       console.log(`Asigna la materia con id: ${e.target.value} a la clase con id: ${getClaseSelectedId()} `)
-      
-       const index = optionsMaterias.findIndex(a => a.value === parseInt(e.target.value))
-       addMateriaToList(optionsMaterias[index].label,parseInt(e.target.value));
+      setIdMateria(e.target.value);      
+      const index = optionsMaterias.findIndex(a => a.value === parseInt(e.target.value))
+      addMateriaToList(optionsMaterias[index].label,parseInt(e.target.value));
 
      
        
@@ -513,34 +498,7 @@ useMemo(() => {
       listaFusionada = [...listaFusionada, ...nuevosElementos];
     }
 
-    /* let listaFusionada = [...materiaProfesor];
-
-    if (Array.isArray(materiaProfesor)) {
-
-    if (materiaProfesores && materiaProfesores.data && Array.isArray(materiaProfesores.data.materiaProfesores)) {
-      listaFusionada = [...listaFusionada, ...materiaProfesores.data.materiaProfesores];
-    }
-    
-}*/
-    console.log('materiaProfesores',materiaProfesor);
-    console.log('listaFusionada',listaFusionada);
-
-
-
-//let listaFusionada = [...materiaProfesor];
-
-/*if (materiaProfesores && materiaProfesores.data && Array.isArray(materiaProfesores.data.materiaProfesores)) {
-  listaFusionada = [...listaFusionada, ...materiaProfesores.data.materiaProfesores];
-}*/ 
-
-/*let listaFusionada = [...materiaProfesor];
-
-if (materiaProfesores && materiaProfesores.data && Array.isArray(materiaProfesores.data.materiaProfesores)) {
-  listaFusionada = [...listaFusionada, ...materiaProfesores.data.materiaProfesores];
-}*/
-
-console.log('listaFusionada',listaFusionada);
-const [profesoresSeleccionadosBorrado, setProfesoresSeleccionadosBorrado] = useState([]);
+    const [profesoresSeleccionadosBorrado, setProfesoresSeleccionadosBorrado] = useState([]);
 
     const guardarProfesorSeleccionado = (profesoresSeleccionados) => {
         setProfesoresSeleccionados(profesoresSeleccionados);
@@ -556,22 +514,8 @@ const [profesoresSeleccionadosBorrado, setProfesoresSeleccionadosBorrado] = useS
         setIdMateriaSeleccionada(idMateriaSeleccionada);
     }
 
-    console.log('idMateriaSeleccionada',idMateriaSeleccionada);
-
-    /*const nuevaListaFusionada = listaFusionada.map(materia => {
-        const nuevosProfesores = materia.profesores.filter(profesor => {
-          return !profesoresSeleccionadosBorrado.includes(profesor.idProfesor);
-        });
-      
-        return { ...materia, profesores: nuevosProfesores };
-      });
-      */
-     /* useEffect(() => {
-       
-      }, [nuevaListaFusionada]);
-
-      console.log('nuevaListaFusionada',nuevaListaFusionada);
-    */
+   
+  
     let materiasList = {
         onSubmit: () => handleClickProfesor(materia),
         enabled: true,
@@ -581,8 +525,6 @@ const [profesoresSeleccionadosBorrado, setProfesoresSeleccionadosBorrado] = useS
         addTitle: "Agregar Materias",
         selectTitle: "Seleccionar Materia",
         options: optionsMaterias,
-        //list: materiaProfesores.data?.materiaProfesores ?? [],
-        // list: materiaProfesores.data.materiaProfesores ?? [],
         list:  listaFusionada ?? [],
     }
     return <>
