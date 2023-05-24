@@ -12,5 +12,7 @@ namespace profefolio.Repository
         Task<Asistencia> FindByIdAndProfesorId(int idMateriaLista, string profesorId);
         Task<Asistencia> Delete(Asistencia t);
         Task<bool> ExistAsistenciaInDate(int idMateriaLista, int idClaseColegioAlumno, DateTime fecha);
+
+        Task<(double, double, double)> PorcentajeInMonth(int year, int month, int idMateriaLista, string profesorId);
     }
 }
