@@ -50,8 +50,8 @@ const TagProfesor = memo(({ id, nombre,apellido, state = "new", onClick = () => 
                 return "#F3E6AE";
             case "new":
                 return "#D1F0E6";
-            default:
-                return "#C2C2C2";
+            case "n":
+               return "#F3E6AE";
         }
     }
 
@@ -100,9 +100,6 @@ const TagProfesor = memo(({ id, nombre,apellido, state = "new", onClick = () => 
   
 
 const ListItem = memo(({ index, idMateria, nombre,apellido, profesores = [] ,profeProfesor = [], type ,onClick,guardarProfesorSeleccionado,guardarProfesorSeleccionadoParaBorrar,guardarIdMateriaSeleccionado} ) => {
-
-   // const [profesoresSeleccionados, setProfesoresSeleccionados] = useState([]);
-  
 
 
   const [idMateriaSeleccionado, setIdMateriaSeleccionado] = useState([]);
@@ -458,14 +455,54 @@ useMemo(() => {
 
    
 
+    let listaFusionada;
+
+    if (materiaProfesor) {
+      listaFusionada = [...materiaProfesor];
+    } else {
+      listaFusionada = [];
+    }
+    
+    if (materiaProfesores && materiaProfesores.data && Array.isArray(materiaProfesores.data.materiaProfesores)) {
+      const nuevosElementos = materiaProfesores.data.materiaProfesores.map(item => ({
+        ...item,
+        estado: "new"
+      }));
+      listaFusionada = [...listaFusionada, ...nuevosElementos];
+    }
+    
+    listaFusionada = listaFusionada.map(item => ({
+      ...item,
+      estado: "a"
+    }));
+
+    /* let listaFusionada = [...materiaProfesor];
+
+    if (Array.isArray(materiaProfesor)) {
+
+    if (materiaProfesores && materiaProfesores.data && Array.isArray(materiaProfesores.data.materiaProfesores)) {
+      listaFusionada = [...listaFusionada, ...materiaProfesores.data.materiaProfesores];
+    }
+    
+}*/
+    console.log('materiaProfesores',materiaProfesor);
+    console.log('listaFusionada',listaFusionada);
 
 
-let listaFusionada = [...materiaProfesor];
+
+//let listaFusionada = [...materiaProfesor];
+
+/*if (materiaProfesores && materiaProfesores.data && Array.isArray(materiaProfesores.data.materiaProfesores)) {
+  listaFusionada = [...listaFusionada, ...materiaProfesores.data.materiaProfesores];
+}*/ 
+
+/*let listaFusionada = [...materiaProfesor];
 
 if (materiaProfesores && materiaProfesores.data && Array.isArray(materiaProfesores.data.materiaProfesores)) {
   listaFusionada = [...listaFusionada, ...materiaProfesores.data.materiaProfesores];
-}
+}*/
 
+console.log('listaFusionada',listaFusionada);
 const [profesoresSeleccionadosBorrado, setProfesoresSeleccionadosBorrado] = useState([]);
 
     const guardarProfesorSeleccionado = (profesoresSeleccionados) => {
@@ -483,21 +520,22 @@ const [profesoresSeleccionadosBorrado, setProfesoresSeleccionadosBorrado] = useS
 
 
     }
-      const nuevaListaFusionada = listaFusionada.map(materia => {
+
+
+    /*const nuevaListaFusionada = listaFusionada.map(materia => {
         const nuevosProfesores = materia.profesores.filter(profesor => {
           return !profesoresSeleccionadosBorrado.includes(profesor.idProfesor);
         });
       
         return { ...materia, profesores: nuevosProfesores };
       });
-
-
-      
-      useEffect(() => {
+      */
+     /* useEffect(() => {
        
       }, [nuevaListaFusionada]);
 
-    
+      console.log('nuevaListaFusionada',nuevaListaFusionada);
+    */
     let materiasList = {
         onSubmit: () => handleClickProfesor(materia),
         enabled: true,
@@ -530,7 +568,7 @@ const [profesoresSeleccionadosBorrado, setProfesoresSeleccionadosBorrado] = useS
                                     nombre={materia.materia}
                                     profesores={materia.profesores}
                                     profeProfesor={profeProfesor}
-                                    type={materia.status}
+                                    type={materia.estado}
                                     guardarProfesorSeleccionado={guardarProfesorSeleccionado}
                                     guardarProfesorSeleccionadoParaBorrar={guardarProfesorSeleccionadoParaBorrar}
                                     guardarIdMateriaSeleccionado={guardarIdMateriaSeleccionado}
