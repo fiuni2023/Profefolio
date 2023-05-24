@@ -14,8 +14,8 @@ import { useClaseContext } from '../../../clases/context/ClaseContext';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 
-const Asistencia = ({materia = {id: 1, nombre: "Matemáticas"}}) => {
-    const {getToken, cancan, verifyToken} = useGeneralContext()
+const Asistencia = ({ materia = { id: 1, nombre: "Matemáticas" } }) => {
+    const { getToken, cancan, verifyToken } = useGeneralContext()
     const { getClaseSelectedId } = useClaseContext();
     const [condFetch, setCondFetch] = useState(true)
     const [datosTabla, setDatosTabla] = useState([]);
@@ -45,24 +45,33 @@ const Asistencia = ({materia = {id: 1, nombre: "Matemáticas"}}) => {
                 console.log(r)
                 setListaAlumnos(r)
                 setDatosTabla({
-                    ...datosTabla,
+                    tituloTabla: "Asistencias",
+                    titulos: [
+                        { titulo: "Nombre Alumno" },
+                        ...(r[0].asistencias?.length > 0
+                            ? r[0].asistencias.map((fecha, index) => {
+                                return { key: index, dato: fecha?.fecha ? fecha.fecha : "" };
+                            })
+                            : [])],
                     clickable: { action: console.log("seleccionado") },
                     filas: r.map((dato) => {
                         return {
                             fila: dato,
-                            datos:[
-                                {dato: dato?.nombre ? `${dato.apellido}, ${dato.nombre} `: " "},
-                                dato.asistencias.map((asistencia) => {
-                                    return { dato: asistencia.estado }
-                                })
-                            ] 
+                            datos: [
+                                { dato: dato?.nombre ? `${dato.apellido}, ${dato.nombre} ` : " " },
+                                ...(dato.asistencias?.length > 0
+                                    ? dato.asistencias.map((fecha, index) => {
+                                        return { key: index, dato: fecha?.estado ? fecha.estado : "" };
+                                    })
+                                    : [])
+                            ],
                         }
                     })
                 });
             },
             handleError: (r) => {
                 if (!loading) {
-                    {console.log(r)}
+                    { console.log(r) }
                 }
             }
         }
