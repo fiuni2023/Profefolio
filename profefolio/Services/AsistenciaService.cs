@@ -106,57 +106,6 @@ namespace profefolio.Services
             throw new NotImplementedException();
         }
 
-        public async Task<(double, double, double)> PorcentajeInMonth(int year, int month, int idMateriaLista, string profesorId)
-        {
-            var cantidades = await _context.Asistencias
-                        .Where(a => !a.Deleted
-                            && a.MateriaListaId == idMateriaLista
-                            && a.Fecha.Year == year
-                            && a.Fecha.Month == month
-                            && profesorId.Equals(a.MateriaLista.ProfesorId))
-                            .GroupBy(a => a.Estado)
-                            .Select(a => new
-                            {
-                                Clave = a.Key,
-                                Cantidad = a.Count()
-                            })
-                        .ToListAsync();
-
-            var presentes = 0;
-            var ausentes = 0;
-            var justificados = 0;
-
-            foreach (var asistencias in cantidades)
-            {
-                if (asistencias.Clave == 'P')
-                {
-                    presentes = asistencias.Cantidad;
-                }
-                else if (asistencias.Clave == 'A')
-                {
-                    ausentes = asistencias.Cantidad;
-                }
-                else if (asistencias.Clave == 'J')
-                {
-                    justificados = asistencias.Cantidad;
-                }
-            }
-            
-            var total = presentes + ausentes + justificados;
-
-            if (total <= 0)
-            {
-                return (0, 0, 0);
-            }
-            // retorna el porcentaje de cada tipo de estado de la asistencia
-            return (
-                        (presentes / total) * 100,
-                        (ausentes / total) * 100,
-                        (justificados / total) * 100
-                    );
-
-        }
-
         public async Task Save()
         {
             await _context.SaveChangesAsync();

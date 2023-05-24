@@ -248,7 +248,7 @@ namespace profefolio.Services
                     && materia.Equals(a.MateriaId)
                     && idClase.Equals(a.ClaseId))
                 .ToListAsync();
-          
+
             return duraciones.Count;
         }
 
@@ -283,11 +283,12 @@ namespace profefolio.Services
         public async Task<MateriaLista> FindDataForCardOfInfoMateria(int idMateriaLista, string emailProfesor)
         {
             Console.WriteLine($"\n\n\n\n\n\n\n\n\nHace falta terminar de implementar, ya que falta que se creen todavia las tablas de claificaciones y otros mas parque este completo este servicio \n\n\n\n\n\n\n\n\n");
-            
+
             var materia = await _context.MateriaListas
                     .Include(a => a.Profesor)
                     .FirstOrDefaultAsync(a => !a.Deleted && a.Id == idMateriaLista && emailProfesor.Equals(a.Profesor.Email));
-            if(materia == null){
+            if (materia == null)
+            {
                 throw new FileNotFoundException("La materia no fue encontrada.");
             }
             return materia;
@@ -301,26 +302,61 @@ namespace profefolio.Services
             */
             var result = await _context.MateriaListas.Include(a => a.Profesor).FirstOrDefaultAsync(a => !a.Deleted && a.Id == idMateriaLista && emailProfesor.Equals(a.Profesor.Email));
 
-            if(result == null){
+            if (result == null)
+            {
                 throw new FileNotFoundException("La materia no fue encontrada.");
             }
             return result;
         }
 
-        public async Task<MateriaLista> GetPromediosAsistenciasByIdMateriaAndProfesorEmail(int idMateriaLista, string emailProfesor)
+        public async Task<(double, double, double)> GetPromedioAsistenciasByMonth(int year, int month, int idMateriaLista, string profesorId)
         {
-            /*
-                TODO 
-                AGREGAR LA IMPLEMENTACION PARA OBTENER EL PROMEDIO DE LAS ASISTENCIAS CUANDO SE AGREGUE LA TABLA DE ASISTENCIAS
-            */
-            var result = await _context.MateriaListas
-                            .Include(a => a.Profesor)
-                            .FirstOrDefaultAsync(a => !a.Deleted && a.Id == idMateriaLista && emailProfesor.Equals(a.Profesor.Email));
+            var cantidades = await _context.Asistencias
+                                    .Where(a => !a.Deleted
+                                        && a.MateriaListaId == idMateriaLista
+                                        && a.Fecha.Year == year
+                                        && a.Fecha.Month == month
+                                        && profesorId.Equals(a.MateriaLista.ProfesorId))
+                                        .GroupBy(a => a.Estado)
+                                        .Select(a => new
+                                        {
+                                            Clave = a.Key,
+                                            Cantidad = a.Count()
+                                        })
+                                    .ToListAsync();
 
-            if(result == null){
-                throw new FileNotFoundException("La materia no fue encontrada.");
+            var presentes = 0;
+            var ausentes = 0;
+            var justificados = 0;
+
+            foreach (var asistencias in cantidades)
+            {
+                if (asistencias.Clave == 'P')
+                {
+                    presentes = asistencias.Cantidad;
+                }
+                else if (asistencias.Clave == 'A')
+                {
+                    ausentes = asistencias.Cantidad;
+                }
+                else if (asistencias.Clave == 'J')
+                {
+                    justificados = asistencias.Cantidad;
+                }
             }
-            return result;
+
+            var total = presentes + ausentes + justificados;
+
+            if (total <= 0)
+            {
+                return (0, 0, 0);
+            }
+            // retorna el porcentaje de cada tipo de estado de la asistencia
+            return (
+                        (presentes / total) * 100,
+                        (ausentes / total) * 100,
+                        (justificados / total) * 100
+                    );
         }
     }
 }
