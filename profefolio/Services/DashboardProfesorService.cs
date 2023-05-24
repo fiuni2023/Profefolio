@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -311,53 +312,65 @@ namespace profefolio.Services
 
         public async Task<(double, double, double)> GetPromedioAsistenciasByMonth(int year, int month, int idMateriaLista, string profesorId)
         {
-            
-            var cantidades = await _context.Asistencias
+            var fechasAsistencias = await _context.Asistencias
                                     .Include(a => a.MateriaLista)
                                     .Where(a => !a.Deleted
                                         && a.MateriaListaId == idMateriaLista
                                         && a.Fecha.Year == year
                                         && a.Fecha.Month == month
                                         && profesorId.Equals(a.MateriaLista.ProfesorId))
-                                        .GroupBy(a => a.Estado)
-                                        .Select(a => new
-                                            {
-                                                Clave = a.Key,
-                                                Cantidad = a.Count()
+                                        .Select(a => new {
+                                                AlumnoId = a.ClasesAlumnosColegioId,
+                                                Fecha = a.Fecha,
+                                                Estado = a.Estado
+                                        })
+                                        .GroupBy(a => a.Fecha)
+                                        
+                                        .Select(a => new {
+                                            Fecha = a.Key,
+                                            Total = a.Count(),
+                                            AsistenciasGrupo = a.GroupBy(b => b.Estado).Select(c => new {
+                                                Estado = c.Key,
+                                                Cantidad = c.Count()
                                             })
+                                        })
+                                        .Select(a => a.AsistenciasGrupo)
                                     .ToListAsync();
 
-            var presentes = 0;
-            var ausentes = 0;
-            var justificados = 0;
-
-            foreach (var asistencias in cantidades)
+            
+            var cantidadTotalPresentes = 0;
+            var cantidadTotalAusentes = 0;
+            var cantidadTotalJustificados = 0;
+            
+            foreach (var asistenciasGrupo in fechasAsistencias)
             {
-                if (asistencias.Clave == 'P')
+                foreach (var asist in asistenciasGrupo)
                 {
-                    presentes = asistencias.Cantidad;
-                }
-                else if (asistencias.Clave == 'A')
-                {
-                    ausentes = asistencias.Cantidad;
-                }
-                else if (asistencias.Clave == 'J')
-                {
-                    justificados = asistencias.Cantidad;
-                }
+                    if (asist.Estado == 'P')
+                    {
+                        cantidadTotalPresentes += asist.Cantidad;
+                    }
+                    else if (asist.Estado == 'A')
+                    {
+                        cantidadTotalAusentes += asist.Cantidad;
+                    }
+                    else if (asist.Estado == 'J')
+                    {
+                        cantidadTotalJustificados += asist.Cantidad;
+                    }
+                }    
             }
 
-            double total = presentes + ausentes + justificados;
-
-            if (total <= 0)
+            
+            if (fechasAsistencias.Count == 0)
             {
                 return (0, 0, 0);
             }
-            // retorna el porcentaje de cada tipo de estado de la asistencia
+            
             return (
-                        Math.Round(((double)presentes / total) * 100, 2),
-                        Math.Round(((double)ausentes / total) * 100, 2),
-                        Math.Round(((double)justificados / total) * 100, 2)
+                        Math.Round(((double)cantidadTotalPresentes / fechasAsistencias.Count), 2),
+                        Math.Round(((double)cantidadTotalAusentes / fechasAsistencias.Count), 2),
+                        Math.Round(((double)cantidadTotalJustificados / fechasAsistencias.Count), 2)
                     );
         }
     }
