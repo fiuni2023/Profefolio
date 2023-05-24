@@ -307,7 +307,7 @@ namespace profefolio.Controllers
         /// Caso de Opcion "promedio-asistencias"
         ///        
         ///
-        /// Ticket <a href="#">Sin ticket hasta el momento</a>
+        /// Ticket <a href="https://nande-y.atlassian.net/browse/PF-310">Ticket PF-310</a>
         ///     
         /// Body:
         ///     
@@ -482,13 +482,15 @@ namespace profefolio.Controllers
                             return Unauthorized();
                         }
 
-                        var year = DateTime.Now.Year;
+                        var year = dto.Anho <= 0 ? DateTime.Now.Year : dto.Anho;
                         
                         var resultList = new List<DBPromedioAsistenciasDTO>();
+                        // se obtene la cantidad de meses a retornar, si es un anho distinto al actual, se muestran los 12, de lo contrario hasta el mes actual
+                        var maxMes = year != DateTime.Now.Year ? 12 : DateTime.Now.Month;  
+                        
+                        for(int mes = 1; mes <= maxMes; mes++){
 
-                        for(int mes = 1; mes <= DateTime.Now.Month; mes++){
-
-                            var (presentes, ausentes, justificados) = await _dashBoardService.GetPromedioAsistenciasByMonth(year, mes, dto.Id, userEmail);
+                            var (presentes, ausentes, justificados) = await _dashBoardService.GetPromedioAsistenciasByMonth(year, mes, dto.Id, profeId);
                             
                             var promedioAsistencias = new DBPromedioAsistenciasDTO(){
                                 Mes = TimeComparator.MonthToSpanish(mes),

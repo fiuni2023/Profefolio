@@ -311,7 +311,9 @@ namespace profefolio.Services
 
         public async Task<(double, double, double)> GetPromedioAsistenciasByMonth(int year, int month, int idMateriaLista, string profesorId)
         {
+            
             var cantidades = await _context.Asistencias
+                                    .Include(a => a.MateriaLista)
                                     .Where(a => !a.Deleted
                                         && a.MateriaListaId == idMateriaLista
                                         && a.Fecha.Year == year
@@ -319,10 +321,10 @@ namespace profefolio.Services
                                         && profesorId.Equals(a.MateriaLista.ProfesorId))
                                         .GroupBy(a => a.Estado)
                                         .Select(a => new
-                                        {
-                                            Clave = a.Key,
-                                            Cantidad = a.Count()
-                                        })
+                                            {
+                                                Clave = a.Key,
+                                                Cantidad = a.Count()
+                                            })
                                     .ToListAsync();
 
             var presentes = 0;
@@ -345,7 +347,7 @@ namespace profefolio.Services
                 }
             }
 
-            var total = presentes + ausentes + justificados;
+            double total = presentes + ausentes + justificados;
 
             if (total <= 0)
             {
@@ -353,9 +355,9 @@ namespace profefolio.Services
             }
             // retorna el porcentaje de cada tipo de estado de la asistencia
             return (
-                        (presentes / total) * 100,
-                        (ausentes / total) * 100,
-                        (justificados / total) * 100
+                        Math.Round(((double)presentes / total) * 100, 2),
+                        Math.Round(((double)ausentes / total) * 100, 2),
+                        Math.Round(((double)justificados / total) * 100, 2)
                     );
         }
     }
