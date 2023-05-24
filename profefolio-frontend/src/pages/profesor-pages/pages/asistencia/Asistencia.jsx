@@ -19,9 +19,9 @@ const Asistencia = () => {
     const [datosTabla, setDatosTabla] = useState([]);
     const [cantAlumnos, setCantAlumnos] = useState(0)
     const [cantClases, setCantClases] = useState(0)
-    const {idMateriaLista}= useParams()
-    const nombre= "Matemáticas"
-    
+    const { idMateriaLista } = useParams()
+    const nombre = "Matemáticas"
+
     // const [listaAsistencias, setListaAsistencias] = useState([])
     // const [listaNueva, setListaNueva] = useState([])
     const nav = useNavigate()
@@ -61,7 +61,7 @@ const Asistencia = () => {
                                 return { titulo: fecha?.fecha ? formatDate(fecha.fecha) : "" };
                             })
                             : []),
-                        {titulo: "%"}
+                        { titulo: "%" }
                     ],
                     clickable: { action: console.log("") },
                     filas: dataAsistencia.map((dato) => {
@@ -73,7 +73,8 @@ const Asistencia = () => {
                                     ? dato.asistencias.map((fecha, index) => {
                                         return { key: index, dato: fecha?.estado ? fecha.estado : "" };
                                     })
-                                    : [])
+                                    : []),
+                                { dato: 50}
                             ],
                         }
                     })
