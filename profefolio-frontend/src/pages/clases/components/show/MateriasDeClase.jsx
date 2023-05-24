@@ -458,7 +458,10 @@ useMemo(() => {
     let listaFusionada;
 
     if (materiaProfesor) {
-      listaFusionada = [...materiaProfesor];
+      listaFusionada = materiaProfesor.map(item => ({
+        ...item,
+        estado: "new"
+      }));
     } else {
       listaFusionada = [];
     }
@@ -466,15 +469,10 @@ useMemo(() => {
     if (materiaProfesores && materiaProfesores.data && Array.isArray(materiaProfesores.data.materiaProfesores)) {
       const nuevosElementos = materiaProfesores.data.materiaProfesores.map(item => ({
         ...item,
-        estado: "new"
+        estado: "n"
       }));
       listaFusionada = [...listaFusionada, ...nuevosElementos];
     }
-    
-    listaFusionada = listaFusionada.map(item => ({
-      ...item,
-      estado: "a"
-    }));
 
     /* let listaFusionada = [...materiaProfesor];
 
