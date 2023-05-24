@@ -284,8 +284,46 @@ useMemo(() => {
   
 
   const idProfesoresArray = profesoresSeleccionados;
+
+
   const handleCrearMateriaProfesor = async () => {   
-      const body = { "idProfesores": idProfesoresArray, "idMateria": idMateria, "idClase": getClaseSelectedId() };
+
+    const idProfesoresArray = profesoresSeleccionados;
+
+  const body = {
+    "idClase": getClaseSelectedId(),
+    "materias": []
+  };
+
+  idProfesoresArray.forEach((idProfesor) => {
+    const profesor = {
+      "idProfesor": idProfesor,
+      "estado": "N"
+    };
+
+    const materia = {
+      "idMateria": idMateria,
+      "profesores": [profesor]
+    };
+
+    body.materias.push(materia);
+  });
+    /*const body = {
+        "idClase": getClaseSelectedId(),
+        "materias": [
+          {
+            "idMateria":"idMateria",
+            "profesores": [
+              {
+                "idProfesor":idProfesoresArray,
+                "estado": "N"
+              }
+            ]
+          }
+        ]
+      };*/
+
+      //const body = { "idProfesores": idProfesoresArray, "idMateria": idMateria, "idClase": getClaseSelectedId() };
       ClassesService.createMateriaProfesor(body, getToken())
         .then(() => {
           toast.success("Los datos fueron enviados correctamente.");

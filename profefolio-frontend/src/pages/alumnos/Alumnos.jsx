@@ -96,9 +96,6 @@ const Alumnos = () => {
                 </TableContainer >
                 <ModalAlumnos show={show} fetchFunc={doFetch} onHide={handleHideModal} selected_data={selected_student} handleExistingStudent={setSelectedStudent} setShow={setShow} />
             </MainContainer >
-            {isError && !isLoading && (
-                toast.error('No se pudieron obtener los datos. Intente recargar la página')
-            )}
         </>
     )
 }
