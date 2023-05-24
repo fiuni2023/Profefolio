@@ -39,11 +39,14 @@ justify-content: space-around;
 
 
 
-const TagProfesor = memo(({ id, nombre,apellido, state, onClick = () => { } }) => {
+const TagProfesor = memo(({ id, nombre,apellido, state="n", onClick = () => { } }) => {
   const uid = useId();
   const unicId = uid.substring(1, uid.length - 1)
 
   const [type, setType] = useState("d");
+
+  console.log('state',state);
+
   const bgColor = (estado) => {
       switch (`${estado.toLowerCase()}`) {
           case "reload":
@@ -117,10 +120,10 @@ const ListItem = memo(({ index, idMateria,estado ,nombre,apellido, profesores = 
     const { setStatusProfesorMateria } = useClaseContext();
 
     const [isSelectOpen, setIsSelectOpen] = useState(false);
-    const [status, setStatus] = useState("");
   
     const [newType, setType] = useState("");
     
+    const [status, setStatus] = useState("");
   const [usuariosSeleccionados, setUsuariosSeleccionados] = useState([]);
 
   
@@ -131,9 +134,6 @@ const ListItem = memo(({ index, idMateria,estado ,nombre,apellido, profesores = 
     setStatus(estado);
   };
 
-
-  console.log('estado',estado);
-  console.log('type',type);
     const handleSelectOpenProfesores = () => {
         setIsSelectOpen(true);
 
@@ -214,31 +214,36 @@ useEffect(() => {
                     ))}
 
   {/* Este es un comentario en React*/}
-        {profesores.map((e, i) => (
-        <TagProfesor
-          key={i}
-          id={e.idProfesor}
-          nombre={`${e.nombre}`}
-          apellido={`${e.apellido}`}
-          state={type}
-          idMateriaProfesor={idMateria}
-          onClick={() => {
-            const newType = type === "n" ? "reload" : "n";
-            setStatus(estado);
-            setStatusProfesorMateria(idMateria, e.id, newType);
-            setIdMateriaSeleccionado(idMateria);
-            setUsuariosSeleccionados([...usuariosSeleccionados, e.idProfesor]);
-            setType(newType);
-            console.log('newType',newType)
-          }}
-        />
-      ))}
+  {Array.isArray(profesores) && profesores.map((e, i) => (
+          <TagProfesor
+            key={i}
+            id={e.idProfesor}
+            nombre={`${e.nombre}`}
+            apellido={`${e.apellido}`}
+            state={newType} // Pasar el valor de type como prop state
+            idMateriaProfesor={idMateria}
+            onClick={() => {
+              const newType = type === "n" ? "reload" : "n";
+              setStatus(estado);
+              setStatusProfesorMateria(idMateria, e.id, newType);
+              setIdMateriaSeleccionado(idMateria);
+              setUsuariosSeleccionados([...usuariosSeleccionados, e.idProfesor]);
+              setType(newType);
+              console.log('newType', newType);
+              console.log('stateeeeeeeeeeeeeeee', type);
+            }}
+          />
+        ))}
+
+
+
+
+
 
             
 
                 </div>
             </div>
-
             <ListButton onClick={onClick}>{newType !== 'reload' ? 'X' : <RxReload style={{ fontSize: '24px' }} size={24} />} </ListButton>
         </ItemContainer>
 
