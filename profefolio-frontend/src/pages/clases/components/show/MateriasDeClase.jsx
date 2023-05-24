@@ -40,60 +40,67 @@ justify-content: space-around;
 
 
 const TagProfesor = memo(({ id, nombre,apellido, state = "n", onClick = () => { } }) => {
-    const uid = useId();
-    const unicId = uid.substring(1, uid.length - 1)
+  const uid = useId();
+  const unicId = uid.substring(1, uid.length - 1)
 
-    const [type, setType] = useState("n");
-    const bgColor = (estado) => {
-        switch (`${estado.toLowerCase()}`) {
-            case "reload":
-                return "#F3E6AE";
+  const [type, setType] = useState("n");
+  const bgColor = (estado) => {
+      switch (`${estado.toLowerCase()}`) {
+          case "reload":
+              return "#F3E6AE";
+          case "d":
+              return "#D1F0E6";
             case "n":
-                return "#D1F0E6";
-            case "d":
-               return "#F3E6AE";
-        }
-    }
+              return "#C2C2C2";
+      }
+  }
 
-    useEffect(() => {
-        setType(bgColor(state))
-    }, [state]);
+  useEffect(() => {
+      setType(bgColor(state))
+  }, [state]);
 
-    return <>
-        <TagTeacher className={`tag-teacher-${unicId}`}>
-            <Item className='item-nombre-profe'>{nombre} {apellido}</Item>
-            <ListButton onClick={onClick}>{state !== 'reload' ? 'X' : <RxReload style={{ fontSize: '24px' }} size={24} />}</ListButton>
+  return <>
+      <TagTeacher className={`tag-teacher-${unicId}`}>
+          <Item className='item-nombre-profe'>{nombre} {apellido}</Item>
+          <ListButton onClick={onClick}>{state !== 'reload' ? 'X' : <RxReload style={{ fontSize: '24px' }} size={24} />}</ListButton>
 
-        </TagTeacher>
-        <style jsx="true">{
-            `
-            .item-nombre-profe{
-                padding-left: 5px;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-                max-width: calc(10rem - 24px);
-                font-size: 15px;
-                display: flex;
-                align-items: center;
+      </TagTeacher>
+      <style jsx="true">{
+          `
+          .item-nombre-profe {
+              padding-left: 5px;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              max-width: calc(15rem - 24px);
+              font-size: 15px;
+              display: flex;
+              align-items: center;
+              white-space: nowrap;
             }
-            .tag-teacher-${unicId}{
-                background-color: ${type};
-                padding: 0.2rem;
-                max-width: 10rem;
-                width: fit-content;+
-                height: 24px;
-                display: flex;
-                align-items: center;
+            
+            .tag-teacher-${unicId} {
+              background-color: ${type};
+              padding: 0.2rem;
+              max-width: 10rem;
+              width: fit-content;
+              height: 24px;
+              display: flex;
+              align-items: center;
+              flex-wrap: nowrap;
+              white-space: nowrap;
             }
-            .btn-cancelar{
-                background-color: red;
-                min-width: 1rem;
-            }
-        `
-        }</style>
-    </>
+            
+            
+            
+          .btn-cancelar{
+              background-color: red;
+              min-width: 1rem;
+          }
+      `
+      }</style>
+  </>
 })
+
 
 
 
@@ -102,7 +109,7 @@ const TagProfesor = memo(({ id, nombre,apellido, state = "n", onClick = () => { 
 const ListItem = memo(({ index, idMateria,estado ,nombre,apellido, profesores = [] ,profeProfesor = [], type ,onClick,guardarProfesorSeleccionado,guardarProfesorSeleccionadoParaBorrar,guardarIdMateriaSeleccionado} ) => {
 
 
-  const [idMateriaSeleccionado, setIdMateriaSeleccionado] = useState([]);
+  const [idMateriaSeleccionado, setIdMateriaSeleccionado] = useState();
     const [profesoresSeleccionados, setProfesoresSeleccionados] = useState([]);
 
     const [profesoresMateriaSeleccionados, setProfesoresMateriaSeleccionados] = useState([]);
@@ -145,7 +152,10 @@ const seleccionarProfesor = (event) => {
 
 useEffect(() => {
     guardarIdMateriaSeleccionado(idMateriaSeleccionado);
+    console.log('idMateriaSeleccionadoooooooooo',idMateriaSeleccionado);
   }, [idMateriaSeleccionado]);
+
+  
 
   useEffect(() => {
     guardarProfesorSeleccionado(profesoresSeleccionados);
@@ -215,7 +225,7 @@ useEffect(() => {
          onClick={() => {
             setStatus(estado);
             setStatusProfesorMateria(idMateria, e.id, type === "n" ? "reload" : "n");
-           
+            setIdMateriaSeleccionado(idMateria);
             setUsuariosSeleccionados([...usuariosSeleccionados, e.idProfesor]);
                     }
                     } />)}
@@ -408,9 +418,9 @@ useMemo(() => {
 
 
 
-    const addMateriaToList = (materia) => {
+    const addMateriaToList = (materia,idMateria) => {
         const newMateria = {
-            idMateria: Date.now().toString(),
+            idMateria,
             materia,
            // status: "new",
             profesores: {}
@@ -425,11 +435,10 @@ useMemo(() => {
     
       
         setIdMateria(e.target.value);
-       //console.log(`Asigna la materia con id: ${e.target.value} a la clase con id: ${getClaseSelectedId()} `)
+       console.log(`Asigna la materia con id: ${e.target.value} a la clase con id: ${getClaseSelectedId()} `)
       
        const index = optionsMaterias.findIndex(a => a.value === parseInt(e.target.value))
-
-       addMateriaToList(optionsMaterias[index].label);
+       addMateriaToList(optionsMaterias[index].label,parseInt(e.target.value));
 
      
        
@@ -438,11 +447,6 @@ useMemo(() => {
        
        //cargar a la lista de materias principal
        setOptionSelected("")
-
-       //addMateriaToList(optionsMaterias[index].label);
-
-       
-
     }
 
     useEffect(() => {
@@ -521,10 +525,9 @@ const [profesoresSeleccionadosBorrado, setProfesoresSeleccionadosBorrado] = useS
 
     const guardarIdMateriaSeleccionado=(idMateriaSeleccionada)=> {
         setIdMateriaSeleccionada(idMateriaSeleccionada);
-
-
     }
 
+    console.log('idMateriaSeleccionada',idMateriaSeleccionada);
 
     /*const nuevaListaFusionada = listaFusionada.map(materia => {
         const nuevosProfesores = materia.profesores.filter(profesor => {
@@ -593,7 +596,6 @@ const [profesoresSeleccionadosBorrado, setProfesoresSeleccionadosBorrado] = useS
                                           materia.id,
                                           materia.status === "new" ? "reload" : "new"
                                         );
-                                        setIdMateriaSeleccionada(materia.id);
                                       }}
                                     />
 
