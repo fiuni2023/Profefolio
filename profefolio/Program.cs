@@ -100,6 +100,7 @@ builder.Services.AddScoped<IAdmin, AdminReportService>();
 builder.Services.AddScoped<IEvento, EventoService>();
 builder.Services.AddScoped<IAsistencia, AsistenciaService>();
 builder.Services.AddScoped<IAnotacion, AnotacionesService>();
+builder.Services.AddScoped<IDocumento, DocumentoService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
