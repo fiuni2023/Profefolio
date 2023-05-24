@@ -112,6 +112,20 @@ const TagProfesor = memo(({ id, nombre,apellido, state="n", onClick = () => { } 
 const ListItem = memo(({ index, idMateria,estado ,nombre,apellido, profesores = [] ,profeProfesor = [], type ,onClick,guardarProfesorSeleccionado,guardarProfesorSeleccionadoParaBorrar,guardarIdMateriaSeleccionado} ) => {
 
 
+  const [newType, setType] = useState(type);
+
+  useEffect(() => {
+    setType(type);
+  }, [type]);
+
+  // Update the newType value
+  const updateType = (newValue) => {
+    setType(newValue);
+  };
+
+ 
+
+
   const [idMateriaSeleccionado, setIdMateriaSeleccionado] = useState();
     const [profesoresSeleccionados, setProfesoresSeleccionados] = useState([]);
 
@@ -121,12 +135,14 @@ const ListItem = memo(({ index, idMateria,estado ,nombre,apellido, profesores = 
 
     const [isSelectOpen, setIsSelectOpen] = useState(false);
   
-    const [newType, setType] = useState("");
+    
     
     const [status, setStatus] = useState("");
   const [usuariosSeleccionados, setUsuariosSeleccionados] = useState([]);
 
   
+  //
+  console.log('newType',newType);
 
   const handleClick = () => {
     setIdMateriaSeleccionado(idMateria); 
@@ -153,6 +169,7 @@ const seleccionarProfesor = (event) => {
 
 useEffect(() => {
     guardarIdMateriaSeleccionado(idMateriaSeleccionado);
+
     console.log('idMateriaSeleccionadoooooooooo',idMateriaSeleccionado);
   }, [idMateriaSeleccionado]);
 
@@ -168,7 +185,7 @@ useEffect(() => {
   }, [usuariosSeleccionados]);
 
     return <>
-        <ItemContainer type={type} className={`item-container-${index}`}>
+        <ItemContainer type={newType} className={`item-container-${index}`}>
             <div  onClick={handleClick}>
             <Item>{index}- {nombre} </Item>
                 <div className={`profe-container-${index}`}>
@@ -202,7 +219,7 @@ useEffect(() => {
                         id={profesor.id}
                         nombre={`${profesor.nombre}${profesor.status}`}
                         apellido={`${profesor.apellido}${profesor.status}`}
-                        state={status}
+                        state={newType}
                         idMateriaProfesor={idMateria} 
                         onClick={() => {
                             setProfesoresSeleccionados((prevSeleccionados) =>
@@ -223,7 +240,9 @@ useEffect(() => {
             state={newType} // Pasar el valor de type como prop state
             idMateriaProfesor={idMateria}
             onClick={() => {
+            
               const newType = type === "n" ? "reload" : "n";
+              updateType(newType);
               setStatus(estado);
               setStatusProfesorMateria(idMateria, e.id, newType);
               setIdMateriaSeleccionado(idMateria);
