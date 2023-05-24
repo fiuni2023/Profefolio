@@ -36,6 +36,8 @@ export const ModularProvider = ({ children }) => {
     const [ claseId, setClaseId] = useState(0)
     const [ materias, setMaterias ] = useState([])
     const [ materiaId, setMateriaId ] = useState(0)
+    const [ materiaShow, setMateriaShow ] = useState({})
+    const [ materiaName, setMateriaName ] = useState("")
 
     useEffect(()=>{
         // const body = {opcion: 'card-clases', id: 1, anho: 2023}
@@ -59,6 +61,14 @@ export const ModularProvider = ({ children }) => {
         }
     },[fetch_data, token, claseId])
 
+    useEffect(()=>{
+        if(materiaId){
+            const body = {opcion: 'cards-materia', id: materiaId, anho: 2023}
+            ProfesorPagesService.Get(body, token)
+            .then(d=>setMateriaShow(d.data))
+        }
+    },[fetch_data, token, materiaId])
+
 
     const setPage = (page = "") =>{
         if(page === "dashboard") return setCurrentPage(pages.dashboard)
@@ -80,13 +90,16 @@ export const ModularProvider = ({ children }) => {
         claseId,
         setClaseId,
         materiaId, 
-        setMateriaId
+        setMateriaId,
+        setMateriaName
     }
 
     const dataSet = {
         colegios,
         clases,
         materias,
+        materiaShow,
+        materiaName
     }
 
     const values = {

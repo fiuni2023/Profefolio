@@ -13,10 +13,12 @@ const ProfesorMateria = () => {
     const {setPage, dataSet, stateController} = useModularContext()
 
     const {materias} = dataSet
-    const {setMateriaId} = stateController
+    const {setMateriaId, setMateriaName} = stateController
 
     const handleClickCards = (id) => {
-        setMateriaId(id)
+        const {idM, nombreM} = id
+        setMateriaName(nombreM)
+        setMateriaId(idM)
         setPage("materiashow")
     }
 
@@ -25,7 +27,7 @@ const ProfesorMateria = () => {
     useEffect(()=>{
         setMateriasMapped(materias?.map((m)=>{
             return {
-                id: m.id,
+                id: {idM:m.id, nombreM: m.nombre},
                 nombre: m.nombre,
                 anotaciones: m.anotaciones,
                 calificaciones: m.calificaciones,
@@ -37,8 +39,6 @@ const ProfesorMateria = () => {
             }
         }))
     }, [materias])
-
-    console.log(materiasMapped)
 
     const componentes = {
         title: `Bienvenido Prof. ${getUserName()} Materia`,
