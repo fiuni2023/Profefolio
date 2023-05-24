@@ -38,6 +38,8 @@ export const ModularProvider = ({ children }) => {
     const [ materiaId, setMateriaId ] = useState(0)
     const [ materiaShow, setMateriaShow ] = useState({})
     const [ materiaName, setMateriaName ] = useState("")
+    const [ asistencias, setAsistencias ] = useState([])
+    const [ puntajes, setPuntajes ] = useState([])
 
     useEffect(()=>{
         // const body = {opcion: 'card-clases', id: 1, anho: 2023}
@@ -63,9 +65,15 @@ export const ModularProvider = ({ children }) => {
 
     useEffect(()=>{
         if(materiaId){
-            const body = {opcion: 'cards-materia', id: materiaId, anho: 2023}
+            let body = {opcion: 'cards-materia', id: materiaId, anho: 2023}
             ProfesorPagesService.Get(body, token)
             .then(d=>setMateriaShow(d.data))
+            body = {opcion: 'promedio-asistencias', id: materiaId, anho: 2023}
+            ProfesorPagesService.Get(body, token)
+            .then(d=>setAsistencias(d.data))
+            body = {opcion: 'promedio-puntajes', id: materiaId, anho: 2023}
+            ProfesorPagesService.Get(body, token)
+            .then(d=>setPuntajes(d.data))
         }
     },[fetch_data, token, materiaId])
 
@@ -99,7 +107,9 @@ export const ModularProvider = ({ children }) => {
         clases,
         materias,
         materiaShow,
-        materiaName
+        materiaName,
+        asistencias,
+        puntajes
     }
 
     const values = {

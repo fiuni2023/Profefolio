@@ -14,21 +14,27 @@ const ProfesorMateriaShow = () => {
 
     const { materiaShow, materiaName } = dataSet
 
-    console.log(materiaShow)
-
     // const handleClickCards = () => {
     //     setPage("dashboard")
     // }
 
-    const [materiaMapped, setMateriaMapped] = useState({})
+    const [materiaMapped, setMateriaMapped] = useState({
+                anotations: 0,
+                name: "",
+                calification_count: 0,
+                event_yet: 0,
+                classes_yet: 0,
+                documents: 0,
+                asistencias: 0
+            })
 
     useEffect(()=>{
         if(materiaShow && materiaName){
             const newMateria ={
                 anotations: materiaShow.anotaciones,
                 name: materiaName,
-                calification_count: materiaShow.calificaciones.calificaciones,
-                event_yet: materiaShow.calificaciones.sinCalificaciones,
+                calification_count: materiaShow.calificaciones?.calificaciones,
+                event_yet: materiaShow.calificaciones?.sinCalificaciones,
                 classes_yet: 1,
                 documents: materiaShow.documentos,
                 asistencias: materiaShow.asistencias
