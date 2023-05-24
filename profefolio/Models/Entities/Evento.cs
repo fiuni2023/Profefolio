@@ -41,7 +41,6 @@ public class Evento : Data
     public int ColegioId { get; set; }
 
     public double PuntajeTotal { get; set; }
-    public List<Rubrica> Rubricas { get; set; }
 
     [JsonIgnore] 
     public String? ProfesorId { get; set; }
