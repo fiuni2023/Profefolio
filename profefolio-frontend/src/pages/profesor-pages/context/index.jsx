@@ -5,6 +5,7 @@ import ProfesorClase from "../pages/clase";
 import ProfesorMateriaShow from "../pages/materiashow";
 import ProfesorMateria from "../pages/materia";
 import Anotacion from "../pages/anotacion";
+import Documentos from "../pages/documentos/list/ListarDocumento";
 
 const ModularContext = createContext();
 
@@ -19,7 +20,8 @@ export const ModularProvider = ({ children }) => {
         clase: <ProfesorClase />,
         materia: <ProfesorMateria />,
         materiashow: <ProfesorMateriaShow />,
-        anotacion: <Anotacion />
+        anotacion: <Anotacion />,
+        documentos: <Documentos />
     }
 
     const [currentPage, setCurrentPage] = useState(pages.dashboard)
@@ -30,6 +32,7 @@ export const ModularProvider = ({ children }) => {
         if(page === "materia") return setCurrentPage(pages.materia)
         if(page === "materiashow") return setCurrentPage(pages.materiashow)
         if(page === "anotacion") return setCurrentPage(pages.anotacion)
+        if(page === "documentos+") return setCurrentPage(pages.documentos)
         setCurrentPage(pages.dashboard)
         
     }
