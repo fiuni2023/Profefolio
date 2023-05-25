@@ -218,4 +218,5 @@ public class ApplicationDbContext : IdentityDbContext<Persona>
     public DbSet<Evento> Eventos { get; set; }
     public DbSet<Asistencia> Asistencias { get; set; }
     public DbSet<Anotacion> Anotaciones { get; set; }
+    public DbSet<Documento> Documentos { get; set; }
 }
