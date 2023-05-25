@@ -35,10 +35,11 @@ td {
 
 .tableContainer {
   display: flex;
-  margin-left: 10%;
+  justify-content: center; /* Centrar horizontalmente */
+  align-items: center; /* Centrar verticalmente */
   height: 90%;
-
 }
+
 
 #materiasTable {
   overflow-y: scroll;
@@ -57,28 +58,18 @@ td {
   font-size: small;
 }
 
-#ciclosTable {
-  margin-left: 11%;
-  overflow-y: scroll;
-  display: block;
-  height: 85%;
-}
-
-#containerCiclos {
-  width: 30%;
-
-}
 
 #containerMaterias {
-  width: 50%;
+  width: 100%;
 
 }
 
 .divAdd {
-  margin-left: 8%;
+  margin-left: 15%; /* Ajusta el valor según tus necesidades */
   width: 650px;
   margin-top: 4%;
 }
+
 
 .divAddCiclos {
   margin-left: 12%;
@@ -92,8 +83,8 @@ td {
 
 }
 .divEditMateria {
-  margin-left: 7%;
-  width: 650px;
+ 
+  width: 100%;
 
 
 }
@@ -109,7 +100,7 @@ td {
 }
 .buttonsMateria {
   margin-top: 1%;
-  margin-left: 40%;
+  margin-left: 70%;
   display: flex;
 }
 

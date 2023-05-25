@@ -207,22 +207,24 @@ function ListarDocumentos() {
 
   return (
     <>
-      <div className="page">
+      <div>
 
       <StyleComponentBreadcrumb nombre={`Documentos`} />
         <PanelContainerBG>
 
-          <div className={styles.tableContainer}>
-            <div className={styles.container} id={styles.containerMaterias} >
-              <div id={styles.materiasTable}>
+          <div >
+            <div >
+              <div >
                 <Tabla
                   datosTabla={{
                     tituloTabla: 'Lista de Documentos',
                     titulos: [
-                      { titulo: 'Documentos' },
+                      { titulo: 'Nombre' },
+                      { titulo: 'Url' },
+                      { titulo: 'Eliminar' }
                     ],
                    // clickable: { action: btndetallesMateria },
-                    tableWidth: '100%',
+                    
                     filas: materias.map((materia) => ({
                       fila: materia,
                       datos: [
@@ -263,9 +265,14 @@ function ListarDocumentos() {
                     </div>
                   </div>
                   : <div className={styles.divAdd}>
-                    <label className={styles.label}><strong>Agregar Materia </strong></label>
+                    <label className={styles.label}><strong>Nombre </strong></label>
                     <br />
-                    <input type='text' className={styles.inputAdd} placeholder='Nombre de la materia' onChange={(event) => handleNombreMateria(event)} value={nombre_Materia || ''} ></input>
+                    <input type='text' className={styles.inputAdd} placeholder='Nombre del documento' onChange={(event) => handleNombreMateria(event)} value={nombre_Materia || ''} ></input>
+                    <br />
+
+                    <label className={styles.label}><strong>Url </strong></label>
+                    <br />
+                    <input type='text' className={styles.inputAdd} placeholder='Url del documento' onChange={(event) => handleNombreMateria(event)} value={nombre_Materia || ''} ></input>
                     <br />
                     <div className={styles.buttonGuardarMateria}>
                       <TextButton enabled={true} buttonType='save' onClick={() => handleSubmitMateria()} />
