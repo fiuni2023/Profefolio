@@ -39,6 +39,15 @@ namespace profefolio.Controllers
         /// <remarks>
         /// Recibe en el link el Id de MateriaLista. 
         /// <a href="https://nande-y.atlassian.net/browse/PF-316">Ticket PF-316</a>
+        ///
+        ///
+        /// Body:
+        ///
+        ///     {
+        ///         "idMateriaLista": 0,
+        ///         "mes": 0  // entre 1 y 12 si se manda uno distinto se usara el mes actual
+        ///     }
+        ///
         /// Respuesta:
         ///
         ///     [
@@ -47,6 +56,9 @@ namespace profefolio.Controllers
         ///            "documento": "string",
         ///            "apellido": "string",
         ///            "nombre": "string",
+        ///            "porcentajePresentes": 20,
+        ///            "porcentajeAusentes": 50,
+        ///            "porcentajeJustificados": 30,
         ///            "asistencias": [
         ///                 {
         ///                     "id": 0,                            // id de la asistencia
@@ -91,9 +103,9 @@ namespace profefolio.Controllers
                                 .ToList();
                         var totalAsistencias = resultDto.Asistencias.Count;
                         
-                        var porcentajePresentes = totalAsistencias > 0 ? (float)resultDto.Asistencias.Sum(a => a.Estado == 'P' ? 1 : 0) / totalAsistencias : 0;
-                        var PorcentajeAusentes = totalAsistencias > 0 ? (float)resultDto.Asistencias.Sum(a => a.Estado == 'A' ? 1 : 0) / totalAsistencias : 0;
-                        var PorcentajeJustificados = totalAsistencias > 0 ? (float)resultDto.Asistencias.Sum(a => a.Estado == 'J' ? 1 : 0) / totalAsistencias : 0;
+                        var porcentajePresentes = totalAsistencias > 0 ? ((float)resultDto.Asistencias.Sum(a => a.Estado == 'P' ? 1 : 0) / totalAsistencias) * 100 : 0;
+                        var PorcentajeAusentes = totalAsistencias > 0 ? ((float)resultDto.Asistencias.Sum(a => a.Estado == 'A' ? 1 : 0) / totalAsistencias) * 100 : 0;
+                        var PorcentajeJustificados = totalAsistencias > 0 ? ((float)resultDto.Asistencias.Sum(a => a.Estado == 'J' ? 1 : 0) / totalAsistencias) * 100 : 0;
                         
                         resultDto.PorcentajePresentes = porcentajePresentes;
                         resultDto.PorcentajeAusentes = PorcentajeAusentes;
