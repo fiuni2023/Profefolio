@@ -334,7 +334,7 @@ namespace profefolio.Controllers
         /// ***************************************************************************************************************************
         ///
         ///</remarks>
-        [HttpGet]
+        [HttpPost]
         [Authorize(Roles = "Profesor")]
         public async Task<ActionResult> Get([FromBody] GetDashboardOptionsDTO dto)
         {
