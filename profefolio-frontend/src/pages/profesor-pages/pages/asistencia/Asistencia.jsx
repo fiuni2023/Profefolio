@@ -11,19 +11,37 @@ import { useFetchEffect } from '../../../../components/utils/useFetchEffect';
 import { Container, Resumen, SideSection } from './componentes/StyledResumenAsistencia';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect } from 'react';
+import DayMonthPicker from './componentes/DayMonthPicker';
 
 // const Asistencia = ({ materia = { id: 1, nombre: "Matemáticas" } }) => {
 const Asistencia = () => {
     const { getToken, cancan, verifyToken } = useGeneralContext()
     const [condFetch, setCondFetch] = useState(true)
-    const [datosTabla, setDatosTabla] = useState([]);
+
+    // const [listaAsistencias, setListaAsistencias] = useState([])
+    // const [listaNueva, setListaNueva] = useState([])
+
+    const [tablaAsistencia, setDatosTabla] = useState([]);
+    const [datosTablaOriginales, setDatosTablaOriginales] = useState([]);
+
+    const [nuevaAsistencia, setNuevaAsistencia] = useState([])
+    const [adding, setAdding] = useState(false)
     const [cantAlumnos, setCantAlumnos] = useState(0)
     const [cantClases, setCantClases] = useState(0)
     const { idMateriaLista } = useParams()
     const nombre = "Matemáticas"
 
-    // const [listaAsistencias, setListaAsistencias] = useState([])
-    // const [listaNueva, setListaNueva] = useState([])
+    //Fechas
+    const [selectedDate, setSelectedDate] = useState(new Date());
+
+    const handleDateChange = (event) => {
+        const { value } = event.target;
+        const [year, month, day] = value.split('-');
+        const newDate = new Date(year, month - 1, day);
+        setSelectedDate(newDate);
+    };
+
+
     const nav = useNavigate()
 
     useEffect(() => {
@@ -34,7 +52,7 @@ const Asistencia = () => {
             setCondFetch(true)
         }
     }, [cancan, verifyToken, nav])
-    const { loading } = useFetchEffect(
+    const { loading, error } = useFetchEffect(
         () => {
             // return axios.get(`${APILINK}/api/Asistencia/${materia?.id}`, {
             return axios.get(`${APILINK}/api/Asistencia/${idMateriaLista}`, {
@@ -52,7 +70,7 @@ const Asistencia = () => {
                 setCantClases(dataAsistencia[0]?.asistencias?.length)
                 // setListaAsistencias(dataAsistencia)
                 // setListaNueva(dataAsistencia)
-                setDatosTabla({
+                const DatosAsistencia = {
                     tituloTabla: "Asistencias",
                     titulos: [
                         { titulo: "Nombre Alumno" },
@@ -63,7 +81,6 @@ const Asistencia = () => {
                             : []),
                         { titulo: "%" }
                     ],
-                    clickable: { action: console.log("") },
                     filas: dataAsistencia.map((dato) => {
                         return {
                             fila: dato,
@@ -71,17 +88,30 @@ const Asistencia = () => {
                                 { dato: dato?.nombre ? `${dato.apellido}, ${dato.nombre} ` : " " },
                                 ...(dato.asistencias?.length > 0
                                     ? dato.asistencias.map((fecha, index) => {
-                                        return { key: index, dato: fecha?.estado ? fecha.estado : "" };
+                                        return { dato: fecha?.estado ? fecha.estado : "" };
                                     })
                                     : []),
-                                { dato: 50}
+                                { dato: 50 }
                             ],
                         }
                     })
-                });
+                }
+                setDatosTablaOriginales(DatosAsistencia)
+                setDatosTabla(DatosAsistencia)
+                setNuevaAsistencia(DatosAsistencia.filas.map((fila) => {
+                    return {
+                        id: fila.fila.id,
+                        fecha: selectedDate,
+                        estado: "A",
+                        accion: "N",
+                        observacion: ""
+                    }
+                })
+                )
             },
             handleError: () => {
                 if (!loading) {
+                    setDatosTabla([])
                     toast.error("No se han podido obtener los datos. Intente recargar la página.")
                 }
             }
@@ -95,9 +125,46 @@ const Asistencia = () => {
         return `${day < 10 ? '0' : ''}${day}/${month < 10 ? '0' : ''}${month}`;
     }
 
-    // const addDate = () =>{
-    //     const fechaActual = new Date();
-    // }
+    const handleSelect = (indice, nuevoValor) => {
+        setNuevaAsistencia((prevAsistencia) => {
+            const nuevaAsistencia = [...prevAsistencia];
+            nuevaAsistencia[indice] = nuevoValor;
+            return nuevaAsistencia;
+        });
+    };
+
+    const selectEstado = (estado, id) => {
+        return (
+            <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+                <select defaultValue={estado} onChange={(event) => handleSelect(id, event.target.value)}>
+                    <option value="A">A</option>
+                    <option value="P">P</option>
+                    <option value="J">J</option>
+                </select>
+            </div>
+        )
+    }
+    const addDate = () => {
+        if (!adding) {
+            console.log(tablaAsistencia)
+            const nuevosTitulos = [
+                ...tablaAsistencia.titulos.slice(0, -1),
+                { componente: <DayMonthPicker handleDateChange={handleDateChange} selectedDate={selectedDate} /> }
+            ];
+            const nuevasFilas = tablaAsistencia.filas.map((fila, index) => {
+                return { datos: [...fila.datos.slice(0, -1), { componente: selectEstado(nuevaAsistencia[index], index) }], fila: fila.fila }
+            });
+
+            setDatosTabla(prevState => ({
+                ...prevState,
+                titulos: nuevosTitulos,
+                filas: nuevasFilas
+            }));
+        } else{
+            setDatosTabla(datosTablaOriginales)
+        }
+        setAdding(prevState => !prevState)
+    }
 
     return (
         <>
@@ -108,18 +175,20 @@ const Asistencia = () => {
 
                     <SideSection>
                         <TableContainer>
-                            <Tabla datosTabla={datosTabla} />
-                            <AddButton onClick={() => { console.log("setShow(true)") }}>
+                            <Tabla datosTabla={tablaAsistencia} />
+                            <AddButton onClick={addDate}>
                                 <AiOutlinePlus size={"35px"} />
                             </AddButton>
                         </TableContainer >
                     </SideSection>
                     <SideSection>
-                        <Resumen>
-                            <p>{cantAlumnos} alumnos</p>
-                            <p>{cantClases} {cantClases > 1 ? "clases": "clase"}</p>
-                            <p>75% promedio de asistencias</p>
-                        </Resumen>
+                        {!error && !loading &&
+                            <Resumen>
+                                <p>{cantAlumnos} alumnos</p>
+                                <p>{cantClases} {cantClases > 1 ? "clases" : "clase"}</p>
+                                <p>75% promedio de asistencias</p>
+                            </Resumen>
+                        }
                     </SideSection>
                 </Container>
             </MainContainer >
