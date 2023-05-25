@@ -59,16 +59,18 @@ namespace profefolio.Controllers
         ///     ]
         /// </remarks>
         ///
-        [HttpGet("{idMateriaLista:int}")]
+        [HttpGet]
         [Authorize(Roles = "Profesor")]
-        public async Task<ActionResult<List<AsistenciaResultDTO>>> GetAll(int idMateriaLista)
+        public async Task<ActionResult<List<AsistenciaResultDTO>>> GetAll([FromBody]AsistenciaGetDTO dto)
         {
             var userEmail = User.FindFirstValue(ClaimTypes.Name);
             try
             {
-                var alumnosColegios = await _asistenciaService.FindAll(idMateriaLista, userEmail);
+                var alumnosColegios = await _asistenciaService.FindAll(dto.IdMateriaLista, userEmail);
 
                 var results = new List<AsistenciaResultDTO>();
+
+                var mes = dto.Mes > 12 || dto.Mes < 1 ? DateTime.Now.Month : dto.Mes;
 
                 foreach (var alumnoColegio in alumnosColegios.GroupBy(a => a.ColegiosAlumnosId).ToList())
                 {
@@ -78,7 +80,7 @@ namespace profefolio.Controllers
                     {
                         var resultDto = _mapper.Map<AsistenciaResultDTO>(item);
                         resultDto.Asistencias = item.Asistencias.OrderBy(a => a.Fecha)
-                                .TakeWhile(a => a.Fecha > a.Fecha.AddDays(-5))
+                                .TakeWhile(a => a.Fecha.Month == mes)
                                 .Select(b => new AssitenciasFechaResult()
                                 {
                                     Fecha = b.Fecha,
