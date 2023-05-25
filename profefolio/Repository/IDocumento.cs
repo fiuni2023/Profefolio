@@ -4,6 +4,5 @@ namespace profefolio.Repository;
 
 public interface IDocumento : IRepository<Documento>
 {
-    
-    Task<List<Documento>> GetAll();
+    Task<Documento> FindByNameDocumento(string nombre);
 }
