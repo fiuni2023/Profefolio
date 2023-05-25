@@ -21,5 +21,6 @@ namespace profefolio.Models.Entities
         //profesor que creo el documento
         [JsonIgnore] // Agrega el atributo JsonIgnore al campo ProfesorId
         public String? ProfesorId { get; set; }
+        public int MateriaListaId{ get; set; }
     }
 }
