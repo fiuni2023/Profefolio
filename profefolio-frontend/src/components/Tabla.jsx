@@ -30,7 +30,9 @@ function Tabla({datosTabla, selected}){
                         <Thead small={datosTabla?.small ?? false}  background={datosTabla?.colorHeader ? datosTabla.ColorHeader : "#DDDDDD"}><TR key="thead">
                             {datosTabla.titulos.map((titulo, index) => {
                                 return (
-                                    <TH key={titulo?.titulo}>{titulo?.titulo}</TH>
+                                    <TH key={index}>
+                                      {titulo.componente ? titulo.componente : titulo.titulo}
+                                    </TH>
                                     );
                                 })}
                         </TR></Thead>
@@ -43,10 +45,11 @@ function Tabla({datosTabla, selected}){
                                 selected={fila?.fila?.id === selected ? true : false} 
                                 clickable={datosTabla?.clickable ? true : false}
                                 onClick = {datosTabla?.clickable ? ()=>datosTabla.clickable?.action(fila?.fila) : null}>
-                                                {fila?.datos.map((dato, indexDato) =>{
-                                                    return <TD
-                                                    key={dato.dato ? `${dato.dato}${indexDato}` : indexDato}>{dato?.dato}</TD>
-                                                })}</TR>
+                                                {fila?.datos.map((dato, indexDato) => (
+                                                    <TD key={indexDato}>
+                                                        {dato.componente ? dato.componente : dato.dato}
+                                                    </TD>
+                                                    ))}</TR>
                                             })}
                         </Tbody>
                     )}
