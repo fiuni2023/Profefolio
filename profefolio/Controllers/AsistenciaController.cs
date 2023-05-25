@@ -90,14 +90,15 @@ namespace profefolio.Controllers
                                 })
                                 .ToList();
                         var totalAsistencias = resultDto.Asistencias.Count;
+                        
                         var porcentajePresentes = totalAsistencias > 0 ? (float)resultDto.Asistencias.Sum(a => a.Estado == 'P' ? 1 : 0) / totalAsistencias : 0;
-                        resultDto.Asistencias.Add(new AssitenciasFechaResult()
-                                {
-                                    Fecha = DateTime.Now.AddYears(159),
-                                    Id = -1111,
-                                    Estado = 'Q',
-                                    Observacion = "Porcentaje Asistencia Presentes"
-                                });
+                        var PorcentajeAusentes = totalAsistencias > 0 ? (float)resultDto.Asistencias.Sum(a => a.Estado == 'A' ? 1 : 0) / totalAsistencias : 0;
+                        var PorcentajeJustificados = totalAsistencias > 0 ? (float)resultDto.Asistencias.Sum(a => a.Estado == 'J' ? 1 : 0) / totalAsistencias : 0;
+                        
+                        resultDto.PorcentajePresentes = porcentajePresentes;
+                        resultDto.PorcentajeAusentes = PorcentajeAusentes;
+                        resultDto.PorcentajeJustificados = PorcentajeJustificados;
+
                         results.Add(resultDto);
                     }
 
