@@ -199,7 +199,7 @@ namespace profefolio.Controllers
                         var asistencia = new Asistencia()
                         {
                             ClasesAlumnosColegioId = item.Id,
-                            Fecha = item.Fecha,
+                            Fecha = new DateTime(item.Fecha.Year, item.Fecha.Month,item.Fecha.Day),
                             Estado = item.Estado,
                             Observacion = item.Observacion,
                             MateriaListaId = idMateriaLista,
