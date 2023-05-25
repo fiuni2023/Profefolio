@@ -5,14 +5,17 @@ import { useGeneralContext } from "../../../../../context/GeneralContext";
 import axios from 'axios';
 import TextButton from '../../../../../components/TextButton';
 import BackButton from '../../../components/BackButton';
-
+import Card from '../../../../../components/Card';
+import { SRow } from '../../../../../components/componentsStyles/StyledDashComponent';
 import styled from "styled-components";
 import StyleComponentBreadcrumb from '../../../../../components/StyleComponentBreadcrumb';
 import { toast } from 'react-hot-toast';
 import styles from '../create/Index.module.css';
-
+import { AiOutlinePlus } from 'react-icons/ai';
 import APILINK from '../../../../../components/link';
 import { useNavigate } from 'react-router';
+
+import CreateModalDocumento from '../create/CreateModalDocumento';
 
 import Tabla from '../../../../../components/Tabla';
 
@@ -20,6 +23,8 @@ import ModalConfirmacion from '../modal/ModalConfirmarDelete.jsx';
 
 import IconButton from '../../../../../components/IconButton';
 import { Row, Col } from "react-bootstrap";
+
+import ClassesService from '../Helper/DocumentoHelper';
 
 const FlexDiv = styled.div`
     display: flex;
@@ -41,26 +46,31 @@ const GapDiv = styled.div`
 function ListarDocumentos() {
 
   const [materias, setMaterias] = useState([]);
-  const [ciclos, setCiclos] = useState([]);
+
   const [id, setId] = useState(null);
-  const [data, setData] = useState({})
-  const [dataCiclo, setDataCiclo] = useState({})
-  const { getToken, cancan, verifyToken } = useGeneralContext();
+  const [selectData, setSelectedData] = useState({})
+  const { getToken, cancan, verifyToken,getMateriaId,getUserId } = useGeneralContext();
   const [page, setPage] = useState(1);
-  const [nombreCiclo, setNombreCiclo] = useState(null);
-  const [nombre_Materia, setNombreMateria] = useState('');
-  const [detallesCiclo, setDetallesCiclo] = useState(false);
-  const [nombreNuevoCiclo, setNombreNuevoCiclo] = useState(null);
-  const [detallesMateria, setDetallesMateria] = useState(false);
-  const [nombreNuevoMateria, setNombreNuevoMateria] = useState(null);
+  const [nombre, setNombre] = useState('');
+  const [enlace, setEnlace] = useState('');
+
   const [showModal, setShowModal] = useState(false);
   const [nombre_Materia_delete, setNombreMateriaDelete] = useState('');
-  const [showModalCiclo, setShowModalCiclo] = useState(false);
-  const [nombre_Ciclo_delete, setNombreCicloDelete] = useState('');
+  const [fetch_data, setFetchData ] = useState([])
+
   const nav = useNavigate()
 
+  const [show, setShow] = useState(false);
 
+  const handleHide = () => {
+    setShow(false)
+    doFetch()
+    setSelectedData(null)
+  }
 
+  const doFetch =() =>{
+    setFetchData((before)=>[before])
+}
   const getMaterias = () => {
     verifyToken()
     if (!cancan("Profesor")) {
@@ -92,90 +102,43 @@ function ListarDocumentos() {
 
   }, [page, cancan, verifyToken, nav, getToken]);
 
-  const handleSubmitMateria = () => {
+  /*
+    "nombre": "string",
+  "enlace": "string",
+  "profesorId": "string",
+  "materiaListaId": 0 */
 
-    if (nombre_Materia === "") toast.error("revisa los datos, los campos deben ser completados")
-    else {
-      axios.post(`${APILINK}/api/Materia`, {
-        nombre_Materia,
+  const handleDocumentos = async () => {
 
-      }, {
-        headers: {
-          Authorization: `Bearer ${getToken()}`,
-        }
+    const body = {
+      "nombre": nombre,
+      "enlace": enlace,
+      "profesorId": getUserId(),
+      "materiaListaId": getMateriaId(),
+    };
+
+    ClassesService.createDocumento(body, getToken())
+      .then(() => {
+        console.log('body',body);
+        toast.success("Los datos fueron enviados correctamente.");
+        window.location.reload();
       })
-        .then(response => {
-          toast.success("Guardado exitoso");
-          setNombreMateria('')
-          getMaterias();
-        })
-        .catch(error => {
-          if (typeof (error.response.data) === "string" ? true : false) {
-            toast.error(error.response.data)
-          } else {
-            toast.error(error.response.data?.errors.Password ? error.response.data?.errors.Password[0] : error.response.data?.errors.Email[0])
-          }
-        });
+      .catch(() => {
 
-    }
-  }
-
-
-  const btndetallesMateria = (data) => {
-    setId(data.id);
-    setData(data);
-    setDetallesMateria(true);
+        console.log('body',body);
+        toast.error("No se pudieron guardar los cambios. Intente de nuevo o recargue la página.");
+      });
   };
 
-  const handleNombreMateria = (event) => {
-    setNombreMateria(event.target.value);
 
+  const handleNombre = (event) => {
+    setNombre(event.target.value);
+  }
+
+  const handleEnlace = (event) => {
+    setEnlace(event.target.value);
   }
  
-
-  const handleCancelMaterias = () => {
-
-    setDetallesMateria(false);
-  }
-
-  const handleNombreNuevoMateria = (event) => {
-    setNombreNuevoMateria(event.target.value);
-  }
- 
-  const handleEditMateria = () => {
-
-    if (nombreNuevoMateria === null || nombreNuevoCiclo === "") {
-      toast.error("Favor rellenar el campo correctamente")
-    }
-    else {
-      axios.put(`${APILINK}/api/Materia/${data.id}`, {
-        "nombre_Materia": nombreNuevoMateria,
-
-      }, {
-        headers: {
-          Authorization: `Bearer ${getToken()}`,
-        }
-      })
-        .then(response => {
-          toast.success("Editado");
-          setNombreNuevoMateria("")
-          setDetallesMateria(false);
-          getMaterias();
-        })
-        .catch(error => {
-          if (typeof (error.response.data) === "string" ? true : false) {
-            toast.error(error.response.data)
-          } else {
-            toast.error(error.response.data?.errors.Email[0])
-          }
-        });
-
-    }
-
-  }
-
-  //mi codigo
-
   const handleShowModal = (event, id, nombre) => {
     setId(id);
     setNombreMateriaDelete(nombre);
@@ -240,51 +203,28 @@ function ListarDocumentos() {
                   selected={id ?? '-'}
                 />
               </div>
+
+              <AddButton onClick={()=>setShow(true)}>
+              <AiOutlinePlus size={"35px"} />
+            </AddButton>
               <ModalConfirmacion
                 show={showModal}
                 onHide={() => setShowModal(false)}
                 onConfirm={handleDelete}
-                materia={nombre_Materia_delete}
+               // materia={nombre_Materia_delete}
               />
 
-              <div>
-                {detallesMateria
-                  ? <div className={styles.divEditMateria}>
-                    <label className={styles.label}><strong>Editar Materia</strong></label>
-                    <br />
-                    <label className={styles.label}>Nombre Actual</label>
-                    <br />
-                    <div className={styles.inputAdd}>{data.nombre_Materia}</div>
+              <div>  
+             
 
-                    <label className={styles.label}>Nombre Nuevo</label>
-                    <br />
-                    <input className={styles.inputAdd} placeholder='Nombre de la Materia' onChange={(event) => handleNombreNuevoMateria(event)} id='input-Materia' ></input>
-                    <div className={styles.buttonsMateria}>
-                      <TextButton enabled={true} buttonType='cancel' onClick={() => handleCancelMaterias()} />
-                      <TextButton enabled={true} buttonType='save' onClick={() => handleEditMateria()} />
-                    </div>
-                  </div>
-                  : <div className={styles.divAdd}>
-                    <label className={styles.label}><strong>Nombre </strong></label>
-                    <br />
-                    <input type='text' className={styles.inputAdd} placeholder='Nombre del documento' onChange={(event) => handleNombreMateria(event)} value={nombre_Materia || ''} ></input>
-                    <br />
-
-                    <label className={styles.label}><strong>Url </strong></label>
-                    <br />
-                    <input type='text' className={styles.inputAdd} placeholder='Url del documento' onChange={(event) => handleNombreMateria(event)} value={nombre_Materia || ''} ></input>
-                    <br />
-                    <div className={styles.buttonGuardarMateria}>
-                      <TextButton enabled={true} buttonType='save' onClick={() => handleSubmitMateria()} />
-
-                    </div>
-                  </div>
-                }
               </div>
             </div>
           </div>
+
+         
         </PanelContainerBG>
         <footer>
+        <CreateModalDocumento onHide={handleHide} selectData={selectData} show={show}  />
 
         </footer>
 
@@ -292,16 +232,16 @@ function ListarDocumentos() {
 
       <style jsx='true'>{`
 
-        footer {
-          position: fixed;
-          background-color: hwb(0 99% 0%);
-          color: rgb(245, 249, 249);
-          bottom: 0;
-          left: 0;
-          right: 0;
-          padding: 20px;
-          text-align: right;
-        }
+footer {
+  position: fixed;
+  background-color: hwb(0 99% 0%);
+  color: rgb(245, 249, 249);
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 0px;
+  text-align: right;
+}
 
         .btn-smaller {
           font-size: 0.8rem;
@@ -315,4 +255,22 @@ function ListarDocumentos() {
   )
 }
 
+const AddButton = styled.button`
+    width: 50px;
+    height: 50px;
+    padding: 7px;
+    color: white;
+    background-color: #F0544F;
+    border-radius: 50%;
+    position: fixed;
+    bottom: 1.5%;
+    right: 1%;
+    cursor: pointer;
+    border: none;
+&:hover {
+    filter: brightness(0.95);
+&:active {
+    filter: brightness(0.8);
+  }
+`;
 export default ListarDocumentos

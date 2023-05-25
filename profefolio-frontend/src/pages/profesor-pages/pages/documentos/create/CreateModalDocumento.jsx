@@ -1,150 +1,194 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { Modal, Form,Col,Row } from 'react-bootstrap';
-import { BsFillPlusCircleFill } from 'react-icons/bs';
-import {useGeneralContext} from '../../../../../context/GeneralContext';
+import React, { useState, useEffect } from 'react'
+import { useGeneralContext } from '../../../../../context/GeneralContext';
+import Modal from '../../../../../components/Modal';
 import { toast } from 'react-hot-toast';
-
-import styles from  './Modal.module.css';
-
-
+import axios from 'axios';
 import APILINK from '../../../../../components/link';
+import ClassesService from '../Helper/DocumentoHelper';
 
-//import Modal from '../../../components/Modal';
 
+const { getToken, cancan, verifyToken,getMateriaId,getUserId } = useGeneralContext();
 
-function CreateModalDocumento({onSubmit = ()=>{}, triggerState = () => {}}) {
+function CreateModalDocumento({
+    show = false,
+    onHide = () => { },
+    fetchFunc = () => { },
+    selected_data
+}) {
+    const { getToken } = useGeneralContext()
+    const disabled = false
 
+    const handleDelete = () => {
+        axios.delete(`${APILINK}/api/profesor/${selected_data.id}`, {
+            headers: {
+              Authorization: `Bearer ${getToken()}`,
+            }
+          })
+            .then(response => {
+              toast.success("Borrado exitoso");
+              handleHide()
+    
+            })
+            .catch(error => {
+              if (typeof (error.response.data) === "string" ? true : false) {
+                toast.error(error.response.data)
+              } else {
+                toast.error(error.response.data?.errors.Password ? error.response.data?.errors.Password[0] : error.response.data?.errors.Email[0])
+              }
+            });
+    }
+
+    const handleCreateSubmit = async () => {
+
+      const body = {
+        "nombre": nombre,
+        "enlace": enlace,
+        "profesorId": getUserId(),
+        "materiaListaId": getMateriaId(),
+      };
+  
+      ClassesService.createDocumento(body, getToken())
+        .then(() => {
+          console.log('body',body);
+          toast.success("Los datos fueron enviados correctamente.");
+          window.location.reload();
+        })
+        .catch(() => {
+  
+          console.log('body',body);
+          toast.error("No se pudieron guardar los cambios. Intente de nuevo o recargue la página.");
+        });
+    };
   
 
-  const [nombre_Materia, setNombreMateria] = useState('');
-
-  const { getToken } = useGeneralContext();
-
-
-  const handleSubmit = (event) => {
-
-    event.preventDefault();
-
-    if (nombre_Materia === "" ) toast.error("revisa los datos, los campos deben ser completados")
-    else {
-      axios.post(`${APILINK}/api/Materia`, {
-        nombre_Materia,
-    
-      }, {
-        headers: {
-          Authorization: `Bearer ${getToken()}`,
+    useEffect(() => {
+        if (selected_data) {
+            document.getElementById("nombre").value = selected_data.nombre;
+            document.getElementById("apellido").value = selected_data.apellido;
         }
-      })
-        .then(response => {
-          triggerState(response.data)
-          onSubmit(response.data)
-          toast.success("Guardado exitoso");
+    }, [selected_data])
 
-          setShowModal(false);
-          setNombreMateria("")
-          
+    const [datosModal, setDatosModal] = useState(null);
+    const [deleting, setDeleting] = useState(false)
 
-        })
-        .catch(error => {
-          if(typeof(error.response.data) === "string"? true:false){
-            toast.error(error.response.data)
-          }else{
-            toast.error(error.response.data?.errors.Password? error.response.data?.errors.Password[0] : error.response.data?.errors.Email[0])
-          }
-        });
-
-    }
-    
-
-  };
-
-  const [showModal, setShowModal] = useState(false);
-
-  function closeModal() {
-    setShowModal(false);
-          setNombreMateria("")
-        
-    setShowModal(false);
-  }
-
-  const handleCloseModal = () => setShowModal(false);
-  const handleShowModal = () => setShowModal(true);
-
-
-
-  return (
-
-    <>
-      <div className={styles.NButtonForSideA}>
-        <div className={styles.buttonNavBarAa}>
-          <button className={styles.buttonNavBarA} onClick={handleShowModal}>
-            <BsFillPlusCircleFill />
-          </button>
-        </div>
-      </div>
-
-
-
-      <Modal show={showModal} onHide={handleCloseModal} >
-
-
-
-
-        <Modal.Header closeButton className={styles.contentModal}>
-          <Modal.Title className="">Agregar Materia</Modal.Title>
-        </Modal.Header>
-
-
-        <Modal.Body className={styles.contentModal}>
-          <form onSubmit={handleSubmit}>
-            
-            
-            <Row>
-              <Col>
-              <Form.Label >Nombre de la materia:  </Form.Label>
-              <div >
-                <Form.Control
-                  className={styles.option}
-                  type="text"
-                  value={nombre_Materia}
-                  onChange={event => setNombreMateria(event.target.value)}
-                  placeholder="Ingrese el nombre"
-                />
-              </div>
-            
-              </Col>
-
-             
-            </Row>
-            
+    const getInputs = () => {
+        if (selected_data) return [
+            {
+                key: "nombre", label: "Nombre del Profesor",
+                type: "text", placeholder: "Ingrese el nombre",
+                disabled: disabled, required: true,
+                invalidText: "Ingrese un nombre",
+            },
            
-            <br/>
+           
+            {
+                key: "direccion", label: "Dirrección",
+                type: "text", placeholder: "Ingrese la dirrección",
+                disabled: disabled,
+            },
+           
+            {
+                key: "genero", label: "Genero",
+                type: "select",
+                disabled: disabled, required: true,
+                invalidText: "Seleccione una opción",
+                select: {
+                    default: "Seleccione el género",
+                    options: [
+                        {
+                            value: "F",
+                            text: "Femenino"
+                        },
+                        {
+                            value: "M",
+                            text: "Masculino"
+                        }
+                    ],
+
+                }
+            },
+        ]
+        return [
+            {
+                key: "nombre", label: "Nombre del documento",
+                type: "text", placeholder: "Ingrese el nombre del documento",
+                disabled: disabled, required: true,
+                invalidText: "Ingrese el nombre del documento",
+            },
+            {
+                key: "enlace", label: "Enlace del documento",
+                type: "text", placeholder: "Ingrese el enlace del documento",
+                disabled: disabled, required: true,
+                invalidText: "Ingrese el enlace del documento",
+            },
+           
+                    
+
+                
             
-        
-            <div className="modal-footer">
-              <button type="submit" className={styles.button}   >Guardar</button>
-              <button className={styles.buttonClose} onClick={closeModal}> Cerrar</button>
+        ]
+    }
 
-            </div>
+    useEffect(() => {
+        setDatosModal({
+            header: selected_data ? deleting ? "ELIMINAR Documento?" : "Editar Profesor" : "Agregar Documento",
+            form: {
+                onSubmit: { action: () => { } },
+                inputs: getInputs(),
+                buttons: selected_data ?
+                    !deleting ?
+                        [
+                            {
+                                style: "text",
+                                type: "danger",
+                                onclick: { action: () => { setDeleting(true) } }
+                            },
+                            {
+                                style: "text",
+                                type: "save",
+                                onclick: { action: () => {  } }
+                            },
+                        ]
+                        :
+                        [
+                            {
+                                style: "text",
+                                type: 'cancel',
+                                onclick: { action: () => { setDeleting(false) } }
+                            },
+                            {
+                                style: "text",
+                                type: "danger",
+                                onclick: { action: () => { handleDelete() } }
+                            },
+                        ]
+                    :
+                    [
+                        {
+                            style: "text",
+                            type: "accept",
+                            onclick: { action: () => { handleCreateSubmit() } }
+                        },
+                    ]
+            }
+        })
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [disabled, selected_data, deleting]);
 
+    const handleHide = () => {
+        document.getElementById("nombre").value = "";
+        document.getElementById("enlace").value = "";
+      
 
-          </form>
-        </Modal.Body>
+        setDeleting(false)
+        fetchFunc()
+        onHide()
+    }
 
-      </Modal>
-
-
-
-
-      <style jsx='true'>{`
-          
-            
-            `}</style>
-    </>
-
-  )
+    return (
+        <>
+            <Modal show={show} onHide={handleHide} datosModal={datosModal} />
+        </>
+    )
 }
-
-
-export default CreateModalDocumento;
+export default CreateModalDocumento

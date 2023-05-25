@@ -19,6 +19,7 @@ export const GeneralProvider = ({ children }) => {
     //dato de colegio
     const [colegio, setColegio] = useState({ id: 0, nombre: "" })
 
+
     const getLoginData = () => {
         if (localStorage.getItem('loginData') ? true : false) return JSON.parse(localStorage.getItem('loginData'))
         if (sessionStorage.getItem('loginData') ? true : false) return JSON.parse(sessionStorage.getItem('loginData'))
@@ -54,11 +55,24 @@ export const GeneralProvider = ({ children }) => {
         return getLoginData()?.email?.split("@")[0]
     }
 
+    const getUserId = () => {
+        const loginData = getLoginData();
+        return loginData ? loginData.id : null;
+        console.log('getLoginData()',getLoginData());
+      }
+
+      console.log('getLoginData()',getLoginData());
+      console.log('getUserId',getUserId());
+
     const getUserMail = () => {
         return getLoginData()?.email
     }
 
     const getColegioId = () => {
+        return getLoginData()?.colegioId
+    }
+
+    const getMateriaId = () => {
         return getLoginData()?.colegioId
     }
 
@@ -82,7 +96,9 @@ export const GeneralProvider = ({ children }) => {
         colegio,
         getColegioId, 
         setColegio,
-        getColegioName
+        getColegioName,
+        getMateriaId,
+        getUserId
     }
 
     verifyToken()
