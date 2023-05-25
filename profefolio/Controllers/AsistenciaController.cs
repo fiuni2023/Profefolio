@@ -40,6 +40,10 @@ namespace profefolio.Controllers
         /// Recibe en el link el Id de MateriaLista. 
         /// <a href="https://nande-y.atlassian.net/browse/PF-316">Ticket PF-316</a>
         ///
+        /// Modificaciones: 
+        ///
+        /// <a href="https://nande-y.atlassian.net/browse/PF-336">Ticket PF-336</a>
+        ///
         ///
         /// Body:
         ///
@@ -135,9 +139,14 @@ namespace profefolio.Controllers
         /// <summary>
         ///     Actualiza, Agrega y Elimina una lista de asistecias
         /// </summary>
+        ///
         /// <remarks>
+        ///
         /// <a href="https://nande-y.atlassian.net/browse/PF-320">Ticket PF-320</a>
+        /// Modificaciones:
+        /// <a href="https://nande-y.atlassian.net/browse/PF-337">Ticket PF-337</a>
         /// 
+        ///
         /// La utilidad del ID recibido en los objetos de la lista va a variar de acuerdo a la accion
         /// 
         ///     * si la accion es N, el ID tiene que ser del alumno al que se le quiere dar la asistencia
