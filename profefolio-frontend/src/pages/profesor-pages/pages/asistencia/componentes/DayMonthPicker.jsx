@@ -12,6 +12,7 @@ const DayMonthPicker = ({ selectedDate = () => new Date(), handleDateChange = ()
   return (
     <input
       type="date"
+      style={{ width: '90px' , borderRadius: '10px', border: 'solid 1px'}} 
       min={`${currentYear}-01-01`}
       max={`${currentYear}-12-31`}
       value={formatDate(selectedDate)}
