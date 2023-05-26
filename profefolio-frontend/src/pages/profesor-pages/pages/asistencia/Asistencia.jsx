@@ -14,6 +14,7 @@ import { useEffect } from 'react';
 import DayMonthPicker from './componentes/DayMonthPicker';
 // import {HiXCircle} from 'react-icons/hi'
 import { HiCheckCircle, HiXCircle } from 'react-icons/hi'
+import {sum} from 'lodash'
 
 // const Asistencia = ({ materia = { id: 1, nombre: "Matemáticas" } }) => {
 const Asistencia = React.memo(() => {
@@ -30,6 +31,7 @@ const Asistencia = React.memo(() => {
     const [adding, setAdding] = useState(false)
     const [cantAlumnos, setCantAlumnos] = useState(0)
     const [cantClases, setCantClases] = useState(0)
+    const [porcentajes, setPorcentajes] = useState([])
     const { idMateriaLista } = useParams()
     const nombre = "Matemáticas"
 
@@ -78,6 +80,7 @@ const Asistencia = React.memo(() => {
                         { titulo: "%" }
                     ],
                     filas: dataAsistencia.map((dato) => {
+                        setPorcentajes([dato.porcentajePresentes, ...porcentajes])
                         return {
                             fila: dato,
                             datos: [
@@ -238,7 +241,7 @@ const Asistencia = React.memo(() => {
                             <Resumen>
                                 <p>{cantAlumnos} alumnos</p>
                                 <p>{cantClases} {cantClases < 1 ? "Aún no hay clases" : cantClases > 1 ? "clases" : "clase"}</p>
-                                <p>75% promedio de asistencias</p>
+                                <p>{(sum(porcentajes)/(porcentajes?.length ? porcentajes.length : 1)).toFixed(2)} promedio de asistencias</p>
                             </Resumen>
                         }
                     </SideSection>
