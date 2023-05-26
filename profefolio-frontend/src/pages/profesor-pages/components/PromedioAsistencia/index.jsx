@@ -1,9 +1,28 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { SBody, SCard, SHeader } from '../../../../components/componentsStyles/StyledDashComponent'
 import { Bar } from 'react-chartjs-2';
+import { useModularContext } from '../../context';
 
-const PromedioAsistencia = () => {
-    const labels = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Deciembre'];
+const PromedioAsistencia = (
+) => {
+
+    const { dataSet } = useModularContext()
+    const { asistencias } = dataSet
+
+    const [labels, setLabels] = useState([])
+    const [presentes, setPresentes] = useState([])
+    const [ausentes, setAusentes] = useState([])
+    const [justificados, setJustificados] = useState([])
+
+    useEffect(() => {
+        if (asistencias.length > 0) {
+            setLabels(asistencias.map(a => { return a.mes }))
+            setPresentes(asistencias.map(a=>{return a.presentes}))
+            setAusentes(asistencias.map(a => { return a.ausentes }))
+            setJustificados(asistencias.map(a=>{return a.justificados}))
+        }
+    }, [asistencias])
+
 
     const options = {
         responsive: true,
@@ -23,17 +42,17 @@ const PromedioAsistencia = () => {
         datasets: [
             {
                 label: 'Presente',
-                data: labels.map(() => parseInt(Math.random()*100)),
+                data: presentes,
                 backgroundColor: '#24B787',
             },
             {
                 label: 'Ausente',
-                data: labels.map(() => parseInt(Math.random()*100)),
+                data: ausentes,
                 backgroundColor: '#D93D79',
             },
             {
                 label: 'Justificado',
-                data: labels.map(() => parseInt(Math.random()*100)),
+                data: justificados,
                 backgroundColor: '#5181D1',
             },
         ],

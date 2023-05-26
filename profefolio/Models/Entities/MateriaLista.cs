@@ -17,5 +17,7 @@ namespace profefolio.Models.Entities
         public Clase Clase { get; set; }
         public ICollection<Evento>? Eventos { get; set; }
         public IEnumerable<HorasCatedrasMaterias>? Horarios { get; set; }
+
+        public IEnumerable<Asistencia>? ListaAsistencias { get; set; }
     }
 }

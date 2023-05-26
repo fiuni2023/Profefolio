@@ -9,6 +9,6 @@ namespace profefolio.Repository
         Task<ClaseDetallesDTO> FindByIdClase(int idClase, string user);
         Task<List<MateriaLista>> FindByIdClaseAndUser(int idClase, string userEmail, string role);
         Task<bool> Put(string idUser, MateriaListaPutDTO dto);
-
+        Task<Persona> GetProfesorOfMateria(int idMateriaLista, string profesorEmail);
     }
 }

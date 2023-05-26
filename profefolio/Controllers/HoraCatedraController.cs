@@ -115,9 +115,9 @@ namespace profefolio.Controllers
                 horaCatedra.CreatedBy = userEmail;
                 horaCatedra.Deleted = false;
 
-                await _horaCatedraService.Add(horaCatedra);
+                var saved = await _horaCatedraService.Add(horaCatedra);
                 await _horaCatedraService.Save();
-                return Ok();
+                return Ok(_mapper.Map<HoraCatedraResultDTO>(saved));
             }
             catch (Exception e)
             {
