@@ -12,6 +12,8 @@ import { Container, Resumen, SideSection } from './componentes/StyledResumenAsis
 import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect } from 'react';
 import DayMonthPicker from './componentes/DayMonthPicker';
+// import {HiXCircle} from 'react-icons/hi'
+import { HiCheckCircle, HiXCircle } from 'react-icons/hi'
 
 // const Asistencia = ({ materia = { id: 1, nombre: "Matemáticas" } }) => {
 const Asistencia = React.memo(() => {
@@ -31,19 +33,6 @@ const Asistencia = React.memo(() => {
     const { idMateriaLista } = useParams()
     const nombre = "Matemáticas"
 
-    //Fechas
-    const [selectedDate, setSelectedDate] = useState(new Date());
-
-    const handleDateChange = (event) => {
-        console.log(event.target)
-        const { value } = event.target;
-        const [year, month, day] = value.split('-');
-        const newDate = new Date(year, month - 1, day);
-        console.log(newDate)
-        setSelectedDate(newDate);
-    };
-
-
     const nav = useNavigate()
 
     useEffect(() => {
@@ -54,7 +43,7 @@ const Asistencia = React.memo(() => {
             setCondFetch(true)
         }
     }, [cancan, verifyToken, nav])
-    const { loading, error } = useFetchEffect(
+    const { doFetch, loading, error } = useFetchEffect(
         () => {
             // return axios.get(`${APILINK}/api/Asistencia/${materia?.id}`, {
             return axios.get(`${APILINK}/api/Asistencia/${idMateriaLista}`, {
@@ -75,10 +64,10 @@ const Asistencia = React.memo(() => {
                 const DatosAsistencia = {
                     tituloTabla: "Asistencias",
                     titulos: [
-                        { titulo: "Nombre Alumno" },
+                        { titulo: "Alumnos" },
                         ...(dataAsistencia[0]?.asistencias?.length > 0
                             ? dataAsistencia[0].asistencias.map((fecha) => {
-                                return { titulo: fecha?.fecha ? formatDate(fecha.fecha) : "" };
+                                return { titulo: fecha?.fecha ? formatAsistenciaDate(fecha.fecha) : "" };
                             })
                             : []),
                         { titulo: "%" }
@@ -103,7 +92,6 @@ const Asistencia = React.memo(() => {
                 setNuevaAsistencia(DatosAsistencia.filas.map((fila) => {
                     return {
                         id: fila.fila.id,
-                        fecha: selectedDate,
                         estado: "A",
                         accion: "N",
                         observacion: ""
@@ -120,17 +108,65 @@ const Asistencia = React.memo(() => {
         }
     );
 
-    const formatDate = (date) => {
+    const handleSubmitAddAsistencia = () => {
+
+            const fecha = document.getElementById("fechaSeleccionada").value;
+        if (!(new Date(fecha) instanceof Date) || isNaN(new Date(fecha))) {
+            toast.error("Seleccione una fecha válida");
+            return
+        }
+        else {
+            
+            let data = JSON.stringify(nuevaAsistencia.map((asistencia)=>{
+                return {...asistencia, fecha:fecha}
+            }
+            ));
+
+            let config = {
+                method: 'put',
+                maxBodyLength: Infinity,
+                url: `${APILINK}/api/Asistencia/${idMateriaLista}`,
+                headers: {
+                    'Authorization': `Bearer ${getToken()}`,
+                    'Content-Type': 'application/json'
+                },
+                data: data
+            };
+            console.log(data)
+            axios(config)
+                .then(function (response) {
+                    if (response.status >= 400) {
+                        toast.error("Hubo un error")
+                    }
+                    else if (response.status >= 200) {
+                        toast.success("Guardado correctamente")
+                        console.log(response)
+                        setAdding(false)
+                        doFetch()
+                    }
+                })
+                .catch(function (error) {
+                    if (!!typeof (error.response?.data) === "string") {
+                        toast.error(error.response.data)
+                    } else{
+                        console.log(error)
+                    }
+                });
+        }
+    }
+
+    const formatAsistenciaDate = (date) => {
         const newDate = new Date(date);
         const day = newDate.getDate();
         const month = newDate.getMonth() + 1;
         return `${day < 10 ? '0' : ''}${day}/${month < 10 ? '0' : ''}${month}`;
     }
 
-    const handleSelect = (indice, nuevoValor) => {
+    const handleSelectNuevoEstado = (indice, nuevoValor) => {
         setNuevaAsistencia((prevAsistencia) => {
             const nuevaAsistencia = [...prevAsistencia];
-            nuevaAsistencia[indice] = nuevoValor;
+            nuevaAsistencia[indice].estado = nuevoValor;
+            console.log(nuevaAsistencia)
             return nuevaAsistencia;
         });
     };
@@ -138,7 +174,7 @@ const Asistencia = React.memo(() => {
     const selectEstado = (estado, id) => {
         return (
             <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-                <select defaultValue={estado} onChange={(event) => handleSelect(id, event.target.value)}>
+                <select defaultValue={estado} onChange={(event) => handleSelectNuevoEstado(id, event.target.value)}>
                     <option value="A">A</option>
                     <option value="P">P</option>
                     <option value="J">J</option>
@@ -149,12 +185,17 @@ const Asistencia = React.memo(() => {
     const addDate = () => {
         if (!adding) {
             console.log(tablaAsistencia)
+            console.log(columnHandler)
+
+            let prevTitulos = tablaAsistencia.titulos?.length > 1 ? tablaAsistencia.titulos.slice(0, -1) : tablaAsistencia.titulos
             const nuevosTitulos = [
-                ...tablaAsistencia.titulos.slice(0, -1),
-                { componente: {input: <DayMonthPicker handleDateChange={handleDateChange} selectedDate={selectedDate} />, action: handleDateChange }}
+                ...prevTitulos,
+                { componentes: columnHandler }
             ];
+
             const nuevasFilas = tablaAsistencia.filas.map((fila, index) => {
-                return { datos: [...fila.datos.slice(0, -1), { componente: selectEstado(nuevaAsistencia[index], index) }], fila: fila.fila }
+                let datosPrev = fila.datos.length > 1 ? fila.datos.slice(0,-1) : fila.datos
+                return { datos: [...datosPrev, { componente: selectEstado(nuevaAsistencia[index], index) }], fila: fila.fila }
             });
 
             setDatosTabla(prevState => ({
@@ -162,11 +203,16 @@ const Asistencia = React.memo(() => {
                 titulos: nuevosTitulos,
                 filas: nuevasFilas
             }));
-        } else{
+        } else {
             setDatosTabla(datosTablaOriginales)
         }
         setAdding(prevState => !prevState)
     }
+    const columnHandler = [
+        { key: 'datePicker', componente: <DayMonthPicker /> },
+        { key: 'xbt', componente: <HiXCircle size={18} color='red' /> , action: addDate },
+        { key: 'okbt', componente: <HiCheckCircle size={18} color='green'/>, action: handleSubmitAddAsistencia }
+    ]
 
     return (
         <>
@@ -174,7 +220,6 @@ const Asistencia = React.memo(() => {
                 {/* <StyleComponentBreadcrumb nombre={`Registro de Asistencia - ${materia?.nombre}`} /> */}
                 <StyleComponentBreadcrumb nombre={`Registro de Asistencia - ${nombre}`} />
                 <Container>
-
                     <SideSection>
                         <TableContainer>
                             <Tabla datosTabla={tablaAsistencia} />
