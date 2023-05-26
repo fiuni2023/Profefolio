@@ -44,7 +44,7 @@ const Alumnos = () => {
         setShow(true)
     }
 
-    const { doFetch, isLoading, isError} = useFetchEffect(
+    const { doFetch, isLoading} = useFetchEffect(
         () => {
             return StudentHelper.getStudentsPage(currentPage, getToken())
         },
