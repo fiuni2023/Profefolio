@@ -22,15 +22,15 @@ namespace profefolio.Controllers
         private readonly IMateriaLista _materiaListaService;
         private static int _cantPorPag => Constantes.CANT_ITEMS_POR_PAGE;
         private readonly IMapper _mapper;
-       // private readonly IClase _claseService;
-        public DocumentoController(IDocumento documentoService, IMapper mapper,IProfesor profesorService,
+        // private readonly IClase _claseService;
+        public DocumentoController(IDocumento documentoService, IMapper mapper, IProfesor profesorService,
         IMateriaLista materiaListaService)
         {
             _documentoService = documentoService;
             _mapper = mapper;
             _profesorService = profesorService;
             _materiaListaService = materiaListaService;
-           
+
         }
 
         [HttpPost]
@@ -43,7 +43,7 @@ namespace profefolio.Controllers
             }
             //verificar si MateriaListaId existe
             var materiaLista = await _materiaListaService.FindById(documento.MateriaListaId);
-            if(materiaLista == null)
+            if (materiaLista == null)
             {
                 return BadRequest("Materia Lista no existe");
             }
@@ -75,7 +75,7 @@ namespace profefolio.Controllers
                     return BadRequest($"Ya existe un documento con ese nombre");
                 }
 
-                
+
                 documento.ProfesorId = profId;
 
                 var p = _mapper.Map<Documento>(documento);
@@ -93,11 +93,11 @@ namespace profefolio.Controllers
             }
         }
 
-           /// <summary>
+        /// <summary>
         /// Retorna los documentos creados por el prf que hace la petición.
         /// Solo un profesor puede realizar la peticion
         /// Se retornan todos los documentos pertenecientes a esa materia
-        /// https://localhost:7063/api/Evento
+        /// https://localhost:7063/api/Documento
         ///Body del Get:
         ///     
         ///     {
@@ -107,16 +107,16 @@ namespace profefolio.Controllers
         /// </summary>
         /// <remarks>
         /// </remarks>
-        
+
         [HttpGet]
         [Authorize(Roles = "Profesor")]
-        public async Task<ActionResult<IEnumerable<DocumentoResultDTO>>> GetAll( [FromBody] DocumentoOpcionesDTO dto)
+        public async Task<ActionResult<IEnumerable<DocumentoResultDTO>>> GetAll([FromBody] DocumentoOpcionesDTO dto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest("Objeto no válido");
             }
-            
+
             try
             {
                 var userEmail = User.FindFirstValue(ClaimTypes.Name);
@@ -135,6 +135,75 @@ namespace profefolio.Controllers
             }
         }
 
+        /// <summary>
+        /// Retorna un documento creado por el prf que hace la petición.
+        /// Solo un profesor puede realizar la peticion
+        /// https://localhost:7063/api/Documento/id
+        /// </summary>
+        /// <remarks>
+        /// </remarks>
+        [HttpGet("{id}")]
+        [Authorize(Roles = "Profesor")]
+        public async Task<ActionResult<DocumentoResultDTO>> GetDocumento(int id)
+        {
+            var doc = await _documentoService.FindById(id);
+            if (doc == null)
+            {
+                _log.Error("An error occurred in the Get method");
+                return NotFound();
+            }
+            
+            var userEmail = User.FindFirstValue(ClaimTypes.Name);
+            var profId = await _profesorService.GetProfesorIdByEmail(userEmail);
+
+            if (doc.ProfesorId == profId)
+            {
+                var response = _mapper.Map<DocumentoResultDTO>(doc);
+                return Ok(response);
+            }
+            else
+            {
+                return BadRequest("No puede ver el documento de otro profesor.");
+            }
+        }
+
+        /// <summary>
+        /// Elimina un documento creado por el prf que hace la petición.
+        /// Solo un profesor puede realizar la peticion
+        /// https://localhost:7063/api/Documento/id
+        /// </summary>
+        /// <remarks>
+        /// </remarks>
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "Profesor")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var data = await _documentoService.FindById(id);
+
+            if (data == null)
+            {
+                return NotFound();
+            }
+
+            var userEmail = User.FindFirstValue(ClaimTypes.Name);
+            var profId = await _profesorService.GetProfesorIdByEmail(userEmail);
+
+            if (data.ProfesorId == profId)
+            {
+                data.Modified = DateTime.Now;
+                data.Deleted = true;
+                data.ModifiedBy = userEmail;
+
+                _documentoService.Edit(data);
+                await _documentoService.Save();
+
+                return Ok();
+            }
+            else
+            {
+                return BadRequest("No puede eliminar el documento de otro profesor.");
+            }
+        }
 
     }
 }
