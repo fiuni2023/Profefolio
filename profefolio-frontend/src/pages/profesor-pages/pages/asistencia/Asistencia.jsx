@@ -14,7 +14,7 @@ import { useEffect } from 'react';
 import DayMonthPicker from './componentes/DayMonthPicker';
 
 // const Asistencia = ({ materia = { id: 1, nombre: "Matemáticas" } }) => {
-const Asistencia = () => {
+const Asistencia = React.memo(() => {
     const { getToken, cancan, verifyToken } = useGeneralContext()
     const [condFetch, setCondFetch] = useState(true)
 
@@ -35,9 +35,11 @@ const Asistencia = () => {
     const [selectedDate, setSelectedDate] = useState(new Date());
 
     const handleDateChange = (event) => {
+        console.log(event.target)
         const { value } = event.target;
         const [year, month, day] = value.split('-');
         const newDate = new Date(year, month - 1, day);
+        console.log(newDate)
         setSelectedDate(newDate);
     };
 
@@ -149,7 +151,7 @@ const Asistencia = () => {
             console.log(tablaAsistencia)
             const nuevosTitulos = [
                 ...tablaAsistencia.titulos.slice(0, -1),
-                { componente: <DayMonthPicker handleDateChange={handleDateChange} selectedDate={selectedDate} /> }
+                { componente: {input: <DayMonthPicker handleDateChange={handleDateChange} selectedDate={selectedDate} />, action: handleDateChange }}
             ];
             const nuevasFilas = tablaAsistencia.filas.map((fila, index) => {
                 return { datos: [...fila.datos.slice(0, -1), { componente: selectEstado(nuevaAsistencia[index], index) }], fila: fila.fila }
@@ -194,6 +196,6 @@ const Asistencia = () => {
             </MainContainer >
         </>
     )
-}
+})
 
 export default Asistencia
