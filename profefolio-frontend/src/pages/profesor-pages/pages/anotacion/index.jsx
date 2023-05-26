@@ -39,7 +39,6 @@ const Anotacion = () => {
     useEffect(()=>{
         AnotationsService.Get(token)
         .then(r=>{
-            console.log(r)
             setLista(r.data)
         })
     }, [token, fetchdata])
