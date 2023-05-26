@@ -16,33 +16,14 @@ public class Evento : Data
 {
     //tipo: examen, parcial, prueba sumatoria, examen
     //fecha
-    //materia
-    //clase
-    //colegio
-    [Required(ErrorMessage = "Se tiene que agregar el tipo de evento")]
+    
+    public MateriaLista MateriaLista { get; set; }
+    public int MateriaListaId { get; set; }
     public string? Tipo { get; set; }
-
-    [Required(ErrorMessage = "Se tiene que agregar la fecha de evento")]
+    
     public DateTime Fecha { get; set; }
-
-    [Required(ErrorMessage = "Se tiene que agregar la materia relacionada al evento")]
-    public Materia Materias { get; set; }
-
-    public int MateriaId { get; set; }
-
-    [Required(ErrorMessage = "Se tiene que agregar la clase relacionada al evento")]
-    public Clase Clases { get; set; }
-
-    public int ClaseId { get; set; }
-
-    [Required(ErrorMessage = "Se tiene que agregar el colegio relacionado al evento")]
-    public Colegio Colegios { get; set; }
-
-    public int ColegioId { get; set; }
 
     public double PuntajeTotal { get; set; }
 
-    [JsonIgnore] 
-    public String? ProfesorId { get; set; }
-    public Persona Profesores { get; set; }
+    
 }

@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace profefolio.Models.Entities;
 
 public class EventoAlumno : Data

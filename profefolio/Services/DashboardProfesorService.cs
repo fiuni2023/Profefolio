@@ -242,6 +242,7 @@ namespace profefolio.Services
 
         public async Task<int> GetEventosOfMateria(string idProfesor, int materia, int idClase)
         {
+            /*
             List<Evento> duraciones = await _context.Eventos
                 .Where(a => !a.Deleted
                     && idProfesor.Equals(a.ProfesorId)
@@ -250,6 +251,8 @@ namespace profefolio.Services
                 .ToListAsync();
           
             return duraciones.Count;
+            */
+            throw new NotImplementedException();
         }
 
         public async Task<List<HorasCatedrasMaterias>> FindAllHorariosClasesByEmailProfesorAndIdColegio(int idColegio, string email, int anho)
