@@ -30,13 +30,19 @@ function Tabla({datosTabla, selected}){
                         <Thead small={datosTabla?.small ?? false}  background={datosTabla?.colorHeader ? datosTabla.ColorHeader : "#DDDDDD"}><TR key="thead">
                             {datosTabla.titulos.map((titulo, index) => {
                                 return (
-                                    titulo?.componente ?
-                                        <TH key={index} 
-                                        clickable={!!titulo?.componente?.action}
-                                        onChange = {titulo?.componente?.action ? (e)=>titulo.componente?.action(e) : null}>
-                                            {titulo.componente?.input}
+                                    titulo?.componentes ? (
+                                        <TH key={index + 'date'} clickable={true}>
+                                            {titulo?.componentes?.map((componente, index)=>{
+                                               return (
+                                            <div style={{display: 'inline'}} key={index + componente}
+                                                clickable='true'
+                                                onClick = {componente?.action ? (e)=>componente.action(e) : null}>
+                                                {componente.componente}</div>
+                                                );
+                                            })}
                                         </TH>
-                                        : <TH key={titulo?.titulo}>{titulo?.titulo}</TH>
+                                    ) : (
+                                         <TH key={titulo?.titulo}>{titulo?.titulo}</TH> )
                                     );
                                 })}
                         </TR></Thead>
@@ -49,11 +55,11 @@ function Tabla({datosTabla, selected}){
                                 selected={fila?.fila?.id === selected ? true : false} 
                                 clickable={datosTabla?.clickable ? true : false}
                                 onClick = {datosTabla?.clickable ? ()=>datosTabla.clickable?.action(fila?.fila) : null}>
-                                                {fila?.datos.map((dato, indexDato) => (
-                                                    <TD key={indexDato}>
+                                                {fila?.datos.map((dato, indexDato) => {
+                                                    return<TD key={dato.dato ? `${dato.dato}${indexDato}` : indexDato}>
                                                         {dato.componente ? dato.componente : dato.dato}
                                                     </TD>
-                                                    ))}</TR>
+                                                })}</TR>
                                             })}
                         </Tbody>
                     )}
