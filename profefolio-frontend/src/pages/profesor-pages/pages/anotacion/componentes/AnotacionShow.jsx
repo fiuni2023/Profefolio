@@ -85,7 +85,6 @@ const AnotacionShow = ({
             "contenido": contenido,
             "materiaListaId": materiaId
         }
-        console.log(body)
         AnotationsService.Post(body, token)
         .then(()=>{
             doFetch()
