@@ -60,6 +60,9 @@ const MateriaCards = ({
         },
         body: {
             first: {
+                title: `${materia?.asistencias} Asistencias`
+            },
+            second: {
                 title: `${materia?.classes_yet} clases impartidas`
             }
         }

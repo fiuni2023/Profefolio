@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { SRow } from "../../../../components/componentsStyles/StyledDashComponent";
 import { useGeneralContext } from "../../../../context/GeneralContext";
 import { useModularContext } from "../../context";
@@ -10,66 +10,41 @@ import ContainerColegios from "../../components/ContainerColegios";
 
 const ProfesorMateria = () => {
     const {getUserName} = useGeneralContext()
-    const {setPage} = useModularContext()
+    const {setPage, dataSet, stateController} = useModularContext()
 
-    const handleClickCards = () => {
+    const {materias} = dataSet
+    const {setMateriaId, setMateriaName} = stateController
+
+    const handleClickCards = (id) => {
+        const {idM, nombreM} = id
+        setMateriaName(nombreM)
+        setMateriaId(idM)
         setPage("materiashow")
     }
 
-    const staticCursos = [
-        {
-            id: 1, //id colegio
-            nombre: 'Ciencias',
-            materia_anotaciones: 23,
-            materia_calif: 4,
-            materia_evento: 2,
-            horario: [
-                {
-                    id: 1, // id horario
-                    dia: "Lunes",
-                    hora: new Date()
-                }
-            ],
-            duracionHrs: "2hrs"
-        },
-        {
-            id: 2, //id colegio
-            nombre: 'Matematicas',
-            materia_anotaciones: 23,
-            materia_calif: 4,
-            materia_evento: 2,
-            horario: [
-                {
-                    id: 1, // id horario
-                    dia: "Lunes",
-                    hora: new Date()
-                }
-            ],
-            duracionHrs: "2hrs"
-        },
-        {
-            id: 3, //id colegio
-            nombre: 'Castellano',
-            materia_anotaciones: 23,
-            materia_calif: 4,
-            materia_evento: 2,
-            horario: [
-                {
-                    id: 1, // id horario
-                    dia: "Lunes",
-                    hora: new Date()
-                }
-            ],
-            duracionHrs: "2hrs"
-        }
-    ]
+    const [ materiasMapped, setMateriasMapped ] = useState([])
 
+    useEffect(()=>{
+        setMateriasMapped(materias?.map((m)=>{
+            return {
+                id: {idM:m.id, nombreM: m.nombre},
+                nombre: m.nombre,
+                anotaciones: m.anotaciones,
+                calificaciones: m.calificaciones,
+                eventos: m.eventos,
+                horario : m.horario.dia === ""? null : [
+                    m.horario
+                ],
+                duracionHrs: ""
+            }
+        }))
+    }, [materias])
 
     const componentes = {
         title: `Bienvenido Prof. ${getUserName()} Materia`,
         componentes: [
             <SRow>
-                <ContainerColegios onClick={handleClickCards} lista={staticCursos}/>
+                <ContainerColegios onClick={handleClickCards} lista={materiasMapped}/>
             </SRow>,
             <Alumnos />,
             <Eventos />

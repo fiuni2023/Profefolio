@@ -19,9 +19,9 @@ const ContainerColegios = ({
     const getMateriasSubtitle = (materias = []) =>{
         let materiaLista = materias.length > 3? materias.slice(0,3) : materias
         return materias.length > 3? 
-            `${map(materiaLista, (materia) => `${materia.nombre}`).join(", ")}, ...`
+            `${map(materiaLista, (materia) => `${materia}`).join(", ")}, ...`
             :
-            `${map(materiaLista, (materia) => `${materia.nombre}`).join(", ")}`
+            `${map(materiaLista, (materia) => `${materia}`).join(", ")}`
     }   
 
 
@@ -30,7 +30,7 @@ const ContainerColegios = ({
             xs: 12, sm: 12, md: 6, lg: 3,
             background: getColor(indice),
             hover: true,
-            action: onClick,
+            action: ()=>onClick(objeto?.id),
             header: {
                 title: `${objeto?.nombre}`,
             },
@@ -42,37 +42,61 @@ const ContainerColegios = ({
                     objeto?.materias? 
                     `${objeto?.materias?.length} Materias: ` 
                     :
-                    objeto?.materia_anotaciones?
-                    `${objeto.materia_anotaciones} Anotaciones`
+                    objeto?.anotaciones?
+                    `${objeto.anotaciones} Anotaciones`
+                    :
+                    objeto?.anotaciones === 0?
+                    `${objeto.anotaciones} Anotaciones`
                     :
                     "",
 
                     subtitle: 
-                        objeto?.clases ? `${map(objeto?.clases, (clase) => `${clase.nombre}`).join(", ")}` 
+                        objeto?.clases ? `${map(objeto?.clases, (clase) => `${clase}`).join(", ")}` 
                         : 
                         objeto?.materias? getMateriasSubtitle(objeto?.materias)
                         :
                         null
                 },
+                
+                //-----------------------ciclo--------------------------------
                 second: objeto?.alumnos ? {
                     title: `${objeto.alumnos} Alumnos`
                 }
                 :
-                objeto?.materia_calif?
+                objeto?.calificaciones?
                 {
-                    title: `${objeto.materia_calif} Calificaciones`
+                    title: `${objeto.calificaciones} Calificaciones`
+                }
+                :
+                objeto?.calificaciones === 0?
+                {
+                    title: `${objeto.calificaciones} Calificaciones`
+                }
+                :
+                objeto?.ciclo?
+                {
+                    title: `Ciclo: ${objeto.ciclo}`,
                 }
                 :
                 null,
-                third: objeto?.materia_evento ? {
-                    title: `${objeto.materia_evento} Eventos`
-                }:null,
+
+                //-----------------------eventos--------------------------------
+                third: objeto?.eventos ? {
+                    title: `${objeto.eventos} Eventos`
+                }
+                :
+                objeto?.eventos === 0? {
+                    title: `${objeto.eventos} Eventos`
+                }
+                :
+                null,
+                //-----------------------horas--------------------------------
                 schedule: {
-                    main: `${map(objeto?.horario, (h) => `${h.dia} ${new Date(h.hora).toLocaleTimeString("en-EN", {
+                    main: objeto?.horario?.dia !==""? `${map(objeto?.horario, (h) => `${h.dia} ${new Date(h.hora).toLocaleTimeString("en-EN", {
                         hour12: true,
                         hour: "numeric",
                         minute: "numeric",
-                    })}`).join(" - ")}`,
+                    })}`).join(" - ")}`: "No hay un horario todavia",
                     secondary: objeto?.duracionHrs? objeto?.duracionHrs : null
                 }
             }
