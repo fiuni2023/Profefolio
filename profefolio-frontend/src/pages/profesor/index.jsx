@@ -5,7 +5,7 @@ import CreateModal from "./components/create/CreateModal.jsx";
 import { useGeneralContext } from "../../context/GeneralContext";
 import axios from 'axios';
 
-import styles from  "./components/create/Index.module.css";
+import styles from "./components/create/Index.module.css";
 
 import APILINK from '../../components/link.js';
 import { useNavigate } from 'react-router';
@@ -27,18 +27,18 @@ import Text from '../../components/componentsStyles/StyledText.jsx';
 function Profesores() {
 
   const [profesores, setProfesores] = useState([]);
-  
+
   const [selected_data, setSelectedData] = useState(null);
   const { getToken, cancan, verifyToken } = useGeneralContext();
 
-  const [fetch_data, setFetchData ] = useState([])
+  const [fetch_data, setFetchData] = useState([])
 
   const [page, setPage] = useState(0);
 
   const [totalPage, setTotalPage] = useState(1);
-    
+
   const [next, setNext] = useState(false);
-  const isLastPage = page === totalPage -1;
+  const isLastPage = page === totalPage - 1;
   const [currentPage, setCurrentPage] = useState(0);
 
 
@@ -49,25 +49,25 @@ function Profesores() {
 
   useEffect(() => {
     verifyToken()
-    if(!cancan("Administrador de Colegio")){
+    if (!cancan("Administrador de Colegio")) {
       nav("/")
-    }else{
+    } else {
       //axios.get(`https://miapi.com/products?page=${page}&size=${size}`, {
-  
+
       setLoading(true);
       axios.get(`${APILINK}/api/profesor/page/${page}`, {
         headers: {
           Authorization: `Bearer ${getToken()}`,
         }
       })
-  
+
         .then(response => {
           setProfesores(response.data.dataList);
           setTotalPage(response.data.totalPage);//Total de Paginas
           setCurrentPage(response.data.currentPage);
           setNext(response.data.next);
-      
-  
+
+
 
         })
         .catch(error => {
@@ -80,16 +80,16 @@ function Profesores() {
     }
   }, [page, cancan, verifyToken, nav, getToken, fetch_data]);
 
- const doFetch =() =>{
-    setFetchData((before)=>[before])
-}
- 
+  const doFetch = () => {
+    setFetchData((before) => [before])
+  }
 
 
-const btndetalles = (data) => {
-  setSelectedData(data)
-  setShow(true);
-};
+
+  const btndetalles = (data) => {
+    setSelectedData(data)
+    setShow(true);
+  };
 
 
   const handlePrevClick = () => {
@@ -118,72 +118,73 @@ const btndetalles = (data) => {
     <>
 
       <div>
-      <StyleComponentBreadcrumb nombre="Profesores" />
+        <StyleComponentBreadcrumb nombre="Profesores" />
 
-      {loading ? <Spinner height={'calc(100vh - 80px)'} />
-        : error ? <Text>Lamentamos esto, ha ocurrido un error al obtener los datos.</Text>
-          :
-          <>
-        <PanelContainerBG>
+        {loading ? <Spinner height={'calc(100vh - 80px)'} />
+          : error ? <Text>Lamentamos esto, ha ocurrido un error al obtener los datos.</Text>
+            :
+            <>
+              <PanelContainerBG>
 
 
-          <div>
+                <div>
 
-          <Tabla
-              datosTabla={{
-                tituloTabla: 'Lista de profesores',
-                titulos: [
-                  { titulo: 'CI' },
-                  { titulo: 'Nombre' },
-                  { titulo: 'Apellido' },
-                  { titulo: 'Fecha de nacimiento' },
-                  { titulo: 'Dirección' },
-                  { titulo: 'Teléfono' },
-                ],
-                clickable: { action: btndetalles },
-                colorHeader: '',
-                tableWidth: '',
+                  <Tabla
+                    datosTabla={{
+                      tituloTabla: 'Lista de profesores',
+                      titulos: [
+                        { titulo: 'CI' },
+                        { titulo: 'Nombre' },
+                        { titulo: 'Apellido' },
+                        { titulo: 'Fecha de nacimiento' },
+                        { titulo: 'Dirección' },
+                        { titulo: 'Teléfono' },
+                      ],
+                      clickable: { action: btndetalles },
+                      colorHeader: '',
+                      tableWidth: '',
 
-            
 
-                filas: profesores.map((profe) => ({
-                  fila: profe,
-                  datos: [
-                    { dato: profe.documento },
-                    { dato: profe.nombre },
-                    { dato: profe.apellido },
-                    {
-                      dato: new Date(profe.nacimiento).toLocaleDateString(),
-                    },
-                    { dato: profe.direccion },
-                    { dato: profe.telefono },
-                  ],
-                })),
-              }}
-            />
 
-           <Paginations totalPage={totalPage} currentPage={currentPage} setCurrentPage={setCurrentPage} next={next} />
-            {/* <ListDetallesProfesor showModal={showModal} setShowModal={setShowModal} id={id}  triggerState={(profesor)=>{setProfesores(profesor)}} page={page} /> */}
+                      filas: profesores.map((profe) => ({
+                        fila: profe,
+                        datos: [
+                          { dato: profe.documento },
+                          { dato: profe.nombre },
+                          { dato: profe.apellido },
+                          {
+                            dato: new Date(profe.nacimiento).toLocaleDateString(),
+                          },
+                          { dato: profe.direccion },
+                          { dato: profe.telefono },
+                        ],
+                      })),
+                    }}
+                  />
 
-            <AddButton onClick={()=>setShow(true)}>
-              <AiOutlinePlus size={"35px"} />
-            </AddButton>
-  
-            <div >
+                  <Paginations totalPage={totalPage} currentPage={currentPage} setCurrentPage={setCurrentPage} next={next} />
+                  {/* <ListDetallesProfesor showModal={showModal} setShowModal={setShowModal} id={id}  triggerState={(profesor)=>{setProfesores(profesor)}} page={page} /> */}
 
-           
-        
-      </div>
- 
-          </div>
-          
-          {/* <CreateModal title="My Modal" onHide={() => setShow(false)}  show={show}
+
+
+                  <div >
+
+
+
+                  </div>
+
+                </div>
+
+                {/* <CreateModal title="My Modal" onHide={() => setShow(false)}  show={show}
              triggerState={(profesor)=>{doFetch(profesor)}}/> */}
 
-          <ModalProfesor onHide={handleHide} selected_data={selected_data} show={show}  />
-        </PanelContainerBG>
-        
-        </>}
+                <ModalProfesor onHide={handleHide} selected_data={selected_data} show={show} />
+                <AddButton onClick={() => setShow(true)}>
+                  <AiOutlinePlus size={"35px"} />
+                </AddButton>
+              </PanelContainerBG>
+
+            </>}
 
       </div>
 

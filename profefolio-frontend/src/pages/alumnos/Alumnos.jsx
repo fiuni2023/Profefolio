@@ -84,7 +84,6 @@ const Alumnos = () => {
         setSelectedStudent(null)
         setShow(false)
     }
-
     return (
         <MainContainer>
             <StyleComponentBreadcrumb nombre="Alumnos" />
@@ -94,14 +93,16 @@ const Alumnos = () => {
                         <TableContainer>
                             <Tabla datosTabla={datosTabla} />
                             <Paginations currentPage={currentPage} totalPage={total_pages} setCurrentPage={setCurrentPage} next={next} />
-                            <AddButton onClick={() => { setShow(true) }}>
-                                <AiOutlinePlus size={"35px"} />
-                            </AddButton>
+
                         </TableContainer >
-                        <ModalAlumnos show={show} fetchFunc={doFetch} onHide={handleHideModal} selected_data={selected_student} handleExistingStudent={setSelectedStudent} setShow={setShow} />
+                        
                     </>
             }
-            </MainContainer >
+            <AddButton onClick={() => { setShow(true) }}>
+                <AiOutlinePlus size={"35px"} />
+            </AddButton>
+            <ModalAlumnos show={show} fetchFunc={doFetch} onHide={handleHideModal} selected_data={selected_student} handleExistingStudent={setSelectedStudent} setShow={setShow} />
+        </MainContainer >
 
 
     )
