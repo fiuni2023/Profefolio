@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ContainerColegios from "../../components/ContainerColegios";
 import Horarios from "../../components/Horarios";
 import Eventos from "../../components/Eventos";
@@ -10,99 +10,29 @@ import BackButton from "../../components/BackButton";
 
 const ProfesorClase = () => {
     const {getUserName} = useGeneralContext()
-    const {setPage} = useModularContext()
+    const {setPage, dataSet, stateController} = useModularContext()
 
-    const handleClickCards = () => {
+    const {clases} = dataSet
+    const {setClaseId} = stateController
+
+    const handleClickCards = (id) => {
+        setClaseId(id)
         setPage("materia")
     }
 
-    const staticCursos = [
-        {
-            id: 1, //id colegio
-            nombre: 'Primer Grado',
-            materias: [
-                {
-                    id: 1, //id clase
-                    nombre: "Matematica"
-                },
-                {
-                    id: 2,
-                    nombre: "Castellano"
-                },
+    const [clasesMapped, setClasesMapped] = useState([])
 
-            ],
-            alumnos: 25,
-            horario: [
-                {
-                    id: 1, // id horario
-                    dia: "Lunes",
-                    hora: new Date()
-                }
-            ],
-            duracionHrs: "2hrs"
-        },
-        {
-            id: 2, //id colegio
-            nombre: 'Segundo Grado',
-            materias: [
-                {
-                    id: 1, //id clase
-                    nombre: "Matematica"
-                },
-                {
-                    id: 2,
-                    nombre: "Castellano"
-                },
-
-            ],
-            alumnos: 25,
-            horario: [
-                {
-                    id: 1, // id horario
-                    dia: "Lunes",
-                    hora: new Date()
-                }
-            ],
-            duracionHrs: "2hrs"
-        },
-        {
-            id: 3, //id colegio
-            nombre: 'Tercer Grado',
-            materias: [
-                {
-                    id: 1, //id clase
-                    nombre: "Matematica"
-                },
-                {
-                    id: 2,
-                    nombre: "Castellano"
-                },
-                {
-                    id: 3, //id clase
-                    nombre: "Matematica2"
-                },
-                {
-                    id: 4,
-                    nombre: "Castellano2"
-                },
-            ],
-            alumnos: 25,
-            horario: [
-                {
-                    id: 1, // id horario
-                    dia: "Lunes",
-                    hora: new Date()
-                }
-            ],
-            duracionHrs: "2hrs"
+    useEffect(()=>{
+        if(clases){
+            setClasesMapped(clases.map(c=>{return {...c, duracionHrs: ""}}))
         }
-    ]
+    }, [clases])
 
     const componentes = {
         title: `Bienvenido Prof. ${getUserName()} Clase`,
         componentes: [
             <SRow>
-                <ContainerColegios onClick={handleClickCards} lista={staticCursos}/>
+                <ContainerColegios onClick={handleClickCards} lista={clasesMapped}/>
             </SRow>,
             <Horarios/>,
             <Eventos/>

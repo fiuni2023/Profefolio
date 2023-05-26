@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { SRow } from "../../../../components/componentsStyles/StyledDashComponent";
 import { useGeneralContext } from "../../../../context/GeneralContext";
 import { useModularContext } from "../../context";
@@ -10,11 +10,38 @@ import BackButton from "../../components/BackButton";
 
 const ProfesorMateriaShow = () => {
     const {getUserName} = useGeneralContext()
-    const {setPage} = useModularContext()
+    const {setPage, dataSet} = useModularContext()
+
+    const { materiaShow, materiaName } = dataSet
 
     // const handleClickCards = () => {
     //     setPage("dashboard")
     // }
+
+    const [materiaMapped, setMateriaMapped] = useState({
+                anotations: 0,
+                name: "",
+                calification_count: 0,
+                event_yet: 0,
+                classes_yet: 0,
+                documents: 0,
+                asistencias: 0
+            })
+
+    useEffect(()=>{
+        if(materiaShow && materiaName){
+            const newMateria ={
+                anotations: materiaShow.anotaciones,
+                name: materiaName,
+                calification_count: materiaShow.calificaciones?.calificaciones,
+                event_yet: materiaShow.calificaciones?.sinCalificaciones,
+                classes_yet: 1,
+                documents: materiaShow.documentos,
+                asistencias: materiaShow.asistencias
+            }
+            setMateriaMapped(newMateria)
+        }
+    }, [materiaShow, materiaName])
 
 
     const config = {
@@ -25,7 +52,7 @@ const ProfesorMateriaShow = () => {
         title: `Bienvenido Prof. ${getUserName()} Materia`,
         componentes: [
             <SRow>
-                <MateriaCards configuration={config} />
+                <MateriaCards materia={materiaMapped} configuration={config} />
             </SRow>,
             <PromedioPuntaje/>,
             <PromedioAsistencia/>

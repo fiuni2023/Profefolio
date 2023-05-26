@@ -5,11 +5,15 @@ import { useFetchEffect } from '../../../../components/utils/useFetchEffect'
 import ClassesHelper from '../../Helpers/ClassesHelper'
 import { toast } from 'react-hot-toast'
 import Paginations from '../../../../components/Paginations'
+import Spinner from '../../../../components/componentsStyles/SyledSpinner'
+import Text from '../../../../components/componentsStyles/StyledText'
 
 const ClasesTable = ({ condFetch, colegioId, getToken, doChangeClase, triggerUpdate }) => {
     const [currentPage, setCurrentPage] = useState(0);
     const [nextPage, setNextPage] = useState(false);
     const [totalPage, setTotalPage] = useState(0)
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState(false)
     const [classesTable, setClassesTable] = useState(
         {
             tituloTabla: "ClassesList",
@@ -43,6 +47,7 @@ const ClasesTable = ({ condFetch, colegioId, getToken, doChangeClase, triggerUpd
                     })
 
                 })
+                setLoading(false)
             },
             handleError: (e) => {
                 let newText = "error";
@@ -50,15 +55,16 @@ const ClasesTable = ({ condFetch, colegioId, getToken, doChangeClase, triggerUpd
                     const text = e.response.data.trim().split(": ")
                     const numPag = parseInt(text[1]) + 1;
                     newText = `${text[0]} ${numPag}`;
-                    if (numPag === 1) {
-                        toast.error("No tiene Clases creadas todavia.")
-                    } else {
-                        toast.error(newText)
-                    }
+                    // if (numPag === 1) {
+                    //     toast.error("No tiene Clases creadas todavia.")
+                    // } else {
+                    //     toast.error(newText)
+                    // }
                 } else {
                     toast.error(e.response.data)
+                setError(true)
                 }
-
+                setLoading(false)
             }
         }
     )
@@ -66,16 +72,13 @@ const ClasesTable = ({ condFetch, colegioId, getToken, doChangeClase, triggerUpd
 
     return <>
 
-        <TableContainer>
-            <Tabla datosTabla={classesTable} />
-
-            <Paginations next={nextPage} currentPage={currentPage} setCurrentPage={setCurrentPage} totalPage={totalPage} />
-            
-
-
-
-        </TableContainer >
-
+        {loading ? <Spinner height={'calc(100vh - 80px)'} />
+            : error ? <Text>Lamentamos esto, ha ocurrido un error al obtener los datos.</Text>
+                : <TableContainer>
+                    <Tabla datosTabla={classesTable} />
+                    <Paginations next={nextPage} currentPage={currentPage} setCurrentPage={setCurrentPage} totalPage={totalPage} />
+                </TableContainer >
+        }
     </>
 }
 

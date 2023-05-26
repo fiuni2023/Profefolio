@@ -244,8 +244,96 @@ namespace profefolio.Controllers
         ///     
         ///     
         /// ***************************************************************************************************************************
+        ///
+        /// Caso de Opcion "cards-materia"
+        ///        
+        ///
+        /// Ticket <a href="#">Sin ticket hasta el momento</a>
+        ///     
+        /// Body:
+        ///     
+		///		{
+		///			opcion: "cards-materia",
+		///			id: 1,                              // id materiaLista
+		///			anho: 2023                          
+		///		}      
+        ///     
+        ///     
+        /// Respuesta:
+        ///     
+        ///     {
+		///			anotaciones: 25,
+		///			calificaciones: { 
+		///				calificaciones:	4,
+		///				sinCalificaciones: 3
+		///			},
+		///			asistencias: 8,
+		///			documentos: 4
+		///		}    
+        ///     
+        ///     
+        ///     
+        /// ***************************************************************************************************************************
+        ///
+        ///
+        /// Caso de Opcion "promedio-puntajes"
+        ///        
+        ///
+        /// Ticket <a href="#">Sin ticket hasta el momento</a>
+        ///     
+        /// Body:
+        ///     
+		///		{
+		///			opcion: "promedio-puntajes",
+		///			id: 1,                              // id materiaLista
+		///			anho: 2023                          
+		///		}      
+        ///     
+        ///     
+        /// Respuesta:
+        ///     
+        ///     [
+		///			{
+		///				evaluacion: "Pueba 1",
+		///				puntaje: 30.0
+		///			},
+		///		]   
+        ///     
+        ///     
+        ///     
+        /// ***************************************************************************************************************************
+        ///
+        /// Caso de Opcion "promedio-asistencias"
+        ///        
+        ///
+        /// Ticket <a href="https://nande-y.atlassian.net/browse/PF-310">Ticket PF-310</a>
+        ///     
+        /// Body:
+        ///     
+		///		{
+		///			opcion: "promedio-asistencias",
+		///			id: 1,                              // id materiaLista
+		///			anho: 2023                          
+		///		}      
+        ///     
+        ///     
+        /// Respuesta:
+        ///     
+        ///     [
+		///			{
+		///				mes: "enero",
+		///				presentes: 30.0,
+		///				ausentes: 20.0,
+		///				justificados: 10.0
+		///			}
+		///		]   
+        ///     
+        ///     
+        ///     
+        /// ***************************************************************************************************************************
+        ///
         ///</remarks>
-        [HttpGet]
+        [HttpPost]
         [Authorize(Roles = "Profesor")]
         public async Task<ActionResult> Get([FromBody] GetDashboardOptionsDTO dto)
         {
@@ -327,7 +415,35 @@ namespace profefolio.Controllers
                     case "promedio-puntajes":
                         return BadRequest("Opcion en implementacion");
                     case "promedio-asistencias":
-                        return BadRequest("Opcion en implementacion");
+                        var profeId = await _profesorService.GetProfesorIdByEmail(userEmail);
+            
+                        if(profeId == null){
+                            return Unauthorized();
+                        }
+
+                        var year = dto.Anho <= 0 ? DateTime.Now.Year : dto.Anho;
+                        
+                        var resultList = new List<DBPromedioAsistenciasDTO>();
+                        // se obtene la cantidad de meses a retornar, si es un anho distinto al actual, se muestran los 12, de lo contrario hasta el mes actual
+                        var maxMes = year != DateTime.Now.Year ? 12 : DateTime.Now.Month;  
+                        
+                        for(int mes = 1; mes <= maxMes; mes++){
+
+                            var (presentes, ausentes, justificados) = await _dashBoardService.GetPromedioAsistenciasByMonth(year, mes, dto.Id, profeId);
+                            
+                            var promedioAsistencias = new DBPromedioAsistenciasDTO(){
+                                Mes = TimeComparator.MonthToSpanish(mes),
+                                Presentes = presentes,
+                                Ausentes = ausentes,
+                                Justificados = justificados
+                            };
+
+                            resultList.Add(promedioAsistencias);
+                        }
+
+                        return Ok(resultList);
+
+
                     default:
                         return BadRequest("Opcion Invalida");
                 }
