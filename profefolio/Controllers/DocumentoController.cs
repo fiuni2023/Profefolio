@@ -62,14 +62,7 @@ namespace profefolio.Controllers
             }
 
             try
-            {
-                var verificarNombreDocumento = await _documentoService.FindByNameDocumento(documento.Nombre);
-                if (verificarNombreDocumento != null)
-                {
-                    return BadRequest($"Ya existe un documento con ese nombre");
-                }
-
-                
+            {   
                 documento.ProfesorId = profId;
 
                 var p = _mapper.Map<Documento>(documento);
