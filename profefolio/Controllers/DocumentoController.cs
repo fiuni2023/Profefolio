@@ -76,7 +76,33 @@ namespace profefolio.Controllers
             }
         }
 
-     
+           /// <summary>
+        /// Retorna los documentos creados por el prf que hace la petición.
+        /// Solo un profesor puede realizar la peticion
+        /// Se retornan todos los documentos pertenecientes a esa materia
+        /// https://localhost:7063/api/Evento
+        /// </summary>
+        /// <remarks>
+        /// </remarks>
+        
+        [HttpGet]
+        [Authorize(Roles = "Profesor")]
+        public async Task<ActionResult<IEnumerable<DocumentoResultDTO>>> GetAll()
+        {
+            try
+            {
+                var result = await _documentoService.GetAll();
+                return Ok(_mapper.Map<List<DocumentoResultDTO>>(result));
+
+            }
+            catch (Exception e)
+            {
+
+                Console.WriteLine(e);
+                return BadRequest("Error durante la busqueda");
+
+            }
+        }
 
 
     }
