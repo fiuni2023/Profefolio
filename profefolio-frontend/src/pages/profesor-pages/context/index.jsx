@@ -51,9 +51,12 @@ export const ModularProvider = ({ children }) => {
 
     useEffect(()=>{
         if(colegioId){
-            const body = {opcion: 'card-clases', id: colegioId, anho: 2023}
+            let body = {opcion: 'card-clases', id: colegioId, anho: 2023}
             ProfesorPagesService.Get(body, token)
             .then(d=>setClases(d.data))
+            body = {opcion: 'horarios-clases', id: colegioId, anho: 2023}
+            ProfesorPagesService.Get(body, token)
+            .then(d=>console.log(d.data))
         }
     },[fetch_data, token, colegioId])
 

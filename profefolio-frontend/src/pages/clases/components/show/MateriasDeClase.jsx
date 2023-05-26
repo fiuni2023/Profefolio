@@ -39,7 +39,7 @@ justify-content: space-around;
 
 
 
-const TagProfesor = memo(({ id, nombre,apellido, state="n", onClick = () => { } }) => {
+const TagProfesor = memo(({ id, nombre = "",apellido = "", state="n", onClick = () => { } }) => {
   const uid = useId();
   const unicId = uid.substring(1, uid.length - 1)
 
@@ -194,6 +194,9 @@ useEffect(() => {
                 {isSelectOpen && (
                 <TagNombreSelect>
                     <TagSelect onChange={seleccionarProfesor}>
+                        <option value={0} >
+                          {`Elija un Profesor`}
+                        </option>
                     {profeProfesor.map((profesor) => (
                         <option key={profesor.id} value={profesor.id}>
                         {profesor.nombre}
@@ -203,13 +206,14 @@ useEffect(() => {
                 </TagNombreSelect>
                 )}
 
-                {profeProfesor.map((profesor) => (
+                {profeProfesor.map((profesor) => { console.log(profesor)
+                  return (
                     profesoresSeleccionados.includes(profesor.id) && (
                         <TagProfesor
                         key={profesor.id}
                         id={profesor.id}
-                        nombre={`${profesor.nombre}${profesor.status}`}
-                        apellido={`${profesor.apellido}${profesor.status}`}
+                        nombre={`${profesor.nombre}`}
+                        apellido={`${profesor.apellido ?? ""}`}
                         state={newType}
                         idMateriaProfesor={idMateria} 
                         onClick={() => {
@@ -219,10 +223,12 @@ useEffect(() => {
                         }}
                         />
                     )
-                    ))}
+                    )})}
 
   {/* Este es un comentario en React*/}
-  {Array.isArray(profesores) && profesores.map((e, i) => (
+  {Array.isArray(profesores) && profesores.map((e, i) => {
+    console.log(e)
+    return(
           <TagProfesor
             key={i}
             id={e.idProfesor}
@@ -241,7 +247,7 @@ useEffect(() => {
               setType(newType);
             }}
           />
-        ))}
+        )})}
 
 
 
