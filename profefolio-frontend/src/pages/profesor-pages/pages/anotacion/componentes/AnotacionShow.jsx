@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import TextButton from "../../../../../components/TextButton";
 import { toast } from "react-hot-toast";
+import { useModularContext } from "../../../context";
+import { useGeneralContext } from "../../../../../context/GeneralContext";
+import AnotationsService from "../../../services/AnotationsService";
 
 const AnotacionShowDiv = styled.div`
     margin: 5px;
@@ -15,7 +18,7 @@ const AnotacionShowDiv = styled.div`
 `
 
 const InputTitulo = styled.input`
-    border: none;
+    border: 1px solid #DDDDDD;
     outline: none;
     border-radius: 10px;
     padding: 10px;
@@ -26,12 +29,12 @@ const InputTitulo = styled.input`
 `
 
 const InputContenido = styled.textarea`
-    border: none;
+    border: 1px solid #DDDDDD;
     outline: none;
     border-radius: 10px;
     padding: 10px;
     resize: none;
-    min-height: 100vh;
+    min-height: 50vh;
     font-size: 20px;
     &:hover{
         filter: brightness(0.8);
@@ -39,26 +42,56 @@ const InputContenido = styled.textarea`
 `
 
 const AnotacionShow = ({
-    selectedAnotation = {Titulo: "", Contenido: ""}
+    selectedAnotation = {titulo: "", contenido: ""},
+    setSelectedAnotation = ()=>{},
+    doFetch = ()=>{}
 }) => {
+
+    const {getToken} = useGeneralContext()
+    const {stateController} = useModularContext()
+    const {materiaId} = stateController
+    const token = getToken()
 
     const [titulo, setTitulo] = useState("")
     const [contenido, setContenido] = useState("")
-    const [tituloTemp, setTituloTemp] = useState("")
-    const [contenidoTemp, setContenidoTemp] = useState("")
+    const [erasing, setErasing] = useState(false)
 
     useEffect(()=>{
-        setTitulo(selectedAnotation?.Titulo)
-        setContenido(selectedAnotation?.Contenido)
-        setTituloTemp(selectedAnotation?.Titulo)
-        setContenidoTemp(selectedAnotation?.Contenido)
+        setTitulo(selectedAnotation?.titulo)
+        setContenido(selectedAnotation?.contenido)
     }, [selectedAnotation])
 
-    const handleCheck = () => {
-        if(titulo === tituloTemp) toast.success("titulo igual")
-        else toast.error("Diferente titulo")
-        if(contenido === contenidoTemp) toast.success("contenido igual")
-        else toast.error("Diferente Contenido")
+    const handleDelete = () => {
+        if(!!selectedAnotation.id){
+            AnotationsService.Delete(selectedAnotation.id, token)
+            .then(()=>{
+                doFetch()
+                setErasing(false)
+                setSelectedAnotation({})
+                setContenido("")
+                setTitulo("")
+            })
+        } else {
+            setErasing(false)
+            return toast.error("no esta seleccionado una anotacion")
+        }
+    }
+
+    const handleCreate = (titulo, contenido) => {
+        if(titulo === "") return toast.error("Revise los Campos")
+        if(contenido === "") return toast.error("Revise los Campos")
+        let body = {
+            "titulo": titulo,
+            "contenido": contenido,
+            "materiaListaId": materiaId
+        }
+        console.log(body)
+        AnotationsService.Post(body, token)
+        .then(()=>{
+            doFetch()
+            setContenido("")
+            setTitulo("")
+        })
     }
 
     return <>
@@ -71,8 +104,21 @@ const AnotacionShow = ({
             onChange={(event)=>{
                 setContenido(event?.target?.value)
             }} />
+            
+            <div className="d-flex justify-content-between">
+                {erasing?
+                    <>
+                        <TextButton buttonType={"cancel"} enabled={true} onClick={()=>{setErasing(false)}} />
+                        <TextButton buttonType={"confirm"} enabled={true} onClick={()=>{handleDelete(titulo, contenido)}} />
+                    </>
+                    :
+                    <>
+                        <TextButton buttonType={"danger"} enabled={true} onClick={()=>{setErasing(true)}} />
+                    </>
 
-            <TextButton buttonType={"save"} enabled={true} onClick={handleCheck} />
+                }
+                <TextButton buttonType={"save"} enabled={true} onClick={()=>{handleCreate(titulo, contenido)}} />
+            </div>
         </AnotacionShowDiv>
     </>
 }

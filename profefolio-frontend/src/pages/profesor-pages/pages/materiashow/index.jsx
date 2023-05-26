@@ -50,7 +50,7 @@ const ProfesorMateriaShow = () => {
     }
 
     const componentes = {
-        title: `Bienvenido Prof. ${getUserName()} Materia`,
+        title: `Bienvenido Prof. ${getUserName()} - ${materiaName}`,
         componentes: [
             <SRow>
                 <MateriaCards materia={materiaMapped} configuration={config} />

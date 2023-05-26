@@ -29,7 +29,7 @@ const ProfesorClase = () => {
     }, [clases])
 
     const componentes = {
-        title: `Bienvenido Prof. ${getUserName()} Clase`,
+        title: `Bienvenido Prof. ${getUserName()} - Lista de Clases`,
         componentes: [
             <SRow>
                 <ContainerColegios onClick={handleClickCards} lista={clasesMapped}/>
