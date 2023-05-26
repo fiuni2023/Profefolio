@@ -39,6 +39,19 @@ namespace profefolio.Controllers
         /// <remarks>
         /// Recibe en el link el Id de MateriaLista. 
         /// <a href="https://nande-y.atlassian.net/browse/PF-316">Ticket PF-316</a>
+        ///
+        /// Modificaciones: 
+        ///
+        /// <a href="https://nande-y.atlassian.net/browse/PF-336">Ticket PF-336</a>
+        ///
+        ///
+        /// Body:
+        ///
+        ///     {
+        ///         "idMateriaLista": 0,
+        ///         "mes": 0  // entre 1 y 12 si se manda uno distinto se usara el mes actual
+        ///     }
+        ///
         /// Respuesta:
         ///
         ///     [
@@ -47,6 +60,9 @@ namespace profefolio.Controllers
         ///            "documento": "string",
         ///            "apellido": "string",
         ///            "nombre": "string",
+        ///            "porcentajePresentes": 20,
+        ///            "porcentajeAusentes": 50,
+        ///            "porcentajeJustificados": 30,
         ///            "asistencias": [
         ///                 {
         ///                     "id": 0,                            // id de la asistencia
@@ -59,16 +75,18 @@ namespace profefolio.Controllers
         ///     ]
         /// </remarks>
         ///
-        [HttpGet("{idMateriaLista:int}")]
+        [HttpGet]
         [Authorize(Roles = "Profesor")]
-        public async Task<ActionResult<List<AsistenciaResultDTO>>> GetAll(int idMateriaLista)
+        public async Task<ActionResult<List<AsistenciaResultDTO>>> GetAll([FromBody]AsistenciaGetDTO dto)
         {
             var userEmail = User.FindFirstValue(ClaimTypes.Name);
             try
             {
-                var alumnosColegios = await _asistenciaService.FindAll(idMateriaLista, userEmail);
+                var alumnosColegios = await _asistenciaService.FindAll(dto.IdMateriaLista, userEmail);
 
                 var results = new List<AsistenciaResultDTO>();
+
+                var mes = dto.Mes > 12 || dto.Mes < 1 ? DateTime.Now.Month : dto.Mes;
 
                 foreach (var alumnoColegio in alumnosColegios.GroupBy(a => a.ColegiosAlumnosId).ToList())
                 {
@@ -78,7 +96,7 @@ namespace profefolio.Controllers
                     {
                         var resultDto = _mapper.Map<AsistenciaResultDTO>(item);
                         resultDto.Asistencias = item.Asistencias.OrderBy(a => a.Fecha)
-                                .TakeWhile(a => a.Fecha > a.Fecha.AddDays(-5))
+                                .TakeWhile(a => a.Fecha.Month == mes)
                                 .Select(b => new AssitenciasFechaResult()
                                 {
                                     Fecha = b.Fecha,
@@ -87,6 +105,16 @@ namespace profefolio.Controllers
                                     Observacion = b.Observacion
                                 })
                                 .ToList();
+                        var totalAsistencias = resultDto.Asistencias.Count;
+                        
+                        var porcentajePresentes = totalAsistencias > 0 ? ((float)resultDto.Asistencias.Sum(a => a.Estado == 'P' ? 1 : 0) / totalAsistencias) * 100 : 0;
+                        var PorcentajeAusentes = totalAsistencias > 0 ? ((float)resultDto.Asistencias.Sum(a => a.Estado == 'A' ? 1 : 0) / totalAsistencias) * 100 : 0;
+                        var PorcentajeJustificados = totalAsistencias > 0 ? ((float)resultDto.Asistencias.Sum(a => a.Estado == 'J' ? 1 : 0) / totalAsistencias) * 100 : 0;
+                        
+                        resultDto.PorcentajePresentes = porcentajePresentes;
+                        resultDto.PorcentajeAusentes = PorcentajeAusentes;
+                        resultDto.PorcentajeJustificados = PorcentajeJustificados;
+
                         results.Add(resultDto);
                     }
 
@@ -111,9 +139,14 @@ namespace profefolio.Controllers
         /// <summary>
         ///     Actualiza, Agrega y Elimina una lista de asistecias
         /// </summary>
+        ///
         /// <remarks>
+        ///
         /// <a href="https://nande-y.atlassian.net/browse/PF-320">Ticket PF-320</a>
+        /// Modificaciones:
+        /// <a href="https://nande-y.atlassian.net/browse/PF-337">Ticket PF-337</a>
         /// 
+        ///
         /// La utilidad del ID recibido en los objetos de la lista va a variar de acuerdo a la accion
         /// 
         ///     * si la accion es N, el ID tiene que ser del alumno al que se le quiere dar la asistencia
@@ -166,7 +199,7 @@ namespace profefolio.Controllers
                         var asistencia = new Asistencia()
                         {
                             ClasesAlumnosColegioId = item.Id,
-                            Fecha = item.Fecha,
+                            Fecha = new DateTime(item.Fecha.Year, item.Fecha.Month,item.Fecha.Day),
                             Estado = item.Estado,
                             Observacion = item.Observacion,
                             MateriaListaId = idMateriaLista,
@@ -190,6 +223,7 @@ namespace profefolio.Controllers
                         asistencia.ModifiedBy = userEmail;
                         asistencia.Estado = item.Estado;
                         asistencia.Observacion = item.Observacion;
+                        asistencia.Fecha = item.Fecha;
 
                         _asistenciaService.Edit(asistencia);
 

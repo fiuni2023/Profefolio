@@ -145,13 +145,13 @@ function ModalProfesor({
     const getInputs = () => {
         if (selected_data) return [
             {
-                key: "nombre", label: "Nombre del Administrador",
+                key: "nombre", label: "Nombre del Profesor",
                 type: "text", placeholder: "Ingrese el nombre",
                 disabled: disabled, required: true,
                 invalidText: "Ingrese un nombre",
             },
             {
-                key: "apellido", label: "Apellido del Administrador",
+                key: "apellido", label: "Apellido del Profesor",
                 type: "text", placeholder: "Ingrese el apellido",
                 disabled: disabled, required: true,
                 invalidText: "Ingrese un apellido",

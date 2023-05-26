@@ -52,7 +52,7 @@ namespace profefolio.Services
         public async Task<bool> ExistAsistenciaInDate(int idMateriaLista, int idClaseColegioAlumno, DateTime fecha)
         {
             return await _context.Asistencias
-                    .AnyAsync(a => !a.Deleted 
+                    .AnyAsync(a => !a.Deleted
                         && a.MateriaListaId == idMateriaLista
                         && a.ClasesAlumnosColegioId == idClaseColegioAlumno
                         && a.Fecha.Date == fecha.Date);
@@ -62,17 +62,18 @@ namespace profefolio.Services
         {
 
             var materiaLista = await _context.MateriaListas
-                .Where(a => !a.Deleted 
-                            && a.Id == idMateriaLista 
+                .Where(a => !a.Deleted
+                            && a.Id == idMateriaLista
                             && userEmail.Equals(a.Profesor.Email))
                 .FirstOrDefaultAsync();
-            
-            if(materiaLista == null){
+
+            if (materiaLista == null)
+            {
                 throw new FileNotFoundException("No se encontraron materias asignadas");
             }
-            
+
             return await _context.ClasesAlumnosColegios
-                .Where(a => !a.Deleted 
+                .Where(a => !a.Deleted
                     && a.Clase.MateriaListas.Any(m => m.Id == idMateriaLista))
                 .Include(a => a.Asistencias)
                 .Include(a => a.ColegiosAlumnos)
@@ -80,7 +81,7 @@ namespace profefolio.Services
                 .OrderBy(a => a.ColegiosAlumnos.Persona.Apellido)
                 .ToListAsync();
         }
-        
+
         public Task<Asistencia> FindById(int id)
         {
             throw new NotImplementedException();
@@ -89,11 +90,12 @@ namespace profefolio.Services
         public async Task<Asistencia> FindByIdAndProfesorId(int id, string profesorId)
         {
             var asistencia = await _context.Asistencias
-                .FirstOrDefaultAsync(a => !a.Deleted 
+                .FirstOrDefaultAsync(a => !a.Deleted
                     && a.Id == id
                     && profesorId.Equals(a.MateriaLista.ProfesorId));
-            
-            if(asistencia == null){
+
+            if (asistencia == null)
+            {
                 throw new FileNotFoundException("No se encontro la asistencia");
             }
             return asistencia;
