@@ -7,6 +7,7 @@ import PromedioPuntaje from "../../components/PromedioPuntaje";
 import PromedioAsistencia from "../../components/PromedioAsistencia";
 import MateriaCards from "../../components/MateriaCards";
 import BackButton from "../../components/BackButton";
+import MateriaHorario from "../../components/MateriaHorario";
 
 const ProfesorMateriaShow = () => {
     const {getUserName} = useGeneralContext()
@@ -60,7 +61,10 @@ const ProfesorMateriaShow = () => {
     };
     return (
         <>  
-            <BackButton to="materia" />
+            <div className="d-flex align-items-center justify-content-between">
+                <BackButton to="materia" />
+                <MateriaHorario />
+            </div>
             <ShowContainer data={componentes}/>
         </>
     )
