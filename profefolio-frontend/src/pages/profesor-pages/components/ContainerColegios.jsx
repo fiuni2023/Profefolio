@@ -8,8 +8,6 @@ const ContainerColegios = ({
     onClick=()=>{},
     lista = []
 }) => {
-
-
     const getColor = (pos) => {
         const colores = ["yellow", "blue", "purple", "orange"]
         // se obtienen siempre colores de las posiciones dentro del rango del array
@@ -24,8 +22,8 @@ const ContainerColegios = ({
             `${map(materiaLista, (materia) => `${materia}`).join(", ")}`
     }   
 
-
     const mapper = (objeto = {}, indice) => {
+        console.log(objeto.horario[0])
         return {
             xs: 12, sm: 12, md: 6, lg: 3,
             background: getColor(indice),
@@ -92,12 +90,14 @@ const ContainerColegios = ({
                 null,
                 //-----------------------horas--------------------------------
                 schedule: {
-                    main: objeto?.horario?.dia !==""? `${map(objeto?.horario, (h) => `${h.dia} ${new Date(h.hora).toLocaleTimeString("en-EN", {
-                        hour12: true,
-                        hour: "numeric",
-                        minute: "numeric",
-                    })}`).join(" - ")}`: "No hay un horario todavia",
-                    secondary: objeto?.duracionHrs? objeto?.duracionHrs : null
+                    main: objeto?.horario? 
+                        objeto.horario[0]? `${objeto.horario[0].dia} ${objeto.horario[0].inicio}` : `${objeto.horario.dia} ${objeto.horario.inicio}`
+                    :
+                    objeto?.horarios?
+                    objeto.horarios.map(h=>{return `${h.dia} ${h.inicio}`}).join(' - ')
+                    : 
+                    "No hay un horario todavia",
+                    secondary: objeto?.horario?.horas? objeto?.horario?.horas : null
                 }
             }
         }
