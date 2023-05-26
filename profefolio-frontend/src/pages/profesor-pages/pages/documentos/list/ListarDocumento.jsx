@@ -10,7 +10,6 @@ import { SRow } from '../../../../../components/componentsStyles/StyledDashCompo
 import styled from "styled-components";
 import StyleComponentBreadcrumb from '../../../../../components/StyleComponentBreadcrumb';
 import { toast } from 'react-hot-toast';
-import styles from '../create/Index.module.css';
 import { AiOutlinePlus } from 'react-icons/ai';
 import APILINK from '../../../../../components/link';
 import { useNavigate } from 'react-router';
@@ -85,7 +84,7 @@ function ListarDocumentos() {
       })
 
         .then(response => {
-          setMaterias(response.data);
+          //setMaterias(response.data);
         })
         .catch(error => {
           toast.error(error);
@@ -119,13 +118,10 @@ function ListarDocumentos() {
 
     ClassesService.createDocumento(body, getToken())
       .then(() => {
-        console.log('body',body);
         toast.success("Los datos fueron enviados correctamente.");
         window.location.reload();
       })
       .catch(() => {
-
-        console.log('body',body);
         toast.error("No se pudieron guardar los cambios. Intente de nuevo o recargue la página.");
       });
   };
@@ -184,7 +180,7 @@ function ListarDocumentos() {
                     titulos: [
                       { titulo: 'Nombre' },
                       { titulo: 'Url' },
-                      { titulo: 'Eliminar' }
+                      { titulo: 'Acciones' }
                     ],
                    // clickable: { action: btndetallesMateria },
                     

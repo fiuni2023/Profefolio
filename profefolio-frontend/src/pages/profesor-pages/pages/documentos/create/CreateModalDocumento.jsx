@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useState, useEffect } from 'react'
 import { useGeneralContext } from '../../../../../context/GeneralContext';
 import Modal from '../../../../../components/Modal';
@@ -7,7 +8,7 @@ import APILINK from '../../../../../components/link';
 import ClassesService from '../Helper/DocumentoHelper';
 
 
-const { getToken, cancan, verifyToken,getMateriaId,getUserId } = useGeneralContext();
+
 
 function CreateModalDocumento({
     show = false,
@@ -15,7 +16,12 @@ function CreateModalDocumento({
     fetchFunc = () => { },
     selected_data
 }) {
-    const { getToken } = useGeneralContext()
+
+    const { getToken, cancan, verifyToken,getMateriaId,getUserId } = useGeneralContext();
+
+    
+    const [nombre, setNombre] = useState('');
+    const [enlace, setEnlace] = useState(''); 
     const disabled = false
 
     const handleDelete = () => {
@@ -39,23 +45,22 @@ function CreateModalDocumento({
     }
 
     const handleCreateSubmit = async () => {
+      const nombre = document.getElementById("nombre").value;
+      const enlace = document.getElementById("enlace").value;
 
       const body = {
         "nombre": nombre,
         "enlace": enlace,
-        "profesorId": getUserId(),
-        "materiaListaId": getMateriaId(),
+        "materiaListaId": 2,
       };
   
       ClassesService.createDocumento(body, getToken())
+
         .then(() => {
-          console.log('body',body);
           toast.success("Los datos fueron enviados correctamente.");
           window.location.reload();
         })
         .catch(() => {
-  
-          console.log('body',body);
           toast.error("No se pudieron guardar los cambios. Intente de nuevo o recargue la página.");
         });
     };
@@ -69,7 +74,7 @@ function CreateModalDocumento({
     }, [selected_data])
 
     const [datosModal, setDatosModal] = useState(null);
-    const [deleting, setDeleting] = useState(false)
+    const [deleting, setDeleting] = useState(false);
 
     const getInputs = () => {
         if (selected_data) return [
@@ -86,27 +91,7 @@ function CreateModalDocumento({
                 type: "text", placeholder: "Ingrese la dirrección",
                 disabled: disabled,
             },
-           
-            {
-                key: "genero", label: "Genero",
-                type: "select",
-                disabled: disabled, required: true,
-                invalidText: "Seleccione una opción",
-                select: {
-                    default: "Seleccione el género",
-                    options: [
-                        {
-                            value: "F",
-                            text: "Femenino"
-                        },
-                        {
-                            value: "M",
-                            text: "Masculino"
-                        }
-                    ],
 
-                }
-            },
         ]
         return [
             {

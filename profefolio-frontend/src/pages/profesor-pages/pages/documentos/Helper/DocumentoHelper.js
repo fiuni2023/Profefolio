@@ -3,7 +3,7 @@ import axios from "axios";
 import APILINK from "../../../../../components/link";
 
 const createDocumento = async (body, token) => {
-    const result = await axios.post(`${APILINK}/api/clase`,
+    const result = await axios.post(`${APILINK}/api/Documento`,
         body,
         {
             headers: {
