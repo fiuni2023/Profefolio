@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -248,7 +249,7 @@ namespace profefolio.Services
                     && materia.Equals(a.MateriaId)
                     && idClase.Equals(a.ClaseId))
                 .ToListAsync();
-          
+
             return duraciones.Count;
         }
 
@@ -283,11 +284,12 @@ namespace profefolio.Services
         public async Task<MateriaLista> FindDataForCardOfInfoMateria(int idMateriaLista, string emailProfesor)
         {
             Console.WriteLine($"\n\n\n\n\n\n\n\n\nHace falta terminar de implementar, ya que falta que se creen todavia las tablas de claificaciones y otros mas parque este completo este servicio \n\n\n\n\n\n\n\n\n");
-            
+
             var materia = await _context.MateriaListas
                     .Include(a => a.Profesor)
                     .FirstOrDefaultAsync(a => !a.Deleted && a.Id == idMateriaLista && emailProfesor.Equals(a.Profesor.Email));
-            if(materia == null){
+            if (materia == null)
+            {
                 throw new FileNotFoundException("La materia no fue encontrada.");
             }
             return materia;
@@ -301,26 +303,75 @@ namespace profefolio.Services
             */
             var result = await _context.MateriaListas.Include(a => a.Profesor).FirstOrDefaultAsync(a => !a.Deleted && a.Id == idMateriaLista && emailProfesor.Equals(a.Profesor.Email));
 
-            if(result == null){
+            if (result == null)
+            {
                 throw new FileNotFoundException("La materia no fue encontrada.");
             }
             return result;
         }
 
-        public async Task<MateriaLista> GetPromediosAsistenciasByIdMateriaAndProfesorEmail(int idMateriaLista, string emailProfesor)
+        public async Task<(double, double, double)> GetPromedioAsistenciasByMonth(int year, int month, int idMateriaLista, string profesorId)
         {
-            /*
-                TODO 
-                AGREGAR LA IMPLEMENTACION PARA OBTENER EL PROMEDIO DE LAS ASISTENCIAS CUANDO SE AGREGUE LA TABLA DE ASISTENCIAS
-            */
-            var result = await _context.MateriaListas
-                            .Include(a => a.Profesor)
-                            .FirstOrDefaultAsync(a => !a.Deleted && a.Id == idMateriaLista && emailProfesor.Equals(a.Profesor.Email));
+            var fechasAsistencias = await _context.Asistencias
+                                    .Include(a => a.MateriaLista)
+                                    .Where(a => !a.Deleted
+                                        && a.MateriaListaId == idMateriaLista
+                                        && a.Fecha.Year == year
+                                        && a.Fecha.Month == month
+                                        && profesorId.Equals(a.MateriaLista.ProfesorId))
+                                        .Select(a => new {
+                                                AlumnoId = a.ClasesAlumnosColegioId,
+                                                Fecha = a.Fecha,
+                                                Estado = a.Estado
+                                        })
+                                        .GroupBy(a => a.Fecha)
+                                        
+                                        .Select(a => new {
+                                            Fecha = a.Key,
+                                            Total = a.Count(),
+                                            AsistenciasGrupo = a.GroupBy(b => b.Estado).Select(c => new {
+                                                Estado = c.Key,
+                                                Cantidad = c.Count()
+                                            })
+                                        })
+                                        .Select(a => a.AsistenciasGrupo)
+                                    .ToListAsync();
 
-            if(result == null){
-                throw new FileNotFoundException("La materia no fue encontrada.");
+            
+            var cantidadTotalPresentes = 0;
+            var cantidadTotalAusentes = 0;
+            var cantidadTotalJustificados = 0;
+            
+            foreach (var asistenciasGrupo in fechasAsistencias)
+            {
+                foreach (var asist in asistenciasGrupo)
+                {
+                    if (asist.Estado == 'P')
+                    {
+                        cantidadTotalPresentes += asist.Cantidad;
+                    }
+                    else if (asist.Estado == 'A')
+                    {
+                        cantidadTotalAusentes += asist.Cantidad;
+                    }
+                    else if (asist.Estado == 'J')
+                    {
+                        cantidadTotalJustificados += asist.Cantidad;
+                    }
+                }    
             }
-            return result;
+
+            
+            if (fechasAsistencias.Count == 0)
+            {
+                return (0, 0, 0);
+            }
+            
+            return (
+                        Math.Round(((double)cantidadTotalPresentes / fechasAsistencias.Count), 2),
+                        Math.Round(((double)cantidadTotalAusentes / fechasAsistencias.Count), 2),
+                        Math.Round(((double)cantidadTotalJustificados / fechasAsistencias.Count), 2)
+                    );
         }
     }
 }
