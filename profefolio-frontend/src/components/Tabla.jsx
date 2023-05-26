@@ -30,9 +30,13 @@ function Tabla({datosTabla, selected}){
                         <Thead small={datosTabla?.small ?? false}  background={datosTabla?.colorHeader ? datosTabla.ColorHeader : "#DDDDDD"}><TR key="thead">
                             {datosTabla.titulos.map((titulo, index) => {
                                 return (
-                                    <TH key={index}>
-                                      {titulo.componente ? titulo.componente : titulo.titulo}
-                                    </TH>
+                                    titulo?.componente ?
+                                        <TH key={index} 
+                                        clickable={!!titulo?.componente?.action}
+                                        onChange = {titulo?.componente?.action ? (e)=>titulo.componente?.action(e) : null}>
+                                            {titulo.componente?.input}
+                                        </TH>
+                                        : <TH key={titulo?.titulo}>{titulo?.titulo}</TH>
                                     );
                                 })}
                         </TR></Thead>
