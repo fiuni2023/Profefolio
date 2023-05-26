@@ -46,10 +46,15 @@ const Asistencia = React.memo(() => {
     const { doFetch, loading, error } = useFetchEffect(
         () => {
             // return axios.get(`${APILINK}/api/Asistencia/${materia?.id}`, {
-            return axios.get(`${APILINK}/api/Asistencia/${idMateriaLista}`, {
+            let body = {
+                "idMateriaLista": idMateriaLista,
+                "mes": 0
+            }
+            return axios.post(`${APILINK}/api/Asistencia`, body, {
                 headers: {
-                    Authorization: 'Bearer ' + getToken()
-                }
+                    Authorization: 'Bearer ' + getToken(),
+                    "Content-Type": "application/json"
+                },
             }).then(response => response.data);
         },
         [],
@@ -78,11 +83,11 @@ const Asistencia = React.memo(() => {
                             datos: [
                                 { dato: dato?.nombre ? `${dato.apellido}, ${dato.nombre} ` : " " },
                                 ...(dato.asistencias?.length > 0
-                                    ? dato.asistencias.map((fecha, index) => {
+                                    ? dato.asistencias.map((fecha) => {
                                         return { dato: fecha?.estado ? fecha.estado : "" };
                                     })
                                     : []),
-                                { dato: 50 }
+                                { dato: dato?.porcentajePresentes }
                             ],
                         }
                     })
@@ -110,15 +115,15 @@ const Asistencia = React.memo(() => {
 
     const handleSubmitAddAsistencia = () => {
 
-            const fecha = document.getElementById("fechaSeleccionada").value;
+        const fecha = document.getElementById("fechaSeleccionada").value;
         if (!(new Date(fecha) instanceof Date) || isNaN(new Date(fecha))) {
             toast.error("Seleccione una fecha válida");
             return
         }
         else {
-            
-            let data = JSON.stringify(nuevaAsistencia.map((asistencia)=>{
-                return {...asistencia, fecha:fecha}
+
+            let data = JSON.stringify(nuevaAsistencia.map((asistencia) => {
+                return { ...asistencia, fecha: fecha }
             }
             ));
 
@@ -148,7 +153,7 @@ const Asistencia = React.memo(() => {
                 .catch(function (error) {
                     if (!!typeof (error.response?.data) === "string") {
                         toast.error(error.response.data)
-                    } else{
+                    } else {
                         console.log(error)
                     }
                 });
@@ -194,7 +199,7 @@ const Asistencia = React.memo(() => {
             ];
 
             const nuevasFilas = tablaAsistencia.filas.map((fila, index) => {
-                let datosPrev = fila.datos.length > 1 ? fila.datos.slice(0,-1) : fila.datos
+                let datosPrev = fila.datos.length > 1 ? fila.datos.slice(0, -1) : fila.datos
                 return { datos: [...datosPrev, { componente: selectEstado(nuevaAsistencia[index], index) }], fila: fila.fila }
             });
 
@@ -210,8 +215,8 @@ const Asistencia = React.memo(() => {
     }
     const columnHandler = [
         { key: 'datePicker', componente: <DayMonthPicker /> },
-        { key: 'xbt', componente: <HiXCircle size={18} color='red' /> , action: addDate },
-        { key: 'okbt', componente: <HiCheckCircle size={18} color='green'/>, action: handleSubmitAddAsistencia }
+        { key: 'xbt', componente: <HiXCircle size={18} color='red' />, action: addDate },
+        { key: 'okbt', componente: <HiCheckCircle size={18} color='green' />, action: handleSubmitAddAsistencia }
     ]
 
     return (
@@ -232,7 +237,7 @@ const Asistencia = React.memo(() => {
                         {!error && !loading &&
                             <Resumen>
                                 <p>{cantAlumnos} alumnos</p>
-                                <p>{cantClases} {cantClases > 1 ? "clases" : "clase"}</p>
+                                <p>{cantClases} {cantClases < 1 ? "Aún no hay clases" : cantClases > 1 ? "clases" : "clase"}</p>
                                 <p>75% promedio de asistencias</p>
                             </Resumen>
                         }
