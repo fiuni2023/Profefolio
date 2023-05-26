@@ -22,25 +22,33 @@ public class EventoService : IEvento
     }
     public async Task<Evento> FindById2(int id)
     {
+        /*
         return await _dbContext.Eventos
             .Where(p => !p.Deleted && p.Id == id)
             .Include(e => e.Materias)
             .Include(e => e.Clases)
             .Include(e => e.Colegios)
             .FirstOrDefaultAsync();
+            
+        */
+        throw new NotImplementedException();
     }
 
 
     public async Task<Evento> FindByEventoRepetido(String t, DateTime f, int c, int m, int col)
     {
+        /*
         return await _dbContext.Eventos
             .Where(p => !p.Deleted && p.Tipo == t && p.Fecha == f
              && p.MateriaId == m && p.ClaseId == c && p.ColegioId == col)
             .FirstOrDefaultAsync();
+        */
+        throw new NotImplementedException();
     }
 
     public async Task<List<Evento>> GetAll(String prfId)
     {
+        /*
         return await _dbContext.Eventos
         .Where(p => !p.Deleted)
         .Where(p => p.ProfesorId == prfId)
@@ -48,6 +56,8 @@ public class EventoService : IEvento
         .Include(e => e.Clases)
         .Include(e => e.Colegios)
         .ToListAsync();
+        */
+        throw new NotImplementedException();
     }
 
     public Evento Edit(Evento t)
