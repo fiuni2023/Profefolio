@@ -29,6 +29,8 @@ import PruebaMateria from "../materias/list/PruebaMaterias.jsx"
 import { ClaseProvider } from "../clases/context/ClaseContext.jsx";
 import UserDD from "../../components/UserDD.jsx";
 
+import ListarDocumentos from "../profesor-pages/pages/documentos/list/ListarDocumento.jsx";
+
 
 const App = () => {
     const [showSB, setShowSB] = useState(false)
@@ -81,6 +83,8 @@ const App = () => {
                                     </Route>
                                     <Route path="/alumnos" element={<Alumnos />} />
                                     <Route path="/asistencia/:idMateriaLista" element={<Asistencia />} />
+                                    <Route path="/documentos" element={<ListarDocumentos />} />
+                                    
 
                                 </Routes>
                             </div>
