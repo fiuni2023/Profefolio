@@ -87,7 +87,7 @@ const Asistencia = React.memo(() => {
                                         return { dato: fecha?.estado ? fecha.estado : "" };
                                     })
                                     : []),
-                                { dato: dato?.porcentajePresentes }
+                                { dato: dato?.porcentajePresentes.toFixed(2) }
                             ],
                         }
                     })
