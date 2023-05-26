@@ -41,6 +41,12 @@ namespace profefolio.Controllers
             {
                 return BadRequest("Objeto no válido");
             }
+            //verificar si MateriaListaId existe
+            var materiaLista = await _materiaListaService.FindById(documento.MateriaListaId);
+            if(materiaLista == null)
+            {
+                return BadRequest("Materia Lista no existe");
+            }
             var userEmail = User.FindFirstValue(ClaimTypes.Name);
             var profId = await _profesorService.GetProfesorIdByEmail(userEmail);
 
@@ -62,7 +68,14 @@ namespace profefolio.Controllers
             }
 
             try
-            {   
+            {
+                var verificarNombreDocumento = await _documentoService.FindByNameDocumento(documento.Nombre, documento.MateriaListaId);
+                if (verificarNombreDocumento != null)
+                {
+                    return BadRequest($"Ya existe un documento con ese nombre");
+                }
+
+                
                 documento.ProfesorId = profId;
 
                 var p = _mapper.Map<Documento>(documento);
@@ -99,6 +112,11 @@ namespace profefolio.Controllers
         [Authorize(Roles = "Profesor")]
         public async Task<ActionResult<IEnumerable<DocumentoResultDTO>>> GetAll( [FromBody] DocumentoOpcionesDTO dto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Objeto no válido");
+            }
+            
             try
             {
                 var userEmail = User.FindFirstValue(ClaimTypes.Name);

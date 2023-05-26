@@ -21,10 +21,12 @@ public class DocumentoService : IDocumento
             .FirstOrDefaultAsync();
     }
 
-    public async Task<Documento> FindByNameDocumento(string n)
+    public async Task<Documento> FindByNameDocumento(string n, int idML)
     {
         return await _dbContext.Documentos
-            .Where(p => !p.Deleted && p.Nombre == n)
+            .Where(p => !p.Deleted)
+            .Where(p => p.Nombre == n)
+            .Where(p => p.MateriaListaId == idML)
             .FirstOrDefaultAsync();
     }
 
