@@ -32,7 +32,20 @@ namespace profefolio.Controllers
             _materiaListaService = materiaListaService;
 
         }
-
+        /// <summary>
+        /// Guarda un documento - post
+        /// Solo un profesor puede realizar la peticion
+        /// https://localhost:7063/api/Documento
+        ///Body:
+        ///     
+        /// {
+        ///     "nombre": "Documento prueba con otro prf",
+        ///     "enlace": "https://docs.google.com/spreadsheets/d/1I1a4PQB-D4jdHaMS5GquJIqfezNeWXN0vTSxegyq_1A/edit?usp=sharing",
+        ///     "MateriaListaId":3
+        ///}
+        /// </summary>
+        /// <remarks>
+        /// </remarks>
         [HttpPost]
         [Authorize(Roles = "Profesor")]
         public async Task<ActionResult<DocumentoResultDTO>> PostDocumento([FromBody] DocumentoDTO documento)
@@ -152,7 +165,7 @@ namespace profefolio.Controllers
                 _log.Error("An error occurred in the Get method");
                 return NotFound();
             }
-            
+
             var userEmail = User.FindFirstValue(ClaimTypes.Name);
             var profId = await _profesorService.GetProfesorIdByEmail(userEmail);
 
