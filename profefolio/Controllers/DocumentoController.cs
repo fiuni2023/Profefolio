@@ -81,17 +81,26 @@ namespace profefolio.Controllers
         /// Solo un profesor puede realizar la peticion
         /// Se retornan todos los documentos pertenecientes a esa materia
         /// https://localhost:7063/api/Evento
+        ///Body del Get:
+        ///     
+        ///     {
+        ///         "id": 0, //id materia
+        ///     
+        ///     }
         /// </summary>
         /// <remarks>
         /// </remarks>
         
         [HttpGet]
         [Authorize(Roles = "Profesor")]
-        public async Task<ActionResult<IEnumerable<DocumentoResultDTO>>> GetAll()
+        public async Task<ActionResult<IEnumerable<DocumentoResultDTO>>> GetAll( [FromBody] DocumentoOpcionesDTO dto)
         {
             try
             {
-                var result = await _documentoService.GetAll();
+                var userEmail = User.FindFirstValue(ClaimTypes.Name);
+                var profId = await _profesorService.GetProfesorIdByEmail(userEmail);
+                var result = await _documentoService.GetAll(dto.Id, profId);
+                
                 return Ok(_mapper.Map<List<DocumentoResultDTO>>(result));
 
             }

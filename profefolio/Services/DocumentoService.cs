@@ -27,7 +27,7 @@ public class DocumentoService : IDocumento
             .Where(p => !p.Deleted && p.Nombre == n)
             .FirstOrDefaultAsync();
     }
-   
+
     public Documento Edit(Documento t)
     {
         _dbContext.Entry(t).State = EntityState.Modified;
@@ -81,5 +81,22 @@ public class DocumentoService : IDocumento
          .Take(cantPorPag);
     }
 
-   
+    /*
+    La lista de Documento resultante contiene los documentos que pertenecen
+    a los registros de MateriaLista con el mismo idMateria que se pasó como parámetro.
+    */
+    public async Task<List<Documento>> GetAll(int idMateria, string idPrf)
+    {
+        var materiasListaIds = await _dbContext.MateriaListas
+            .Where(ml => ml.MateriaId == idMateria)
+            .Select(ml => ml.Id)
+            .ToListAsync();
+
+        return await _dbContext.Documentos
+            .Where(p => !p.Deleted)
+            .Where(p => p.ProfesorId == idPrf)
+            .Where(p => materiasListaIds.Contains(p.MateriaListaId))
+            .ToListAsync();
+    }
+
 }
