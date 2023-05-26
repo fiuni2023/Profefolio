@@ -23,7 +23,6 @@ const ContainerColegios = ({
     }   
 
     const mapper = (objeto = {}, indice) => {
-        console.log(objeto.horario[0])
         return {
             xs: 12, sm: 12, md: 6, lg: 3,
             background: getColor(indice),

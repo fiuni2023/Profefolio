@@ -14,7 +14,6 @@ const PromedioAsistencia = (
     const [ausentes, setAusentes] = useState([])
     const [justificados, setJustificados] = useState([])
 
-
     useEffect(() => {
         if (asistencias.length > 0) {
             setLabels(asistencias.map(a => { return a.mes }))
