@@ -58,11 +58,8 @@ export const GeneralProvider = ({ children }) => {
     const getUserId = () => {
         const loginData = getLoginData();
         return loginData ? loginData.id : null;
-        console.log('getLoginData()',getLoginData());
+      
       }
-
-      console.log('getLoginData()',getLoginData());
-      console.log('getUserId',getUserId());
 
     const getUserMail = () => {
         return getLoginData()?.email
