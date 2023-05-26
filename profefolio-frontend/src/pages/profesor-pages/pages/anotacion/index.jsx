@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import BackButton from "../../components/BackButton";
 import { Row, Col } from "react-bootstrap";
-import Paginations from "../../../../components/Paginations";
 import AnotacionShow from "./componentes/AnotacionShow";
 import AnotacionCard from "./componentes/AnotacionCard";
 import { useGeneralContext } from "../../../../context/GeneralContext";

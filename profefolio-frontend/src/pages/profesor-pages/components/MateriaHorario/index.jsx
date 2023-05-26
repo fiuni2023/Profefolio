@@ -159,15 +159,6 @@ const Label = styled.label`
   font-size: 15px;
 `;
 
-const DateInput = styled.input`
-    width: 100%;
-    height: 35px;
-    padding: 10px;
-    border-radius: 10px;
-    outline: none;
-    border: 1px solid #DDDDDD;
-`;
-
 const TimeInput = styled.input`
     width: 100%;
     height: 35px;
