@@ -16,8 +16,8 @@ const MateriaHorario = () => {
     const token = getToken()
 
     const [show, setShow] = useState(false)
-    const [fromHour, setFromHour]= useState("")
-    const [toHour, setToHour]= useState("")
+    const [fromHour, setFromHour]= useState("00:00")
+    const [toHour, setToHour]= useState("00:00")
     const [L, setL] = useState(false)
     const [M, setM] = useState(false)
     const [X, setX] = useState(false)
@@ -60,10 +60,27 @@ const MateriaHorario = () => {
         setToHour("")
     }
     
+    const compareTime = () => {
+        const fromH = fromHour.split(":")[0]
+        const fromM = fromHour.split(":")[1]
+        const toH = toHour.split(":")[0]
+        const toM = toHour.split(":")[1]
+        if(Number(fromH)>Number(toH)){
+            return true
+        }
+        if(Number(fromH)===Number(toH)){
+            if(Number(fromM)>Number(toM)){
+                return true
+            }
+        }
+        return false
+    }
+
     const handleCreate = async () => {
         if(getDateString() === false) return toast.error("Elija un dia")
         if(fromHour === "") return toast.error("Complete los campos")        
         if(toHour === "") return toast.error("Complete los campos")
+        if(compareTime()) return toast.error("Error los campos")
 
         let created = {id:0}
         let body = {
@@ -109,7 +126,7 @@ const MateriaHorario = () => {
                     </div>
                     <Label> Hasta: </Label>
                     <div className="d-flex w-100 gap-2">
-                        <TimeInput type="time" value={toHour} onChange={(e)=>{setToHour(e.target.value)}}/>
+                        <TimeInput type="time" min={fromHour} value={toHour} onChange={(e)=>{setToHour(e.target.value)}}/>
                     </div>
                 </div>
             </Modal.Body>

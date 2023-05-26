@@ -18,7 +18,7 @@ const Alumnos = () => {
         const newList = alumnos.map((a, i) => {
             return {
                 datos: [
-                    { dato: `${i}` },
+                    { dato: `${i+1}` },
                     { dato: `${a.apellidos}` },
                     { dato: `${a.nombres}` }
                 ]
