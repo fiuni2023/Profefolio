@@ -200,7 +200,7 @@ namespace profefolio.Controllers
             }
             try
             {
-                var p = _mapper.Map<Evento>(evento);
+                var p = _mapper.Map<Evaluacion>(evento);
                 p.CreatedBy = userEmail;
                 p.Deleted = false;
 

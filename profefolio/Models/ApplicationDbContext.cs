@@ -215,7 +215,8 @@ public class ApplicationDbContext : IdentityDbContext<Persona>
     public DbSet<ClasesAlumnosColegio> ClasesAlumnosColegios { get; set; }
     public DbSet<HoraCatedra> HorasCatedras { get; set; }
     public DbSet<HorasCatedrasMaterias> HorasCatedrasMaterias { get; set; }
-    public DbSet<Evento> Eventos { get; set; }
+    public DbSet<Evaluacion> Eventos { get; set; }
+    public DbSet<EvaluacionAlumno> EventoAlumnos { get; set; }
     public DbSet<Asistencia> Asistencias { get; set; }
     public DbSet<Anotacion> Anotaciones { get; set; }
     public DbSet<Documento> Documentos { get; set; }
