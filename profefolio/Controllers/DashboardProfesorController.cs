@@ -27,7 +27,7 @@ namespace profefolio.Controllers
         private static int CantPorPage => Constantes.CANT_ITEMS_POR_PAGE;
 
 
-        public DashboardProfesorController(IPersona personaService, IColegioProfesor colegioProfesorService, 
+        public DashboardProfesorController(IPersona personaService, IColegioProfesor colegioProfesorService,
         IDashboardProfesor dashboardProfesor, IColegio colegioService, IMapper mapper,
         IProfesor profesorService)
         {
@@ -367,12 +367,13 @@ namespace profefolio.Controllers
                         {
                             result.Materias = await _dashBoardService.FindMateriasOfClase(profesor, result.Id);
                             var horarioMasCercano = await _dashBoardService.FindHorarioMasCercano(profesor, result.Id);
-                            if(horarioMasCercano != null){
+                            if (horarioMasCercano != null)
+                            {
                                 result.Horario = _mapper.Map<DBCardClasesHorariosDTO>(horarioMasCercano);
                                 result.Horario.Horas = await _dashBoardService.GetHorasOfClaseInDay(profesor, result.Id, horarioMasCercano.Dia);
                             }
                         }
-                        
+
                         return Ok(results);
 
                     case "horarios-clases":
@@ -380,29 +381,30 @@ namespace profefolio.Controllers
                         return Ok(_mapper.Map<List<DBHorariosClasesCalendarDTO>>(horarios));
 
                     case "card-materias":
-                         //id clase, //anho
+                        //id clase, //anho
 
-                           var profId = await _profesorService.GetProfesorIdByEmail(userEmail);
-                           var profesor2 = await _personaService.FindById(profId);
-                           var materiasClase = await _dashBoardService._FindMateriasOfClase(profesor2, dto.Id);
+                        var profId = await _profesorService.GetProfesorIdByEmail(userEmail);
+                        var profesor2 = await _personaService.FindById(profId);
+                        var materiasClase = await _dashBoardService._FindMateriasOfClase(profesor2, dto.Id);
 
-                           var resultsMaterias = _mapper.Map<List<DBCardMateriasDTO>>(materiasClase);
-                           
+                        var resultsMaterias = _mapper.Map<List<DBCardMateriasDTO>>(materiasClase);
+
                         foreach (var result in resultsMaterias)
                         {
-                            result.Eventos = await _dashBoardService.GetEventosOfMateria(profId, 
+                            result.Eventos = await _dashBoardService.GetEventosOfMateria(profId,
                             result.MateriaId, dto.Id);
 
-                            var horarioMasCercano = await _dashBoardService.FindHorarioMasCercanoMateria(profesor2, 
+                            var horarioMasCercano = await _dashBoardService.FindHorarioMasCercanoMateria(profesor2,
                             result.Id);
-                           
-                            if(horarioMasCercano != null){
+
+                            if (horarioMasCercano != null)
+                            {
                                 result.Horario = _mapper.Map<DBCardClasesHorariosDTO>(horarioMasCercano);
-                                result.Horario.Horas = await _dashBoardService.GetHorasOfMateriaInDay(profesor2, 
+                                result.Horario.Horas = await _dashBoardService.GetHorasOfMateriaInDay(profesor2,
                                 result.Id, horarioMasCercano.Dia);
                             }
                         }
-                        
+
                         return Ok(resultsMaterias);
                     case "cards-materia":
                         return BadRequest("Opcion en implementacion");
@@ -416,22 +418,25 @@ namespace profefolio.Controllers
                         return BadRequest("Opcion en implementacion");
                     case "promedio-asistencias":
                         var profeId = await _profesorService.GetProfesorIdByEmail(userEmail);
-            
-                        if(profeId == null){
+
+                        if (profeId == null)
+                        {
                             return Unauthorized();
                         }
 
                         var year = dto.Anho <= 0 ? DateTime.Now.Year : dto.Anho;
-                        
+
                         var resultList = new List<DBPromedioAsistenciasDTO>();
                         // se obtene la cantidad de meses a retornar, si es un anho distinto al actual, se muestran los 12, de lo contrario hasta el mes actual
-                        var maxMes = year != DateTime.Now.Year ? 12 : DateTime.Now.Month;  
-                        
-                        for(int mes = 1; mes <= maxMes; mes++){
+                        var maxMes = year != DateTime.Now.Year ? 12 : DateTime.Now.Month;
+
+                        for (int mes = 1; mes <= maxMes; mes++)
+                        {
 
                             var (presentes, ausentes, justificados) = await _dashBoardService.GetPromedioAsistenciasByMonth(year, mes, dto.Id, profeId);
-                            
-                            var promedioAsistencias = new DBPromedioAsistenciasDTO(){
+
+                            var promedioAsistencias = new DBPromedioAsistenciasDTO()
+                            {
                                 Mes = TimeComparator.MonthToSpanish(mes),
                                 Presentes = presentes,
                                 Ausentes = ausentes,
@@ -448,7 +453,8 @@ namespace profefolio.Controllers
                         return BadRequest("Opcion Invalida");
                 }
             }
-            catch(FileNotFoundException e){
+            catch (FileNotFoundException e)
+            {
                 Console.WriteLine($"{e}");
                 return NotFound(e.Message);
             }
