@@ -75,7 +75,7 @@ namespace profefolio.Controllers
         ///     ]
         /// </remarks>
         ///
-        [HttpGet]
+        [HttpPost]
         [Authorize(Roles = "Profesor")]
         public async Task<ActionResult<List<AsistenciaResultDTO>>> GetAll([FromBody]AsistenciaGetDTO dto)
         {
