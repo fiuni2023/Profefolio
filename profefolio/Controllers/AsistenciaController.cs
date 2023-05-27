@@ -94,6 +94,7 @@ namespace profefolio.Controllers
 
                     foreach (var item in alumnoColegio)
                     {
+                        
                         var resultDto = _mapper.Map<AsistenciaResultDTO>(item);
                         resultDto.Asistencias = item.Asistencias.OrderBy(a => a.Fecha)
                                 .TakeWhile(a => a.Fecha.Month == mes)
