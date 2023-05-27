@@ -14,13 +14,13 @@ public class EventoService : IEvento
     {
         _dbContext = dbContext;
     }
-    public async Task<Evento> FindById(int id)
+    public async Task<Evaluacion> FindById(int id)
     {
         return await _dbContext.Eventos
             .Where(p => !p.Deleted && p.Id == id)
             .FirstOrDefaultAsync();
     }
-    public async Task<Evento> FindById2(int id)
+    public async Task<Evaluacion> FindById2(int id)
     {
         /*
         return await _dbContext.Eventos
@@ -35,7 +35,7 @@ public class EventoService : IEvento
     }
 
 
-    public async Task<Evento> FindByEventoRepetido(String t, DateTime f, int c, int m, int col)
+    public async Task<Evaluacion> FindByEventoRepetido(String t, DateTime f, int c, int m, int col)
     {
         /*
         return await _dbContext.Eventos
@@ -46,7 +46,7 @@ public class EventoService : IEvento
         throw new NotImplementedException();
     }
 
-    public async Task<List<Evento>> GetAll(String prfId)
+    public async Task<List<Evaluacion>> GetAll(String prfId)
     {
         /*
         return await _dbContext.Eventos
@@ -60,13 +60,13 @@ public class EventoService : IEvento
         throw new NotImplementedException();
     }
 
-    public Evento Edit(Evento t)
+    public Evaluacion Edit(Evaluacion t)
     {
         _dbContext.Entry(t).State = EntityState.Modified;
         return t;
     }
 
-    public async Task<Evento> Add(Evento t)
+    public async Task<Evaluacion> Add(Evaluacion t)
     {
         var result = await _dbContext.Eventos.AddAsync(t);
         return result.Entity;
@@ -105,7 +105,7 @@ public class EventoService : IEvento
         GC.SuppressFinalize(this);
     }
 
-    public IEnumerable<Evento> GetAll(int page, int cantPorPag)
+    public IEnumerable<Evaluacion> GetAll(int page, int cantPorPag)
     {
         return _dbContext.Eventos
          .Where(p => !p.Deleted)

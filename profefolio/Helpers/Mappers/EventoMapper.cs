@@ -8,9 +8,9 @@ public class EventoMapper : Profile
 {
     public EventoMapper()
     {
-        CreateMap<Evento, EventoDTO>();
+        CreateMap<Evaluacion, EventoDTO>();
 
-        CreateMap<EventoDTO, Evento>()
+        CreateMap<EventoDTO, Evaluacion>()
             .ForMember(dest => dest.Id,
                 opt => opt.Ignore())
             .ForMember(dest => dest.Created,
@@ -20,9 +20,9 @@ public class EventoMapper : Profile
             .ForMember(dest => dest.ModifiedBy,
                 opt => opt.Ignore());
 
-        CreateMap<Evento, EventoResultDTO>();
+        CreateMap<Evaluacion, EventoResultDTO>();
 
-        CreateMap<EventoResultDTO, Evento>()
+        CreateMap<EventoResultDTO, Evaluacion>()
             .ForMember(dest => dest.Id,
                 opt => opt.Ignore())
             .ForMember(dest => dest.Created,
@@ -41,7 +41,7 @@ public class EventoMapper : Profile
             .ForMember(dest => dest.NombreColegio,
                         opt => opt.MapFrom(src => src.Colegios.Nombre));
         */
-        CreateMap<EventoResultFullDTO, Evento>()
+        CreateMap<EventoResultFullDTO, Evaluacion>()
             .ForMember(dest => dest.Id,
                 opt => opt.Ignore())
             .ForMember(dest => dest.Created,
