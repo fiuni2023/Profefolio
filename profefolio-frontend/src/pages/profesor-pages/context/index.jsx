@@ -6,6 +6,7 @@ import ProfesorMateriaShow from "../pages/materiashow";
 import ProfesorMateria from "../pages/materia";
 import Anotacion from "../pages/anotacion";
 import Documentos from "../pages/documentos/list/ListarDocumento";
+import Asistencia from "../pages/asistencia/Asistencia";
 import ProfesorPagesService from "../services/ProfesorPagesService";
 import { useGeneralContext } from "../../../context/GeneralContext";
 
@@ -23,7 +24,8 @@ export const ModularProvider = ({ children }) => {
         materia: <ProfesorMateria />,
         materiashow: <ProfesorMateriaShow />,
         anotacion: <Anotacion />,
-        documentos: <Documentos />
+        documentos: <Documentos />,
+        asistencia: <Asistencia />
     }
     
     const { getToken } = useGeneralContext()
@@ -55,9 +57,6 @@ export const ModularProvider = ({ children }) => {
             let body = {opcion: 'card-clases', id: colegioId, anho: 2023}
             ProfesorPagesService.Get(body, token)
             .then(d=>setClases(d.data))
-            body = {opcion: 'horarios-clases', id: colegioId, anho: 2023}
-            ProfesorPagesService.Get(body, token)
-            .then(d=>console.log(d.data))
         }
     },[fetch_data, token, colegioId])
 
@@ -93,7 +92,8 @@ export const ModularProvider = ({ children }) => {
         if(page === "materia") return setCurrentPage(pages.materia)
         if(page === "materiashow") return setCurrentPage(pages.materiashow)
         if(page === "anotacion") return setCurrentPage(pages.anotacion)
-        if(page === "documentos") return setCurrentPage(pages.documentos)
+        if(page === "documento") return setCurrentPage(pages.documentos)
+        if(page === "asistencia") return setCurrentPage(pages.asistencia)
         setCurrentPage(pages.dashboard)
         
     }

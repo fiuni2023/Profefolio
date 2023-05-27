@@ -5,6 +5,8 @@ import { SRow } from '../../../../components/componentsStyles/StyledDashComponen
 const MateriaCards = ({
     configuration = {
         onAnotation: () => {},
+        onAsistencia: () => {},
+        onDocumento: () => {}
     },
     materia = {
         anotations: 15,
@@ -15,7 +17,7 @@ const MateriaCards = ({
         documents: 4
     }
 }) => {
-    const { onAnotation } = configuration
+    const { onAnotation, onAsistencia, onDocumento } = configuration
     const configAnotacion = {
         xs: 12, sm: 12, md: 6, lg: 3,
         background: "yellow",
@@ -54,7 +56,7 @@ const MateriaCards = ({
         xs: 12, sm: 12, md: 6, lg: 3,
         background: "purple",
         hover: true,
-        action: onAnotation,
+        action: onAsistencia,
         header: {
             title: `Asistencia`,
         },
@@ -72,7 +74,7 @@ const MateriaCards = ({
         xs: 12, sm: 12, md: 6, lg: 3,
         background: "orange",
         hover: true,
-        action: onAnotation,
+        action: onDocumento,
         header: {
             title: `Documentos`,
         },

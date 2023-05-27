@@ -24,6 +24,7 @@ import IconButton from '../../../../../components/IconButton';
 import { Row, Col } from "react-bootstrap";
 
 import ClassesService from '../Helper/DocumentoHelper';
+import { useModularContext } from '../../../context';
 
 const FlexDiv = styled.div`
     display: flex;
@@ -48,7 +49,10 @@ function ListarDocumentos() {
 
   const [id, setId] = useState(null);
   const [selectData, setSelectedData] = useState({})
-  const { getToken, cancan, verifyToken,getMateriaId,getUserId } = useGeneralContext();
+  const { getToken, cancan, verifyToken,getUserId } = useGeneralContext();
+  const {stateController} = useModularContext()
+  const {materiaId} = stateController
+
   const [page, setPage] = useState(1);
   const [nombre, setNombre] = useState('');
   const [enlace, setEnlace] = useState('');
@@ -84,7 +88,7 @@ function ListarDocumentos() {
       })
 
         .then(response => {
-          //setMaterias(response.data);
+          setMaterias(response.data);
         })
         .catch(error => {
           toast.error(error);
@@ -95,11 +99,9 @@ function ListarDocumentos() {
 
   useEffect(() => {
 
-    getMaterias();
+    //getMaterias();
 
-
-
-  }, [page, cancan, verifyToken, nav, getToken]);
+  }, [page, cancan, verifyToken, nav, fetch_data]);
 
   /*
     "nombre": "string",
@@ -107,19 +109,20 @@ function ListarDocumentos() {
   "profesorId": "string",
   "materiaListaId": 0 */
 
+
   const handleDocumentos = async () => {
 
     const body = {
       "nombre": nombre,
       "enlace": enlace,
       "profesorId": getUserId(),
-      "materiaListaId": getMateriaId(),
+      "materiaListaId": materiaId,
     };
 
     ClassesService.createDocumento(body, getToken())
       .then(() => {
         toast.success("Los datos fueron enviados correctamente.");
-        window.location.reload();
+        doFetch()
       })
       .catch(() => {
         toast.error("No se pudieron guardar los cambios. Intente de nuevo o recargue la página.");
@@ -163,7 +166,6 @@ function ListarDocumentos() {
     }
     setShowModal(false); // ocultar el modal después de eliminar el elemento
   };
-
   return (
     <>
       <div>
