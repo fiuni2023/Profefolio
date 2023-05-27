@@ -6,7 +6,8 @@ const MateriaCards = ({
     configuration = {
         onAnotation: () => {},
         onAsistencia: () => {},
-        onDocumento: () => {}
+        onDocumento: () => {},
+        onEvaluacion: () => {}
     },
     materia = {
         anotations: 15,
@@ -17,7 +18,7 @@ const MateriaCards = ({
         documents: 4
     }
 }) => {
-    const { onAnotation, onAsistencia, onDocumento } = configuration
+    const { onAnotation, onAsistencia, onDocumento, onEvaluacion } = configuration
     const configAnotacion = {
         xs: 12, sm: 12, md: 6, lg: 3,
         background: "yellow",
@@ -38,7 +39,7 @@ const MateriaCards = ({
         xs: 12, sm: 12, md: 6, lg: 3,
         background: "blue",
         hover: true,
-        action: onAnotation,
+        action: onEvaluacion,
         header: {
             title: `Calificaciones`,
         },

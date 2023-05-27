@@ -9,6 +9,7 @@ import Documentos from "../pages/documentos/list/ListarDocumento";
 import Asistencia from "../pages/asistencia/Asistencia";
 import ProfesorPagesService from "../services/ProfesorPagesService";
 import { useGeneralContext } from "../../../context/GeneralContext";
+import Evaluaciones from "../pages/evaluaciones";
 
 const ModularContext = createContext();
 
@@ -25,7 +26,8 @@ export const ModularProvider = ({ children }) => {
         materiashow: <ProfesorMateriaShow />,
         anotacion: <Anotacion />,
         documentos: <Documentos />,
-        asistencia: <Asistencia />
+        asistencia: <Asistencia />,
+        evaluaciones: <Evaluaciones />
     }
     
     const { getToken } = useGeneralContext()
@@ -94,6 +96,7 @@ export const ModularProvider = ({ children }) => {
         if(page === "anotacion") return setCurrentPage(pages.anotacion)
         if(page === "documento") return setCurrentPage(pages.documentos)
         if(page === "asistencia") return setCurrentPage(pages.asistencia)
+        if(page === "evaluaciones") return setCurrentPage(pages.evaluaciones)
         setCurrentPage(pages.dashboard)
         
     }
