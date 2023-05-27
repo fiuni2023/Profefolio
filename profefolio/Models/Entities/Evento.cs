@@ -14,16 +14,9 @@ using Models.DTOs.Persona;
 
 public class Evento : Data
 {
-    //tipo: examen, parcial, prueba sumatoria, examen
-    //fecha
-    
-    public MateriaLista MateriaLista { get; set; }
+    public MateriaLista? MateriaList{ get; set; }
     public int MateriaListaId { get; set; }
     public string? Tipo { get; set; }
-    
     public DateTime Fecha { get; set; }
-
     public double PuntajeTotal { get; set; }
-
-    
 }

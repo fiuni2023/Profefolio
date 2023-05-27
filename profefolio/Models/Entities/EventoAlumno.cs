@@ -8,6 +8,5 @@ public class EventoAlumno : Data
     public Persona Alumno { get; set; }
     public double PuntajeLogrado { get; set; }
     public double PorcentajeLogrado { get; set; }
-    public Calificacion Calificacion { get; set; }
     public int IdCalificacion { get; set; }
 }
