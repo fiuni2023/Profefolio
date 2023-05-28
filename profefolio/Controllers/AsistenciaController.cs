@@ -84,6 +84,8 @@ namespace profefolio.Controllers
             {
                 var alumnosColegios = await _asistenciaService.FindAll(dto.IdMateriaLista, userEmail);
 
+                var fechas = await _asistenciaService.FilterFecha(dto.IdMateriaLista, userEmail);
+
                 var results = new List<AsistenciaResultDTO>();
 
                 var mes = dto.Mes > 12 || dto.Mes < 1 ? DateTime.Now.Month : dto.Mes;
@@ -91,17 +93,36 @@ namespace profefolio.Controllers
                 foreach (var alumnoColegio in alumnosColegios.GroupBy(a => a.ColegiosAlumnosId).ToList())
                 {
 
-
                     foreach (var item in alumnoColegio)
                     {
+                        var asistencias = item.Asistencias;
+                        
+                        if (!asistencias.Any())
+                        {
+                            foreach (var asistenciaN in fechas.Select(fecha => new Asistencia
+                                     {
+                                         Estado = 'A',
+                                         Fecha = fecha,
+                                         Observacion = "Nuevo Alumno",
+                                         MateriaListaId = dto.IdMateriaLista,
+                                         ClasesAlumnosColegioId = item.ColegiosAlumnosId,
+                                         Created = DateTime.Now,
+                                         CreatedBy = userEmail
+                                     }))
+                            {
+                                await _asistenciaService.Add(asistenciaN);
+                            }
+
+                            await _asistenciaService.Save();
+                        }
                         
                         var resultDto = _mapper.Map<AsistenciaResultDTO>(item);
                         resultDto.Asistencias = item.Asistencias.OrderBy(a => a.Fecha)
-                                .TakeWhile(a => a.Fecha.Month == mes)
-                                .Select(b => new AssitenciasFechaResult()
-                                {
-                                    Fecha = b.Fecha,
-                                    Id = b.Id,
+                            .TakeWhile(a => a.Fecha.Month == mes)
+                            .Select(b => new AssitenciasFechaResult()
+                            {
+                                Fecha = b.Fecha, 
+                                Id = b.Id,
                                     Estado = b.Estado,
                                     Observacion = b.Observacion
                                 })
@@ -115,7 +136,7 @@ namespace profefolio.Controllers
                         resultDto.PorcentajePresentes = porcentajePresentes;
                         resultDto.PorcentajeAusentes = PorcentajeAusentes;
                         resultDto.PorcentajeJustificados = PorcentajeJustificados;
-
+                        
                         results.Add(resultDto);
                     }
 

@@ -15,7 +15,7 @@ namespace profefolio.Models.Entities
         public int ColegiosAlumnosId { get; set; }
 
         public Clase? Clase { get; set; }
-        public ColegiosAlumnos ColegiosAlumnos { get; set; } = new ColegiosAlumnos();
+        public ColegiosAlumnos? ColegiosAlumnos { get; set; }
 
         public IEnumerable<Asistencia> Asistencias { get; set; } = new List<Asistencia>();
     }
