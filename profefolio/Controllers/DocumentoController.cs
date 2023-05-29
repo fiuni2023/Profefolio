@@ -160,7 +160,9 @@ namespace profefolio.Controllers
             var userEmail = User.FindFirstValue(ClaimTypes.Name);
             var profId = await _profesorService.GetProfesorIdByEmail(userEmail);
 
-            if (doc.ProfesorId == profId)
+            var isProfesor = await _documentoService.FindProfesorIdByDocumento(doc.MateriaListaId, profId);
+
+            if (isProfesor)
             {
                 var response = _mapper.Map<DocumentoResultDTO>(doc);
                 return Ok(response);
@@ -192,7 +194,8 @@ namespace profefolio.Controllers
             var userEmail = User.FindFirstValue(ClaimTypes.Name);
             var profId = await _profesorService.GetProfesorIdByEmail(userEmail);
 
-            if (data.ProfesorId == profId)
+             var isProfesor = await _documentoService.FindProfesorIdByDocumento(data.MateriaListaId, profId);
+            if (isProfesor)
             {
                 data.Modified = DateTime.Now;
                 data.Deleted = true;
