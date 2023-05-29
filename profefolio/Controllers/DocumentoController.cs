@@ -148,7 +148,7 @@ namespace profefolio.Controllers
         /// <summary>
         /// Retorna un documento creado por el prf que hace la petición.
         /// Solo un profesor puede realizar la peticion
-        /// https://localhost:7063/api/Documento/id
+        /// https://localhost:7063/api/Documento/{DocumentoId}
         /// </summary>
         /// <remarks>
         /// </remarks>
@@ -182,7 +182,7 @@ namespace profefolio.Controllers
         /// <summary>
         /// Elimina un documento creado por el prf que hace la petición.
         /// Solo un profesor puede realizar la peticion
-        /// https://localhost:7063/api/Documento/id
+        /// https://localhost:7063/api/Documento/{DocumentoId}
         /// </summary>
         /// <remarks>
         /// </remarks>
