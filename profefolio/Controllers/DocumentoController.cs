@@ -60,16 +60,7 @@ namespace profefolio.Controllers
             {
                 return BadRequest("Materia Lista no existe");
             }
-            var userEmail = User.FindFirstValue(ClaimTypes.Name);
-            var profId = await _profesorService.GetProfesorIdByEmail(userEmail);
 
-            var profesor = await _profesorService.GetProfesorByEmail(userEmail);
-            //Si no es prf de la clase de MateriaLista no puede crear el doc
-            var profesorClase = await _materiaListaService.GetProfesorOfMateria(documento.MateriaListaId, userEmail);
-            if (profesorClase != profesor)
-            {
-                return BadRequest("No puede matipular datos ajenos.");
-            }
             if (string.IsNullOrWhiteSpace(documento.Nombre))
             {
                 return BadRequest("Nombre de documento no válido");
@@ -82,6 +73,17 @@ namespace profefolio.Controllers
 
             try
             {
+                var userEmail = User.FindFirstValue(ClaimTypes.Name);
+                var profId = await _profesorService.GetProfesorIdByEmail(userEmail);
+
+                var profesor = await _profesorService.GetProfesorByEmail(userEmail);
+                //Si no es prf de la clase de MateriaLista no puede crear el doc
+                var profesorClase = await _materiaListaService.GetProfesorOfMateria(documento.MateriaListaId, userEmail);
+                if (profesorClase != profesor)
+                {
+                    return BadRequest("No puede matipular datos ajenos.");
+                }
+
                 var verificarNombreDocumento = await _documentoService.FindByNameDocumento(documento.Nombre, documento.MateriaListaId);
                 if (verificarNombreDocumento != null)
                 {
@@ -97,9 +99,13 @@ namespace profefolio.Controllers
 
                 return Ok(_mapper.Map<DocumentoResultDTO>(saved));
             }
+            catch (FileNotFoundException ex)
+            {
+                return BadRequest("No es profesor de la materia.");
+            }
             catch (Exception ex)
             {
-                return BadRequest($"Error al crear el documento: {ex.Message}");
+                return BadRequest($"Error al crear el documento.");
             }
         }
 
@@ -194,7 +200,7 @@ namespace profefolio.Controllers
             var userEmail = User.FindFirstValue(ClaimTypes.Name);
             var profId = await _profesorService.GetProfesorIdByEmail(userEmail);
 
-             var isProfesor = await _documentoService.FindProfesorIdByDocumento(data.MateriaListaId, profId);
+            var isProfesor = await _documentoService.FindProfesorIdByDocumento(data.MateriaListaId, profId);
             if (isProfesor)
             {
                 data.Modified = DateTime.Now;
