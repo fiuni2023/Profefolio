@@ -53,8 +53,20 @@ const SOption = styled.option`
     font-size: 1.2em; 
 `;
 
+const SClose = styled.div`
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0 10px;
+`;
 
-
+const H1 = styled.h1`
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 1.8em;
+    color: #000000;
+`;
 
 
 const SContainer = styled(Container)`
@@ -109,4 +121,4 @@ const SDOption = styled.option`
 
 
 
-export {SContainer, SRow, SCol,SCol2, Info, SInput, SLabel, SSelect, SCheck, SGroup, SOption, SDOption};
+export {H1, SContainer, SRow, SCol,SCol2, Info, SInput, SLabel, SSelect, SCheck, SGroup, SOption, SDOption, SClose};

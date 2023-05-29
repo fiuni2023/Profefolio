@@ -5,8 +5,7 @@ import { useAdminContext } from "../context/AdminContext";
 import { useGeneralContext } from '../../../context/GeneralContext';
 import IconButton from '../../../components/IconButton';
 import styles from './EditPanel.module.css'
-import { RxCross2 } from "react-icons/rx";
-import { SInput, SSelect, SLabel, SRow, SOption, SCol, SCol2 } from "./StyledEditPanel";
+import { SInput, SSelect, SLabel, SRow, SOption, SCol, SCol2, SClose, H1 } from "./StyledEditPanel";
 import TextButton from "../../../components/TextButton";
 
 const LAEditPanel = ({
@@ -86,11 +85,25 @@ const LAEditPanel = ({
         <>
             <div className={styles.PanelContainer} >
                     <SRow>
-                        <SCol className="col-1">
-                            <div className={styles.ExitContainer} onClick={()=>{handleClose()}}>
-                                    <RxCross2 size={18} />
-                                </div>
-                        </SCol>
+                        <SClose >
+                            {!editing && !erasing && 
+                                <><H1>
+                                    Datos del administrador
+                                </H1></>}
+                            {editing && !erasing && 
+                                <><H1>
+                                    Editar administrador
+                                </H1></>}
+                            {!editing && erasing && 
+                                <><H1>
+                                    Eliminar administrador
+                                </H1></>}        
+                            <IconButton
+                                buttonType={"close"}
+                                onClick={()=>{handleClose()}}
+                                enabled={true}
+                            ></IconButton>
+                        </SClose>
                     </SRow>
                     <SRow>
                         <SCol className="col-sm-12 col-md-6 col-lg-3">
@@ -180,7 +193,7 @@ const LAEditPanel = ({
                                 {!erasing && !editing && <>
                                 
                                     <IconButton 
-                                        buttonType={"delete"} 
+                                        buttonType={"my-delete"} 
                                         onClick={()=>{
                                             setErasing(true)
                                             setEditing(false)
