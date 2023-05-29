@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import BackButton from "../../components/BackButton";
 import { Row, Col } from "react-bootstrap";
-import Paginations from "../../../../components/Paginations";
 import AnotacionShow from "./componentes/AnotacionShow";
 import AnotacionCard from "./componentes/AnotacionCard";
+import { useGeneralContext } from "../../../../context/GeneralContext";
+import AnotationsService from "../../services/AnotationsService";
 
 const FlexDiv = styled.div`
     display: flex;
@@ -25,12 +26,30 @@ const GapDiv = styled.div`
 `
 
 const Anotacion = () => {
-    const lista = [1,1,1,1,1,1,1,1,1,1,1,1]
+
+    
+    const {getToken} = useGeneralContext()
+    const token = getToken()
+
+    const [lista, setLista] = useState([])
     const [selected, setSelected] = useState({})
+    const [fetchdata, setFetchData] = useState([])
+
+    useEffect(()=>{
+        AnotationsService.Get(token)
+        .then(r=>{
+            setLista(r.data)
+        })
+    }, [token, fetchdata])
+
+    const doFetch = () => {
+        setFetchData((before)=>{return [before]})
+    }
+
     return <>
         <Row>
             <FlexDiv>
-                <BackButton />
+                <BackButton to="materiashow"/>
                 <h5 className="m-0">
                 Anotaciones 
                 </h5>
@@ -39,12 +58,12 @@ const Anotacion = () => {
         <Row className="my-2">
             <Col md={8}>
                 <GridDiv>
-                    {lista.map(l=>{return <AnotacionCard onClick={setSelected} />})}
+                    {lista.map(l=>{return <AnotacionCard onClick={setSelected} observacion={l} />})}
                 </GridDiv>
-                <Paginations />
+                {/* <Paginations /> */}
             </Col>
             <Col md={4}>
-                <AnotacionShow selectedAnotation={selected}/>
+                <AnotacionShow doFetch={doFetch} setSelectedAnotation={setSelected} selectedAnotation={selected}/>
             </Col>
         </Row>
         <GapDiv />

@@ -17,6 +17,7 @@ export const useFetchEffect = (asyncFunc = async () => { }, dependences = [], se
         if(!seguir) return;
 
         setLoading(true)
+        setError(false)
         asyncFunc()
             .then((result) => {
                 setLoading(false)

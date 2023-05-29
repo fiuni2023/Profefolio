@@ -60,7 +60,8 @@ namespace profefolio.Controllers
         [HttpGet("{id}")]
         [Authorize(Roles = "Profesor")]
         public async Task<ActionResult<EventoResultFullDTO>> GetEvento(int id)
-        {
+        { 
+            /*
             try
             {
                 var evento = await _eventoService.FindById2(id);
@@ -85,6 +86,8 @@ namespace profefolio.Controllers
                 _log.Error("An error occurred in the GetEvento method", ex);
                 return BadRequest("Error inesperado durante la busqueda");
             }
+            */
+            return BadRequest();
         }
 
         /// <summary>
@@ -197,7 +200,7 @@ namespace profefolio.Controllers
             }
             try
             {
-                var p = _mapper.Map<Evento>(evento);
+                var p = _mapper.Map<Evaluacion>(evento);
                 p.CreatedBy = userEmail;
                 p.Deleted = false;
 
