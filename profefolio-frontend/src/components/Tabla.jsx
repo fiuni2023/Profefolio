@@ -25,7 +25,6 @@ function Tabla({datosTabla, selected}){
     const [exp, setExp] = useState([]); 
 
     useEffect(() => {
-       console.log(datosTabla);
        let filas = datosTabla?.filas;
        let titulos = datosTabla?.titulos;
        let current = null;
@@ -38,7 +37,7 @@ function Tabla({datosTabla, selected}){
             if(current){
                 let j = 0; 
                 titulos.forEach(element => {
-                   newFila[element] = current[j];
+                   newFila[element?.titulo] = current[j].dato;
                    j++; 
                 });
                 newExp[i] = newFila;
