@@ -10,7 +10,7 @@ import styles from './EditPanel.module.css'
 import { RxCross2 } from "react-icons/rx";
 import { BsPencilFill } from 'react-icons/bs'
 import { GoTrashcan } from 'react-icons/go'
-import { SInput } from "./StyledEditPanel";
+import { SInput, SSelect } from "./StyledEditPanel";
 
 const LAEditPanel = ({
     onUpdate = () => {}
@@ -141,10 +141,10 @@ const LAEditPanel = ({
                                 </div>
                                 <div className="d-flex gap-2 align-items-center">
                                     <label>Genero:</label>
-                                    <select disabled={!editing} className = {""} style={{width: "auto"}} value={selectedAdmin.genero ?? ""} onChange={(event) => { handleChange("genero", event.target.value) }} >
+                                    <SSelect disabled={!editing} className = {""} style={{width: "auto"}} value={selectedAdmin.genero ?? ""} onChange={(event) => { handleChange("genero", event.target.value) }} >
                                         <option value={"M"}>Masculino</option>
                                         <option value={"F"}>Femenino</option>
-                                    </select>
+                                    </SSelect>
                                 </div>
                             </div>
                         </Col>

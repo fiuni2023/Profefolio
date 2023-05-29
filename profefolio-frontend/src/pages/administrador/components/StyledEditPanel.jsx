@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Container, FormCheck, FormGroup, FormLabel, FormSelect } from 'react-bootstrap';
+import { Container, FormCheck, FormGroup } from 'react-bootstrap';
 
 const SInput = styled.input`
     border-radius: 10px;
@@ -11,6 +11,25 @@ const SInput = styled.input`
         color: #6C6C6C;  
         font-size: 1.2em; 
     }
+`;
+
+const SSelect = styled.select`
+    border-radius: 10px;
+    background-color: #E4E4E4;
+    color: #282828;
+    font-size: 1.2em; 
+    font-weight: 500;
+    ::placeholder{
+        color: #6C6C6C;  
+        font-size: 1.2em; 
+    }
+`;
+
+const SLabel = styled.label`
+    font-size: 1.2em;
+    color: #282828;
+    margin: 0;
+    padding: .375rem 0.75rem .1rem 0.75rem;
 `;
 
 
@@ -35,24 +54,6 @@ const SGroup = styled(FormGroup)`
     padding: 0;
 `;
 
-const SSelect = styled(FormSelect)`
-    border-radius: 10px;
-    background-color: #E4E4E4;
-    color: #282828;
-    font-size: 1.2em; 
-    font-weight: 500;
-    ::placeholder{
-        color: #6C6C6C;  
-        font-size: 1.2em; 
-    }
-`;
-
-const SLabel = styled(FormLabel)`
-    font-size: 1.2em;
-    color: #282828;
-    margin: 0;
-    padding: .375rem 0.75rem .1rem 0.75rem;
-`;
 
 const SCheck = styled(FormCheck)`
     font-size: 1.2em;
