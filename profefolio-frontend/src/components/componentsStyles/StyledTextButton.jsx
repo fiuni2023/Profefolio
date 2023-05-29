@@ -82,6 +82,23 @@ const StyledTextButton = styled.button`
             background-color: #EB231C;
           }
         `;
+      case 'yes':
+        return `
+          background-color: #59C8A4;
+          color: #fff;
+          &:hover {
+            background-color: #24B787;
+          }
+        `;
+      case 'no':
+        return `
+          background-color: #E57BA4;
+          color: #fff;
+
+          &:hover {
+            background-color: #D93D79;
+          }
+        `;    
       default:
         return `
           background-color: #ccc;

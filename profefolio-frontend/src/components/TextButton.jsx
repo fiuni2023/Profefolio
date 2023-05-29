@@ -41,6 +41,12 @@ function TextButton({ buttonType, onClick, enabled }) {
     case "danger":
       text = 'Borrar'
       break;
+    case "yes":
+      text = "Si"
+      break;
+    case "no":
+      text = "No"
+      break;  
     default:
       text = null;
       isEnabled = false;
