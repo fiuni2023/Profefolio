@@ -22,7 +22,7 @@ namespace profefolio.Controllers
         private readonly IMateriaLista _materiaListaService;
         private static int _cantPorPag => Constantes.CANT_ITEMS_POR_PAGE;
         private readonly IMapper _mapper;
-        // private readonly IClase _claseService;
+        
         public DocumentoController(IDocumento documentoService, IMapper mapper, IProfesor profesorService,
         IMateriaLista materiaListaService)
         {
