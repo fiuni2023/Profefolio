@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace profefolio.Migrations
 {
-    public partial class AddDocument2 : Migration
+    public partial class AddDocumentActualizado : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DeleteData(
+           /* migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
                 keyValue: "9c630afd-45dc-4a2d-9f38-df661b70e332");
@@ -48,7 +48,7 @@ namespace profefolio.Migrations
                 table: "AspNetUsers",
                 keyColumn: "Id",
                 keyValue: "508d1452-6c15-4266-99db-67cd58e42063");
-
+            */
             migrationBuilder.DropColumn(
                 name: "ProfesorId",
                 table: "Documentos");
@@ -72,16 +72,16 @@ namespace profefolio.Migrations
                 oldClrType: typeof(string),
                 oldType: "character varying(100)",
                 oldMaxLength: 100);
-
-            /*migrationBuilder.InsertData(
+            /*
+            migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "6933935c-2222-4be4-aded-0f55e9998fea", "35e590fd-0c5c-4e4b-b30d-634be1c0ff07", "Administrador de Colegio", "ADMINISTRADOR DE COLEGIO" },
-                    { "74ef6dda-d609-419d-af89-ccf103c24e20", "5b3aedc7-f73a-4222-a390-5a69bf9852a6", "Profesor", "PROFESOR" },
-                    { "9b1cfb7e-7e96-433b-9f41-a0cbdddcb203", "9755bf1c-c00f-4c55-a882-55b9aa24b496", "Master", "MASTER" },
-                    { "fbfb9bf4-980f-4718-920e-6106abc03fa1", "2cafde05-1613-4d5c-984a-1d45ef456df6", "Alumno", "ALUMNO" }
+                    { "343f3bc4-cc24-4493-a6d3-21a4a0ffb795", "d66068f4-7654-4ab4-91f4-f7e3acb12fea", "Master", "MASTER" },
+                    { "663ae2d9-ea36-49c9-a642-54a1c0444c06", "14e5c30b-fad7-4837-9f3f-a94f113950d1", "Alumno", "ALUMNO" },
+                    { "ba86256b-f990-4c64-9718-fd3a12ecfce2", "0be05713-af39-47f1-8008-8db5a836b126", "Profesor", "PROFESOR" },
+                    { "ed00b966-b749-4abb-8efd-6703d4fb691d", "68b6ebaa-963b-4f03-85a5-97691728442f", "Administrador de Colegio", "ADMINISTRADOR DE COLEGIO" }
                 });
 
             migrationBuilder.InsertData(
@@ -89,8 +89,8 @@ namespace profefolio.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "Apellido", "ConcurrencyStamp", "Created", "CreatedBy", "Deleted", "Direccion", "Documento", "DocumentoTipo", "Email", "EmailConfirmed", "EsM", "LockoutEnabled", "LockoutEnd", "Modified", "ModifiedBy", "Nacimiento", "Nombre", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "10e59d44-82da-4b19-abf6-cae82993e06f", 0, "Torres", "29f73ebd-67f4-45ae-8ae0-60adc7371f44", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, null, null, null, "Carlos.Torres123@mail.com", false, true, false, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, new DateTime(1999, 7, 10, 4, 0, 0, 0, DateTimeKind.Utc), "Carlos", "CARLOS.TORRES123@MAIL.COM", null, "AQAAAAEAACcQAAAAEM5P7GenU6WSapwPBgZ4yeiggqhnFybuY/8GtycaLeYyZD9LDi/qgBeE7v9agiUEYg==", null, false, "f6f62b1f-3dd7-4fa1-ac88-0579cf3a6cfa", false, null },
-                    { "b06bea50-e1c0-49a4-85ce-bb923692e597", 0, "Martinez", "cf356930-e062-4303-9257-7e9d87598da7", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, null, null, null, "Juan.Martinez123@mail.com", false, true, false, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, new DateTime(1999, 7, 10, 4, 0, 0, 0, DateTimeKind.Utc), "Juan", "JUAN.MARTINEZ123@MAIL.COM", null, "AQAAAAEAACcQAAAAENhKOn7+tp0XirzR+/rS2DPuZM5NSVwZeT1RNNjLTYD/UXv6mdy0yk7ZLqPD76lxLA==", null, false, "89445889-5864-49c7-90f5-634fffe23c22", false, null }
+                    { "c9706138-d1c6-4aab-b94c-9c9aba0925c4", 0, "Martinez", "45106a76-2123-40fe-b715-dddeb1e4309f", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, null, null, null, "Juan.Martinez123@mail.com", false, true, false, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, new DateTime(1999, 7, 10, 4, 0, 0, 0, DateTimeKind.Utc), "Juan", "JUAN.MARTINEZ123@MAIL.COM", null, "AQAAAAEAACcQAAAAEBDtvPpMKLh6fBJbT/xzG7/xgIeECX1xvjPh0nbswn5dVMW2JRcacS/5b9EgGoN0YQ==", null, false, "438dd245-280b-4172-ad8c-11c543f6f9f8", false, null },
+                    { "eb0772ca-b805-49fb-8ebf-1442977c828a", 0, "Torres", "8e3b0658-eb70-4867-a3c0-d607cd503657", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, null, null, null, "Carlos.Torres123@mail.com", false, true, false, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, new DateTime(1999, 7, 10, 4, 0, 0, 0, DateTimeKind.Utc), "Carlos", "CARLOS.TORRES123@MAIL.COM", null, "AQAAAAEAACcQAAAAEHf+PyvfCph1smxFy9DxOG+DthSDjk42ke0sPsbg7I0XmxKSBbVLGV9aWd6Ee5ilGg==", null, false, "c5024530-db08-43e1-8626-86d3c1f37537", false, null }
                 });
 
             migrationBuilder.InsertData(
@@ -98,54 +98,54 @@ namespace profefolio.Migrations
                 columns: new[] { "RoleId", "UserId" },
                 values: new object[,]
                 {
-                    { "9b1cfb7e-7e96-433b-9f41-a0cbdddcb203", "10e59d44-82da-4b19-abf6-cae82993e06f" },
-                    { "6933935c-2222-4be4-aded-0f55e9998fea", "b06bea50-e1c0-49a4-85ce-bb923692e597" }
+                    { "ed00b966-b749-4abb-8efd-6703d4fb691d", "c9706138-d1c6-4aab-b94c-9c9aba0925c4" },
+                    { "343f3bc4-cc24-4493-a6d3-21a4a0ffb795", "eb0772ca-b805-49fb-8ebf-1442977c828a" }
                 });
-                */
+            */
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DeleteData(
+           /* migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: "74ef6dda-d609-419d-af89-ccf103c24e20");
+                keyValue: "663ae2d9-ea36-49c9-a642-54a1c0444c06");
 
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: "fbfb9bf4-980f-4718-920e-6106abc03fa1");
+                keyValue: "ba86256b-f990-4c64-9718-fd3a12ecfce2");
 
             migrationBuilder.DeleteData(
                 table: "AspNetUserRoles",
                 keyColumns: new[] { "RoleId", "UserId" },
-                keyValues: new object[] { "9b1cfb7e-7e96-433b-9f41-a0cbdddcb203", "10e59d44-82da-4b19-abf6-cae82993e06f" });
+                keyValues: new object[] { "ed00b966-b749-4abb-8efd-6703d4fb691d", "c9706138-d1c6-4aab-b94c-9c9aba0925c4" });
 
             migrationBuilder.DeleteData(
                 table: "AspNetUserRoles",
                 keyColumns: new[] { "RoleId", "UserId" },
-                keyValues: new object[] { "6933935c-2222-4be4-aded-0f55e9998fea", "b06bea50-e1c0-49a4-85ce-bb923692e597" });
+                keyValues: new object[] { "343f3bc4-cc24-4493-a6d3-21a4a0ffb795", "eb0772ca-b805-49fb-8ebf-1442977c828a" });
 
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: "6933935c-2222-4be4-aded-0f55e9998fea");
+                keyValue: "343f3bc4-cc24-4493-a6d3-21a4a0ffb795");
 
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: "9b1cfb7e-7e96-433b-9f41-a0cbdddcb203");
+                keyValue: "ed00b966-b749-4abb-8efd-6703d4fb691d");
 
             migrationBuilder.DeleteData(
                 table: "AspNetUsers",
                 keyColumn: "Id",
-                keyValue: "10e59d44-82da-4b19-abf6-cae82993e06f");
+                keyValue: "c9706138-d1c6-4aab-b94c-9c9aba0925c4");
 
             migrationBuilder.DeleteData(
                 table: "AspNetUsers",
                 keyColumn: "Id",
-                keyValue: "b06bea50-e1c0-49a4-85ce-bb923692e597");
-
+                keyValue: "eb0772ca-b805-49fb-8ebf-1442977c828a");
+            */
             migrationBuilder.AlterColumn<string>(
                 name: "Nombre",
                 table: "Documentos",
@@ -166,13 +166,13 @@ namespace profefolio.Migrations
                 oldType: "character varying(300)",
                 oldMaxLength: 300);
 
-            migrationBuilder.AddColumn<string>(
+           /* migrationBuilder.AddColumn<string>(
                 name: "ProfesorId",
                 table: "Documentos",
                 type: "text",
                 nullable: true);
 
-            /*migrationBuilder.InsertData(
+            migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]

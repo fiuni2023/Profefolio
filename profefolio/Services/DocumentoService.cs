@@ -85,12 +85,13 @@ public class DocumentoService : IDocumento
 
     /*
     La lista de Documento resultante contiene los documentos que pertenecen
-    a los registros de MateriaLista con el mismo idMateria que se pasó como parámetro.
+    a los registros de MateriaLista con el mismo idMateria que se pasó como parámetro y que  
+     ProfesorId  == idPrf
     */
     public async Task<List<Documento>> GetAll(int idMateria, string idPrf)
     {
         var materiasListaIds = await _dbContext.MateriaListas
-            .Where(ml => ml.MateriaId == idMateria)
+            .Where(ml => ml.MateriaId == idMateria && ml.ProfesorId == idPrf)
             .Select(ml => ml.Id)
             .ToListAsync();
 
@@ -99,6 +100,7 @@ public class DocumentoService : IDocumento
             .Where(p => materiasListaIds.Contains(p.MateriaListaId))
             .ToListAsync();
     }
+
 
     /**
     * Retorna true si el idPrf pasado es igual al ProfesorId de MateriaLista
