@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Container, FormCheck, FormGroup } from 'react-bootstrap';
+import { Container, FormCheck, FormGroup, Col } from 'react-bootstrap';
 
 const SInput = styled.input`
     border-radius: 10px;
@@ -27,6 +27,17 @@ const SSelect = styled.select`
     padding: .1rem 0.75rem;
 `;
 
+const SCol = styled(Col)`
+    display: grid;
+    padding: 0 10px;
+`;
+
+const SCol2 = styled(Col)`
+    padding: 0 10px;
+    display: flex;
+    justify-content: flex-end;
+`;
+
 const SLabel = styled.label`
     font-size: 1.2em;
     color: #282828;
@@ -35,7 +46,7 @@ const SLabel = styled.label`
 `;
 const SRow = styled.div`
     display: flex;
-    justify-content: flex-end;
+    justify-content: flex-start;
 `;
 const SOption = styled.option`
     color: #282828;  
@@ -98,4 +109,4 @@ const SDOption = styled.option`
 
 
 
-export {SContainer, SRow, Info, SInput, SLabel, SSelect, SCheck, SGroup, SOption, SDOption};
+export {SContainer, SRow, SCol,SCol2, Info, SInput, SLabel, SSelect, SCheck, SGroup, SOption, SDOption};
