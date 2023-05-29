@@ -5,7 +5,7 @@ import { useAdminContext } from "../context/AdminContext";
 import { useGeneralContext } from '../../../context/GeneralContext';
 import IconButton from '../../../components/IconButton';
 import styles from './EditPanel.module.css'
-import { SInput, SSelect, SLabel, SRow, SOption, SCol, SCol2, SClose, H1 } from "./StyledEditPanel";
+import { SInput, SSelect, SLabel, SRow, SOption, SCol, SCol2, SClose, H1, SErase } from "./StyledEditPanel";
 import TextButton from "../../../components/TextButton";
 
 const LAEditPanel = ({
@@ -154,24 +154,25 @@ const LAEditPanel = ({
                     <SRow className="mt-2">
                         <SCol2 >
                                 {erasing && !editing && <>
-                                    <div className="d-flex flex-column ">
-                                            <SLabel className="align-self-center" >¿Desea eliminar? <SLabel className="text-danger">ESTA ACCION ES IRREVERSIBLE</SLabel></SLabel>
+                                    <SErase >
+                                            <SLabel className="align-self-center" >¿Desea eliminar? </SLabel>
+                                            <SLabel className="text-danger">ESTA ACCION ES IRREVERSIBLE</SLabel>
                                             <div className="d-flex gap-2">
                                                 <TextButton
-                                                    buttonType={"cancel"}
+                                                    buttonType={"no"}
                                                     onClick={()=>{
                                                         setErasing(false)
                                                         setEditing(false)
                                                     }}
                                                     enabled={true}></TextButton>
                                                 <TextButton
-                                                    buttonType={"Borrar"}
+                                                    buttonType={"yes"}
                                                     onClick={()=>{
                                                         handleDelete()
                                                     }}
                                                     enabled={true}></TextButton>
                                             </div>
-                                        </div>
+                                        </SErase>
                                 </>}
                                 {!erasing && editing && <>
                                     <TextButton
@@ -185,7 +186,7 @@ const LAEditPanel = ({
                                             enabled={true}>
                                     </TextButton>
                                     <TextButton
-                                            buttonType={"save"}
+                                            buttonType={"save-changes"}
                                             onClick={()=>{handleUpdate()}}
                                             enabled={true}>
                                     </TextButton>

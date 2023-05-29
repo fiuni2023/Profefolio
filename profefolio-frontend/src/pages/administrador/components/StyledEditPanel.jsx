@@ -72,7 +72,9 @@ const H1 = styled.h1`
 const SContainer = styled(Container)`
     padding: 0 0.5em;
 `;
-
+const SErase = styled.div`
+display: block;
+`;
 
 
 const Info = styled.div`
@@ -121,4 +123,4 @@ const SDOption = styled.option`
 
 
 
-export {H1, SContainer, SRow, SCol,SCol2, Info, SInput, SLabel, SSelect, SCheck, SGroup, SOption, SDOption, SClose};
+export {SErase, H1, SContainer, SRow, SCol,SCol2, Info, SInput, SLabel, SSelect, SCheck, SGroup, SOption, SDOption, SClose};
