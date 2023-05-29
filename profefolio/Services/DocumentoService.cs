@@ -96,9 +96,20 @@ public class DocumentoService : IDocumento
 
         return await _dbContext.Documentos
             .Where(p => !p.Deleted)
-            .Where(p => p.ProfesorId == idPrf)
             .Where(p => materiasListaIds.Contains(p.MateriaListaId))
             .ToListAsync();
     }
+
+    /**
+    * Retorna true si el idPrf pasado es igual al ProfesorId de MateriaLista
+    **/
+    public async Task<bool> FindProfesorIdByDocumento(int idMateriaLista, string idPrf)
+    {
+        var materiaLista = await _dbContext.MateriaListas
+            .FirstOrDefaultAsync(ml => ml.Id == idMateriaLista && ml.ProfesorId == idPrf);
+
+        return materiaLista != null;
+    }
+
 
 }
