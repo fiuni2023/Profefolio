@@ -87,10 +87,7 @@ namespace profefolio.Controllers
                 {
                     return BadRequest($"Ya existe un documento con ese nombre");
                 }
-
-
-                documento.ProfesorId = profId;
-
+                
                 var p = _mapper.Map<Documento>(documento);
                 p.CreatedBy = userEmail;
                 p.Deleted = false;
