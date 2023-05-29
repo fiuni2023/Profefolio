@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {Table, Thead, Tbody, TR, TH, TD, ScrollTable} from "./componentsStyles/StyledTable"; 
+import ExcelExport from './utils/excelExport';
 
 
 /*Estructura del datosTabla todos los campos son opcionales
@@ -20,8 +21,41 @@ datosTabla = {
 
 */ 
 function Tabla({datosTabla, selected}){
+
+    const [exp, setExp] = useState([]); 
+
+    useEffect(() => {
+       console.log(datosTabla);
+       let filas = datosTabla?.filas;
+       let titulos = datosTabla?.titulos;
+       let current = null;
+       let newExp = [];
+       let i = 0;
+       if(filas && titulos){
+        filas.forEach(fila => {
+            current = fila?.datos;
+            let newFila = {};
+            if(current){
+                let j = 0; 
+                titulos.forEach(element => {
+                   newFila[element] = current[j];
+                   j++; 
+                });
+                newExp[i] = newFila;
+                i++;
+            }
+        });
+        setExp(newExp);
+       }  
+    }, [datosTabla]);
+
     return (
         <>
+         {datosTabla && datosTabla?.filas && !datosTabla.small && <>
+            <ExcelExport
+                excelData={exp}
+                fileName={datosTabla?.tituloTabla ? datosTabla?.tituloTabla : "descargado_de_ProfeFolio"}>
+            </ExcelExport></>}
         { (datosTabla?.filas) ? datosTabla &&(
             <ScrollTable>
                 <Table  key = {datosTabla?.tituloTabla}
