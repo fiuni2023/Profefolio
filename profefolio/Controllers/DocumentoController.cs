@@ -87,7 +87,7 @@ namespace profefolio.Controllers
                 {
                     return BadRequest($"Ya existe un documento con ese nombre");
                 }
-                
+
                 var p = _mapper.Map<Documento>(documento);
                 p.CreatedBy = userEmail;
                 p.Deleted = false;
@@ -105,22 +105,18 @@ namespace profefolio.Controllers
 
         /// <summary>
         /// Retorna los documentos creados por el prf que hace la petición.
+        /// get all documentos de una materia
         /// Solo un profesor puede realizar la peticion
         /// Se retornan todos los documentos pertenecientes a esa materia
-        /// https://localhost:7063/api/Documento
-        ///Body del Get:
-        ///     
-        ///     {
-        ///         "id": 0, //id materia
-        ///     
-        ///     }
+        /// https://localhost:7063/api/Documento/all/{idMateria}
         /// </summary>
         /// <remarks>
         /// </remarks>
 
         [HttpGet]
+        [Route("all/{idMateria}")]
         [Authorize(Roles = "Profesor")]
-        public async Task<ActionResult<IEnumerable<DocumentoResultDTO>>> GetAll([FromBody] DocumentoOpcionesDTO dto)
+        public async Task<ActionResult<IEnumerable<DocumentoResultDTO>>> GetAll(int idMateria)
         {
             if (!ModelState.IsValid)
             {
@@ -131,15 +127,13 @@ namespace profefolio.Controllers
             {
                 var userEmail = User.FindFirstValue(ClaimTypes.Name);
                 var profId = await _profesorService.GetProfesorIdByEmail(userEmail);
-                var result = await _documentoService.GetAll(dto.Id, profId);
+                var result = await _documentoService.GetAll(idMateria, profId);
 
                 return Ok(_mapper.Map<List<DocumentoResultDTO>>(result));
 
             }
             catch (Exception e)
             {
-
-                Console.WriteLine(e);
                 return BadRequest("Error durante la busqueda");
 
             }
