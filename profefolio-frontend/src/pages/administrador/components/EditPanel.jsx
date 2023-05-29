@@ -10,6 +10,7 @@ import styles from './EditPanel.module.css'
 import { RxCross2 } from "react-icons/rx";
 import { BsPencilFill } from 'react-icons/bs'
 import { GoTrashcan } from 'react-icons/go'
+import { SInput } from "./StyledEditPanel";
 
 const LAEditPanel = ({
     onUpdate = () => {}
@@ -91,15 +92,15 @@ const LAEditPanel = ({
                     <Row>
                         <Col>
                             <div className="d-flex gap-2">
-                                <input disabled={!editing} className = {''} style={{width: '49%'}} value={selectedAdmin.nombre} onChange={(event) => { handleChange("nombre", event.target.value) }} />
-                                <input disabled={!editing} className = {''} placeholder={"Agregar Apellido"} style={{width: '49%'}} value={selectedAdmin.apellido} onChange={(event) => { handleChange("apellido", event.target.value) }} />
+                                <SInput disabled={!editing} className = {''} style={{width: '49%'}} value={selectedAdmin.nombre} onChange={(event) => { handleChange("nombre", event.target.value) }} />
+                                <SInput disabled={!editing} className = {''} placeholder={"Agregar Apellido"} style={{width: '49%'}} value={selectedAdmin.apellido} onChange={(event) => { handleChange("apellido", event.target.value) }} />
                             </div>    
                         </Col>
                         <Col>
                             <div className="d-flex justify-content-between">
                                 <div className="d-flex gap-2 align-items-center w-75">
                                     <label>E-mail:</label>
-                                    <input disabled={!editing} className = {''} placeholder={"Agregar Email"} style={{width: '85%'}} value={selectedAdmin.email ?? ""} onChange={(event) => { handleChange("email", event.target.value) }} />
+                                    <SInput disabled={!editing} className = {''} placeholder={"Agregar Email"} style={{width: '85%'}} value={selectedAdmin.email ?? ""} onChange={(event) => { handleChange("email", event.target.value) }} />
                                 </div>
                                 <div className={styles.ExitContainer} onClick={()=>{handleClose()}}>
                                     <RxCross2 size={18} />
@@ -112,22 +113,22 @@ const LAEditPanel = ({
                             <div className="d-flex gap-2 align-items-center">
                                 <div className="d-flex gap-2 align-items-center">
                                     <label>CIN:</label>
-                                    <input disabled={!editing} className = {''} placeholder={"Agregar CIN"} style={{width: 'auto'}} value={selectedAdmin.documento ?? ""} onChange={(event) => { handleChange("documento", event.target.value) }} />
+                                    <SInput disabled={!editing} className = {''} placeholder={"Agregar CIN"} style={{width: 'auto'}} value={selectedAdmin.documento ?? ""} onChange={(event) => { handleChange("documento", event.target.value) }} />
                                 </div>
                                 <div className="d-flex gap-2 align-items-center">
                                     <label>Tel:</label>
-                                    <input disabled={!editing} className = {''} placeholder={"Agregar Telefono"} style={{width: 'auto'}} value={selectedAdmin.telefono ?? ""} onChange={(event) => { handleChange("telefono", event.target.value) }} />
+                                    <SInput disabled={!editing} className = {''} placeholder={"Agregar Telefono"} style={{width: 'auto'}} value={selectedAdmin.telefono ?? ""} onChange={(event) => { handleChange("telefono", event.target.value) }} />
                                 </div>
                                 <div className="d-flex gap-2 align-items-center">
                                     <label>Fecha Nac.:</label>
-                                    <input disabled={!editing} type={"date"} className = {''} style={{width: 'auto' }} value={selectedAdmin.nacimiento.split('T')[0] ?? ""} onChange={(event) => { handleChange("nacimiento", event.target.value) }} /> 
+                                    <SInput disabled={!editing} type={"date"} className = {''} style={{width: 'auto' }} value={selectedAdmin.nacimiento.split('T')[0] ?? ""} onChange={(event) => { handleChange("nacimiento", event.target.value) }} /> 
                                 </div>
                             </div>
                         </Col>
                         <Col>
                             <div className="d-flex gap-2 align-items-center">
                                 <label>Direccion:</label>
-                                <input disabled={!editing} className = {''} placeholder={"Agregar Direccion"} style={{width: "90%"}} value={selectedAdmin.direccion ?? ""} onChange={(event) => { handleChange("direccion", event.target.value) }} />
+                                <SInput disabled={!editing} className = {''} placeholder={"Agregar Direccion"} style={{width: "90%"}} value={selectedAdmin.direccion ?? ""} onChange={(event) => { handleChange("direccion", event.target.value) }} />
                             </div>
                         </Col>
                     </Row>
@@ -136,7 +137,7 @@ const LAEditPanel = ({
                             <div className="d-flex gap-2">
                                 <div className="d-flex gap-2 align-items-center">
                                     <label>Tipo de Documento:</label>
-                                    <input disabled={!editing} className = {''} placeholder={"Tipo de documento"} style={{width: "auto"}} value={selectedAdmin.documentoTipo ?? ""} onChange={(event) => { handleChange("documentoTipo", event.target.value) }} />
+                                    <SInput disabled={!editing} className = {''} placeholder={"Tipo de documento"} style={{width: "auto"}} value={selectedAdmin.documentoTipo ?? ""} onChange={(event) => { handleChange("documentoTipo", event.target.value) }} />
                                 </div>
                                 <div className="d-flex gap-2 align-items-center">
                                     <label>Genero:</label>
