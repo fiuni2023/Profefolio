@@ -30,6 +30,10 @@ function IconButton({ buttonType, onClick, enabled }) {
       iconColor= '#D93D79';
       icon = <HiOutlineTrash  size={24} color={iconColor}/>;
       break;
+    case 'my-delete':
+      iconColor= '#D93D79';
+      icon = <HiOutlineTrash  size={24} color={iconColor}/>;
+      break;  
     case 'edit':
       iconColor= '#5181D1';
       icon = <HiOutlinePencil size={24} color={iconColor}/>;
