@@ -415,12 +415,27 @@ namespace profefolio.Controllers
 
 
                     case "eventos-clases":
+                    //eventos-clases: pasar id del colegio.
                     //Un evento tiene: tipo, fecha, materia,clase, colegio
                     //Una evaluacion tiene: tipo, fecha, materiaListaId
                     //MateriaLista tiene: claseId, MateriaId
                     //Clase tiene: colegioId
-                        return BadRequest("Opcion en implementacion");
+
+                    //1° obtener tipo y fecha 
+
+                    //2° obtener nombre materia, clase y colegio
+                    
+                        var profIdEvento = await _profesorService.GetProfesorIdByEmail(userEmail);
+                       
+                        var eventosClase = await _dashBoardService.FindEventosOfClase(profIdEvento, dto.Id);
+
+                        //var resultsEventos = _mapper.Map<List<DBCardMateriasDTO>>(eventosClase);
+
+                        return Ok(eventosClase);
+                        
                     case "eventos-materias":
+                    //eventos-materias: pasar id de la clase.
+
                         return BadRequest("Opcion en implementacion");
 
 

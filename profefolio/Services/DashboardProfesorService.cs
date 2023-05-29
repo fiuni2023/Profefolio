@@ -8,6 +8,7 @@ using profefolio.Helpers;
 using profefolio.Models;
 using profefolio.Models.Entities;
 using profefolio.Models.DTOs.Materia;
+using profefolio.Models.DTOs.DashboardProfesor.GetWithOpcions;
 using profefolio.Repository;
 
 namespace profefolio.Services
@@ -322,17 +323,20 @@ namespace profefolio.Services
                                         && a.Fecha.Year == year
                                         && a.Fecha.Month == month
                                         && profesorId.Equals(a.MateriaLista.ProfesorId))
-                                        .Select(a => new {
-                                                AlumnoId = a.ClasesAlumnosColegioId,
-                                                Fecha = a.Fecha,
-                                                Estado = a.Estado
+                                        .Select(a => new
+                                        {
+                                            AlumnoId = a.ClasesAlumnosColegioId,
+                                            Fecha = a.Fecha,
+                                            Estado = a.Estado
                                         })
                                         .GroupBy(a => a.Fecha)
-                                        
-                                        .Select(a => new {
+
+                                        .Select(a => new
+                                        {
                                             Fecha = a.Key,
                                             Total = a.Count(),
-                                            AsistenciasGrupo = a.GroupBy(b => b.Estado).Select(c => new {
+                                            AsistenciasGrupo = a.GroupBy(b => b.Estado).Select(c => new
+                                            {
                                                 Estado = c.Key,
                                                 Cantidad = c.Count()
                                             })
@@ -340,11 +344,11 @@ namespace profefolio.Services
                                         .Select(a => a.AsistenciasGrupo)
                                     .ToListAsync();
 
-            
+
             var cantidadTotalPresentes = 0;
             var cantidadTotalAusentes = 0;
             var cantidadTotalJustificados = 0;
-            
+
             foreach (var asistenciasGrupo in fechasAsistencias)
             {
                 foreach (var asist in asistenciasGrupo)
@@ -361,20 +365,64 @@ namespace profefolio.Services
                     {
                         cantidadTotalJustificados += asist.Cantidad;
                     }
-                }    
+                }
             }
 
-            
+
             if (fechasAsistencias.Count == 0)
             {
                 return (0, 0, 0);
             }
-            
+
             return (
                         Math.Round(((double)cantidadTotalPresentes / fechasAsistencias.Count), 2),
                         Math.Round(((double)cantidadTotalAusentes / fechasAsistencias.Count), 2),
                         Math.Round(((double)cantidadTotalJustificados / fechasAsistencias.Count), 2)
                     );
         }
+        /*
+        //Un evento tiene: tipo, fecha, materia,clase, colegio
+        //Una evaluacion tiene: tipo, fecha, materiaListaId
+        //MateriaLista tiene: claseId, MateriaId, ProfesorId
+        //Clase tiene: colegioId
+
+        * Buscar ClaseId,ProfesorId y MateriaId desde la propiedad MateriaListaId de la tabla Evaluaciones.
+        * Filtrar todos los datos en base a que idColegio == ColegioId de la tabla Clases a partir de ClaseId que se 
+          obtuvo previamente.
+        * Retornar una lista de DBCardEventosClaseDTO que contenga el tipo, fecha, materia, clase y colegio
+          donde idProfesor == ProfesorId
+        */
+        public async Task<List<DBCardEventosClaseDTO>> FindEventosOfClase(string idProfesor, int idColegio)
+        {
+            //seleccinar las clases de idColegio
+            var clases = await _context.Clases
+                .Where(c => c.ColegioId == idColegio)
+                .ToListAsync();
+            
+            //filtrar las materiaLista de idProfesor
+            var materiaListasIds = await _context.Eventos
+                .Where(e => clases.Any(c => c.Id == e.MateriaList.ClaseId) && e.MateriaList.ProfesorId == idProfesor)
+                .Select(e => e.MateriaListaId)
+                .Distinct()
+                .ToListAsync();
+
+            var materiaListas = await _context.MateriaListas
+                .Where(m => materiaListasIds.Contains(m.Id))
+                .Include(m => m.Materia)
+                .ToListAsync();
+
+            var eventosClase = materiaListas.SelectMany(m => m.Eventos.Select(e => new DBCardEventosClaseDTO
+            {
+                Tipo = e.Tipo,
+                Fecha = e.Fecha,
+                nombreMateria = m.Materia.Nombre_Materia,
+                nombreClase = clases.FirstOrDefault(c => c.Id == m.ClaseId)?.Nombre,
+                nombreColegio = clases.FirstOrDefault(c => c.Id == m.ClaseId)?.Colegio.Nombre
+            })).ToList();
+
+            return eventosClase;
+        }
+
+
     }
 }
