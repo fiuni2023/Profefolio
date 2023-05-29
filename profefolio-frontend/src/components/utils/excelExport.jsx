@@ -10,10 +10,11 @@ const SExport = styled.div`
 `;
 
 const ExcelExport = ({excelData, fileName}) => {
-    const filetype = 'application/vnd.openxmlformats-officedocument.spreadsheetml;charset=UTF-8'
+    const filetype = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8'
     const fileExtension = ".xlsx"
     
     const exportToExcel = async() => {
+        console.log(excelData);
         const ws = XLSX.utils.json_to_sheet(excelData);
         const wb = { Sheets: { 'data': ws }, SheetNames:['data']};
         const excelBuffer = XLSX.write(wb, {bookType: "xlsx", type: 'array'});
