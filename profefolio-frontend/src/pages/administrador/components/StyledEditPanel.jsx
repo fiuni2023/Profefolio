@@ -3,7 +3,7 @@ import { Container, FormCheck, FormGroup } from 'react-bootstrap';
 
 const SInput = styled.input`
     border-radius: 10px;
-    background-color: #E4E4E4;
+    background-color: ${(props)=>props.disabled?'#E4E4E4':'#FFFFFF'} ;
     color: #282828;
     font-size: 1.2em; 
     font-weight: 500;
@@ -11,11 +11,12 @@ const SInput = styled.input`
         color: #6C6C6C;  
         font-size: 1.2em; 
     }
+    padding: .1rem 0.75rem;
 `;
 
 const SSelect = styled.select`
     border-radius: 10px;
-    background-color: #E4E4E4;
+     background-color: ${(props)=>props.disabled?'#E4E4E4':'#FFFFFF'} ;
     color: #282828;
     font-size: 1.2em; 
     font-weight: 500;
@@ -23,6 +24,7 @@ const SSelect = styled.select`
         color: #6C6C6C;  
         font-size: 1.2em; 
     }
+    padding: .1rem 0.75rem;
 `;
 
 const SLabel = styled.label`
@@ -31,17 +33,24 @@ const SLabel = styled.label`
     margin: 0;
     padding: .375rem 0.75rem .1rem 0.75rem;
 `;
+const SRow = styled.div`
+    display: flex;
+    justify-content: flex-end;
+`;
+const SOption = styled.option`
+    color: #282828;  
+    font-size: 1.2em; 
+`;
+
+
+
 
 
 const SContainer = styled(Container)`
     padding: 0 0.5em;
 `;
 
-const SRow = styled.div`
-    display: flex;
-    justify-content: flex-end;
-    padding: 1rem 0 0 0;
-`;
+
 
 const Info = styled.div`
     font-size: 1.2em;
@@ -87,9 +96,6 @@ const SDOption = styled.option`
     font-size: 1.2em; 
 `;
 
-const SOption = styled.option`
-    color: #282828;  
-    font-size: 1.2em; 
-`;
+
 
 export {SContainer, SRow, Info, SInput, SLabel, SSelect, SCheck, SGroup, SOption, SDOption};

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Col, Row } from "react-bootstrap";
+import { Col } from "react-bootstrap";
 import { toast } from "react-hot-toast";
 import { ButtonInput } from "../../../components/Inputs";
 import AdminService from "../../../sevices/administrador";
@@ -10,7 +10,7 @@ import styles from './EditPanel.module.css'
 import { RxCross2 } from "react-icons/rx";
 import { BsPencilFill } from 'react-icons/bs'
 import { GoTrashcan } from 'react-icons/go'
-import { SInput, SSelect } from "./StyledEditPanel";
+import { SInput, SSelect, SLabel, SRow, SOption } from "./StyledEditPanel";
 
 const LAEditPanel = ({
     onUpdate = () => {}
@@ -89,75 +89,86 @@ const LAEditPanel = ({
         <>
             <div className={styles.PanelContainer} >
                 <div className={styles.ContentBody}>
-                    <Row>
-                        <Col>
-                            <div className="d-flex gap-2">
-                                <SInput disabled={!editing} className = {''} style={{width: '49%'}} value={selectedAdmin.nombre} onChange={(event) => { handleChange("nombre", event.target.value) }} />
-                                <SInput disabled={!editing} className = {''} placeholder={"Agregar Apellido"} style={{width: '49%'}} value={selectedAdmin.apellido} onChange={(event) => { handleChange("apellido", event.target.value) }} />
-                            </div>    
-                        </Col>
-                        <Col>
-                            <div className="d-flex justify-content-between">
-                                <div className="d-flex gap-2 align-items-center w-75">
-                                    <label>E-mail:</label>
-                                    <SInput disabled={!editing} className = {''} placeholder={"Agregar Email"} style={{width: '85%'}} value={selectedAdmin.email ?? ""} onChange={(event) => { handleChange("email", event.target.value) }} />
-                                </div>
-                                <div className={styles.ExitContainer} onClick={()=>{handleClose()}}>
+                    <SRow>
+                        <Col className="col-md-1">
+                            <div className={styles.ExitContainer} onClick={()=>{handleClose()}}>
                                     <RxCross2 size={18} />
                                 </div>
-                            </div>  
                         </Col>
-                    </Row>
-                    <Row className="mt-2">
-                        <Col>
-                            <div className="d-flex gap-2 align-items-center">
-                                <div className="d-flex gap-2 align-items-center">
-                                    <label>CIN:</label>
-                                    <SInput disabled={!editing} className = {''} placeholder={"Agregar CIN"} style={{width: 'auto'}} value={selectedAdmin.documento ?? ""} onChange={(event) => { handleChange("documento", event.target.value) }} />
-                                </div>
-                                <div className="d-flex gap-2 align-items-center">
-                                    <label>Tel:</label>
-                                    <SInput disabled={!editing} className = {''} placeholder={"Agregar Telefono"} style={{width: 'auto'}} value={selectedAdmin.telefono ?? ""} onChange={(event) => { handleChange("telefono", event.target.value) }} />
-                                </div>
-                                <div className="d-flex gap-2 align-items-center">
-                                    <label>Fecha Nac.:</label>
-                                    <SInput disabled={!editing} type={"date"} className = {''} style={{width: 'auto' }} value={selectedAdmin.nacimiento.split('T')[0] ?? ""} onChange={(event) => { handleChange("nacimiento", event.target.value) }} /> 
-                                </div>
+                    </SRow>
+                    <SRow>
+                        <Col className="col-sm-6 col-md-3">
+                            <div className="w-100">
+                                <SLabel>Nombres:</SLabel>
+                                <SInput disabled={!editing} className = {''} value={selectedAdmin.nombre} onChange={(event) => { handleChange("nombre", event.target.value) }} />
                             </div>
                         </Col>
-                        <Col>
+                        <Col className="col-sm-6 col-md-3">
+                            <div className="w-100">
+                                <SLabel>Apellidos:</SLabel>
+                                <SInput disabled={!editing} className = {''} placeholder={"Agregar Apellido"}  value={selectedAdmin.apellido} onChange={(event) => { handleChange("apellido", event.target.value) }} />
+                            </div>
+                        </Col>
+                        <Col className="col-sm-12 col-md-6">
+                                <div className="w-100">
+                                    <SLabel>E-mail:</SLabel>
+                                    <SInput disabled={!editing} className = {''} placeholder={"Agregar Email"} value={selectedAdmin.email ?? ""} onChange={(event) => { handleChange("email", event.target.value) }} />
+                                </div>
+                        </Col>
+                    </SRow>
+                    <SRow className="mt-2">
+                        <Col className="md-2">
+                            <div className="">
+                                <SLabel>CIN:</SLabel>
+                                <SInput disabled={!editing} className = {''} placeholder={"Agregar CIN"} style={{width: 'auto'}} value={selectedAdmin.documento ?? ""} onChange={(event) => { handleChange("documento", event.target.value) }} />
+                            </div>
+                        </Col>
+                        <Col className="md-2">
+                            <div className="">
+                                <SLabel>Tel:</SLabel>
+                                <SInput disabled={!editing} className = {''} placeholder={"Agregar Telefono"} style={{width: 'auto'}} value={selectedAdmin.telefono ?? ""} onChange={(event) => { handleChange("telefono", event.target.value) }} />
+                            </div>
+                        </Col>
+                        <Col className="md-2">
+                            <div className="">
+                                <SLabel>Fecha Nac.:</SLabel>
+                                <SInput disabled={!editing} type={"date"} className = {''} style={{width: 'auto' }} value={selectedAdmin.nacimiento.split('T')[0] ?? ""} onChange={(event) => { handleChange("nacimiento", event.target.value) }} /> 
+                            </div>
+                        </Col>
+                            
+                        <Col className="md-6">
                             <div className="d-flex gap-2 align-items-center">
-                                <label>Direccion:</label>
+                                <SLabel>Direccion:</SLabel>
                                 <SInput disabled={!editing} className = {''} placeholder={"Agregar Direccion"} style={{width: "90%"}} value={selectedAdmin.direccion ?? ""} onChange={(event) => { handleChange("direccion", event.target.value) }} />
                             </div>
                         </Col>
-                    </Row>
-                    <Row className="my-2">
+                    </SRow>
+                    <SRow className="my-2">
                         <Col>
                             <div className="d-flex gap-2">
-                                <div className="d-flex gap-2 align-items-center">
-                                    <label>Tipo de Documento:</label>
+                                <div className="">
+                                    <SLabel>Tipo de Documento:</SLabel>
                                     <SInput disabled={!editing} className = {''} placeholder={"Tipo de documento"} style={{width: "auto"}} value={selectedAdmin.documentoTipo ?? ""} onChange={(event) => { handleChange("documentoTipo", event.target.value) }} />
                                 </div>
-                                <div className="d-flex gap-2 align-items-center">
-                                    <label>Genero:</label>
+                                <div className="">
+                                    <SLabel>Genero:</SLabel>
                                     <SSelect disabled={!editing} className = {""} style={{width: "auto"}} value={selectedAdmin.genero ?? ""} onChange={(event) => { handleChange("genero", event.target.value) }} >
-                                        <option value={"M"}>Masculino</option>
-                                        <option value={"F"}>Femenino</option>
+                                        <SOption value={"M"}>Masculino</SOption>
+                                        <SOption value={"F"}>Femenino</SOption>
                                     </SSelect>
                                 </div>
                             </div>
                         </Col>
                         <Col>
                         </Col>
-                    </Row>
-                    <Row className="mt-2">
+                    </SRow>
+                    <SRow className="mt-2">
                         <Col className="d-flex gap-2 justify-content-between">
                             <div className="d-flex gap-2">
                                 { erasing?
                                     <>
                                         <div className="d-flex flex-column ">
-                                            <label className="align-self-center" >¿Desea eliminar? <label className="text-danger">ESTA ACCION ES IRREVERSIBLE</label></label>
+                                            <SLabel className="align-self-center" >¿Desea eliminar? <SLabel className="text-danger">ESTA ACCION ES IRREVERSIBLE</SLabel></SLabel>
                                             <div className="d-flex gap-2">
                                                 <ButtonInput variant="danger-inv" width="100%" height="100%" fontSize="12px" text="CANCELAR" handleClick={()=>{
                                                         setErasing(false)
@@ -196,7 +207,7 @@ const LAEditPanel = ({
                                 }
                             </div>
                         </Col>
-                    </Row>
+                    </SRow>
                     
                 </div>
             </div>
