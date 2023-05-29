@@ -415,6 +415,10 @@ namespace profefolio.Controllers
 
 
                     case "eventos-clases":
+                    //Un evento tiene: tipo, fecha, materia,clase, colegio
+                    //Una evaluacion tiene: tipo, fecha, materiaListaId
+                    //MateriaLista tiene: claseId, MateriaId
+                    //Clase tiene: colegioId
                         return BadRequest("Opcion en implementacion");
                     case "eventos-materias":
                         return BadRequest("Opcion en implementacion");
