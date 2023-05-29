@@ -21,13 +21,15 @@ public class DocumentoService : IDocumento
             .FirstOrDefaultAsync();
     }
 
-    public async Task<Documento> FindByNameDocumento(string n)
+    public async Task<Documento> FindByNameDocumento(string n, int idML)
     {
         return await _dbContext.Documentos
-            .Where(p => !p.Deleted && p.Nombre == n)
+            .Where(p => !p.Deleted)
+            .Where(p => p.Nombre == n)
+            .Where(p => p.MateriaListaId == idML)
             .FirstOrDefaultAsync();
     }
-   
+
     public Documento Edit(Documento t)
     {
         _dbContext.Entry(t).State = EntityState.Modified;
@@ -81,5 +83,35 @@ public class DocumentoService : IDocumento
          .Take(cantPorPag);
     }
 
-   
+    /*
+    La lista de Documento resultante contiene los documentos que pertenecen
+    a los registros de MateriaLista con el mismo idMateria que se pasó como parámetro y que  
+     ProfesorId  == idPrf
+    */
+    public async Task<List<Documento>> GetAll(int idMateria, string idPrf)
+    {
+        var materiasListaIds = await _dbContext.MateriaListas
+            .Where(ml => ml.MateriaId == idMateria && ml.ProfesorId == idPrf)
+            .Select(ml => ml.Id)
+            .ToListAsync();
+
+        return await _dbContext.Documentos
+            .Where(p => !p.Deleted)
+            .Where(p => materiasListaIds.Contains(p.MateriaListaId))
+            .ToListAsync();
+    }
+
+
+    /**
+    * Retorna true si el idPrf pasado es igual al ProfesorId de MateriaLista
+    **/
+    public async Task<bool> FindProfesorIdByDocumento(int idMateriaLista, string idPrf)
+    {
+        var materiaLista = await _dbContext.MateriaListas
+            .FirstOrDefaultAsync(ml => ml.Id == idMateriaLista && ml.ProfesorId == idPrf);
+
+        return materiaLista != null;
+    }
+
+
 }
