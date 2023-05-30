@@ -49,11 +49,12 @@ function CreateModalDocumento({
       const enlace = document.getElementById("enlace").value;
 
       const body = {
-        "nombre": nombre,
-        "enlace": enlace,
-        "materiaListaId": 2,
+        "nombre":nombre,
+        "enlace":enlace,
+        "materiaListaId":11,
       };
   
+      console.log('body',body);
       ClassesService.createDocumento(body, getToken())
 
         .then(() => {
