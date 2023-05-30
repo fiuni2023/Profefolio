@@ -41,7 +41,7 @@ const ProfesorMateria = () => {
     }, [materias])
 
     const componentes = {
-        title: `Bienvenido Prof. ${getUserName()} Materia`,
+        title: `Bienvenido Prof. ${getUserName()} - Lista de Materias`,
         componentes: [
             <SRow>
                 <ContainerColegios onClick={handleClickCards} lista={materiasMapped}/>

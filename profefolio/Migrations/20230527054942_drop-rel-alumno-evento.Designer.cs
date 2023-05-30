@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using profefolio.Models;
@@ -11,9 +12,10 @@ using profefolio.Models;
 namespace profefolio.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230527054942_drop-rel-alumno-evento")]
+    partial class droprelalumnoevento
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -50,29 +52,29 @@ namespace profefolio.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "343f3bc4-cc24-4493-a6d3-21a4a0ffb795",
-                            ConcurrencyStamp = "d66068f4-7654-4ab4-91f4-f7e3acb12fea",
+                            Id = "17f6ce79-f4f4-43d7-8acf-bd5203a47f43",
+                            ConcurrencyStamp = "d1b8a287-8ed4-46c6-885a-779947c037ac",
                             Name = "Master",
                             NormalizedName = "MASTER"
                         },
                         new
                         {
-                            Id = "663ae2d9-ea36-49c9-a642-54a1c0444c06",
-                            ConcurrencyStamp = "14e5c30b-fad7-4837-9f3f-a94f113950d1",
+                            Id = "dd670546-e025-4ea1-b50f-b92207c058a0",
+                            ConcurrencyStamp = "930141b2-ce60-492f-a2c3-74f455f55357",
                             Name = "Alumno",
                             NormalizedName = "ALUMNO"
                         },
                         new
                         {
-                            Id = "ba86256b-f990-4c64-9718-fd3a12ecfce2",
-                            ConcurrencyStamp = "0be05713-af39-47f1-8008-8db5a836b126",
+                            Id = "67748158-fd55-4851-94ab-5e18cdfa2993",
+                            ConcurrencyStamp = "8b795dfd-63a0-45d0-82ad-36ab8e276b5b",
                             Name = "Profesor",
                             NormalizedName = "PROFESOR"
                         },
                         new
                         {
-                            Id = "ed00b966-b749-4abb-8efd-6703d4fb691d",
-                            ConcurrencyStamp = "68b6ebaa-963b-4f03-85a5-97691728442f",
+                            Id = "84d34d22-47e1-4b00-a2de-dbebc8f08cc0",
+                            ConcurrencyStamp = "f097b3ab-afcc-4297-8b74-0bd002ca03c8",
                             Name = "Administrador de Colegio",
                             NormalizedName = "ADMINISTRADOR DE COLEGIO"
                         });
@@ -167,13 +169,13 @@ namespace profefolio.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "eb0772ca-b805-49fb-8ebf-1442977c828a",
-                            RoleId = "343f3bc4-cc24-4493-a6d3-21a4a0ffb795"
+                            UserId = "636e0c53-1d35-4da3-8d79-e78bd4e1903e",
+                            RoleId = "17f6ce79-f4f4-43d7-8acf-bd5203a47f43"
                         },
                         new
                         {
-                            UserId = "c9706138-d1c6-4aab-b94c-9c9aba0925c4",
-                            RoleId = "ed00b966-b749-4abb-8efd-6703d4fb691d"
+                            UserId = "91a2fbf1-6f7d-4d54-a17d-6b760ed98872",
+                            RoleId = "84d34d22-47e1-4b00-a2de-dbebc8f08cc0"
                         });
                 });
 
@@ -541,8 +543,8 @@ namespace profefolio.Migrations
 
                     b.Property<string>("Enlace")
                         .IsRequired()
-                        .HasMaxLength(300)
-                        .HasColumnType("character varying(300)");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<int>("MateriaListaId")
                         .HasColumnType("integer");
@@ -555,8 +557,11 @@ namespace profefolio.Migrations
 
                     b.Property<string>("Nombre")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
+
+                    b.Property<string>("ProfesorId")
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -609,7 +614,7 @@ namespace profefolio.Migrations
 
                     b.HasIndex("MateriaListaId");
 
-                    b.ToTable("Evaluaciones");
+                    b.ToTable("Eventos");
                 });
 
             modelBuilder.Entity("profefolio.Models.Entities.EvaluacionAlumno", b =>
@@ -619,9 +624,6 @@ namespace profefolio.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ClasesAlumnosColegioId")
-                        .HasColumnType("integer");
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("timestamp without time zone");
@@ -649,11 +651,9 @@ namespace profefolio.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ClasesAlumnosColegioId");
-
                     b.HasIndex("EvaluacionId");
 
-                    b.ToTable("EvaluacionAlumnos");
+                    b.ToTable("EventoAlumnos");
                 });
 
             modelBuilder.Entity("profefolio.Models.Entities.HoraCatedra", b =>
@@ -911,10 +911,10 @@ namespace profefolio.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "eb0772ca-b805-49fb-8ebf-1442977c828a",
+                            Id = "636e0c53-1d35-4da3-8d79-e78bd4e1903e",
                             AccessFailedCount = 0,
                             Apellido = "Torres",
-                            ConcurrencyStamp = "8e3b0658-eb70-4867-a3c0-d607cd503657",
+                            ConcurrencyStamp = "fd3e686e-0610-4448-b8cb-ee6e1b172fa5",
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Deleted = false,
                             Email = "Carlos.Torres123@mail.com",
@@ -925,17 +925,17 @@ namespace profefolio.Migrations
                             Nacimiento = new DateTime(1999, 7, 10, 4, 0, 0, 0, DateTimeKind.Utc),
                             Nombre = "Carlos",
                             NormalizedEmail = "CARLOS.TORRES123@MAIL.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEHf+PyvfCph1smxFy9DxOG+DthSDjk42ke0sPsbg7I0XmxKSBbVLGV9aWd6Ee5ilGg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEJY8nFH/2T2gwrVZsmNVvGxQUg6rmqHaLDl1vSoaJ0iRZZ4194oqy6fCZZW1ryTPJA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "c5024530-db08-43e1-8626-86d3c1f37537",
+                            SecurityStamp = "33b564c3-ce94-4659-9485-ffb927423287",
                             TwoFactorEnabled = false
                         },
                         new
                         {
-                            Id = "c9706138-d1c6-4aab-b94c-9c9aba0925c4",
+                            Id = "91a2fbf1-6f7d-4d54-a17d-6b760ed98872",
                             AccessFailedCount = 0,
                             Apellido = "Martinez",
-                            ConcurrencyStamp = "45106a76-2123-40fe-b715-dddeb1e4309f",
+                            ConcurrencyStamp = "8829c59d-5a9a-4fcb-9464-147a53335402",
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Deleted = false,
                             Email = "Juan.Martinez123@mail.com",
@@ -946,9 +946,9 @@ namespace profefolio.Migrations
                             Nacimiento = new DateTime(1999, 7, 10, 4, 0, 0, 0, DateTimeKind.Utc),
                             Nombre = "Juan",
                             NormalizedEmail = "JUAN.MARTINEZ123@MAIL.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEBDtvPpMKLh6fBJbT/xzG7/xgIeECX1xvjPh0nbswn5dVMW2JRcacS/5b9EgGoN0YQ==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEHIXgV+ZutQqiN03RpSqQ78jnse/I2am+scfSQamNQbw2Lg7p0JxIMYxyG4yCOTEUA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "438dd245-280b-4172-ad8c-11c543f6f9f8",
+                            SecurityStamp = "38b1a89b-7a1b-4bc6-a4b7-a2aa41e4d4ba",
                             TwoFactorEnabled = false
                         });
                 });
@@ -1132,19 +1132,11 @@ namespace profefolio.Migrations
 
             modelBuilder.Entity("profefolio.Models.Entities.EvaluacionAlumno", b =>
                 {
-                    b.HasOne("profefolio.Models.Entities.ClasesAlumnosColegio", "ClasesAlumnosColegio")
-                        .WithMany()
-                        .HasForeignKey("ClasesAlumnosColegioId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("profefolio.Models.Entities.Evaluacion", "Evaluacion")
                         .WithMany("EvaluacionAlumnos")
                         .HasForeignKey("EvaluacionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("ClasesAlumnosColegio");
 
                     b.Navigation("Evaluacion");
                 });

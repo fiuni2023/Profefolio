@@ -85,7 +85,7 @@ const MapperHorariosByColegio = (eventos) => {
         const color = GetColors(e.colegioId)
         return {
             id: e.id,
-            title: e.nombreColegio,
+            title: `${e.nombreColegio} - ${e.nombreClase} - ${e.nombre}`,
             start: inicio,
             end: fin,
             color: color

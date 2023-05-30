@@ -42,6 +42,7 @@ export const ModularProvider = ({ children }) => {
     const [ materiaName, setMateriaName ] = useState("")
     const [ asistencias, setAsistencias ] = useState([])
     const [ puntajes, setPuntajes ] = useState([])
+    const [ alumnos, setAlumnos ] = useState([])
 
     useEffect(()=>{
         // const body = {opcion: 'card-clases', id: 1, anho: 2023}
@@ -62,9 +63,12 @@ export const ModularProvider = ({ children }) => {
 
     useEffect(()=>{
         if(claseId){
-            const body = {opcion: 'card-materias', id: claseId, anho: 2023}
+            let body = {opcion: 'card-materias', id: claseId, anho: 2023}
             ProfesorPagesService.Get(body, token)
             .then(d=>setMaterias(d.data))
+            body = {opcion: 'lista-alumnos', id: claseId, anho: 2023}
+            ProfesorPagesService.Get(body, token)
+            .then(d=>setAlumnos(d.data))
         }
     },[fetch_data, token, claseId])
 
@@ -89,7 +93,7 @@ export const ModularProvider = ({ children }) => {
         if(page === "materia") return setCurrentPage(pages.materia)
         if(page === "materiashow") return setCurrentPage(pages.materiashow)
         if(page === "anotacion") return setCurrentPage(pages.anotacion)
-        if(page === "documentos+") return setCurrentPage(pages.documentos)
+        if(page === "documentos") return setCurrentPage(pages.documentos)
         setCurrentPage(pages.dashboard)
         
     }
@@ -115,7 +119,8 @@ export const ModularProvider = ({ children }) => {
         materiaShow,
         materiaName,
         asistencias,
-        puntajes
+        puntajes,
+        alumnos
     }
 
     const values = {

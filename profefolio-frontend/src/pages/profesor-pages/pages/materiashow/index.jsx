@@ -7,6 +7,7 @@ import PromedioPuntaje from "../../components/PromedioPuntaje";
 import PromedioAsistencia from "../../components/PromedioAsistencia";
 import MateriaCards from "../../components/MateriaCards";
 import BackButton from "../../components/BackButton";
+import MateriaHorario from "../../components/MateriaHorario";
 
 const ProfesorMateriaShow = () => {
     const {getUserName} = useGeneralContext()
@@ -49,7 +50,7 @@ const ProfesorMateriaShow = () => {
     }
 
     const componentes = {
-        title: `Bienvenido Prof. ${getUserName()} Materia`,
+        title: `Bienvenido Prof. ${getUserName()} - ${materiaName}`,
         componentes: [
             <SRow>
                 <MateriaCards materia={materiaMapped} configuration={config} />
@@ -60,7 +61,10 @@ const ProfesorMateriaShow = () => {
     };
     return (
         <>  
-            <BackButton to="materia" />
+            <div className="d-flex align-items-center justify-content-between">
+                <BackButton to="materia" />
+                <MateriaHorario />
+            </div>
             <ShowContainer data={componentes}/>
         </>
     )
