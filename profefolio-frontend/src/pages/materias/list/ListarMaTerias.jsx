@@ -12,6 +12,8 @@ import { useNavigate } from 'react-router';
 import Tabla from '../../../components/Tabla';
 import ModalConfirmacion from '../modal/ModalConfirmarDelete.jsx';
 import IconButton from '../../../components/IconButton';
+import Spinner from '../../../components/componentsStyles/SyledSpinner';
+
 function ListarMaTerias() {
 
   const [materias, setMaterias] = useState([]);
@@ -31,7 +33,9 @@ function ListarMaTerias() {
   const [nombre_Materia_delete, setNombreMateriaDelete] = useState('');
   const [showModalCiclo, setShowModalCiclo] = useState(false);
   const [nombre_Ciclo_delete, setNombreCicloDelete] = useState('');
-  const nav = useNavigate()
+  const nav = useNavigate();
+  const [loadingMaterias, setLoadingMaterias] = useState(true); 
+  const [loadingCiclos, setLoadingCiclos] = useState(true); 
 
   const getCiclos = () => {
     if (!cancan("Administrador de Colegio")) {
@@ -51,7 +55,8 @@ function ListarMaTerias() {
       axios.request(config)
         .then((response) => {
 
-          setCiclos(response.data)
+          setCiclos(response.data);
+          setLoadingCiclos(false);
 
         })
         .catch((error) => {
@@ -77,6 +82,7 @@ function ListarMaTerias() {
 
         .then(response => {
           setMaterias(response.data);
+          setLoadingMaterias(false);
         })
         .catch(error => {
           toast.error(error);
@@ -316,6 +322,7 @@ function ListarMaTerias() {
           <div className={styles.tableContainer}>
             <div className={styles.container} id={styles.containerMaterias} >
               <div id={styles.materiasTable}>
+              {loadingMaterias ? <Spinner height={'calc(100vh - 80px)'} /> :
                 <Tabla
                   datosTabla={{
                     tituloTabla: 'Lista de Materias',
@@ -338,6 +345,7 @@ function ListarMaTerias() {
                   }}
                   selected={id ?? '-'}
                 />
+              }
               </div>
               <ModalConfirmacion
                 show={showModal}
@@ -379,6 +387,7 @@ function ListarMaTerias() {
 
             <div className={styles.container} id={styles.containerCiclos} >
               <div id={styles.ciclosTable}>
+              {loadingCiclos ? <Spinner height={'calc(100vh - 80px)'} /> :
                 <Tabla
                   datosTabla={{
                     tituloTabla: 'Lista de Ciclos',
@@ -398,6 +407,7 @@ function ListarMaTerias() {
                   }}
                   selected={id ?? '-'}
                 />
+              }
                 <ModalConfirmacion
                   show={showModalCiclo}
                   onHide={() => setShowModalCiclo(false)}
