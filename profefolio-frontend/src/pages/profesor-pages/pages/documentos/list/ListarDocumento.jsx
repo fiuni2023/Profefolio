@@ -118,32 +118,10 @@ useEffect(() => {
   };
 
   const btndetallesDocumento = (data) => {
-    setId(data.id);
-    setData(data);
-    setDetallesMateria(true);
+    setSelectedData(data)
+    setShow(true);
   };
 
-
-  const handleDelete = async (event) => {
-    try {
-      // lógica para eliminar el elemento
-      // `https://localhost:7063/api/Materias/${id}`
-      await axios.delete(`${APILINK}/api/Materia/${id}`, {
-        headers: {
-          Authorization: `Bearer ${getToken()}`,
-        }
-      });
-
-      toast.success("Eliminado exitoso");
-      getMaterias();
-      setShowModal(false);
-    } catch (error) {
-      if (error.response && error.response.status === 400) {
-        toast.error("No se puede eliminar una materia asignada a una clase");
-      }
-    }
-    setShowModal(false); // ocultar el modal después de eliminar el elemento
-  };
 
   return (
     <>
@@ -163,7 +141,7 @@ useEffect(() => {
                       { titulo: 'Url' },
                     
                     ],
-                    clickable: { action: btndetallesDocumento },
+                    clickable: { action: btndetallesDocumento},
                     
                     filas: documento.map((documento) => ({
                       fila: documento,
@@ -181,13 +159,6 @@ useEffect(() => {
               <AddButton onClick={()=>setShow(true)}>
               <AiOutlinePlus size={"35px"} />
             </AddButton>
-              <ModalConfirmacion
-                show={showModal}
-                onHide={() => setShowModal(false)}
-                onConfirm={handleDelete}
-               // materia={nombre_Materia_delete}
-              />
-
               <div>  
              
 
