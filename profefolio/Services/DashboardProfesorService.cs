@@ -394,34 +394,62 @@ namespace profefolio.Services
         */
         public async Task<List<DBCardEventosClaseDTO>> FindEventosOfClase(string idProfesor, int idColegio)
         {
-            //seleccinar las clases de idColegio
             var clases = await _context.Clases
                 .Where(c => c.ColegioId == idColegio)
-                .ToListAsync();
-            
-            //filtrar las materiaLista de idProfesor
-            var materiaListasIds = await _context.Eventos
-                .Where(e => clases.Any(c => c.Id == e.MateriaList.ClaseId) && e.MateriaList.ProfesorId == idProfesor)
-                .Select(e => e.MateriaListaId)
-                .Distinct()
+                .Include(c => c.Colegio)
                 .ToListAsync();
 
+            Console.WriteLine("Clases encontradas:");
+            foreach (var clase in clases)
+            {
+                Console.WriteLine($"Id: {clase.Id}, Nombre: {clase.Nombre}, Colegio: {clase.Colegio?.Nombre}");
+            }
+
+            var claseIds = clases.Select(c => c.Id).ToList();
+
             var materiaListas = await _context.MateriaListas
-                .Where(m => materiaListasIds.Contains(m.Id))
+                .Where(m => m.ProfesorId == idProfesor && claseIds.Contains(m.ClaseId))
                 .Include(m => m.Materia)
                 .ToListAsync();
 
-            var eventosClase = materiaListas.SelectMany(m => m.Eventos.Select(e => new DBCardEventosClaseDTO
+            Console.WriteLine("MateriaListas encontradas:");
+            foreach (var materiaLista in materiaListas)
+            {
+                Console.WriteLine($"Id: {materiaLista.Id}, ProfesorId: {materiaLista.ProfesorId}, ClaseId: {materiaLista.ClaseId}");
+            }
+
+            var materiaListaIds = materiaListas.Select(m => m.Id).ToList();
+
+            var eventos = await _context.Eventos
+                .Where(e => materiaListaIds.Contains(e.MateriaListaId))
+                .ToListAsync();
+
+            Console.WriteLine("Eventos encontrados:");
+            foreach (var evento in eventos)
+            {
+                Console.WriteLine($"Id: {evento.Id}, MateriaListaId: {evento.MateriaListaId}, Tipo: {evento.Tipo}, Fecha: {evento.Fecha}");
+            }
+
+            var eventosClase = eventos.Select(e => new DBCardEventosClaseDTO
             {
                 Tipo = e.Tipo,
                 Fecha = e.Fecha,
-                nombreMateria = m.Materia.Nombre_Materia,
-                nombreClase = clases.FirstOrDefault(c => c.Id == m.ClaseId)?.Nombre,
-                nombreColegio = clases.FirstOrDefault(c => c.Id == m.ClaseId)?.Colegio.Nombre
-            })).ToList();
+                nombreMateria = materiaListas.FirstOrDefault(m => m.Id == e.MateriaListaId)?.Materia?.Nombre_Materia,
+                nombreClase = clases.FirstOrDefault(c => c.Id == materiaListas.FirstOrDefault(m => m.Id == e.MateriaListaId)?.ClaseId)?.Nombre,
+                nombreColegio = clases.FirstOrDefault(c => c.Id == materiaListas.FirstOrDefault(m => m.Id == e.MateriaListaId)?.ClaseId)?.Colegio?.Nombre
+            }).ToList();
+
+            Console.WriteLine("Eventos de Clase encontrados:");
+            foreach (var eventoClase in eventosClase)
+            {
+                Console.WriteLine($"Tipo: {eventoClase.Tipo}, Fecha: {eventoClase.Fecha}, Materia: {eventoClase.nombreMateria}, Clase: {eventoClase.nombreClase}, Colegio: {eventoClase.nombreColegio}");
+            }
 
             return eventosClase;
         }
+
+
+
 
 
     }
