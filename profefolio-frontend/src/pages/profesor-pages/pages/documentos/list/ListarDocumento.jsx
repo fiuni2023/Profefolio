@@ -53,8 +53,10 @@ function ListarDocumentos() {
   const [nombre, setNombre] = useState('');
   const [enlace, setEnlace] = useState('');
 
+  const [documento, setDocumento] = useState([]);
+
   const [showModal, setShowModal] = useState(false);
-  const [nombre_Materia_delete, setNombreMateriaDelete] = useState('');
+  const [nombre_delete, setNombreDelete] = useState('');
   const [fetch_data, setFetchData ] = useState([])
 
   const nav = useNavigate()
@@ -70,62 +72,35 @@ function ListarDocumentos() {
   const doFetch =() =>{
     setFetchData((before)=>[before])
 }
-  const getMaterias = () => {
-    verifyToken()
-    if (!cancan("Profesor")) {
-      nav("/")
-    } else {
-      //https://localhost:7063/api/Materia
 
-      axios.get(`${APILINK}/api/Materia`, {
-        headers: {
-          Authorization: `Bearer ${getToken()}`,
-        }
-      })
 
-        .then(response => {
-          //setMaterias(response.data);
-        })
-        .catch(error => {
-          toast.error(error);
-        });
+useEffect(() => {
+
+  const idMateriaClase=1;
+  const listaMateriasProfesores = async () => {
+    try {
+      const dataList = await ClassesService.getDocumento(idMateriaClase,getToken());
+      setDocumento(dataList.data ?? []); 
+      
+      console.log('dataList ?? []',dataList.data ?? []);
+
+
+    } catch (e) {
+      setDocumento([]);
     }
+  };
+  listaMateriasProfesores();
 
-  }
+ 
 
-  useEffect(() => {
-
-    getMaterias();
-
-
-
-  }, [page, cancan, verifyToken, nav, getToken]);
-
+}, []);
   /*
     "nombre": "string",
   "enlace": "string",
   "profesorId": "string",
   "materiaListaId": 0 */
 
-  const handleDocumentos = async () => {
-
-    const body = {
-      "nombre": nombre,
-      "enlace": enlace,
-      "profesorId": getUserId(),
-      "materiaListaId": getMateriaId(),
-    };
-
-    ClassesService.createDocumento(body, getToken())
-      .then(() => {
-        toast.success("Los datos fueron enviados correctamente.");
-        window.location.reload();
-      })
-      .catch(() => {
-        toast.error("No se pudieron guardar los cambios. Intente de nuevo o recargue la página.");
-      });
-  };
-
+  
 
   const handleNombre = (event) => {
     setNombre(event.target.value);
@@ -137,9 +112,15 @@ function ListarDocumentos() {
  
   const handleShowModal = (event, id, nombre) => {
     setId(id);
-    setNombreMateriaDelete(nombre);
+    setNombreDelete(nombre);
     setShowModal(true);
     event.stopPropagation();
+  };
+
+  const btndetallesDocumento = (data) => {
+    setId(data.id);
+    setData(data);
+    setDetallesMateria(true);
   };
 
 
@@ -180,19 +161,16 @@ function ListarDocumentos() {
                     titulos: [
                       { titulo: 'Nombre' },
                       { titulo: 'Url' },
-                      { titulo: 'Acciones' }
-                    ],
-                   // clickable: { action: btndetallesMateria },
                     
-                    filas: materias.map((materia) => ({
-                      fila: materia,
+                    ],
+                    clickable: { action: btndetallesDocumento },
+                    
+                    filas: documento.map((documento) => ({
+                      fila: documento,
                       datos: [
-                        { dato: materia.id },
-                        { dato: materia.nombre_Materia },
-                        {
-                          dato: <IconButton enabled={true} buttonType='close' onClick={(event) => handleShowModal(event, materia.id, materia.nombre_Materia)}> X </IconButton>
-                        },
-
+                        { dato: documento.nombre },
+                        { dato: documento.enlace },
+                       
                       ],
                     })),
                   }}
