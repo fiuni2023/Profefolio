@@ -24,7 +24,7 @@ const Scrolleable = ({ studentsList, isLoading = true, handleSelectOption = () =
                     </SHeader>}
                 {!isLoading && studentsList?.list &&
                     <SBody background={studentsList?.background ?? "gray"}>
-                        {isLoading ? <p>Cargando lista de alumnos</p>
+                        {isLoading ? <p></p>
                             : studentsList.list.length === 0 ? <p>No hay alumnos para mostrar</p>
                                 : <List>
                                     {studentsList?.list?.map((student, index) => (
