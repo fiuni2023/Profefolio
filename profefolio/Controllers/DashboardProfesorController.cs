@@ -22,8 +22,9 @@ namespace profefolio.Controllers
         private IColegioProfesor _cProfService;
         private IDashboardProfesor _dashBoardService;
         private IColegio _colegioService;
+        private IProfesor _profesorService;
         private IMapper _mapper;
-        private readonly IProfesor _profesorService;
+
         private static int CantPorPage => Constantes.CANT_ITEMS_POR_PAGE;
 
 
@@ -406,37 +407,92 @@ namespace profefolio.Controllers
                         }
 
                         return Ok(resultsMaterias);
+
+
                     case "cards-materia":
-                        return BadRequest("Opcion en implementacion");
+                        var materia = await _dashBoardService.FindDataForCardOfInfoMateria(dto.Id, userEmail);
+                        return Ok(_mapper.Map<DBCardsMateriaInfo>(materia));
+
+
                     case "eventos-clases":
                         return BadRequest("Opcion en implementacion");
                     case "eventos-materias":
                         return BadRequest("Opcion en implementacion");
+
+
+
+
                     case "lista-alumnos":
-                        return BadRequest("Opcion en implementacion");
+                        //id clase
+                        //id prf
+
+                        var _profId = await _profesorService.GetProfesorIdByEmail(userEmail);
+                        var clasesA = await _dashBoardService.GetColegioAlumnoId(dto.Id, _profId);
+                        var resultsA = _mapper.Map<List<DBClaseAlumnoColegioDTO>>(clasesA);
+
+                        foreach (var result in resultsA)
+                        {
+                            //a partir del colegioAlumnoId obtener el idAlumno
+                            var idAlumno = await _dashBoardService.FindAlumnoIdByColegioAlumnoId(result.Id);
+                            var alumno = await _personaService.FindById(idAlumno);
+                            result.Nombres = alumno.Nombre;
+                            result.Apellidos = alumno.Apellido;
+
+                        }
+                        resultsA = resultsA.OrderBy(r => r.Apellidos).ToList();
+                        return Ok(resultsA);
+                    
+                    
+                    
                     case "promedio-puntajes":
-                        return BadRequest("Opcion en implementacion");
+                        /*
+                            TODO
+
+                            HACER QUE SE OBTENGAN LOS VALORES DE LA BASE DE DATOS DESPUES DE QUE SE CREEN LAS 
+                            TABLAS RELACIONADAS A CALIFICACIONES
+                        */
+                        var promedios = await _dashBoardService.GetPromediosPuntajesByIdMateriaLista(dto.Id, userEmail);
+                        
+                        var promedio1 = new DBPromedioPuntajesDTO(){
+                            Evaluacion = "Prueba 1",
+                            Puntaje = 45.5
+                        };
+                        var promedio2 = new DBPromedioPuntajesDTO(){
+                            Evaluacion = "Prueba 1",
+                            Puntaje = 85.2
+                        };
+                        var promedio3 = new DBPromedioPuntajesDTO(){
+                            Evaluacion = "Prueba 1",
+                            Puntaje = 68.0
+                        };
+                        var promedio4 = new DBPromedioPuntajesDTO(){
+                            Evaluacion = "Prueba 1",
+                            Puntaje = 90.0
+                        };
+                        var listPromedios = new List<DBPromedioPuntajesDTO>(){promedio1, promedio2, promedio3, promedio4};
+                        
+                        return Ok(listPromedios);
+
+
+
                     case "promedio-asistencias":
                         var profeId = await _profesorService.GetProfesorIdByEmail(userEmail);
-
-                        if (profeId == null)
-                        {
+            
+                        if(profeId == null){
                             return Unauthorized();
                         }
 
                         var year = dto.Anho <= 0 ? DateTime.Now.Year : dto.Anho;
-
+                        
                         var resultList = new List<DBPromedioAsistenciasDTO>();
                         // se obtene la cantidad de meses a retornar, si es un anho distinto al actual, se muestran los 12, de lo contrario hasta el mes actual
-                        var maxMes = year != DateTime.Now.Year ? 12 : DateTime.Now.Month;
-
-                        for (int mes = 1; mes <= maxMes; mes++)
-                        {
+                        var maxMes = year != DateTime.Now.Year ? 12 : DateTime.Now.Month;  
+                        
+                        for(int mes = 1; mes <= maxMes; mes++){
 
                             var (presentes, ausentes, justificados) = await _dashBoardService.GetPromedioAsistenciasByMonth(year, mes, dto.Id, profeId);
-
-                            var promedioAsistencias = new DBPromedioAsistenciasDTO()
-                            {
+                            
+                            var promedioAsistencias = new DBPromedioAsistenciasDTO(){
                                 Mes = TimeComparator.MonthToSpanish(mes),
                                 Presentes = presentes,
                                 Ausentes = ausentes,
