@@ -51,7 +51,7 @@ function CreateModalDocumento({
       const body = {
         "nombre":nombre,
         "enlace":enlace,
-        "materiaListaId":11,
+        "materiaListaId":1,
       };
   
       console.log('body',body);
