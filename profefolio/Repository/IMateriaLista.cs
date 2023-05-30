@@ -10,5 +10,6 @@ namespace profefolio.Repository
         Task<List<MateriaLista>> FindByIdClaseAndUser(int idClase, string userEmail, string role);
         Task<bool> Put(string idUser, MateriaListaPutDTO dto);
         Task<Persona> GetProfesorOfMateria(int idMateriaLista, string profesorEmail);
+        Task<MateriaLista> FindById(int id);
     }
 }

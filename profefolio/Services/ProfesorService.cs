@@ -170,5 +170,11 @@ namespace profefolio.Services
                         .Include(a => a.Profesor)
                         .AnyAsync(a => !a.Deleted && a.Id == idMateriaLista && a.Profesor.Email.Equals(emailProfesor));
         }
+        public async Task<Persona> GetProfesorByEmail(string userEmail)
+        {
+            var profesor = await _context.Users
+                .FirstOrDefaultAsync(p => p.Email == userEmail);
+            return profesor;
+        }
     }
 }
