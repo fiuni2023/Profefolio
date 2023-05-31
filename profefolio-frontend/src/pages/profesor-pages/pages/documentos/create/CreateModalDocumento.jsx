@@ -16,13 +16,10 @@ function CreateModalDocumento({
     fetchFunc = () => { },
     selectData}) {
 
-    console.log('')
 
-    const { getToken, cancan, verifyToken,getMateriaId,getUserId } = useGeneralContext();
+    const { getToken, cancan, verifyToken } = useGeneralContext();
 
-    
-    const [nombre, setNombre] = useState('');
-    const [enlace, setEnlace] = useState(''); 
+
     const disabled = false
 
     const handleEditSubmit = () => {
@@ -56,7 +53,7 @@ function CreateModalDocumento({
     }
 
     useEffect(() => {
-        console.log('selectData',selectData);
+      
         if (selectData) {
             document.getElementById("nombre").value = selectData.nombre;
             document.getElementById("enlace").value = selectData.enlace;
@@ -95,7 +92,6 @@ function CreateModalDocumento({
         "materiaListaId":1,
       };
   
-      console.log('body',body);
       ClassesService.createDocumento(body, getToken())
 
         .then(() => {
