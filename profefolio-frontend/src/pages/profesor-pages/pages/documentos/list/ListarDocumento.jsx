@@ -44,11 +44,9 @@ const GapDiv = styled.div`
     `
 function ListarDocumentos() {
 
-  const [materias, setMaterias] = useState([]);
-
   const [id, setId] = useState(null);
-  const [selectData, setSelectedData] = useState({})
-  const { getToken, cancan, verifyToken,getMateriaId,getUserId } = useGeneralContext();
+  const [selectData, setSelectedData] = useState(null)
+  const { getToken, cancan, verifyToken } = useGeneralContext();
   const [page, setPage] = useState(1);
   const [nombre, setNombre] = useState('');
   const [enlace, setEnlace] = useState('');
@@ -93,7 +91,7 @@ useEffect(() => {
 
  
 
-}, []);
+}, [cancan, verifyToken, nav, getToken, fetch_data]);
   /*
     "nombre": "string",
   "enlace": "string",
@@ -119,6 +117,7 @@ useEffect(() => {
 
   const btndetallesDocumento = (data) => {
     setSelectedData(data)
+    console.log('data',data);
     setShow(true);
   };
 
@@ -152,9 +151,10 @@ useEffect(() => {
                       ],
                     })),
                   }}
-                  selected={id ?? '-'}
                 />
               </div>
+
+              <CreateModalDocumento onHide={handleHide} selectData={selectData} show={show}  />
 
               <AddButton onClick={()=>setShow(true)}>
               <AiOutlinePlus size={"35px"} />
@@ -169,7 +169,6 @@ useEffect(() => {
          
         </PanelContainerBG>
         <footer>
-        <CreateModalDocumento onHide={handleHide} selectData={selectData} show={show}  />
 
         </footer>
 
