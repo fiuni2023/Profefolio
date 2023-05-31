@@ -14,10 +14,10 @@ function CreateModalDocumento({
     show = false,
     onHide = () => { },
     fetchFunc = () => { },
-    selectData}) {
+    selectData = null }) {
 
 
-    const { getToken, cancan, verifyToken } = useGeneralContext();
+    const { getToken, getUserId } = useGeneralContext();
 
 
     const disabled = false
@@ -52,16 +52,6 @@ function CreateModalDocumento({
             });
     }
 
-    useEffect(() => {
-      
-        if (selectData) {
-            document.getElementById("nombre").value = selectData.nombre;
-            document.getElementById("enlace").value = selectData.enlace;
-           
-        }
-    }, [selectData])
-
-
     const handleDelete = () => {
         axios.delete(`${APILINK}/api/Documento/${selectData.id}`, {
             headers: {
@@ -89,6 +79,7 @@ function CreateModalDocumento({
       const body = {
         "nombre":nombre,
         "enlace":enlace,
+        "profesorId": getUserId(),
         "materiaListaId":1,
       };
   
@@ -105,10 +96,10 @@ function CreateModalDocumento({
   
 
     useEffect(() => {
-        if (selectData) {
-            document.getElementById("nombre").value = selectData.nombre;
-            document.getElementById("enlace").value = selectData.enlace;
-        }
+        // if (selectData) {
+        //     document.getElementById("nombre").value = selectData.nombre;
+        //     document.getElementById("enlace").value = selectData.enlace;
+        // }
     }, [selectData])
 
     const [datosModal, setDatosModal] = useState(null);
@@ -168,7 +159,7 @@ function CreateModalDocumento({
                             },
                             {
                                 style: "text",
-                                type: "save",
+                                type: "save2",
                                 onclick: { action: () => {  } }
                             },
                         ]
@@ -190,7 +181,7 @@ function CreateModalDocumento({
                         {
                             style: "text",
                             type: "accept",
-                            onclick: { action: () => { handleCreateSubmit() } }
+                            onclick: { action: () => { handleCreateSubmit()} }
                         },
                     ]
             }

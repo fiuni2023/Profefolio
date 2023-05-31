@@ -18,7 +18,7 @@ import { useModularContext } from '../../../context';
 function ListarDocumentos() {
 
   const [id, setId] = useState(null);
-  const [selectData, setSelectedData] = useState({})
+  const [selectData, setSelectedData] = useState(null)
   const { getToken, cancan, verifyToken,getUserId } = useGeneralContext();
   const {stateController} = useModularContext()
   const {materiaId} = stateController
@@ -81,7 +81,7 @@ function ListarDocumentos() {
   "materiaListaId": 0 */
 
 
-  const handleDocumentos = async () => {
+  const handleCreateDocumentos = async () => {
 
     const body = {
       "nombre": nombre,
@@ -98,13 +98,8 @@ function ListarDocumentos() {
       .catch(() => {
         toast.error("No se pudieron guardar los cambios. Intente de nuevo o recargue la página.");
       });
-  };
-  listaMateriasProfesores();
+    };
 
- 
-
-}, [cancan, verifyToken, nav, getToken, fetch_data]);
- 
 
   const btndetallesDocumento = (data) => {
     setSelectedData(data)
