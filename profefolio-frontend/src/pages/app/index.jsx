@@ -20,7 +20,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 import Profesor from "../profesor/index.jsx";
-import Asistencia from "../profesor-pages/pages/asistencia/Asistencia.jsx";
 import Clases from "../clases/index.jsx";
 import ShowClase from "../clases/pages/view/ShowClase.jsx";
 import Home from "../home/index.jsx";
@@ -82,7 +81,6 @@ const App = () => {
                                         <Route path="list" element={<ListarMaterias />} />
                                     </Route>
                                     <Route path="/alumnos" element={<Alumnos />} />
-                                    <Route path="/asistencia/:idMateriaLista" element={<Asistencia />} />
                                     <Route path="/documentos" element={<ListarDocumentos />} />
                                     
 

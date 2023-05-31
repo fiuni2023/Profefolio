@@ -14,18 +14,56 @@ function CreateModalDocumento({
     show = false,
     onHide = () => { },
     fetchFunc = () => { },
-    selected_data
-}) {
+    selectData}) {
 
-    const { getToken, cancan, verifyToken,getMateriaId,getUserId } = useGeneralContext();
 
-    
-    const [nombre, setNombre] = useState('');
-    const [enlace, setEnlace] = useState(''); 
+    const { getToken, cancan, verifyToken } = useGeneralContext();
+
+
     const disabled = false
 
+    const handleEditSubmit = () => {
+        const nombre = document.getElementById("nombre").value;
+        const enlace = document.getElementById("enlace").value;
+      
+
+        let data = {
+            "nombre": nombre,
+            "enlace": enlace,
+          
+        }
+
+        axios.put(`${APILINK}/api/Documento/${selectData.id}`, data, {
+            headers: {
+              Authorization: `Bearer ${getToken()}`,
+            }
+          })
+            .then(response => {
+              toast.success("Guardado exitoso");
+              handleHide()
+    
+            })
+            .catch(error => {
+              if (typeof (error.response.data) === "string" ? true : false) {
+                toast.error(error.response.data)
+              } else {
+              //  toast.error(error.response.data?.errors.Password ? error.response.data?.errors.Password[0] : error.response.data?.errors.Email[0])
+              }
+            });
+    }
+
+    useEffect(() => {
+      
+        if (selectData) {
+            document.getElementById("nombre").value = selectData.nombre;
+            document.getElementById("enlace").value = selectData.enlace;
+           
+        }
+    }, [selectData])
+
+
     const handleDelete = () => {
-        axios.delete(`${APILINK}/api/profesor/${selected_data.id}`, {
+        axios.delete(`${APILINK}/api/Documento/${selectData.id}`, {
             headers: {
               Authorization: `Bearer ${getToken()}`,
             }
@@ -39,7 +77,7 @@ function CreateModalDocumento({
               if (typeof (error.response.data) === "string" ? true : false) {
                 toast.error(error.response.data)
               } else {
-                toast.error(error.response.data?.errors.Password ? error.response.data?.errors.Password[0] : error.response.data?.errors.Email[0])
+                toast.error(error.response.data)
               }
             });
     }
@@ -49,9 +87,9 @@ function CreateModalDocumento({
       const enlace = document.getElementById("enlace").value;
 
       const body = {
-        "nombre": nombre,
-        "enlace": enlace,
-        "materiaListaId": 2,
+        "nombre":nombre,
+        "enlace":enlace,
+        "materiaListaId":1,
       };
   
       ClassesService.createDocumento(body, getToken())
@@ -67,19 +105,19 @@ function CreateModalDocumento({
   
 
     useEffect(() => {
-        if (selected_data) {
-            document.getElementById("nombre").value = selected_data.nombre;
-            document.getElementById("apellido").value = selected_data.apellido;
+        if (selectData) {
+            document.getElementById("nombre").value = selectData.nombre;
+            document.getElementById("enlace").value = selectData.enlace;
         }
-    }, [selected_data])
+    }, [selectData])
 
     const [datosModal, setDatosModal] = useState(null);
     const [deleting, setDeleting] = useState(false);
 
     const getInputs = () => {
-        if (selected_data) return [
+        if (selectData) return [
             {
-                key: "nombre", label: "Nombre del Profesor",
+                key: "nombre", label: "Nombre del documento",
                 type: "text", placeholder: "Ingrese el nombre",
                 disabled: disabled, required: true,
                 invalidText: "Ingrese un nombre",
@@ -87,8 +125,10 @@ function CreateModalDocumento({
            
            
             {
-                key: "direccion", label: "Dirrección",
-                type: "text", placeholder: "Ingrese la dirección",
+
+                key: "enlace", label: "Dirrección",
+                type: "text", placeholder: "Ingrese el nombre del document",
+
                 disabled: disabled,
             },
 
@@ -116,11 +156,11 @@ function CreateModalDocumento({
 
     useEffect(() => {
         setDatosModal({
-            header: selected_data ? deleting ? "ELIMINAR Documento?" : "Editar Profesor" : "Agregar Documento",
+            header: selectData ? deleting ? "ELIMINAR Documento?" : "Editar Documento" : "Agregar Documento",
             form: {
                 onSubmit: { action: () => { } },
                 inputs: getInputs(),
-                buttons: selected_data ?
+                buttons: selectData ?
                     !deleting ?
                         [
                             {
@@ -158,7 +198,7 @@ function CreateModalDocumento({
             }
         })
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [disabled, selected_data, deleting]);
+    }, [disabled, selectData, deleting]);
 
     const handleHide = () => {
         document.getElementById("nombre").value = "";

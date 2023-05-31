@@ -16,6 +16,8 @@ const StyledIconButton = styled.button`
                 ? '#F0544F'
                 : props.buttonType === 'edit'
                     ? '#8DACE1'
+                    : props.buttonType === 'download'
+                        ? '#59C8A4'
                     : '#fff'};
   border: none;
   border-radius: 10px;
@@ -41,7 +43,9 @@ const StyledIconButton = styled.button`
                     ? '#A32A26'
                     : props.buttonType === 'close'
                         ? '#EEEEEE'
-                        : '#fff'};
+                        : props.buttonType === 'download'
+                        ? '#24B787'
+                        :  '#fff'};
   }
   &:active {
     background-color:#fff;
