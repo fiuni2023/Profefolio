@@ -10,7 +10,7 @@ namespace profefolio.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropIndex(
+            /*migrationBuilder.DropIndex(
                 name: "IX_Colegios_PersonaId",
                 table: "Colegios");
 
@@ -52,7 +52,7 @@ namespace profefolio.Migrations
             migrationBuilder.DeleteData(
                 table: "AspNetUsers",
                 keyColumn: "Id",
-                keyValue: "e4c8c216-d986-40c5-93e3-600f284a7958");
+                keyValue: "e4c8c216-d986-40c5-93e3-600f284a7958");*/
 
             migrationBuilder.CreateTable(
                 name: "ClasesAlumnosColegios",
@@ -85,7 +85,7 @@ namespace profefolio.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.InsertData(
+            /*migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
@@ -113,13 +113,13 @@ namespace profefolio.Migrations
                     { "c798f617-3e82-4694-9227-951d31ebd0d3", "4142e823-de82-4870-a6e8-719d7c486d68" },
                     { "2ac32543-9f31-49b2-b2ae-c9ff71457067", "95529008-dd05-40b0-8f70-a52bd9f0bb61" }
                 });
-
-            migrationBuilder.CreateIndex(
+            */
+            /*migrationBuilder.CreateIndex(
                 name: "IX_Colegios_PersonaId",
                 table: "Colegios",
                 column: "PersonaId",
                 unique: true);
-
+            */
             migrationBuilder.CreateIndex(
                 name: "IX_ClasesAlumnosColegios_ClaseId",
                 table: "ClasesAlumnosColegios",
@@ -133,7 +133,7 @@ namespace profefolio.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
+            /*migrationBuilder.DropTable(
                 name: "ClasesAlumnosColegios");
 
             migrationBuilder.DropIndex(
@@ -179,8 +179,8 @@ namespace profefolio.Migrations
                 table: "AspNetUsers",
                 keyColumn: "Id",
                 keyValue: "95529008-dd05-40b0-8f70-a52bd9f0bb61");
-
-            migrationBuilder.InsertData(
+            */
+            /*migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
@@ -207,7 +207,7 @@ namespace profefolio.Migrations
                 {
                     { "3fd5b85c-382a-4435-8e22-c19e5f4c3bc1", "511fd355-5b35-48e3-86f3-1ad9e99c1264" },
                     { "675f43a7-36c9-41d0-9d31-65ee4a40ffe4", "e4c8c216-d986-40c5-93e3-600f284a7958" }
-                });
+                });*/
 
             migrationBuilder.CreateIndex(
                 name: "IX_Colegios_PersonaId",
