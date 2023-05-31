@@ -1,5 +1,6 @@
 import React, { useContext, useState } from "react";
 import { createContext } from "react";
+import { toast } from "react-hot-toast";
 
 const PageContext = createContext();
 
@@ -45,22 +46,71 @@ export const PageProvider = ({ children }) => {
             etapas: [[10, 10], [15]]
         }
     ])
+    const [nextId, setNextId] = useState(4)
 
     //----------------------------------------------------Effect Hooks----------------------------------------------------
 
     //----------------------------------------------------Functions----------------------------------------------------
 
+    const getNextId=()=>{
+        let newId = nextId
+        setNextId(nextId+1)
+        return newId
+    }
+
     const handleAddEtapa = () => {
+        if(etapas.length === 3) return toast.error("se intento agregar mas de 3 etapas")
         setEtapas((before)=>{return [...before, []]})
         setEvalAlumnos(evalAlumnos.map((e)=>{
             let newE = e
-            newE.etapas = [...e.etapas, []]
+            newE.etapas = [...newE.etapas, []]
             return newE
         }))
     }
-    const handleDeleteEtapa = () => {
-        console.log("not implemented")
+
+    const handleDeleteEtapa = (index) => {
+        let newEtapas = etapas
+        etapas.splice(index, 1)
+        setEtapas(newEtapas)
+        let newEvalAlumno = evalAlumnos.map((e)=>{
+            let newAlumno = e
+            let newEtapas = e.etapas
+            newEtapas.splice(index, 1)
+            newAlumno.etapas = newEtapas
+            return newAlumno
+        })
+        setEvalAlumnos(newEvalAlumno)
     }
+
+    const handleAddEvent = (i) => {
+        let newEtapas = etapas
+        newEtapas[i] = [...newEtapas[i], 
+        {
+            id: getNextId(),
+            nombre: "Tarea Nueva",
+            puntaje_total: 10
+        }]
+        setEtapas(newEtapas)
+        let newEval = evalAlumnos.map(e=>{
+            let newAlumno = e
+            newAlumno.etapas[i] = [...newAlumno.etapas[i],0]
+            return newAlumno
+        })
+        setEvalAlumnos(newEval)
+    }
+
+    const handleEditEventName = (id, name) => {
+        let newEtapas = etapas
+        newEtapas.map((e)=>{
+            e.map((t)=>{
+                if(t.id === id) t.nombre = name
+            })
+        })
+        toast.success("se ha editado")
+        setEtapas(newEtapas)
+        console.log(newEtapas)
+    }
+
     //----------------------------------------------------Return Values----------------------------------------------------
 
 
@@ -71,7 +121,9 @@ export const PageProvider = ({ children }) => {
 
     const functions = {
         handleAddEtapa,
-        handleDeleteEtapa
+        handleDeleteEtapa,
+        handleAddEvent,
+        handleEditEventName
     }
 
     const values = {

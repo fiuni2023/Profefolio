@@ -1,8 +1,9 @@
 import React from "react";
 import styled from "styled-components";
 import { usePageContext } from "../../context/PageContext";
-import { RxCross2 } from 'react-icons/rx'
+import { RxCross2, RxPlus } from 'react-icons/rx'
 import AddButton from '../AddButton'
+import InvisibleInput from "./components/Invisibleinput";
 
 const ETable = styled.table`
     border: 1px solid black;
@@ -39,7 +40,7 @@ const EvaluationTable = () => {
 
     const { dataSet, functions } = usePageContext()
     const { evalAlumnos, etapas } = dataSet
-    const { handleAddEtapa, handleDeleteEtapa } = functions
+    const { handleAddEtapa, handleDeleteEtapa, handleAddEvent, handleEditEventName } = functions
 
     const getIndexTexto = (index) => {
         if (index === 0) return "Primera"
@@ -68,7 +69,10 @@ const EvaluationTable = () => {
                     <ETH rowSpan={3}>Alumnos</ETH>
                     {
                         etapas.map((e, i) => {
-                            return <ETH colSpan={e.length + 2} key={`Etapas${i}`}> {getIndexTexto(i)} Etapa <ButtonDivStyle onClick={()=>{handleDeleteEtapa(i)}}><RxCross2/></ButtonDivStyle></ETH>
+                            return  <ETH colSpan={e.length + 2} key={`Etapas${i}`}> {getIndexTexto(i)} Etapa 
+                                        <ButtonDivStyle onClick={()=>{handleAddEvent(i)}}><RxPlus/></ButtonDivStyle>
+                                        <ButtonDivStyle onClick={()=>{handleDeleteEtapa(i)}}><RxCross2/></ButtonDivStyle>
+                                </ETH>
                         })
                     }
                     <ETH rowSpan={3}>Calificacion Final</ETH>
@@ -79,7 +83,7 @@ const EvaluationTable = () => {
                             return <>
                                 {
                                     e.map((ev) => {
-                                        return <ETH key={`EEN${i}${ev.id}`}>{ev.nombre}</ETH>
+                                        return <ETH key={`EEN${i}${ev.id}`}><InvisibleInput key={`EEN${i}${ev.id}Input`} value={ev.nombre} handleBlur={(text)=>{handleEditEventName(ev.id, text)}}/></ETH>
                                     })
                                 }
                                 <ETH rowSpan={2} key={`ETP${i}`}>Total</ETH>

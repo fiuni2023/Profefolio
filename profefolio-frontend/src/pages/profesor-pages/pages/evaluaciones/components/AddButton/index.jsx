@@ -16,6 +16,7 @@ const AddButtonStyle = styled.button`
     border: none;
 &:hover {
     filter: brightness(0.95);
+}
 &:active {
     filter: brightness(0.8);
   }
