@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import StyledIconButton from './componentsStyles/StyledIconButton';
 import TextButton from './TextButton';
-import { HiOutlinePencil, HiOutlineTrash } from 'react-icons/hi';
+import { HiDownload, HiOutlinePencil, HiOutlineTrash } from 'react-icons/hi';
 import { IoIosArrowBack, IoIosArrowForward, IoIosClose } from 'react-icons/io';
 
 /*Este componente define el funcionamiento de los botones con iconos.
@@ -47,6 +47,10 @@ function IconButton({ buttonType, onClick, enabled }) {
       iconColor= '#A32A26';
       icon = <IoIosArrowForward size={26} color={iconColor}/>;
       break;
+    case 'download':
+      iconColor= '#59C8A4';
+      icon = <HiDownload size={26} color={iconColor}></HiDownload>
+      break;  
     default:
       icon = null;
   }
