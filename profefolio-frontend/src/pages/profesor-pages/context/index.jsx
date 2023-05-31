@@ -6,8 +6,10 @@ import ProfesorMateriaShow from "../pages/materiashow";
 import ProfesorMateria from "../pages/materia";
 import Anotacion from "../pages/anotacion";
 import Documentos from "../pages/documentos/list/ListarDocumento";
+import Asistencia from "../pages/asistencia/Asistencia";
 import ProfesorPagesService from "../services/ProfesorPagesService";
 import { useGeneralContext } from "../../../context/GeneralContext";
+import Evaluaciones from "../pages/evaluaciones";
 
 const ModularContext = createContext();
 
@@ -23,12 +25,15 @@ export const ModularProvider = ({ children }) => {
         materia: <ProfesorMateria />,
         materiashow: <ProfesorMateriaShow />,
         anotacion: <Anotacion />,
-        documentos: <Documentos />
+        documentos: <Documentos />,
+        asistencia: <Asistencia />,
+        evaluaciones: <Evaluaciones />
     }
     
     const { getToken } = useGeneralContext()
     const token = getToken()
 
+    //----------------------------------------------------States----------------------------------------------------
     
     const [ fetch_data, setFetchData ] = useState(false)
     const [ currentPage, setCurrentPage ] = useState(pages.dashboard)
@@ -43,6 +48,7 @@ export const ModularProvider = ({ children }) => {
     const [ asistencias, setAsistencias ] = useState([])
     const [ puntajes, setPuntajes ] = useState([])
     const [ alumnos, setAlumnos ] = useState([])
+    //----------------------------------------------------Effect Hooks----------------------------------------------------
 
     useEffect(()=>{
         // const body = {opcion: 'card-clases', id: 1, anho: 2023}
@@ -55,9 +61,6 @@ export const ModularProvider = ({ children }) => {
             let body = {opcion: 'card-clases', id: colegioId, anho: 2023}
             ProfesorPagesService.Get(body, token)
             .then(d=>setClases(d.data))
-            body = {opcion: 'horarios-clases', id: colegioId, anho: 2023}
-            ProfesorPagesService.Get(body, token)
-            .then(d=>console.log(d.data))
         }
     },[fetch_data, token, colegioId])
 
@@ -86,6 +89,7 @@ export const ModularProvider = ({ children }) => {
         }
     },[fetch_data, token, materiaId])
 
+    //----------------------------------------------------Functions----------------------------------------------------
 
     const setPage = (page = "") =>{
         if(page === "dashboard") return setCurrentPage(pages.dashboard)
@@ -93,7 +97,9 @@ export const ModularProvider = ({ children }) => {
         if(page === "materia") return setCurrentPage(pages.materia)
         if(page === "materiashow") return setCurrentPage(pages.materiashow)
         if(page === "anotacion") return setCurrentPage(pages.anotacion)
-        if(page === "documentos") return setCurrentPage(pages.documentos)
+        if(page === "documento") return setCurrentPage(pages.documentos)
+        if(page === "asistencia") return setCurrentPage(pages.asistencia)
+        if(page === "evaluaciones") return setCurrentPage(pages.evaluaciones)
         setCurrentPage(pages.dashboard)
         
     }
@@ -101,6 +107,9 @@ export const ModularProvider = ({ children }) => {
     const fetchData = () => {
         setFetchData((before)=>{return !before})
     }
+
+
+    //----------------------------------------------------Return Values----------------------------------------------------
 
     const stateController = {
         colegioId, 
@@ -123,12 +132,13 @@ export const ModularProvider = ({ children }) => {
         alumnos
     }
 
+
     const values = {
         currentPage,
         setPage,
         fetchData,
         stateController,
-        dataSet
+        dataSet,
     }
 
     return (

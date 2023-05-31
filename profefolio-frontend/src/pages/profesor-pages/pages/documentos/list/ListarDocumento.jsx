@@ -12,13 +12,16 @@ import Tabla from '../../../../../components/Tabla';
 
 
 import ClassesService from '../Helper/DocumentoHelper';
+import { useModularContext } from '../../../context';
 
 
 function ListarDocumentos() {
 
   const [id, setId] = useState(null);
-  const [selectData, setSelectedData] = useState(null)
-  const { getToken, cancan, verifyToken } = useGeneralContext();
+  const [selectData, setSelectedData] = useState({})
+  const { getToken, cancan, verifyToken,getUserId } = useGeneralContext();
+  const {stateController} = useModularContext()
+  const {materiaId} = stateController
   const [page, setPage] = useState(1);
   const [nombre, setNombre] = useState('');
   const [enlace, setEnlace] = useState('');
@@ -41,19 +44,60 @@ function ListarDocumentos() {
 
   const doFetch =() =>{
     setFetchData((before)=>[before])
-}
+  }
+  const getMaterias = () => {
+    verifyToken()
+    if (!cancan("Profesor")) {
+      nav("/")
+    } else {
+      //https://localhost:7063/api/Materia
 
+      axios.get(`${APILINK}/api/Materia`, {
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+        }
+      })
 
-useEffect(() => {
-
-  const idMateriaClase=1;
-  const listaMateriasProfesores = async () => {
-    try {
-      const dataList = await ClassesService.getDocumento(idMateriaClase,getToken());
-      setDocumento(dataList.data ?? []); 
-    } catch (e) {
-      setDocumento([]);
+        .then(response => {
+          setMaterias(response.data);
+        })
+        .catch(error => {
+          toast.error(error);
+        });
     }
+
+  }
+
+  useEffect(() => {
+
+    //getMaterias();
+
+  }, [page, cancan, verifyToken, nav, fetch_data]);
+
+  /*
+    "nombre": "string",
+  "enlace": "string",
+  "profesorId": "string",
+  "materiaListaId": 0 */
+
+
+  const handleDocumentos = async () => {
+
+    const body = {
+      "nombre": nombre,
+      "enlace": enlace,
+      "profesorId": getUserId(),
+      "materiaListaId": materiaId,
+    };
+
+    ClassesService.createDocumento(body, getToken())
+      .then(() => {
+        toast.success("Los datos fueron enviados correctamente.");
+        doFetch()
+      })
+      .catch(() => {
+        toast.error("No se pudieron guardar los cambios. Intente de nuevo o recargue la página.");
+      });
   };
   listaMateriasProfesores();
 
@@ -66,7 +110,6 @@ useEffect(() => {
     setSelectedData(data)
     setShow(true);
   };
-
 
   return (
     <>
