@@ -83,7 +83,7 @@ useEffect(() => {
                     tituloTabla: 'Lista de Documentos',
                     titulos: [
                       { titulo: 'Nombre' },
-                      { titulo: 'Url' },
+                      { titulo: 'Enlace' },
                     
                     ],
                     clickable: { action: btndetallesDocumento},
