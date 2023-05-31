@@ -103,7 +103,7 @@ namespace profefolio.Controllers
                                      {
                                          Estado = 'A',
                                          Fecha = fecha,
-                                         Observacion = "Nuevo Alumno",
+                                         Observacion = "",
                                          MateriaListaId = dto.IdMateriaLista,
                                          ClasesAlumnosColegioId = item.ColegiosAlumnosId,
                                          Created = DateTime.Now,
