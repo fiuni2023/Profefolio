@@ -2,46 +2,18 @@
 import React, { useState, useEffect, useFetch } from 'react';
 import {PanelContainerBG} from '../../../../profesor/components/LayoutAdmin';
 import { useGeneralContext } from "../../../../../context/GeneralContext";
-import axios from 'axios';
-import TextButton from '../../../../../components/TextButton';
-import BackButton from '../../../components/BackButton';
-import Card from '../../../../../components/Card';
-import { SRow } from '../../../../../components/componentsStyles/StyledDashComponent';
 import styled from "styled-components";
 import StyleComponentBreadcrumb from '../../../../../components/StyleComponentBreadcrumb';
 import { toast } from 'react-hot-toast';
 import { AiOutlinePlus } from 'react-icons/ai';
-import APILINK from '../../../../../components/link';
 import { useNavigate } from 'react-router';
-
 import CreateModalDocumento from '../create/CreateModalDocumento';
-
 import Tabla from '../../../../../components/Tabla';
 
-import ModalConfirmacion from '../modal/ModalConfirmarDelete.jsx';
-
-import IconButton from '../../../../../components/IconButton';
-import { Row, Col } from "react-bootstrap";
 
 import ClassesService from '../Helper/DocumentoHelper';
 
-const FlexDiv = styled.div`
-    display: flex;
-    align-items: center;
-    width: 100%;
-    gap: 10px;
-`
 
-const GridDiv = styled.div`
-    margin-top: 1%;
-    display: grid;
-    grid-template-columns: 23% 23% 23% 23%;
-    gap: 10px;
-`
-
-const GapDiv = styled.div`
-    height: 30px;
-    `
 function ListarDocumentos() {
 
   const [id, setId] = useState(null);
@@ -79,10 +51,6 @@ useEffect(() => {
     try {
       const dataList = await ClassesService.getDocumento(idMateriaClase,getToken());
       setDocumento(dataList.data ?? []); 
-      
-      console.log('dataList ?? []',dataList.data ?? []);
-
-
     } catch (e) {
       setDocumento([]);
     }
@@ -92,32 +60,10 @@ useEffect(() => {
  
 
 }, [cancan, verifyToken, nav, getToken, fetch_data]);
-  /*
-    "nombre": "string",
-  "enlace": "string",
-  "profesorId": "string",
-  "materiaListaId": 0 */
-
-  
-
-  const handleNombre = (event) => {
-    setNombre(event.target.value);
-  }
-
-  const handleEnlace = (event) => {
-    setEnlace(event.target.value);
-  }
  
-  const handleShowModal = (event, id, nombre) => {
-    setId(id);
-    setNombreDelete(nombre);
-    setShowModal(true);
-    event.stopPropagation();
-  };
 
   const btndetallesDocumento = (data) => {
     setSelectedData(data)
-    console.log('data',data);
     setShow(true);
   };
 
