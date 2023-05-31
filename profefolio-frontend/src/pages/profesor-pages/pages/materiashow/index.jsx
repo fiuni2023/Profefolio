@@ -46,7 +46,10 @@ const ProfesorMateriaShow = () => {
 
 
     const config = {
-        onAnotation: ()=>{setPage("anotacion")}
+        onAnotation: ()=>{setPage("anotacion")},
+        onAsistencia: ()=>{setPage("asistencia")},
+        onDocumento: ()=>{setPage("documento")},
+        onEvaluacion: ()=>{setPage("evaluaciones")}
     }
 
     const componentes = {
