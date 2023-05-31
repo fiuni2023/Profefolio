@@ -1,10 +1,8 @@
-/* eslint-disable */
-import React, { useState, useEffect, useFetch } from 'react';
+import React, { useState, useEffect } from 'react';
 import {PanelContainerBG} from '../../../../profesor/components/LayoutAdmin';
 import { useGeneralContext } from "../../../../../context/GeneralContext";
 import styled from "styled-components";
 import StyleComponentBreadcrumb from '../../../../../components/StyleComponentBreadcrumb';
-import { toast } from 'react-hot-toast';
 import { AiOutlinePlus } from 'react-icons/ai';
 import { useNavigate } from 'react-router';
 import CreateModalDocumento from '../create/CreateModalDocumento';
@@ -15,18 +13,10 @@ import ClassesService from '../Helper/DocumentoHelper';
 
 
 function ListarDocumentos() {
-
-  const [id, setId] = useState(null);
   const [selectData, setSelectedData] = useState(null)
   const { getToken, cancan, verifyToken } = useGeneralContext();
-  const [page, setPage] = useState(1);
-  const [nombre, setNombre] = useState('');
-  const [enlace, setEnlace] = useState('');
-
   const [documento, setDocumento] = useState([]);
 
-  const [showModal, setShowModal] = useState(false);
-  const [nombre_delete, setNombreDelete] = useState('');
   const [fetch_data, setFetchData ] = useState([])
 
   const nav = useNavigate()
