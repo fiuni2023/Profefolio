@@ -3,6 +3,7 @@ import styled from "styled-components";
 import BackButton from "../../components/BackButton";
 import { Row } from "react-bootstrap";
 import EvaluationTable from "./components/EvaluationTable";
+import { PageProvider } from "./context/PageContext";
 
 const FlexDiv = styled.div`
     display: flex;
@@ -16,20 +17,21 @@ const GapDiv = styled.div`
 `
 
 const Evaluaciones = () => {
-
     return <>
-        <Row>
-            <FlexDiv>
-                <BackButton to="materiashow"/>
-                <h5 className="m-0">
-                    Evaluaciones
-                </h5>
-            </FlexDiv>
-        </Row>
-        <Row>
-            <EvaluationTable />
-        </Row>
-        <GapDiv />
+        <PageProvider>
+            <Row>
+                <FlexDiv>
+                    <BackButton to="materiashow"/>
+                    <h5 className="m-0">
+                        Evaluaciones
+                    </h5>
+                </FlexDiv>
+            </Row>
+            <Row>
+                <EvaluationTable />
+            </Row>
+            <GapDiv />
+        </PageProvider>
     </>
 }
 

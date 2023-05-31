@@ -1,5 +1,8 @@
 import React from "react";
 import styled from "styled-components";
+import { usePageContext } from "../../context/PageContext";
+import { RxCross2 } from 'react-icons/rx'
+import AddButton from '../AddButton'
 
 const ETable = styled.table`
     border: 1px solid black;
@@ -17,37 +20,26 @@ const ETD = styled.td`
     min-width: ${props => props.minWidth};
 `;
 
+const ButtonDivStyle = styled.button`
+    width: 20px;
+    padding: 1px;
+    border-radius: 50%;
+    background-color: #C6D8D3;
+    cursor: pointer;
+    border: none;
+&:hover {
+    filter: brightness(0.95);
+&:active {
+    filter: brightness(0.8);
+  }
+`;
 
-const EvaluationTable = ({
-    etapas = [
-        [
-            {
-                id: 1,
-                nombre: "Tarea 1",
-                puntaje_total: 10
-            },
-            {
-                id: 2,
-                nombre: "Tarea 2",
-                puntaje_total: 10
-            }
-        ],
-        [
-            {
-                id: 3,
-                nombre: "Tarea 3",
-                puntaje_total: 15
-            }
-        ]
-    ],
-    alumnos = [
-        {
-            id: 1,
-            nombreAlumno: "Alumno 1",
-            etapas: [[8, 5], [10]]
-        }
-    ]
-}) => {
+
+const EvaluationTable = () => {
+
+    const { dataSet, functions } = usePageContext()
+    const { evalAlumnos, etapas } = dataSet
+    const { handleAddEtapa, handleDeleteEtapa } = functions
 
     const getIndexTexto = (index) => {
         if (index === 0) return "Primera"
@@ -64,7 +56,8 @@ const EvaluationTable = ({
         return 0
     }
 
-    const getTotal = (e) => {
+    const getTotal = (e = []) => {
+        if(e.length === 0) return 0
         return e?.reduce((b,a)=>{return b+a})
     }
 
@@ -75,13 +68,12 @@ const EvaluationTable = ({
                     <ETH rowSpan={3}>Alumnos</ETH>
                     {
                         etapas.map((e, i) => {
-                            return <ETH colSpan={e.length + 2} key={`Etapas${i}`}> {getIndexTexto(i)} Etapa </ETH>
+                            return <ETH colSpan={e.length + 2} key={`Etapas${i}`}> {getIndexTexto(i)} Etapa <ButtonDivStyle onClick={()=>{handleDeleteEtapa(i)}}><RxCross2/></ButtonDivStyle></ETH>
                         })
                     }
                     <ETH rowSpan={3}>Calificacion Final</ETH>
                 </tr>
                 <tr>
-
                     {
                         etapas.map((e, i) => {
                             return <>
@@ -112,7 +104,7 @@ const EvaluationTable = ({
             </thead>
             <tbody>
                 {
-                    alumnos.map((a) => {
+                    evalAlumnos.map((a) => {
                         return <tr key={`AR${a.id}`}>
                             <ETD minWidth={`150px`} key={`AN${a.id}${a}`}>{`${a.nombreAlumno}`}</ETD>
                             {
@@ -134,6 +126,7 @@ const EvaluationTable = ({
                 }
             </tbody>
         </ETable>
+        <AddButton onClick={handleAddEtapa} />
     </>
 }
 

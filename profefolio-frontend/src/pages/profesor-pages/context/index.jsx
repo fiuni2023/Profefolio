@@ -33,6 +33,7 @@ export const ModularProvider = ({ children }) => {
     const { getToken } = useGeneralContext()
     const token = getToken()
 
+    //----------------------------------------------------States----------------------------------------------------
     
     const [ fetch_data, setFetchData ] = useState(false)
     const [ currentPage, setCurrentPage ] = useState(pages.dashboard)
@@ -47,6 +48,7 @@ export const ModularProvider = ({ children }) => {
     const [ asistencias, setAsistencias ] = useState([])
     const [ puntajes, setPuntajes ] = useState([])
     const [ alumnos, setAlumnos ] = useState([])
+    //----------------------------------------------------Effect Hooks----------------------------------------------------
 
     useEffect(()=>{
         // const body = {opcion: 'card-clases', id: 1, anho: 2023}
@@ -87,6 +89,7 @@ export const ModularProvider = ({ children }) => {
         }
     },[fetch_data, token, materiaId])
 
+    //----------------------------------------------------Functions----------------------------------------------------
 
     const setPage = (page = "") =>{
         if(page === "dashboard") return setCurrentPage(pages.dashboard)
@@ -104,6 +107,9 @@ export const ModularProvider = ({ children }) => {
     const fetchData = () => {
         setFetchData((before)=>{return !before})
     }
+
+
+    //----------------------------------------------------Return Values----------------------------------------------------
 
     const stateController = {
         colegioId, 
@@ -126,12 +132,13 @@ export const ModularProvider = ({ children }) => {
         alumnos
     }
 
+
     const values = {
         currentPage,
         setPage,
         fetchData,
         stateController,
-        dataSet
+        dataSet,
     }
 
     return (
