@@ -1,10 +1,8 @@
-/* eslint-disable */
-import React, { useState, useEffect, useFetch } from 'react';
+import React, { useState, useEffect } from 'react';
 import {PanelContainerBG} from '../../../../profesor/components/LayoutAdmin';
 import { useGeneralContext } from "../../../../../context/GeneralContext";
 import styled from "styled-components";
 import StyleComponentBreadcrumb from '../../../../../components/StyleComponentBreadcrumb';
-import { toast } from 'react-hot-toast';
 import { AiOutlinePlus } from 'react-icons/ai';
 import { useNavigate } from 'react-router';
 import CreateModalDocumento from '../create/CreateModalDocumento';
@@ -28,8 +26,6 @@ function ListarDocumentos() {
 
   const [documento, setDocumento] = useState([]);
 
-  const [showModal, setShowModal] = useState(false);
-  const [nombre_delete, setNombreDelete] = useState('');
   const [fetch_data, setFetchData ] = useState([])
 
   const nav = useNavigate()
