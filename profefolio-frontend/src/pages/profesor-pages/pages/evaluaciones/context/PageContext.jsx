@@ -102,9 +102,13 @@ export const PageProvider = ({ children }) => {
     const handleEditEventName = (id, name) => {
         let newEtapas = etapas
         newEtapas.map((e)=>{
-            e.map((t)=>{
-                if(t.id === id) t.nombre = name
+            let returnValue = e
+            returnValue.map((t)=>{
+                let returnValue = t
+                if(returnValue.id === id) returnValue.nombre = name
+                return returnValue
             })
+            return returnValue
         })
         toast.success("se ha editado")
         setEtapas(newEtapas)

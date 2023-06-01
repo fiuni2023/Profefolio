@@ -28,5 +28,5 @@ const getDocumento= async (id, token) => {
 
 };
 
-const ClassesService = { createDocumento,getDocumento}
-export default ClassesService
+const DocumentosService = { createDocumento,getDocumento}
+export default DocumentosService
