@@ -72,9 +72,11 @@ namespace profefolio.Services
                 return new List<DateTime>();
             }
 
-            var fechas = query.Select(x => x.Fecha);     
-                
-            throw new NotImplementedException();
+            var fechas = query
+                .Select(x => x.Fecha)
+                .ToList();
+
+            return fechas;
         }
 
         public async Task<List<ClasesAlumnosColegio>> FindAll(int idMateriaLista, string userEmail)
