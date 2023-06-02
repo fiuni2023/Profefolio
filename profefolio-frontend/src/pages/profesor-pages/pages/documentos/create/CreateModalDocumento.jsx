@@ -6,6 +6,7 @@ import { toast } from 'react-hot-toast';
 import axios from 'axios';
 import APILINK from '../../../../../components/link';
 import ClassesService from '../Helper/DocumentoHelper';
+import { useModularContext } from '../../../context';
 
 
 
@@ -17,7 +18,10 @@ function CreateModalDocumento({
     selectData}) {
 
 
-    const { getToken, cancan, verifyToken } = useGeneralContext();
+    const { getToken } = useGeneralContext();
+    const token = getToken()
+    const {stateController} = useModularContext()
+    const {materiaId} = stateController
 
 
     const disabled = false
@@ -65,7 +69,7 @@ function CreateModalDocumento({
     const handleDelete = () => {
         axios.delete(`${APILINK}/api/Documento/${selectData.id}`, {
             headers: {
-              Authorization: `Bearer ${getToken()}`,
+              Authorization: `Bearer ${token}`,
             }
           })
             .then(response => {
@@ -89,14 +93,13 @@ function CreateModalDocumento({
       const body = {
         "nombre":nombre,
         "enlace":enlace,
-        "materiaListaId":1,
+        "materiaListaId":materiaId,
       };
   
-      ClassesService.createDocumento(body, getToken())
+      ClassesService.createDocumento(body, token)
 
         .then(() => {
           toast.success("Los datos fueron enviados correctamente.");
-          window.location.reload();
         })
         .catch(() => {
           toast.error("No se pudieron guardar los cambios. Intente de nuevo o recargue la página.");
@@ -170,8 +173,8 @@ function CreateModalDocumento({
                             },
                             {
                                 style: "text",
-                                type: "save",
-                                onclick: { action: () => {  } }
+                                type: "save2",
+                                onclick: { action: () => {} }
                             },
                         ]
                         :
