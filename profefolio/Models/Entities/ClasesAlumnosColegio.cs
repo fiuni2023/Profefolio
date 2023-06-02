@@ -17,6 +17,6 @@ namespace profefolio.Models.Entities
         public Clase? Clase { get; set; }
         public ColegiosAlumnos? ColegiosAlumnos { get; set; }
 
-        public IEnumerable<Asistencia> Asistencias { get; set; } = new List<Asistencia>();
+        public ICollection<Asistencia>? Asistencias { get; set; }
     }
 }

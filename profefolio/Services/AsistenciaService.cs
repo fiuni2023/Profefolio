@@ -72,6 +72,15 @@ namespace profefolio.Services
             return fechas;
         }
 
+        public bool HasAsistencia(int idMateriaLista, int idAcc)
+        {
+            var query = _context.Asistencias
+                .Where(a => !a.Deleted)
+                .Any(a => a.MateriaListaId == idMateriaLista && a.ClasesAlumnosColegioId == idAcc);
+
+            return query;
+        }
+
         public async Task<List<ClasesAlumnosColegio>> FindAll(int idMateriaLista, string userEmail)
         {
 
