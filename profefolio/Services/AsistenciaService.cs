@@ -58,6 +58,29 @@ namespace profefolio.Services
                         && a.Fecha.Date == fecha.Date);
         }
 
+        public async Task<List<DateTime>> FilterFecha(int idMateriaLista, string user)
+        {
+            var query = await _context.Asistencias
+                .Where(a => !a.Deleted)
+                .Where(a => a.MateriaListaId == idMateriaLista)
+                .Select(a => a.Fecha)
+                .ToListAsync();
+
+            var fechas = query.Distinct().ToList();
+
+            
+            return fechas;
+        }
+
+        public bool HasAsistencia(int idMateriaLista, int idAcc)
+        {
+            var query = _context.Asistencias
+                .Where(a => !a.Deleted)
+                .Any(a => a.MateriaListaId == idMateriaLista && a.ClasesAlumnosColegioId == idAcc);
+
+            return query;
+        }
+
         public async Task<List<ClasesAlumnosColegio>> FindAll(int idMateriaLista, string userEmail)
         {
 
@@ -78,7 +101,8 @@ namespace profefolio.Services
                 .Include(a => a.Asistencias)
                 .Include(a => a.ColegiosAlumnos)
                 .Include(a => a.ColegiosAlumnos.Persona)
-                .OrderBy(a => a.ColegiosAlumnos.Persona.Apellido)
+                .OrderByDescending(a => a.Asistencias.Count())
+                .ThenBy(a => a.ColegiosAlumnos.Persona.Apellido)
                 .ToListAsync();
         }
 
