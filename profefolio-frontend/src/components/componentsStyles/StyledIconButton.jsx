@@ -9,6 +9,8 @@ const StyledIconButton = styled.button`
   height: 40px;
   background-color: ${props =>
         props.buttonType === 'delete'
+            ? '#E57BA4' :
+            props.buttonType === 'my-delete'
             ? '#E57BA4'
             : props.buttonType === 'arrowL' || props.buttonType === 'arrowR'
                 ? '#F0544F'
@@ -32,6 +34,8 @@ const StyledIconButton = styled.button`
   &:hover {
     background-color: ${props =>
         props.buttonType === 'delete'
+            ? '#D93D79':
+            props.buttonType === 'my-delete'
             ? '#D93D79'
             : props.buttonType === 'edit'
                 ? '#5181D1'
