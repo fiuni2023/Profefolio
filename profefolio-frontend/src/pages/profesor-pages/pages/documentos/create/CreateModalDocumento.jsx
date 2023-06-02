@@ -125,8 +125,10 @@ function CreateModalDocumento({
            
            
             {
+
                 key: "enlace", label: "Dirrección",
                 type: "text", placeholder: "Ingrese el nombre del document",
+
                 disabled: disabled,
             },
 
