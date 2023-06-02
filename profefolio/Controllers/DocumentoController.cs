@@ -108,35 +108,6 @@ namespace profefolio.Controllers
                 return BadRequest($"Error al crear el documento.");
             }
         }
-
-      
-
-        /*[HttpGet]
-        [Route("all/{idMateria}")]
-        [Authorize(Roles = "Profesor")]
-        public async Task<ActionResult<IEnumerable<DocumentoResultDTO>>> GetAll(int idMateria)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest("Objeto no válido");
-            }
-
-            try
-            {
-                var userEmail = User.FindFirstValue(ClaimTypes.Name);
-                var profId = await _profesorService.GetProfesorIdByEmail(userEmail);
-                var result = await _documentoService.GetAll(idMateria, profId);
-
-                return Ok(_mapper.Map<List<DocumentoResultDTO>>(result));
-
-            }
-            catch (Exception e)
-            {
-                return BadRequest("Error durante la busqueda");
-
-            }
-        }
-        */
         
         /// <summary>
         /// Retorna los documentos creados por el prf que hace la petición.
