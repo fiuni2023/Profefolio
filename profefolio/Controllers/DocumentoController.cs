@@ -218,5 +218,98 @@ namespace profefolio.Controllers
             }
         }
 
+        
+        /// <summary>
+        /// Edita un documento creado por el prf que hace la petición.
+        /// Solo un profesor puede realizar la peticion
+        /// https://localhost:7063/api/Documento/{DocumentoId}
+        /// </summary>
+        /// <remarks>
+        /// </remarks>
+        [HttpPut("{id}")]
+        [Authorize(Roles = "Profesor")]
+        public async Task<ActionResult<DocumentoResultDTO>> PutDocumento(int id, DocumentoDTO documento)
+        {
+            try
+            {
+            // Verificar el modelo
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest("Objeto no válido");
+                }
+
+            // Buscar el documento por ID
+            var p = await _documentoService.FindById(id);
+            if (p == null)
+            {
+                return NotFound("No se encuentra el documento.");
+            }
+
+            // Verificar si MateriaListaId existe
+            var materiaLista = await _materiaListaService.FindById(documento.MateriaListaId);
+            if (materiaLista == null)
+            {
+                return BadRequest("Materia Lista no existe");
+            }
+
+            // Verificar el nombre del documento
+            if (string.IsNullOrWhiteSpace(documento.Nombre))
+            {
+                return BadRequest("Nombre de documento no válido");
+            }
+
+            // Verificar el formato del enlace
+            if (!Uri.IsWellFormedUriString(documento.Enlace, UriKind.Absolute))
+            {
+                return BadRequest("Formato de enlace no válido");
+            }
+
+            // Verificar documentos duplicados con el mismo nombre
+            var verificarNombreDocumento = await _documentoService.FindByNameDocumento(documento.Nombre, documento.MateriaListaId);
+            if (verificarNombreDocumento != null && verificarNombreDocumento.Id != id)
+            {
+                return BadRequest("Ya existe un documento con ese nombre");
+            }
+
+            var userEmail = User.FindFirstValue(ClaimTypes.Name);
+            var profId = await _profesorService.GetProfesorIdByEmail(userEmail);
+            var isProfesor = await _documentoService.FindProfesorOfDocumento(id, userEmail);
+            if (isProfesor == false)
+            {
+                return BadRequest("No puede editar el documento creado por otro profesor.");
+            }
+
+            var profesor = await _profesorService.GetProfesorByEmail(userEmail);
+            //Si no es prf de la clase de MateriaLista no puede crear el doc
+            var profesorClase = await _materiaListaService.GetProfesorOfMateria(documento.MateriaListaId, userEmail);
+            if (profesorClase != profesor)
+            {
+                return BadRequest("No puede matipular datos ajenos.");
+            }
+
+            
+            
+
+        // Actualizar los datos del documento
+        p.ModifiedBy = userEmail;
+        p.Deleted = false;
+        p.Modified = DateTime.Now;
+        p.Nombre = documento.Nombre;
+        p.Enlace = documento.Enlace;
+        p.MateriaListaId = documento.MateriaListaId;
+
+        // Guardar los cambios
+        await _documentoService.Save();
+
+        return Ok(_mapper.Map<DocumentoResultDTO>(p));
+    }
+    catch (Exception ex)
+    {
+        // Manejar cualquier error interno y devolver una respuesta apropiada
+        return StatusCode(400, $"Ha ocurrido un error: {ex.Message}");
+    }
+}
+
+
     }
 }
