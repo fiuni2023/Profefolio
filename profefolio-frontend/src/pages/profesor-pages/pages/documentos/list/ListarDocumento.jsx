@@ -54,8 +54,8 @@ const ListarDocumentos = ({
     </FlexDiv>
     <GridView>
       {
-        List.map((l)=>{
-          return <DocumentoCard onClick={(d)=>{console.log(d)}} />
+        List.map((l,i)=>{
+          return <DocumentoCard key={i} onClick={(d)=>{console.log(d)}} />
         })
       }
     </GridView>
