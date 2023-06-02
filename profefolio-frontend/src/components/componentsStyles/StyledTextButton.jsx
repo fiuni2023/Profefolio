@@ -29,6 +29,14 @@ const StyledTextButton = styled.button`
             background-color: #5181D1;
           }
         `;
+      case 'save2':
+        return `
+          background-color: #8DACE1;
+          color: #fff
+          ;&:hover {
+            background-color: #5181D1;
+          }
+        `;
       case 'create':
         return `
             background-color: #8DACE1;
@@ -98,7 +106,7 @@ const StyledTextButton = styled.button`
           &:hover {
             background-color: #D93D79;
           }
-        `;    
+        `;
       default:
         return `
           background-color: #ccc;
