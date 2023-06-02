@@ -60,22 +60,15 @@ namespace profefolio.Services
 
         public async Task<List<DateTime>> FilterFecha(int idMateriaLista, string user)
         {
-            var query = await _context.ClasesAlumnosColegios
-                .Include(c => c.Asistencias)
-                .Where(c => !c.Deleted)
-                .Where(c => c.Asistencias.Any() && c.Asistencias.Any(x => x.MateriaListaId == idMateriaLista))
-                .Select(c => c.Asistencias)
-                .FirstOrDefaultAsync();
+            var query = await _context.Asistencias
+                .Where(a => !a.Deleted)
+                .Where(a => a.MateriaListaId == idMateriaLista)
+                .Select(a => a.Fecha)
+                .ToListAsync();
 
-            if (query == null)
-            {
-                return new List<DateTime>();
-            }
+            var fechas = query.Distinct().ToList();
 
-            var fechas = query
-                .Select(x => x.Fecha)
-                .ToList();
-
+            
             return fechas;
         }
 
