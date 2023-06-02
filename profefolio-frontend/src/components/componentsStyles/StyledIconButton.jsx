@@ -9,11 +9,15 @@ const StyledIconButton = styled.button`
   height: 40px;
   background-color: ${props =>
         props.buttonType === 'delete'
+            ? '#E57BA4' :
+            props.buttonType === 'my-delete'
             ? '#E57BA4'
             : props.buttonType === 'arrowL' || props.buttonType === 'arrowR'
                 ? '#F0544F'
                 : props.buttonType === 'edit'
                     ? '#8DACE1'
+                    : props.buttonType === 'download'
+                        ? '#59C8A4'
                     : '#fff'};
   border: none;
   border-radius: 10px;
@@ -30,6 +34,8 @@ const StyledIconButton = styled.button`
   &:hover {
     background-color: ${props =>
         props.buttonType === 'delete'
+            ? '#D93D79':
+            props.buttonType === 'my-delete'
             ? '#D93D79'
             : props.buttonType === 'edit'
                 ? '#5181D1'
@@ -37,7 +43,9 @@ const StyledIconButton = styled.button`
                     ? '#A32A26'
                     : props.buttonType === 'close'
                         ? '#EEEEEE'
-                        : '#fff'};
+                        : props.buttonType === 'download'
+                        ? '#24B787'
+                        :  '#fff'};
   }
   &:active {
     background-color:#fff;
