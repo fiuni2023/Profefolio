@@ -166,6 +166,8 @@ namespace profefolio.Controllers
         ///
 		///			    - horarios-clases: pasar id del colegio.
         ///
+        ///		    	- eventos-colegios: id = 0
+        ///
 		///		    	- eventos-clases: pasar id del colegio.
         ///
 		///			    - eventos-materias: pasar id de la clase.
@@ -413,6 +415,12 @@ namespace profefolio.Controllers
                         var materia = await _dashBoardService.FindDataForCardOfInfoMateria(dto.Id, userEmail);
                         return Ok(_mapper.Map<DBCardsMateriaInfo>(materia));
 
+                    case "eventos-colegios":
+                        var _profIdEvento = await _profesorService.GetProfesorIdByEmail(userEmail);
+                       
+                        var eventosPrf = await _dashBoardService.FindEventosOfClase(_profIdEvento);
+
+                        return Ok(eventosPrf);
 
                     case "eventos-clases":
                     //eventos-clases: pasar id del colegio.

@@ -26,5 +26,6 @@ namespace profefolio.Repository
         Task<MateriaLista> GetPromediosPuntajesByIdMateriaLista(int idMateriaLista, string emailProfesor);
         Task<(double, double, double)> GetPromedioAsistenciasByMonth(int year, int month, int idMateriaLista, string profesorId);
         Task<List<DBCardEventosClaseDTO>> FindEventosOfClase(String idprofesor, int idColegio);
+        Task<List<DBCardEventosClaseDTO>> FindEventosOfClase(String idprofesor);
     }
 }
