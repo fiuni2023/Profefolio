@@ -1,7 +1,7 @@
 namespace profefolio.Models.DTOs.DashboardProfesor.GetWithOpcions;
 using Newtonsoft.Json;
 
-    public class DBCardEventosClaseDTO : DataDTO
+    public class DBCardEventosClaseDTO
     {
        
         public string Tipo { get; set; } = "";

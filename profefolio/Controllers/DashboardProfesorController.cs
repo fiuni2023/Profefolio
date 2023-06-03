@@ -434,12 +434,13 @@ namespace profefolio.Controllers
                         
                     case "eventos-materias":
                     //eventos-materias: pasar id de la clase.
+                    //este filtro evento tiene: tipo, fecha, materia
+                        var profIdEventoM = await _profesorService.GetProfesorIdByEmail(userEmail);
+                       
+                        var eventosMaterias = await _dashBoardService.FindEventosOfClase(profIdEventoM, dto.Id);
 
-                        return BadRequest("Opcion en implementacion");
-
-
-
-
+                        return Ok(eventosMaterias);
+                   
                     case "lista-alumnos":
                         //id clase
                         //id prf

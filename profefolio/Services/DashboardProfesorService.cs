@@ -392,7 +392,7 @@ namespace profefolio.Services
         * Retornar una lista de DBCardEventosClaseDTO que contenga el tipo, fecha, materia, clase y colegio
           donde idProfesor == ProfesorId
         */
-        public async Task<List<DBCardEventosClaseDTO>> FindEventosOfClase(string idProfesor, int idColegio)
+        public async Task<List<DBCardEventosColegioDTO>> FindEventosOfClase(string idProfesor, int idColegio)
         {
             var clases = await _context.Clases
                 .Where(c => c.ColegioId == idColegio)
@@ -430,19 +430,13 @@ namespace profefolio.Services
                 Console.WriteLine($"Id: {evento.Id}, MateriaListaId: {evento.MateriaListaId}, Tipo: {evento.Tipo}, Fecha: {evento.Fecha}");
             }
 
-            var eventosClase = eventos.Select(e => new DBCardEventosClaseDTO
+            var eventosClase = eventos.Select(e => new DBCardEventosColegioDTO
             {
                 Tipo = e.Tipo,
                 Fecha = e.Fecha,
                 nombreMateria = materiaListas.FirstOrDefault(m => m.Id == e.MateriaListaId)?.Materia?.Nombre_Materia,
                 nombreClase = clases.FirstOrDefault(c => c.Id == materiaListas.FirstOrDefault(m => m.Id == e.MateriaListaId)?.ClaseId)?.Nombre
             }).ToList();
-
-            Console.WriteLine("Eventos de Clase encontrados:");
-            foreach (var eventoClase in eventosClase)
-            {
-                Console.WriteLine($"Tipo: {eventoClase.Tipo}, Fecha: {eventoClase.Fecha}, Materia: {eventoClase.nombreMateria}, Clase: {eventoClase.nombreClase}, Colegio: {eventoClase.nombreColegio}");
-            }
 
             return eventosClase;
         }
