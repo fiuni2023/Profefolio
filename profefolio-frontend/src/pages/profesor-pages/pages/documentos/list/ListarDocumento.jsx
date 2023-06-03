@@ -1,0 +1,164 @@
+import React, { useState, useEffect } from 'react';
+import { PanelContainerBG } from '../../../../profesor/components/LayoutAdmin';
+import { useGeneralContext } from "../../../../../context/GeneralContext";
+import styled from "styled-components";
+import { AiOutlinePlus } from 'react-icons/ai';
+import { useNavigate } from 'react-router';
+import CreateModalDocumento from '../create/CreateModalDocumento';
+import Tabla from '../../../../../components/Tabla';
+
+
+import ClassesService from '../Helper/DocumentoHelper';
+import { Row } from 'react-bootstrap';
+import BackButton from '../../../components/BackButton';
+import { useModularContext } from '../../../context';
+
+const FlexDiv = styled.div`
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 10px;
+`
+
+
+function ListarDocumentos() {
+  
+  const {stateController} = useModularContext()
+  const {materiaId} = stateController
+
+  const [selectData, setSelectedData] = useState(null)
+  const { getToken, cancan, verifyToken } = useGeneralContext();
+  const [documento, setDocumento] = useState([]);
+  const token = getToken()
+
+  const [fetch_data, setFetchData] = useState([])
+
+  const nav = useNavigate()
+
+  const [show, setShow] = useState(false);
+
+  const handleHide = () => {
+    setShow(false)
+    doFetch()
+    setSelectedData(null)
+  }
+
+  const doFetch = () => {
+    setFetchData((before) => [before])
+  }
+
+
+  useEffect(() => {
+    console.log(materiaId)
+    const listaMateriasProfesores = async () => {
+      try {
+        const dataList = await ClassesService.getDocumento(1, token);
+        console.log(dataList)
+        setDocumento(dataList.data ?? []);
+      } catch (e) {
+        setDocumento([]);
+      }
+    };
+    listaMateriasProfesores();
+
+
+
+  }, [cancan, verifyToken, nav, token, fetch_data, materiaId]);
+
+
+  const btndetallesDocumento = (data) => {
+    setSelectedData(data)
+    setShow(true);
+  };
+
+
+  return (
+    <>
+      <div>
+        
+        <Row>
+          <FlexDiv>
+            <BackButton to="materiashow" />
+            <h5 className="m-0">
+              Documentos
+            </h5>
+          </FlexDiv>
+        </Row>
+
+        <PanelContainerBG>
+          <div >
+            <Tabla
+              datosTabla={{
+                tituloTabla: 'Lista de Documentos',
+                titulos: [
+                  { titulo: 'Nombre' },
+                  { titulo: 'Enlace' },
+
+                ],
+                clickable: { action: btndetallesDocumento },
+
+                filas: documento.map((documento) => ({
+                  fila: documento,
+                  datos: [
+                    { dato: documento.nombre },
+                    { dato: documento.enlace },
+
+                  ],
+                })),
+              }}
+            />
+          </div>
+
+          <CreateModalDocumento onHide={handleHide} selectData={selectData} show={show} />
+
+          <AddButton onClick={() => setShow(true)}>
+            <AiOutlinePlus size={"35px"} />
+          </AddButton>
+
+        </PanelContainerBG>
+
+        <footer />
+      </div>
+
+      <style jsx='true'>{`
+
+        footer {
+          position: fixed;
+          background-color: hwb(0 99% 0%);
+          color: rgb(245, 249, 249);
+          bottom: 0;
+          left: 0;
+          right: 0;
+          padding: 0px;
+          text-align: right;
+        }
+
+        .btn-smaller {
+          font-size: 0.8rem;
+        }
+        
+      `}</style>
+
+    </>
+  )
+}
+
+const AddButton = styled.button`
+    width: 50px;
+    height: 50px;
+    padding: 7px;
+    color: white;
+    background-color: #F0544F;
+    border-radius: 50%;
+    position: fixed;
+    bottom: 1.5%;
+    right: 1%;
+    cursor: pointer;
+    border: none;
+&:hover {
+    filter: brightness(0.95);
+&:active {
+    filter: brightness(0.8);
+  }
+`;
+export default ListarDocumentos

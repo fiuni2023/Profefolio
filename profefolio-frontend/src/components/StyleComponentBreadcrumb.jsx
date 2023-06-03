@@ -4,7 +4,6 @@ import {Link } from "react-router-dom";
 
 const StyledNavAdmin = styled.div`
     width: 100%;
-    height: 100%;
     background-color: white;
     display: flex;
     align-items: center;
@@ -41,13 +40,13 @@ const StyledCustomSpan = styled.span`
 `;
 
 
-const StyleComponentBreadcrumb = ({ nombre }) => {
+const StyleComponentBreadcrumb = ({ nombre, to = "/" }) => {
     return (
         <>
             <StyledNavAdmin>
                 <StyledNButtonForSideAdmin>
                     <StyledButtonNavBarAdmin>
-                        <Link to="/" className="buttonNavBarAdmin ">
+                        <Link to={to} className="buttonNavBarAdmin ">
                             
                             <StyledCustomIcon className="glyphicon glyphicon-info-sign" />
                 

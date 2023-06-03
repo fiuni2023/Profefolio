@@ -138,14 +138,12 @@ function ModalVerColegios({ datoColegio, setShow, show, disabled, setDisabled, o
             toast.error(error.response.data?.errors.Email[0])
           }
         });
-
-    else {
-      putBack();
       
-    }
+      } 
+      
 
   }
-
+  
 
   //Guardar el id del admin
   // eslint-disable-next-line no-unused-vars

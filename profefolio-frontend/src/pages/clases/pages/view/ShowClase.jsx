@@ -8,6 +8,7 @@ import AlumnosInscriptos from '../../components/show/AlumnosInscriptos';
 import MateriasDeClase from '../../components/show/MateriasDeClase';
 import ClassesService from '../../Helpers/ClassesHelper';
 import { useGeneralContext } from '../../../../context/GeneralContext';
+import StyleComponentBreadcrumb from '../../../../components/StyleComponentBreadcrumb';
 
 const ShowClase = () => {
     const { idClase } = useParams();
@@ -45,6 +46,7 @@ const ShowClase = () => {
     };
 
     return <>
+            <StyleComponentBreadcrumb nombre={"Clase"} to="/Clases"/>
             <ShowContainer data={componentes}/>
     </>
 

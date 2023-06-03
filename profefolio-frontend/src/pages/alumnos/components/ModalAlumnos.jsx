@@ -159,7 +159,7 @@ function ModalAlumnos({
                     },
                     {
                         key: "direccion", label: "Dirrección",
-                        type: "text", placeholder: "Ingrese la dirrección",
+                        type: "text", placeholder: "Ingrese la dirección",
                         disabled: disabled,
                     },
                     {

@@ -1,9 +1,15 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { createContext } from "react";
 import ProfesorPage from "../pages/dashboard";
 import ProfesorClase from "../pages/clase";
 import ProfesorMateriaShow from "../pages/materiashow";
 import ProfesorMateria from "../pages/materia";
+import Anotacion from "../pages/anotacion";
+import Documentos from "../pages/documentos/list/ListarDocumento";
+import Asistencia from "../pages/asistencia/Asistencia";
+import ProfesorPagesService from "../services/ProfesorPagesService";
+import { useGeneralContext } from "../../../context/GeneralContext";
+import Evaluaciones from "../pages/evaluaciones";
 
 const ModularContext = createContext();
 
@@ -17,23 +23,122 @@ export const ModularProvider = ({ children }) => {
         dashboard: <ProfesorPage />,
         clase: <ProfesorClase />,
         materia: <ProfesorMateria />,
-        materiashow: <ProfesorMateriaShow />
+        materiashow: <ProfesorMateriaShow />,
+        anotacion: <Anotacion />,
+        documentos: <Documentos />,
+        asistencia: <Asistencia />,
+        evaluaciones: <Evaluaciones />
     }
+    
+    const { getToken } = useGeneralContext()
+    const token = getToken()
 
-    const [currentPage, setCurrentPage] = useState(pages.dashboard)
+    //----------------------------------------------------States----------------------------------------------------
+    
+    const [ fetch_data, setFetchData ] = useState(false)
+    const [ currentPage, setCurrentPage ] = useState(pages.dashboard)
+    const [ colegios, setColegios ] = useState([])
+    const [colegioId, setColegioId] = useState(0) 
+    const [ clases, setClases ] = useState([])
+    const [ claseId, setClaseId] = useState(0)
+    const [ materias, setMaterias ] = useState([])
+    const [ materiaId, setMateriaId ] = useState(0)
+    const [ materiaShow, setMateriaShow ] = useState({})
+    const [ materiaName, setMateriaName ] = useState("")
+    const [ asistencias, setAsistencias ] = useState([])
+    const [ puntajes, setPuntajes ] = useState([])
+    const [ alumnos, setAlumnos ] = useState([])
+    //----------------------------------------------------Effect Hooks----------------------------------------------------
+
+    useEffect(()=>{
+        // const body = {opcion: 'card-clases', id: 1, anho: 2023}
+        ProfesorPagesService.GetColegios(token)
+        .then(d=>setColegios(d.data))
+    },[fetch_data, token])
+
+    useEffect(()=>{
+        if(colegioId){
+            let body = {opcion: 'card-clases', id: colegioId, anho: 2023}
+            ProfesorPagesService.Get(body, token)
+            .then(d=>setClases(d.data))
+        }
+    },[fetch_data, token, colegioId])
+
+    useEffect(()=>{
+        if(claseId){
+            let body = {opcion: 'card-materias', id: claseId, anho: 2023}
+            ProfesorPagesService.Get(body, token)
+            .then(d=>setMaterias(d.data))
+            body = {opcion: 'lista-alumnos', id: claseId, anho: 2023}
+            ProfesorPagesService.Get(body, token)
+            .then(d=>setAlumnos(d.data))
+        }
+    },[fetch_data, token, claseId])
+
+    useEffect(()=>{
+        if(materiaId){
+            let body = {opcion: 'cards-materia', id: materiaId, anho: 2023}
+            ProfesorPagesService.Get(body, token)
+            .then(d=>setMateriaShow(d.data))
+            body = {opcion: 'promedio-asistencias', id: materiaId, anho: 2023}
+            ProfesorPagesService.Get(body, token)
+            .then(d=>setAsistencias(d.data))
+            body = {opcion: 'promedio-puntajes', id: materiaId, anho: 2023}
+            ProfesorPagesService.Get(body, token)
+            .then(d=>setPuntajes(d.data))
+        }
+    },[fetch_data, token, materiaId])
+
+    //----------------------------------------------------Functions----------------------------------------------------
 
     const setPage = (page = "") =>{
         if(page === "dashboard") return setCurrentPage(pages.dashboard)
         if(page === "clase") return setCurrentPage(pages.clase)
         if(page === "materia") return setCurrentPage(pages.materia)
         if(page === "materiashow") return setCurrentPage(pages.materiashow)
+        if(page === "anotacion") return setCurrentPage(pages.anotacion)
+        if(page === "documento") return setCurrentPage(pages.documentos)
+        if(page === "asistencia") return setCurrentPage(pages.asistencia)
+        if(page === "evaluaciones") return setCurrentPage(pages.evaluaciones)
         setCurrentPage(pages.dashboard)
         
     }
 
+    const fetchData = () => {
+        setFetchData((before)=>{return !before})
+    }
+
+
+    //----------------------------------------------------Return Values----------------------------------------------------
+
+    const stateController = {
+        colegioId, 
+        setColegioId,
+        claseId,
+        setClaseId,
+        materiaId, 
+        setMateriaId,
+        setMateriaName
+    }
+
+    const dataSet = {
+        colegios,
+        clases,
+        materias,
+        materiaShow,
+        materiaName,
+        asistencias,
+        puntajes,
+        alumnos
+    }
+
+
     const values = {
         currentPage,
-        setPage
+        setPage,
+        fetchData,
+        stateController,
+        dataSet,
     }
 
     return (

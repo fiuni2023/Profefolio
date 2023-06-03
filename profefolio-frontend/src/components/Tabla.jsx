@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {Table, Thead, Tbody, TR, TH, TD, ScrollTable} from "./componentsStyles/StyledTable"; 
+import ExcelExport from './utils/excelExport';
 
 
 /*Estructura del datosTabla todos los campos son opcionales
@@ -20,8 +21,40 @@ datosTabla = {
 
 */ 
 function Tabla({datosTabla, selected}){
+
+    const [exp, setExp] = useState([]); 
+
+    useEffect(() => {
+       let filas = datosTabla?.filas;
+       let titulos = datosTabla?.titulos;
+       let current = null;
+       let newExp = [];
+       let i = 0;
+       if(filas && titulos){
+        filas.forEach(fila => {
+            current = fila?.datos;
+            let newFila = {};
+            if(current){
+                let j = 0; 
+                titulos.forEach(element => {
+                   newFila[element?.titulo] = current[j].dato;
+                   j++; 
+                });
+                newExp[i] = newFila;
+                i++;
+            }
+        });
+        setExp(newExp);
+       }  
+    }, [datosTabla]);
+
     return (
         <>
+         {datosTabla && datosTabla?.filas && !datosTabla.small && <>
+            <ExcelExport
+                excelData={exp}
+                fileName={datosTabla?.tituloTabla ? datosTabla?.tituloTabla : "descargado_de_ProfeFolio"}>
+            </ExcelExport></>}
         { (datosTabla?.filas) ? datosTabla &&(
             <ScrollTable>
                 <Table  key = {datosTabla?.tituloTabla}
@@ -30,7 +63,19 @@ function Tabla({datosTabla, selected}){
                         <Thead small={datosTabla?.small ?? false}  background={datosTabla?.colorHeader ? datosTabla.ColorHeader : "#DDDDDD"}><TR key="thead">
                             {datosTabla.titulos.map((titulo, index) => {
                                 return (
-                                    <TH key={titulo?.titulo}>{titulo?.titulo}</TH>
+                                    titulo?.componentes ? (
+                                        <TH key={index + 'date'} clickable={true}>
+                                            {titulo?.componentes?.map((componente, index)=>{
+                                               return (
+                                            <div style={{display: 'inline'}} key={index + componente}
+                                                clickable='true'
+                                                onClick = {componente?.action ? (e)=>componente.action(e) : null}>
+                                                {componente.componente}</div>
+                                                );
+                                            })}
+                                        </TH>
+                                    ) : (
+                                         <TH key={titulo?.titulo}>{titulo?.titulo}</TH> )
                                     );
                                 })}
                         </TR></Thead>
@@ -43,9 +88,10 @@ function Tabla({datosTabla, selected}){
                                 selected={fila?.fila?.id === selected ? true : false} 
                                 clickable={datosTabla?.clickable ? true : false}
                                 onClick = {datosTabla?.clickable ? ()=>datosTabla.clickable?.action(fila?.fila) : null}>
-                                                {fila?.datos.map((dato, indexDato) =>{
-                                                    return <TD
-                                                    key={dato.dato ? `${dato.dato}${indexDato}` : indexDato}>{dato?.dato}</TD>
+                                                {fila?.datos.map((dato, indexDato) => {
+                                                    return<TD key={dato.dato ? `${dato.dato}${indexDato}` : indexDato}>
+                                                        {dato.componente ? dato.componente : dato.dato}
+                                                    </TD>
                                                 })}</TR>
                                             })}
                         </Tbody>

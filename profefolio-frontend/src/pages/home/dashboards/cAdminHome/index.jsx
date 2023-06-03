@@ -109,7 +109,9 @@ const CAdminHome = () => {
                         table: {
                             small: true, 
                             titulos: [ {titulo: "Nombre y Apellido"}], 
-                            filas: listaAlumno.length === 0? [{datos:[{dato: "No hay datos nuevos"}]}]:listaAlumno.map(a=>{return {datos:[{dato: a.nombre}]}})
+                            filas: listaAlumno.length === 0? [
+                                {datos:[{dato: "No hay datos nuevos"}]}]
+                                :listaAlumno.map(a=>{return {datos:[{dato: `${a.nombre} ${a.apellido}`}]}})
                         }
                     }
                 

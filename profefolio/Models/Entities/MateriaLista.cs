@@ -11,12 +11,13 @@ namespace profefolio.Models.Entities
         [Required]
         [ForeignKey("MateriaId")]
         public Materia Materia { get; set; }
-
         [Required]
         [ForeignKey("ProfesorId")]
         public Persona Profesor { get; set; }
         public Clase Clase { get; set; }
-
+        public ICollection<Evaluacion>? Eventos { get; set; }
         public IEnumerable<HorasCatedrasMaterias>? Horarios { get; set; }
+
+        public IEnumerable<Asistencia>? ListaAsistencias { get; set; }
     }
 }

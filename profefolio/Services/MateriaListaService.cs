@@ -212,7 +212,7 @@ namespace profefolio.Services
                 throw new UnauthorizedAccessException();
             }
 
-            if(dto.Materias.Count < 1)
+            if (dto.Materias.Count < 1)
             {
                 throw new BadHttpRequestException("No se admiten elementos vacios");
             }
@@ -326,5 +326,28 @@ namespace profefolio.Services
             }
 
         }
+
+        public async Task<Persona> GetProfesorOfMateria(int idMateriaLista, string profesorEmail)
+        {
+            var materia = await _db.MateriaListas
+                    .Include(a => a.Profesor)
+                    .FirstOrDefaultAsync(a => !a.Deleted
+                        && a.Id == idMateriaLista
+                        && profesorEmail.Equals(a.Profesor.Email));
+
+            if (materia == null)
+            {
+                throw new FileNotFoundException("No es Profesor de la Materia");
+            }
+            return materia.Profesor;
+        }
+        public async Task<MateriaLista> FindById(int id)
+        {
+            return await _db.MateriaListas
+                .Where(p => !p.Deleted && p.Id == id)
+                .FirstOrDefaultAsync();
+        }
+
+      
     }
 }
