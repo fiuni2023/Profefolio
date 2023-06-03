@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { PanelContainerBG } from '../../../../profesor/components/LayoutAdmin';
 import { useGeneralContext } from "../../../../../context/GeneralContext";
 import styled from "styled-components";
-import { AiOutlinePlus } from 'react-icons/ai';
+import { AiOutlinePlus, AiOutlineRight } from 'react-icons/ai';
 import { useNavigate } from 'react-router';
 import CreateModalDocumento from '../create/CreateModalDocumento';
 import Tabla from '../../../../../components/Tabla';
@@ -49,20 +49,15 @@ function ListarDocumentos() {
 
 
   useEffect(() => {
-    console.log(materiaId)
     const listaMateriasProfesores = async () => {
       try {
-        const dataList = await ClassesService.getDocumento(1, token);
-        console.log(dataList)
+        const dataList = await ClassesService.getDocumento(materiaId, token);
         setDocumento(dataList.data ?? []);
       } catch (e) {
         setDocumento([]);
       }
     };
     listaMateriasProfesores();
-
-
-
   }, [cancan, verifyToken, nav, token, fetch_data, materiaId]);
 
 
@@ -93,7 +88,6 @@ function ListarDocumentos() {
                 titulos: [
                   { titulo: 'Nombre' },
                   { titulo: 'Enlace' },
-
                 ],
                 clickable: { action: btndetallesDocumento },
 
@@ -102,7 +96,10 @@ function ListarDocumentos() {
                   datos: [
                     { dato: documento.nombre },
                     { dato: documento.enlace },
-
+                    { componente: <InvisibleButton onClick={(e)=>{
+                      e.stopPropagation()
+                      window.open(documento.enlace, "_blank")
+                    }}><AiOutlineRight size={20} /></InvisibleButton>}
                   ],
                 })),
               }}
@@ -161,4 +158,20 @@ const AddButton = styled.button`
     filter: brightness(0.8);
   }
 `;
+
+const InvisibleButton = styled.button`
+  width: 30px;
+  height: 30px;
+  background-color: white;
+  border: none;
+  outline: none;
+  border-radius: 50%;
+  &:hover {
+    filter: brightness(0.7);
+  }
+  &:active {
+    filter: brightness(0.6);
+  }
+`;
+
 export default ListarDocumentos
