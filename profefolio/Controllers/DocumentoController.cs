@@ -108,21 +108,21 @@ namespace profefolio.Controllers
                 return BadRequest($"Error al crear el documento.");
             }
         }
-
+        
         /// <summary>
         /// Retorna los documentos creados por el prf que hace la petición.
         /// get all documentos de una materia
         /// Solo un profesor puede realizar la peticion
         /// Se retornan todos los documentos pertenecientes a esa materia
-        /// https://localhost:7063/api/Documento/all/{idMateria}
+        /// https://localhost:7063/api/Documento/all/{idMateriaLista}
         /// </summary>
         /// <remarks>
         /// </remarks>
 
         [HttpGet]
-        [Route("all/{idMateria}")]
+        [Route("all/{idMateriaLista}")]
         [Authorize(Roles = "Profesor")]
-        public async Task<ActionResult<IEnumerable<DocumentoResultDTO>>> GetAll(int idMateria)
+        public async Task<ActionResult<IEnumerable<DocumentoResultDTO>>> GetAll(int idMateriaLista)
         {
             if (!ModelState.IsValid)
             {
@@ -133,7 +133,7 @@ namespace profefolio.Controllers
             {
                 var userEmail = User.FindFirstValue(ClaimTypes.Name);
                 var profId = await _profesorService.GetProfesorIdByEmail(userEmail);
-                var result = await _documentoService.GetAll(idMateria, profId);
+                var result = await _documentoService.GetAll(idMateriaLista, profId);
 
                 return Ok(_mapper.Map<List<DocumentoResultDTO>>(result));
 
@@ -144,7 +144,6 @@ namespace profefolio.Controllers
 
             }
         }
-
         /// <summary>
         /// Retorna un documento creado por el prf que hace la petición.
         /// Solo un profesor puede realizar la peticion
