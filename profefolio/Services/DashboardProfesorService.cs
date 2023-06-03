@@ -435,8 +435,7 @@ namespace profefolio.Services
                 Tipo = e.Tipo,
                 Fecha = e.Fecha,
                 nombreMateria = materiaListas.FirstOrDefault(m => m.Id == e.MateriaListaId)?.Materia?.Nombre_Materia,
-                nombreClase = clases.FirstOrDefault(c => c.Id == materiaListas.FirstOrDefault(m => m.Id == e.MateriaListaId)?.ClaseId)?.Nombre,
-                nombreColegio = clases.FirstOrDefault(c => c.Id == materiaListas.FirstOrDefault(m => m.Id == e.MateriaListaId)?.ClaseId)?.Colegio?.Nombre
+                nombreClase = clases.FirstOrDefault(c => c.Id == materiaListas.FirstOrDefault(m => m.Id == e.MateriaListaId)?.ClaseId)?.Nombre
             }).ToList();
 
             Console.WriteLine("Eventos de Clase encontrados:");
