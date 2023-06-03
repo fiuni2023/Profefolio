@@ -51,6 +51,7 @@ namespace profefolio.Helpers.Mappers
                 .ForMember(dest => dest.Horario,
                     opt => opt.MapFrom(v => new DBCardClasesHorariosDTO()));
 
+
             CreateMap<HorasCatedrasMaterias, DBCardClasesHorariosDTO>()
                 .ForMember(dest => dest.Dia,
                     opt => opt.MapFrom(v => v.Dia))
@@ -72,6 +73,7 @@ namespace profefolio.Helpers.Mappers
                     opt => opt.MapFrom(v => v.HoraCatedra.Inicio))
                 .ForMember(dest => dest.Fin,
                     opt => opt.MapFrom(v => v.HoraCatedra.Fin));
+
 
             CreateMap<ClasesAlumnosColegio, DBClaseAlumnoColegioDTO>()
                 .ForMember(dest => dest.Id,
@@ -96,10 +98,11 @@ namespace profefolio.Helpers.Mappers
                 .ForMember(dest => dest.Asistencias,
                     opt => opt.MapFrom(v => 25))
                 .ForMember(dest => dest.Calificaciones,
-                    opt => opt.MapFrom(v => new DBCardsMateriaInfoCalificaciones(){
+                    opt => opt.MapFrom(v => new DBCardsMateriaInfoCalificaciones()
+                    {
                         Calificaciones = 32,
                         SinCalificaciones = 5
-                    }) );
+                    }));
         }
     }
 }
