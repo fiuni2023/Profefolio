@@ -53,7 +53,9 @@ const ClasesTable = ({ condFetch, colegioId, getToken, doChangeClase, triggerUpd
                 //let newText = "error";
                 if (typeof (e.response.data) === "string" && `${e.response.data}`.includes("No existe la pagina:")) {
                     //const text = e.response.data.trim().split(": ")
+
                     /* const numPag = */ //parseInt(text[1]) + 1;
+
                     //newText = `${text[0]} ${numPag}`;
                     // if (numPag === 1) {
                     //     toast.error("No tiene Clases creadas todavia.")
