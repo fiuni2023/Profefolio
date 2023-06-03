@@ -437,7 +437,7 @@ namespace profefolio.Controllers
                     //este filtro evento tiene: tipo, fecha, materia
                         var profIdEventoM = await _profesorService.GetProfesorIdByEmail(userEmail);
                        
-                        var eventosMaterias = await _dashBoardService.FindEventosOfClase(profIdEventoM, dto.Id);
+                        var eventosMaterias = await _dashBoardService.FindEventosMaterias(profIdEventoM, dto.Id);
 
                         return Ok(eventosMaterias);
                    
