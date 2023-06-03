@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using profefolio.Models.Entities;
 using profefolio.Models.DTOs.Materia;
+using profefolio.Models.DTOs.DashboardProfesor.GetWithOpcions;
 namespace profefolio.Repository
 {
     public interface IDashboardProfesor : IRepository<ColegioProfesor> 
@@ -24,5 +25,8 @@ namespace profefolio.Repository
         Task<MateriaLista> FindDataForCardOfInfoMateria(int idMateriaLista, string emailProfesor);
         Task<MateriaLista> GetPromediosPuntajesByIdMateriaLista(int idMateriaLista, string emailProfesor);
         Task<(double, double, double)> GetPromedioAsistenciasByMonth(int year, int month, int idMateriaLista, string profesorId);
+        Task<List<DBCardEventosColegioDTO>> FindEventosOfClase(String idprofesor, int idColegio);
+        Task<List<DBCardEventosClaseDTO>> FindEventosOfClase(String idprofesor);
+        Task<List<DBCardEventosMateriaDTO>> FindEventosMaterias(String idprofesor, int idClase);
     }
 }
