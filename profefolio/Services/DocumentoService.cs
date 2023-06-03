@@ -113,5 +113,11 @@ public class DocumentoService : IDocumento
         return materiaLista != null;
     }
 
+    public async Task<bool> FindProfesorOfDocumento(int idDocumento, string mailProfesor){
+         var isDoc = await _dbContext.Documentos
+            .FirstOrDefaultAsync(ml => ml.Id == idDocumento && ml.CreatedBy == mailProfesor);
+        return isDoc != null;
+    }
+
 
 }
