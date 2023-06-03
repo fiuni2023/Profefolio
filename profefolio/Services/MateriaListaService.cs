@@ -192,7 +192,7 @@ namespace profefolio.Services
                 .Include(c => c.ColegioProfesores)
                 .Include(c => c.personas)
                 .Where(c => !c.Deleted)
-                .Where(c => c.personas != null && c.personas.Id.Equals(user.Id))
+                .Where(c => c.personas.Id.Equals(user.Id))
                 .FirstOrDefaultAsync();
 
 
@@ -221,8 +221,7 @@ namespace profefolio.Services
             {
                 var existMateria = _db.Materias
                     .Where(m => !m.Deleted)
-                    .Where(m => m.Id == materia.IdMateria)
-                    .Count() > 0;
+                    .Any(m => m.Id == materia.IdMateria);
 
 
                 if (!existMateria)
@@ -251,11 +250,11 @@ namespace profefolio.Services
                     }
 
 
-                    var HasRole = _db.UserRoles
+                    var hasRole = _db.UserRoles
                         .Any(ur => ur.RoleId.Equals(role.Id) && ur.UserId.Equals(profe.Id));
 
 
-                    if (!HasRole)
+                    if (!hasRole)
                     {
                         throw new UnauthorizedAccessException();
                     }
@@ -309,7 +308,7 @@ namespace profefolio.Services
                             materiaListaD.Deleted = true;
                             break;
 
-                        default: break;
+                        default: throw new BadHttpRequestException("Comando no valido");
                     }
 
 
@@ -344,7 +343,7 @@ namespace profefolio.Services
         public async Task<MateriaLista> FindById(int id)
         {
             return await _db.MateriaListas
-                .Where(p => !p.Deleted && p.Id == id)
+                .Where(p => p != null && !p.Deleted && p.Id == id)
                 .FirstOrDefaultAsync();
         }
 
