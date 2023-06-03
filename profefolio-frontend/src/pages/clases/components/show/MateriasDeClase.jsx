@@ -206,7 +206,7 @@ useEffect(() => {
                 </TagNombreSelect>
                 )}
 
-                {profeProfesor.map((profesor) => { console.log(profesor)
+                {profeProfesor.map((profesor) => {
                   return (
                     profesoresSeleccionados.includes(profesor.id) && (
                         <TagProfesor
@@ -217,6 +217,7 @@ useEffect(() => {
                         state={newType}
                         idMateriaProfesor={idMateria} 
                         onClick={() => {
+                         
                             setProfesoresSeleccionados((prevSeleccionados) =>
                             prevSeleccionados.filter((id) => id !== profesor.id)
                             );
@@ -227,7 +228,6 @@ useEffect(() => {
 
   {/* Este es un comentario en React*/}
   {Array.isArray(profesores) && profesores.map((e, i) => {
-    console.log(e)
     return(
           <TagProfesor
             key={i}
@@ -403,7 +403,6 @@ useMemo(() => {
             response.then((r) => {
                 setProfesoresOptions(r.data ?? [])
             }).catch(e => {
-                console.log(e)
                 setProfesoresOptions([])
             })
         }
@@ -435,7 +434,6 @@ useMemo(() => {
             }
         }).catch((e) => {
             setOptionsMaterias([])
-            console.log(e)
         })
 
     }, [getClaseSelectedId, getToken])
@@ -483,10 +481,11 @@ useMemo(() => {
       listaMateriasProfesores();
     }, []);
 
-   
-
     let listaFusionada;
+   
+    const [filtrarFusionada, setFiltrarMateria] = useState([]);
 
+  
     if (materiaProfesor) {
       listaFusionada = materiaProfesor.map(item => ({
         ...item,
@@ -504,6 +503,20 @@ useMemo(() => {
       listaFusionada = [...listaFusionada, ...nuevosElementos];
     }
 
+    const eliminarMateria = (idMateria) => {
+      const updatedList = materiasList.list.filter(
+        (item) => item.idMateria !== idMateria
+      );
+      setFiltrarMateria(updatedList);
+    };
+
+    if (filtrarFusionada.length > 0) {
+  
+ 
+      listaFusionada = [...filtrarFusionada];
+      }
+    
+
     const [profesoresSeleccionadosBorrado, setProfesoresSeleccionadosBorrado] = useState([]);
 
     const guardarProfesorSeleccionado = (profesoresSeleccionados) => {
@@ -520,10 +533,9 @@ useMemo(() => {
         setIdMateriaSeleccionada(idMateriaSeleccionada);
     }
 
-   
   
     let materiasList = {
-        onSubmit: () => handleClickProfesor(materia),
+        onSubmit: () => handleClickProfesor(idMateria),
         enabled: true,
         header: {
             title: "Lista de Materias de la Clase",
@@ -559,16 +571,25 @@ useMemo(() => {
 
                                     onClick={(event) => {
                                         console.log(
-                                          `${materia.nombre} seleccionado`,
-                                          `${materia.id} seleccionado`,
-                                          "profesores",
-                                          materia.profesores.map((profesor) => profesor.id),
-                                          "profeProfesor",
-                                          profeProfesor
+                                          `${materia.idMateria} materia seleccionado`,
                                         );
+                                        if (materia.estado === "new") {
+
+                                          eliminarMateria(materia.idMateria);
+                                       
+                                        } else {
+                                         
+                                          toast.error("Una materia guardad no se puede eliminar");
+
+                                        }
+                                      
                                         setIdMateria(materia.id); // Guardar el ID de la materia
                                         setIdMateriaProfesores(index);
                                         setSelectProfesores(profeProfesor);
+
+                                       /* setIdMateriaProfesores((prevSeleccionados) =>
+                                        prevSeleccionados.filter((id) => id !== materia.idMateria)
+                                        );*/
                                         setStatusMateria(
                                           materia.id,
                                           materia.status === "new" ? "reload" : "new"
