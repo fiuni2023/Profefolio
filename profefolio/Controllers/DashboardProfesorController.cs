@@ -166,6 +166,8 @@ namespace profefolio.Controllers
         ///
 		///			    - horarios-clases: pasar id del colegio.
         ///
+        ///		    	- eventos-colegios: id = 0
+        ///
 		///		    	- eventos-clases: pasar id del colegio.
         ///
 		///			    - eventos-materias: pasar id de la clase.
@@ -413,15 +415,32 @@ namespace profefolio.Controllers
                         var materia = await _dashBoardService.FindDataForCardOfInfoMateria(dto.Id, userEmail);
                         return Ok(_mapper.Map<DBCardsMateriaInfo>(materia));
 
+                    case "eventos-colegios":
+                        var _profIdEvento = await _profesorService.GetProfesorIdByEmail(userEmail);
+                       
+                        var eventosPrf = await _dashBoardService.FindEventosOfClase(_profIdEvento);
+
+                        return Ok(eventosPrf);
 
                     case "eventos-clases":
-                        return BadRequest("Opcion en implementacion");
+                    //eventos-clases: pasar id del colegio.
+                    //este filtro evento tiene: tipo, fecha, materia,clase
+                
+                        var profIdEvento = await _profesorService.GetProfesorIdByEmail(userEmail);
+                       
+                        var eventosClase = await _dashBoardService.FindEventosOfClase(profIdEvento, dto.Id);
+
+                        return Ok(eventosClase);
+                        
                     case "eventos-materias":
-                        return BadRequest("Opcion en implementacion");
+                    //eventos-materias: pasar id de la clase.
+                    //este filtro evento tiene: tipo, fecha, materia
+                        var profIdEventoM = await _profesorService.GetProfesorIdByEmail(userEmail);
+                       
+                        var eventosMaterias = await _dashBoardService.FindEventosMaterias(profIdEventoM, dto.Id);
 
-
-
-
+                        return Ok(eventosMaterias);
+                   
                     case "lista-alumnos":
                         //id clase
                         //id prf

@@ -27,8 +27,8 @@ namespace profefolio.Models.Entities
         public string Observacion { get; set; } = "";
 
 
-        public ClasesAlumnosColegio Alumno { get; set; } = null!;
-        public MateriaLista MateriaLista { get; set; } = null!;
+        public ClasesAlumnosColegio? Alumno { get; set; }
+        public MateriaLista? MateriaLista { get; set; } = null!;
 
     }
 }
