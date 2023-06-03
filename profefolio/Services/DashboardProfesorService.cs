@@ -254,7 +254,7 @@ namespace profefolio.Services
 
             return duraciones.Count;
             */
-            throw new NotImplementedException();
+            return 0;
         }
 
         public async Task<List<HorasCatedrasMaterias>> FindAllHorariosClasesByEmailProfesorAndIdColegio(int idColegio, string email, int anho)

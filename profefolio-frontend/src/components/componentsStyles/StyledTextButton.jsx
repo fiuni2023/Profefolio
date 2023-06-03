@@ -29,6 +29,14 @@ const StyledTextButton = styled.button`
             background-color: #5181D1;
           }
         `;
+      case 'save2':
+        return `
+          background-color: #8DACE1;
+          color: #fff
+          ;&:hover {
+            background-color: #5181D1;
+          }
+        `;
       case 'create':
         return `
             background-color: #8DACE1;
@@ -80,6 +88,23 @@ const StyledTextButton = styled.button`
   
           &:hover {
             background-color: #EB231C;
+          }
+        `;
+      case 'yes':
+        return `
+          background-color: #59C8A4;
+          color: #fff;
+          &:hover {
+            background-color: #24B787;
+          }
+        `;
+      case 'no':
+        return `
+          background-color: #E57BA4;
+          color: #fff;
+
+          &:hover {
+            background-color: #D93D79;
           }
         `;
       default:

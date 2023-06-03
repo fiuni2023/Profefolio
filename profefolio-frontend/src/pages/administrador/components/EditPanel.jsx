@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Col, Row } from "react-bootstrap";
 import { toast } from "react-hot-toast";
-import { ButtonInput } from "../../../components/Inputs";
 import AdminService from "../../../sevices/administrador";
 import { useAdminContext } from "../context/AdminContext";
-import { useGeneralContext } from '../../../context/GeneralContext'
-
+import { useGeneralContext } from '../../../context/GeneralContext';
+import IconButton from '../../../components/IconButton';
 import styles from './EditPanel.module.css'
-import { RxCross2 } from "react-icons/rx";
-import { BsPencilFill } from 'react-icons/bs'
-import { GoTrashcan } from 'react-icons/go'
+import { SInput, SSelect, SLabel, SRow, SOption, SCol, SCol2, SClose, H1, SErase } from "./StyledEditPanel";
+import TextButton from "../../../components/TextButton";
 
 const LAEditPanel = ({
     onUpdate = () => {}
@@ -87,117 +84,139 @@ const LAEditPanel = ({
     return (
         <>
             <div className={styles.PanelContainer} >
-                <div className={styles.ContentBody}>
-                    <Row>
-                        <Col>
-                            <div className="d-flex gap-2">
-                                <input disabled={!editing} className = {''} style={{width: '49%'}} value={selectedAdmin.nombre} onChange={(event) => { handleChange("nombre", event.target.value) }} />
-                                <input disabled={!editing} className = {''} placeholder={"Agregar Apellido"} style={{width: '49%'}} value={selectedAdmin.apellido} onChange={(event) => { handleChange("apellido", event.target.value) }} />
-                            </div>    
-                        </Col>
-                        <Col>
-                            <div className="d-flex justify-content-between">
-                                <div className="d-flex gap-2 align-items-center w-75">
-                                    <label>E-mail:</label>
-                                    <input disabled={!editing} className = {''} placeholder={"Agregar Email"} style={{width: '85%'}} value={selectedAdmin.email ?? ""} onChange={(event) => { handleChange("email", event.target.value) }} />
-                                </div>
-                                <div className={styles.ExitContainer} onClick={()=>{handleClose()}}>
-                                    <RxCross2 size={18} />
-                                </div>
-                            </div>  
-                        </Col>
-                    </Row>
-                    <Row className="mt-2">
-                        <Col>
-                            <div className="d-flex gap-2 align-items-center">
-                                <div className="d-flex gap-2 align-items-center">
-                                    <label>CIN:</label>
-                                    <input disabled={!editing} className = {''} placeholder={"Agregar CIN"} style={{width: 'auto'}} value={selectedAdmin.documento ?? ""} onChange={(event) => { handleChange("documento", event.target.value) }} />
-                                </div>
-                                <div className="d-flex gap-2 align-items-center">
-                                    <label>Tel:</label>
-                                    <input disabled={!editing} className = {''} placeholder={"Agregar Telefono"} style={{width: 'auto'}} value={selectedAdmin.telefono ?? ""} onChange={(event) => { handleChange("telefono", event.target.value) }} />
-                                </div>
-                                <div className="d-flex gap-2 align-items-center">
-                                    <label>Fecha Nac.:</label>
-                                    <input disabled={!editing} type={"date"} className = {''} style={{width: 'auto' }} value={selectedAdmin.nacimiento.split('T')[0] ?? ""} onChange={(event) => { handleChange("nacimiento", event.target.value) }} /> 
-                                </div>
-                            </div>
-                        </Col>
-                        <Col>
-                            <div className="d-flex gap-2 align-items-center">
-                                <label>Direccion:</label>
-                                <input disabled={!editing} className = {''} placeholder={"Agregar Direccion"} style={{width: "90%"}} value={selectedAdmin.direccion ?? ""} onChange={(event) => { handleChange("direccion", event.target.value) }} />
-                            </div>
-                        </Col>
-                    </Row>
-                    <Row className="my-2">
-                        <Col>
-                            <div className="d-flex gap-2">
-                                <div className="d-flex gap-2 align-items-center">
-                                    <label>Tipo de Documento:</label>
-                                    <input disabled={!editing} className = {''} placeholder={"Tipo de documento"} style={{width: "auto"}} value={selectedAdmin.documentoTipo ?? ""} onChange={(event) => { handleChange("documentoTipo", event.target.value) }} />
-                                </div>
-                                <div className="d-flex gap-2 align-items-center">
-                                    <label>Genero:</label>
-                                    <select disabled={!editing} className = {""} style={{width: "auto"}} value={selectedAdmin.genero ?? ""} onChange={(event) => { handleChange("genero", event.target.value) }} >
-                                        <option value={"M"}>Masculino</option>
-                                        <option value={"F"}>Femenino</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </Col>
-                        <Col>
-                        </Col>
-                    </Row>
-                    <Row className="mt-2">
-                        <Col className="d-flex gap-2 justify-content-between">
-                            <div className="d-flex gap-2">
-                                { erasing?
-                                    <>
-                                        <div className="d-flex flex-column ">
-                                            <label className="align-self-center" >¿Desea eliminar? <label className="text-danger">ESTA ACCION ES IRREVERSIBLE</label></label>
+                    <SRow>
+                        <SClose >
+                            {!editing && !erasing && 
+                                <><H1>
+                                    Datos del administrador
+                                </H1></>}
+                            {editing && !erasing && 
+                                <><H1>
+                                    Editar administrador
+                                </H1></>}
+                            {!editing && erasing && 
+                                <><H1>
+                                    Eliminar administrador
+                                </H1></>}        
+                            <IconButton
+                                buttonType={"close"}
+                                onClick={()=>{handleClose()}}
+                                enabled={true}
+                            ></IconButton>
+                        </SClose>
+                    </SRow>
+                    <SRow>
+                        <SCol className="col-sm-12 col-md-6 col-lg-3">
+                                <SLabel>Nombres:</SLabel>
+                                <SInput disabled={!editing} className = {''} value={selectedAdmin.nombre} onChange={(event) => { handleChange("nombre", event.target.value) }} />
+                        </SCol>
+                        <SCol className="col-sm-12 col-md-6 col-lg-3">
+                                <SLabel>Apellidos:</SLabel>
+                                <SInput disabled={!editing} className = {''} placeholder={"Agregar Apellido"}  value={selectedAdmin.apellido} onChange={(event) => { handleChange("apellido", event.target.value) }} />
+                        </SCol>
+                        <SCol className="col-sm-12 col-md-12 col-lg-6">
+                                    <SLabel>E-mail:</SLabel>
+                                    <SInput disabled={!editing} className = {''} placeholder={"Agregar Email"} value={selectedAdmin.email ?? ""} onChange={(event) => { handleChange("email", event.target.value) }} />
+                        </SCol>
+                    </SRow>
+                    <SRow className="mt-2">
+                        <SCol className="col-sm-12 col-md-6 col-lg-2">
+                                <SLabel>CIN:</SLabel>
+                                <SInput disabled={!editing} className = {''} placeholder={"Agregar CIN"} style={{width: 'auto'}} value={selectedAdmin.documento ?? ""} onChange={(event) => { handleChange("documento", event.target.value) }} />
+                        </SCol>
+                        <SCol className="col-sm-12 col-md-6 col-lg-2">
+                                <SLabel>Tel:</SLabel>
+                                <SInput disabled={!editing} className = {''} placeholder={"Agregar Telefono"} style={{width: 'auto'}} value={selectedAdmin.telefono ?? ""} onChange={(event) => { handleChange("telefono", event.target.value) }} />
+                        </SCol>
+                        <SCol className="col-sm-12 col-sm-6 col-lg-2">
+                                <SLabel>Fecha Nac.:</SLabel>
+                                <SInput disabled={!editing} type={"date"} className = {''} style={{width: 'auto' }} value={selectedAdmin.nacimiento.split('T')[0] ?? ""} onChange={(event) => { handleChange("nacimiento", event.target.value) }} /> 
+                        </SCol>
+                            
+                        <SCol className="col-sm-12 col-md-6 col-lg-6">
+                                <SLabel>Direccion:</SLabel>
+                                <SInput disabled={!editing} className = {''} placeholder={"Agregar Direccion"} value={selectedAdmin.direccion ?? ""} onChange={(event) => { handleChange("direccion", event.target.value) }} />
+                        </SCol>
+                    </SRow>
+                    <SRow className="my-2">
+                        <SCol className="col-sm-9 col-md-6 col-lg-4">
+                            <SLabel>Tipo de Documento:</SLabel>
+                            <SInput disabled={!editing} className = {''} placeholder={"Tipo de documento"} style={{width: "auto"}} value={selectedAdmin.documentoTipo ?? ""} onChange={(event) => { handleChange("documentoTipo", event.target.value) }} />
+                        </SCol>
+                        <SCol className="col-sm-12 col-md-6 col-lg-4">
+                            <SLabel>Genero:</SLabel>
+                            <SSelect disabled={!editing} className = {""} style={{width: "auto"}} value={selectedAdmin.genero ?? ""} onChange={(event) => { handleChange("genero", event.target.value) }} >
+                                <SOption value={"M"}>Masculino</SOption>
+                                <SOption value={"F"}>Femenino</SOption>
+                            </SSelect>
+                        </SCol>
+                    </SRow>
+                    <SRow className="mt-2">
+                        <SCol2 >
+                                {erasing && !editing && <>
+                                    <SErase >
+                                            <SLabel className="align-self-center" >¿Desea eliminar? </SLabel>
+                                            <SLabel className="text-danger">ESTA ACCION ES IRREVERSIBLE</SLabel>
                                             <div className="d-flex gap-2">
-                                                <ButtonInput variant="danger-inv" width="100%" height="100%" fontSize="12px" text="CANCELAR" handleClick={()=>{
+                                                <TextButton
+                                                    buttonType={"no"}
+                                                    onClick={()=>{
                                                         setErasing(false)
-                                                    }} />
-                                                <ButtonInput variant="danger" width="100%" height="100%" fontSize="12px" text="CONFIRMAR" handleClick={()=>{
+                                                        setEditing(false)
+                                                    }}
+                                                    enabled={true}></TextButton>
+                                                <TextButton
+                                                    buttonType={"yes"}
+                                                    onClick={()=>{
                                                         handleDelete()
-                                                    }} />
+                                                    }}
+                                                    enabled={true}></TextButton>
                                             </div>
-                                        </div>
-                                    </>
-                                    :
-                                    <ButtonInput variant="danger" width="100%" height="100%" text={
-                                        <GoTrashcan size={12} />
-                                    } handleClick={()=>{
-                                        setErasing(true)
-                                    }} />
-                                }
-                            </div>
-                            <div className="d-flex gap-2">
-                                { editing?
-                                    <>
-                                        <ButtonInput variant="primary-inv" width="100%" height="100%" fontSize="12px" text="CANCELAR" handleClick={()=>{
+                                        </SErase>
+                                </>}
+                                {!erasing && editing && <>
+                                    <TextButton
+                                            buttonType={"cancel"}
+                                            onClick={()=>{
                                                 toast.success("Cambios revertidos")
                                                 setSelectedAdmin(before)
                                                 setEditing(false)
-                                            }} />
-                                        <ButtonInput variant="primary-inv" width="100%" height="100%" fontSize="12px" text="CONFIRMAR" handleClick={()=>{handleUpdate()}} />
-                                    </>
-                                    :
-                                    <ButtonInput variant="primary-inv" width="100%" height="100%" fontSize="12px" text={
-                                        <BsPencilFill />
-                                    } handleClick={()=>{
-                                        setBefore(selectedAdmin)
-                                        setEditing(true)
-                                    }} />
-                                }
-                            </div>
-                        </Col>
-                    </Row>
+                                                setErasing(false)
+                                            }}
+                                            enabled={true}>
+                                    </TextButton>
+                                    <TextButton
+                                            buttonType={"save-changes"}
+                                            onClick={()=>{handleUpdate()}}
+                                            enabled={true}>
+                                    </TextButton>
+                                </>}
+                                {!erasing && !editing && <>
+                                
+                                    <IconButton 
+                                        buttonType={"my-delete"} 
+                                        onClick={()=>{
+                                            setErasing(true)
+                                            setEditing(false)
+                                        }}
+                                        enabled={true}
+                                        >
+                                    </IconButton>
+
+                                    <IconButton 
+                                        buttonType={"edit"} 
+                                        onClick={()=>{
+                                            setBefore(selectedAdmin)
+                                            setEditing(true)
+                                            setErasing(false)
+                                        }}
+                                        enabled={true}>
+                                        </IconButton> 
+                                </>}
+                
+                        </SCol2>
+                    </SRow>
                     
-                </div>
             </div>
         </>
     )
