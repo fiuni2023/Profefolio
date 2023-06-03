@@ -235,7 +235,12 @@ namespace profefolio.Controllers
             return BadRequest($"Error al crear al Usuario ${dto.Email}");
         }
 
-
+         /// <summary>
+        /// Edita un profesor que fue creado por admin que hace la peticion.
+        /// https://localhost:7063/api/Profesor/{IdProfesor}
+        /// </summary>
+        /// <remarks>
+        /// </remarks>
         [HttpPut("{id}")]
         [Authorize(Roles = "Administrador de Colegio")]
         public async Task<ActionResult<PersonaResultDTO>> Put(string id, [FromBody] PersonaEditDTO dto)
