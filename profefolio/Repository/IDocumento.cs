@@ -7,4 +7,5 @@ public interface IDocumento : IRepository<Documento>
     Task<Documento> FindByNameDocumento(string nombre, int idMateriaL);
     Task<bool> FindProfesorIdByDocumento(int idMateriaLista, string idPrf);
     Task<List<Documento>> GetAll(int idMateria, String idPrf);
+    Task<bool> FindProfesorOfDocumento(int idDocumento, string mailProfesor);
 }
