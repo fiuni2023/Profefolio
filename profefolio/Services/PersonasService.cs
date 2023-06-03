@@ -111,9 +111,14 @@ public class PersonasService : IPersona
         {
             var existOtherMail = await _userManager.Users
                 .Where(x => !x.Deleted)
-                .Where(x => !x.Id.Equals(p.Id))
+                .Where(x => x.Id != p.Id)
                 .Where(x => x.Documento.Equals(p.Documento) && x.DocumentoTipo.Equals(p.DocumentoTipo))
-                .CountAsync() > 0;
+                .AnyAsync();
+
+                if(existOtherMail)
+                {
+                    throw new BadHttpRequestException($"Ocurrio un error al editar");
+                }
         }
 
         

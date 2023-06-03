@@ -244,7 +244,7 @@ namespace profefolio.Controllers
                 {
                     return BadRequest("Objeto no válido");
                 }
-                Console.WriteLine("--------1 en put");
+                
                 var adminEmail = User.FindFirstValue(ClaimTypes.Name);
                 // se verifica que el profesor sea del colegio del administrador
                 if (!(await _colegioProfesor.Exist(id, adminEmail)))
@@ -280,11 +280,11 @@ namespace profefolio.Controllers
                     return BadRequest("El email nuevo que queres actualizar ya existe");
                 }
 
-                    MapOldToNew(persona, dto, adminEmail);
+                MapOldToNew(persona, dto, adminEmail);
 
-                    var query = await _personasService.EditProfile(persona);
+                var query = await _personasService.EditProfile(persona);
 
-                    return query != null ? Ok(_mapper.Map<PersonaResultDTO>(query)) : BadRequest("Error al actualizar.");
+                return query != null ? Ok(_mapper.Map<PersonaResultDTO>(query)) : BadRequest("Error al actualizar.");
              
         }
 
