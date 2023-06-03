@@ -114,11 +114,6 @@ public class PersonasService : IPersona
                 .Where(x => !x.Id.Equals(p.Id))
                 .Where(x => x.Documento.Equals(p.Documento) && x.DocumentoTipo.Equals(p.DocumentoTipo))
                 .CountAsync() > 0;
-
-                if(existOtherMail)
-                {
-                    throw new BadHttpRequestException($"El user con el Id {p.Id} ya existe");
-                }
         }
 
         
@@ -235,7 +230,8 @@ public class PersonasService : IPersona
     public async Task<Persona> FindByIdAndRole(string id, string role)
     {
         var query = await _userManager.Users
-            .Where(p => !p.Deleted && p.Id.Equals(id))
+            .Where(p => !p.Deleted)
+            .Where(p => p.Id.Equals(id))
             .FirstOrDefaultAsync();
 
         if (null == query || !(await _userManager.IsInRoleAsync(query, role)))
@@ -244,9 +240,6 @@ public class PersonasService : IPersona
         }
 
         return query;
-
-
-
     }
 
     public async Task<bool> DeleteByUserAndRole(string id, string role)

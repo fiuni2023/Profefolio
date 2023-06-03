@@ -220,7 +220,7 @@ namespace profefolio.Controllers
             catch (InvalidOperationException e)
             {
                 Console.WriteLine(e.Message);
-                return BadRequest("Formato invalido de constraseña. Debe contener mayusculas, minusculas, numeros y caracteres.");
+                return BadRequest("Formato invalido de contraseña. Debe contener mayusculas, minusculas, numeros y caracteres.");
             }
             catch(FileNotFoundException e)
             {
@@ -240,8 +240,24 @@ namespace profefolio.Controllers
         [Authorize(Roles = "Administrador de Colegio")]
         public async Task<ActionResult<PersonaResultDTO>> Put(string id, [FromBody] PersonaEditDTO dto)
         {
-            if (ModelState.IsValid)
-            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest("Objeto no válido");
+                }
+                Console.WriteLine("--------1 en put");
+                var adminEmail = User.FindFirstValue(ClaimTypes.Name);
+                // se verifica que el profesor sea del colegio del administrador
+                if (!(await _colegioProfesor.Exist(id, adminEmail)))
+                {
+                    return BadRequest("No pertenece a su colegio");
+                }
+                
+                var persona = await _personasService.FindByIdAndRole(id, PROFESOR_ROLE);
+                if (persona == null)
+                {
+                    return NotFound("No se encontro el profesor");
+                }
+
                 if (dto.Nacimiento > DateTime.Now)
                 {
                     return BadRequest("El nacimiento no puede ser mayor a la fecha de hoy");
@@ -258,54 +274,18 @@ namespace profefolio.Controllers
                 {
                     return BadRequest("No se mando el email");
                 }
-                try
+                
+                if ((!persona.Email.Equals(dto.Email)) && await _personasService.ExistMail(dto.Email))
                 {
-
-                    var persona = await _personasService.FindByIdAndRole(id, PROFESOR_ROLE);
-                    if (persona == null)
-                    {
-                        return NotFound("No se encontro el profesor");
-                    }
-                    var adminEmail = User.FindFirstValue(ClaimTypes.Name);
-
-                    // se verifica que el profesor sea del colegio del administrador
-                    if (!(await _colegioProfesor.Exist(id, adminEmail)))
-                    {
-                        return BadRequest("No pertenece a su colegio");
-                    }
-                    if ((!persona.Email.Equals(dto.Email)) && await _personasService.ExistMail(dto.Email))
-                    {
-                        return BadRequest("El email nuevo que queres actualizar ya existe");
-                    }
+                    return BadRequest("El email nuevo que queres actualizar ya existe");
+                }
 
                     MapOldToNew(persona, dto, adminEmail);
 
                     var query = await _personasService.EditProfile(persona);
 
-                    return query != null ? Ok(_mapper.Map<PersonaResultDTO>(query)) : BadRequest("Error al actualizar!!!");
-                }
-                catch (FileNotFoundException e)
-                {
-                    Console.WriteLine(e.Message);
-                    return NotFound("No se encontro el registro con el identificador indicado");
-                }
-                catch (BadHttpRequestException e)
-                {
-                    _personasService.Dispose();
-                    Console.WriteLine(e.Message);
-                    return BadRequest("El email que desea actualizar ya existe");
-                }
-                catch (Exception e)
-                {
-                    _personasService.Dispose();
-                    Console.WriteLine(e.Message);
-                    return Conflict(e.Message);
-                }
-            }
-            else
-            {
-                return BadRequest(ModelState);
-            }
+                    return query != null ? Ok(_mapper.Map<PersonaResultDTO>(query)) : BadRequest("Error al actualizar.");
+             
         }
 
 
