@@ -15,7 +15,7 @@ namespace profefolio.Helpers.Mappers
         {
             CreateMap<ColegioProfesor, ColegiosProfesorDbDTO>()
                 .ForMember(dest => dest.Id,
-                    opt => opt.MapFrom(v => v.ColegioId))
+                    opt => opt.MapFrom(v => v.Id))
                 .ForMember(dest => dest.Nombre,
                     opt => opt.MapFrom(v => v.Colegio != null ? v.Colegio.Nombre : ""))
                 .ForMember(dest => dest.Clases,
