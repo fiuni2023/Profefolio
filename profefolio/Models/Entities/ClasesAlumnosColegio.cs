@@ -16,7 +16,7 @@ namespace profefolio.Models.Entities
 
         public Clase? Clase { get; set; }
         public ColegiosAlumnos? ColegiosAlumnos { get; set; }
-
         public ICollection<Asistencia>? Asistencias { get; set; }
+        public ICollection<EvaluacionAlumno>? Evaluaciones { get; set; }
     }
 }
