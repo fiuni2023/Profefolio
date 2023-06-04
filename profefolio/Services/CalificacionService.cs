@@ -53,11 +53,45 @@ public class CalificacionService : ICalificacion
                 Etapa = evaluacion.Etapa,
                 Alumnos = new List<AlumnoWithPuntajesDTO>()
             };
+            foreach (var evaluacionAlumno in evaluacion.EvaluacionAlumnos)
+            {
+                var cac = evaluacionAlumno.ClasesAlumnosColegio;
+                if (cac?.ColegiosAlumnos == null || cac.Evaluaciones == null) 
+                    throw new BadHttpRequestException("Peticion no valida");
+
+                var puntajeLogrado = cac.Evaluaciones
+                    .Select(x => x.PuntajeLogrado)
+                    .Sum();
+                
+                 var porcentajeLogrado = cac.Evaluaciones
+                     .Select(x => x.PorcentajeLogrado)
+                     .Sum();
+
+                 var alumnoPuntaje = new AlumnoWithPuntajesDTO
+                {
+                    AlumnoId = evaluacionAlumno.ClasesAlumnosColegioId,
+                    Nombre = cac.ColegiosAlumnos.Persona.Nombre,
+                    Apellido = cac.ColegiosAlumnos.Persona.Apellido,
+                    Doc = cac.ColegiosAlumnos.Persona.Documento,
+                    PuntajeTotalLogrado = puntajeLogrado,
+                    PorcentajeTotalLogrado = porcentajeLogrado,
+                    Puntajes = cac.Evaluaciones
+                        .Select(x => new PuntajeDTO
+                        {
+                            PuntajeLogrado = x.PuntajeLogrado,
+                            PuntajeTotal = x.Evaluacion.PuntajeTotal,
+                            PorcentajeLogrado = x.PorcentajeLogrado
+                        })
+                        .ToList()
+                };
+                 
+                 etapa.Alumnos.Add(alumnoPuntaje);
+            }
             
             result.Etapas.Add(etapa);
         }
 
-        throw new NotImplementedException();
+        return result;
     }
 
     //TODO Validar Si algun alumno se integra luego de empezar las clases
