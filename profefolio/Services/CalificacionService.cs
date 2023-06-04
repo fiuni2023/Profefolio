@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using profefolio.Models;
 using profefolio.Models.DTOs.Calificacion;
 using profefolio.Repository;
@@ -35,10 +36,12 @@ public class CalificacionService : ICalificacion
     public PlanillaDTO GetAll(int idMateriaLista)
     {
         var evaluacionesQuery = _db.Eventos
-                .Include(c => c.EvaluacionAlumnos)
-                .Include(c => c.MateriaList)
-                .Where(c => c.Deleted);
-
+            .Include(c => c.EvaluacionAlumnos)
+            .ThenInclude(x => x.ClasesAlumnosColegio)
+            .ThenInclude(y => y != null ? y.ColegiosAlumnos : null)
+            .ThenInclude(z  => z != null ? z.Persona : null)
+            .Include(c => c.MateriaList)
+            .Where(c => !c.Deleted);
         
         var result = new PlanillaDTO
         {
@@ -53,6 +56,11 @@ public class CalificacionService : ICalificacion
                 Etapa = evaluacion.Etapa,
                 Alumnos = new List<AlumnoWithPuntajesDTO>()
             };
+
+            if (evaluacion.EvaluacionAlumnos.IsNullOrEmpty())
+            {
+                ValidarPlanilla(idMateriaLista);
+            }
             foreach (var evaluacionAlumno in evaluacion.EvaluacionAlumnos)
             {
                 var cac = evaluacionAlumno.ClasesAlumnosColegio;
