@@ -220,9 +220,9 @@ namespace profefolio.Controllers
             catch (InvalidOperationException e)
             {
                 Console.WriteLine(e.Message);
-                return BadRequest("Formato invalido de constraseña. Debe contener mayusculas, minusculas, numeros y caracteres.");
+                return BadRequest("Formato invalido de contraseña. Debe contener mayusculas, minusculas, numeros y caracteres.");
             }
-            catch(FileNotFoundException e)
+            catch (FileNotFoundException e)
             {
                 return NotFound();
             }
@@ -235,76 +235,80 @@ namespace profefolio.Controllers
             return BadRequest($"Error al crear al Usuario ${dto.Email}");
         }
 
-
+         /// <summary>
+        /// Edita un profesor que fue creado por admin que hace la peticion.
+        /// https://localhost:7063/api/Profesor/{IdProfesor}
+        /// </summary>
+        /// <remarks>
+        /// </remarks>
         [HttpPut("{id}")]
         [Authorize(Roles = "Administrador de Colegio")]
         public async Task<ActionResult<PersonaResultDTO>> Put(string id, [FromBody] PersonaEditDTO dto)
         {
-            if (ModelState.IsValid)
+            try
             {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest("Objeto no válido");
+                }
+
+                var adminEmail = User.FindFirstValue(ClaimTypes.Name);
+
+                // Verificar si el profesor pertenece al colegio del administrador
+                if (!(await _colegioProfesor.Exist(id, adminEmail)))
+                {
+                    return BadRequest("No pertenece a su colegio");
+                }
+
+                var persona = await _personasService.FindByIdAndRole(id, PROFESOR_ROLE);
+
+                if (persona == null)
+                {
+                    return NotFound("No se encontró el profesor");
+                }
+
                 if (dto.Nacimiento > DateTime.Now)
                 {
                     return BadRequest("El nacimiento no puede ser mayor a la fecha de hoy");
                 }
+
                 if (dto.Genero == null)
                 {
-                    return BadRequest("Se tiene que incluir el genero");
+                    return BadRequest("Debe incluir el género");
                 }
+
                 if (!(dto.Genero.Equals("M") || dto.Genero.Equals("F")))
                 {
                     return BadRequest("Solo se aceptan valores F para femenino y M para masculino");
                 }
-                if (dto.Email == null)
+
+                if (string.IsNullOrEmpty(dto.Email))
                 {
-                    return BadRequest("No se mando el email");
+                    return BadRequest("No se envió el email");
                 }
-                try
+
+                if ((!persona.Email.Equals(dto.Email)) && await _personasService.ExistMail(dto.Email))
                 {
-
-                    var persona = await _personasService.FindByIdAndRole(id, PROFESOR_ROLE);
-                    if (persona == null)
-                    {
-                        return NotFound("No se encontro el profesor");
-                    }
-                    var adminEmail = User.FindFirstValue(ClaimTypes.Name);
-
-                    // se verifica que el profesor sea del colegio del administrador
-                    if (!(await _colegioProfesor.Exist(id, adminEmail)))
-                    {
-                        return BadRequest("No pertenece a su colegio");
-                    }
-                    if ((!persona.Email.Equals(dto.Email)) && await _personasService.ExistMail(dto.Email))
-                    {
-                        return BadRequest("El email nuevo que queres actualizar ya existe");
-                    }
-
-                    MapOldToNew(persona, dto, adminEmail);
-
-                    var query = await _personasService.EditProfile(persona);
-
-                    return query != null ? Ok(_mapper.Map<PersonaResultDTO>(query)) : BadRequest("Error al actualizar!!!");
+                    return BadRequest("El nuevo email que deseas actualizar ya existe");
                 }
-                catch (FileNotFoundException e)
+
+                MapOldToNew(persona, dto, adminEmail);
+
+                var query = await _personasService.EditProfile(persona);
+
+                if (query != null)
                 {
-                    Console.WriteLine(e.Message);
-                    return NotFound("No se encontro el registro con el identificador indicado");
+                    return Ok(_mapper.Map<PersonaResultDTO>(query));
                 }
-                catch (BadHttpRequestException e)
+                else
                 {
-                    _personasService.Dispose();
-                    Console.WriteLine(e.Message);
-                    return BadRequest("El email que desea actualizar ya existe");
-                }
-                catch (Exception e)
-                {
-                    _personasService.Dispose();
-                    Console.WriteLine(e.Message);
-                    return Conflict(e.Message);
+                    return BadRequest("Error al actualizar");
                 }
             }
-            else
+            catch (Exception ex)
             {
-                return BadRequest(ModelState);
+                // Manejar y registrar cualquier excepción no controlada aquí
+                return StatusCode(400, "Se produjo un error al editar profesor.");
             }
         }
 
