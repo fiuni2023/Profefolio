@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using profefolio.Models;
 using profefolio.Models.DTOs.Calificacion;
+using profefolio.Models.Entities;
 using profefolio.Repository;
 
 namespace profefolio.Services;
@@ -35,76 +36,11 @@ public class CalificacionService : ICalificacion
 
     public PlanillaDTO GetAll(int idMateriaLista)
     {
-        var evaluacionesQuery = _db.Eventos
-            .Include(c => c.EvaluacionAlumnos)
-            .ThenInclude(x => x.ClasesAlumnosColegio)
-            .ThenInclude(y => y != null ? y.ColegiosAlumnos : null)
-            .ThenInclude(z  => z != null ? z.Persona : null)
-            .Include(c => c.MateriaList)
-            .Where(c => !c.Deleted);
-        
-        var result = new PlanillaDTO
-        {
-            MateriaId = idMateriaLista,
-            Etapas = new List<EtapaDTO>()
-        };
-
-        foreach (var evaluacion in evaluacionesQuery)
-        {
-            var etapa = new EtapaDTO
-            {
-                Etapa = evaluacion.Etapa,
-                Alumnos = new List<AlumnoWithPuntajesDTO>()
-            };
-
-            if (evaluacion.EvaluacionAlumnos.IsNullOrEmpty())
-            {
-                ValidarPlanilla(idMateriaLista);
-            }
-            foreach (var evaluacionAlumno in evaluacion.EvaluacionAlumnos)
-            {
-                var cac = evaluacionAlumno.ClasesAlumnosColegio;
-                if (cac?.ColegiosAlumnos == null || cac.Evaluaciones == null) 
-                    throw new BadHttpRequestException("Peticion no valida");
-
-                var puntajeLogrado = cac.Evaluaciones
-                    .Select(x => x.PuntajeLogrado)
-                    .Sum();
-                
-                 var porcentajeLogrado = cac.Evaluaciones
-                     .Select(x => x.PorcentajeLogrado)
-                     .Sum();
-
-                 var alumnoPuntaje = new AlumnoWithPuntajesDTO
-                {
-                    AlumnoId = evaluacionAlumno.ClasesAlumnosColegioId,
-                    Nombre = cac.ColegiosAlumnos.Persona.Nombre,
-                    Apellido = cac.ColegiosAlumnos.Persona.Apellido,
-                    Doc = cac.ColegiosAlumnos.Persona.Documento,
-                    PuntajeTotalLogrado = puntajeLogrado,
-                    PorcentajeTotalLogrado = porcentajeLogrado,
-                    Puntajes = cac.Evaluaciones
-                        .Select(x => new PuntajeDTO
-                        {
-                            PuntajeLogrado = x.PuntajeLogrado,
-                            PuntajeTotal = x.Evaluacion.PuntajeTotal,
-                            PorcentajeLogrado = x.PorcentajeLogrado
-                        })
-                        .ToList()
-                };
-                 
-                 etapa.Alumnos.Add(alumnoPuntaje);
-            }
+        var evaluacionesQuery = _db.ClasesAlumnosColegios
+            .Where(c => !c.Deleted)
             
-            result.Etapas.Add(etapa);
-        }
-
-        return result;
+        return null;
     }
 
-    //TODO Validar Si algun alumno se integra luego de empezar las clases
-    private void ValidarPlanilla(int idMateriaLista)
-    {
-        
-    }
+   
 }
