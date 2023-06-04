@@ -34,7 +34,7 @@ public class CalificacionService : ICalificacion
     }
 
 
-    public PlanillaDTO GetAll(int idMateriaLista)
+    public PlanillaDTO GetAll(int idMateriaLista, string user)
     {
         var alumnosQuery = _db.ClasesAlumnosColegios
             .Include(c => c.Evaluaciones)
@@ -75,7 +75,7 @@ public class CalificacionService : ICalificacion
         return planilla;
     }
 
-    private void CargarEvaluaciones(ClasesAlumnosColegio cac)
+    private void CargarEvaluaciones(ClasesAlumnosColegio cac, string user, int idEvaluacion)
     {
         var cantEvaluaciones = _db.ClasesAlumnosColegios
             .Include(c => c.Evaluaciones)
@@ -91,7 +91,11 @@ public class CalificacionService : ICalificacion
             cac.Evaluaciones.Add(new EvaluacionAlumno()
             {
                 ClasesAlumnosColegioId = cac.Id,
-                
+                Created = DateTime.Now,
+                CreatedBy = user,
+                EvaluacionId = idEvaluacion,
+                PuntajeLogrado = 0,
+                PorcentajeLogrado = 0
             });
         }
     }
