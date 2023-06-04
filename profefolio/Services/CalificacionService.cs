@@ -37,7 +37,7 @@ public class CalificacionService : ICalificacion
     public PlanillaDTO GetAll(int idMateriaLista)
     {
         var evaluacionesQuery = _db.ClasesAlumnosColegios
-            .Where(c => !c.Deleted)
+            .Where(c => !c.Deleted);
             
         return null;
     }
