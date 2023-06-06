@@ -177,14 +177,13 @@ function Profesores() {
 
                 {/* <CreateModal title="My Modal" onHide={() => setShow(false)}  show={show}
              triggerState={(profesor)=>{doFetch(profesor)}}/> */}
+              </PanelContainerBG>
+            </>}
 
-                <ModalProfesor onHide={handleHide} selected_data={selected_data} show={show} />
-                <AddButton onClick={() => setShow(true)}>
+            <ModalProfesor onHide={handleHide} selected_data={selected_data} show={show} />
+            <AddButton onClick={() => setShow(true)}>
                   <AiOutlinePlus size={"35px"} />
                 </AddButton>
-              </PanelContainerBG>
-
-            </>}
 
       </div>
 
