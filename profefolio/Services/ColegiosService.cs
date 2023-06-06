@@ -164,23 +164,27 @@ public class ColegiosService : IColegio
     }
     /*
     * Obtener la lista de todos los administradores que no están asignados a ningún colegio. 
+    * Se devuelve correctamente el administrador eliminado de la relación en la lista de 
+    * administradores no asignados.
     */
     public async Task<List<Persona>> GetAdministradoresNoAsignados()
     {
         var administradoresAsignados = await _dbContext.Colegios
             .Select(c => c.PersonaId)
-            .Distinct()
             .ToListAsync();
 
         var administradoresRol = await _userManager.GetUsersInRoleAsync("Administrador de Colegio");
         var administradoresRolIds = administradoresRol.Select(a => a.Id);
 
         var administradoresNoAsignados = await _dbContext.Users
-            .Where(a => !administradoresAsignados.Contains(a.Id) && administradoresRolIds.Contains(a.Id))
+            .Where(a => administradoresRolIds.Contains(a.Id))
             .ToListAsync();
+
+        administradoresNoAsignados.RemoveAll(a => administradoresAsignados.Contains(a.Id));
 
         return administradoresNoAsignados;
     }
+
 
 
 }
