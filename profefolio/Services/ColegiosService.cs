@@ -170,6 +170,7 @@ public class ColegiosService : IColegio
     public async Task<List<Persona>> GetAdministradoresNoAsignados()
     {
         var administradoresAsignados = await _dbContext.Colegios
+            .Where(c => !c.Deleted)
             .Select(c => c.PersonaId)
             .ToListAsync();
 
@@ -177,10 +178,8 @@ public class ColegiosService : IColegio
         var administradoresRolIds = administradoresRol.Select(a => a.Id);
 
         var administradoresNoAsignados = await _dbContext.Users
-            .Where(a => administradoresRolIds.Contains(a.Id))
+            .Where(a => !administradoresAsignados.Contains(a.Id) && administradoresRolIds.Contains(a.Id))
             .ToListAsync();
-
-        administradoresNoAsignados.RemoveAll(a => administradoresAsignados.Contains(a.Id));
 
         return administradoresNoAsignados;
     }
