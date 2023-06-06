@@ -55,12 +55,12 @@ public class ColegiosService : IColegio
         return query;
     }
 
-      public async Task<int> FindByPersonRol(string id)
+    public async Task<int> FindByPersonRol(string id)
     {
         var query = await _userManager.GetUsersInRoleAsync("Administrador de Colegio");
 
         return query
-            .Count(p => !p.Deleted  && p.Id == id);
+            .Count(p => !p.Deleted && p.Id == id);
     }
 
     /*
@@ -147,8 +147,8 @@ public class ColegiosService : IColegio
     public async Task<Colegio> FindByIdAdmin(string id)
     {
         return await _dbContext.Colegios.Include(p => p.personas).FirstOrDefaultAsync(
-                    c => !c.Deleted 
-                    && c.PersonaId != null 
+                    c => !c.Deleted
+                    && c.PersonaId != null
                     && id.Equals(c.PersonaId)
                     && !c.personas.Deleted);
     }
@@ -162,4 +162,21 @@ public class ColegiosService : IColegio
     {
         return await _dbContext.Colegios.AnyAsync(a => !a.Deleted && a.Id != idColegio && idNewAdmin.Equals(a.PersonaId));
     }
+    /*
+    * Obtener la lista de todos los administradores que no están asignados a ningún colegio. 
+    */
+    public async Task<List<Persona>> GetAdministradoresNoAsignados()
+    {
+        var administradoresAsignados = await _dbContext.Colegios
+            .Select(c => c.PersonaId)
+            .Distinct()
+            .ToListAsync();
+
+        var administradoresNoAsignados = await _dbContext.Users
+            .Where(a => !administradoresAsignados.Contains(a.Id))
+            .ToListAsync();
+
+        return administradoresNoAsignados;
+    }
+
 }

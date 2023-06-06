@@ -107,7 +107,8 @@ namespace profefolio.Controllers
 
             // verificar que el id del administrador nuevo no este asugnado a un colegio distinto al actual
             var existeAdmin = await _colegioService.ExistAdminInOtherColegio(colegio.PersonaId, id);
-            if(existeAdmin){
+            if (existeAdmin)
+            {
                 return BadRequest("El administrador ya esta asignado a otro colegio.");
             }
 
@@ -208,6 +209,14 @@ namespace profefolio.Controllers
             await _colegioService.Save();
 
             return Ok();
+        }
+
+        [HttpGet("administradores/noasignados")]
+        public async Task<ActionResult<List<AdministradorDTO>>> GetAdministradoresNoAsignados()
+        {
+            var administradoresNoAsignados = await _colegioService.GetAdministradoresNoAsignados();
+            var administradoresDTO = _mapper.Map<List<AdministradorDTO>>(administradoresNoAsignados);
+            return Ok(administradoresDTO);
         }
 
 
