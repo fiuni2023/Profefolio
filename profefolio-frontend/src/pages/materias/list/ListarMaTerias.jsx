@@ -101,7 +101,7 @@ function ListarMaTerias() {
 
   const handleSubmitMateria = () => {
 
-    if (nombre_Materia === "") toast.error("revisa los datos, los campos deben ser completados")
+    if (nombre_Materia === "" || nombre_Materia === null) toast.error("revisa los datos, los campos deben ser completados")
     else {
       axios.post(`${APILINK}/api/Materia`, {
         nombre_Materia,
@@ -128,8 +128,7 @@ function ListarMaTerias() {
   }
 
   const handleSubmitCiclo = () => {
-
-    if (nombreCiclo === "") toast.error("revisa los datos, los campos deben ser completados")
+    if (nombreCiclo === "" || nombreCiclo === null ) toast.error("revisa los datos, los campos deben ser completados")
     else {
       axios.post(`${APILINK}/api/Ciclo`, {
         "nombre": nombreCiclo,
@@ -436,7 +435,7 @@ function ListarMaTerias() {
                   : <div className={styles.divAddCiclos}>
                     <label className={styles.label}> <strong>Agregar Ciclo</strong></label>
                     <br />
-                    <input value={nombreCiclo || ''} className={styles.inputAdd} placeholder='Nombre del Ciclo' onChange={(event) => handleNombreCiclo(event)} ></input>
+                    <input type='text' className={styles.inputAdd} placeholder='Nombre del Ciclo' onChange={(event) => handleNombreCiclo(event)} value={nombreCiclo || ''} ></input>
                     <div className={styles.buttonGuardar}>
 
                       <TextButton enabled={true} buttonType='save' onClick={() => handleSubmitCiclo()} />
