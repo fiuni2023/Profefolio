@@ -172,11 +172,15 @@ public class ColegiosService : IColegio
             .Distinct()
             .ToListAsync();
 
+        var administradoresRol = await _userManager.GetUsersInRoleAsync("Administrador de Colegio");
+        var administradoresRolIds = administradoresRol.Select(a => a.Id);
+
         var administradoresNoAsignados = await _dbContext.Users
-            .Where(a => !administradoresAsignados.Contains(a.Id))
+            .Where(a => !administradoresAsignados.Contains(a.Id) && administradoresRolIds.Contains(a.Id))
             .ToListAsync();
 
         return administradoresNoAsignados;
     }
+
 
 }
