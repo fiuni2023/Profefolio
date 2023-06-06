@@ -158,6 +158,14 @@ namespace profefolio.Controllers
                 {
                     return BadRequest("Persona no válida");
                 }
+                //verificar si el id ya fue asignado a un colegio
+                //"El administrador ya esta asignado a un colegio."
+                //buscar en la tabla colegios ese id administrador
+                var verificarAdmin = await _colegioService.FindAdminColegio(colegio.PersonaId);
+                if (verificarAdmin != null)
+                {
+                    return BadRequest($"El administrador ya esta asignado a un colegio.");
+                }
 
                 // Verificar duplicados con nombre de colegio e id iguales
                 var verificar = await _colegioService.FindByNamePerson(colegio.Nombre, colegio.PersonaId);
