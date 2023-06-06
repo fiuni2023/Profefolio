@@ -39,11 +39,36 @@ justify-content: space-around;
 
 
 
-const TagProfesor = memo(({ id, nombre = "",apellido = "", state="n", onClick = () => { } }) => {
+const TagProfesor = memo(({ id, nombre = "",apellido = "", state="n", onClick = () => { },selected  }) => {
   const uid = useId();
   const unicId = uid.substring(1, uid.length - 1)
 
   const [type, setType] = useState("d");
+
+
+  const bgColor = (estado, isSelected) => {
+    if (isSelected) {
+      return "#C2C2C2"; // Color cuando está seleccionado
+    } else {
+      switch (`${estado.toLowerCase()}`) {
+        case "reload":
+          return "#F3E6AE";
+        case "d":
+          return "#D1F0E6";
+             
+        case "n":
+          return "#C2C2C2";
+        default:
+          return "#C2C2C2";
+      }
+    }
+  };
+
+  useEffect(() => {
+    setType(bgColor(state, selected));
+  }, [state, selected]);
+
+/*
   const bgColor = (estado) => {
       switch (`${estado.toLowerCase()}`) {
           case "reload":
@@ -58,7 +83,7 @@ const TagProfesor = memo(({ id, nombre = "",apellido = "", state="n", onClick = 
   useEffect(() => {
       setType(bgColor(state))
   }, [state]);
-
+*/
   return <>
       <TagTeacher className={`tag-teacher-${unicId}`}>
           <Item className='item-nombre-profe'>{nombre} {apellido}</Item>
@@ -131,6 +156,9 @@ const ListItem = memo(({ index, idMateria,estado ,nombre,apellido, profesores = 
     const { setStatusProfesorMateria } = useClaseContext();
 
     const [isSelectOpen, setIsSelectOpen] = useState(false);
+
+    const [selected, setSelected] = useState(false);
+
   
     
     
@@ -164,7 +192,7 @@ useEffect(() => {
     guardarIdMateriaSeleccionado(idMateriaSeleccionado);
   }, [idMateriaSeleccionado]);
 
-  
+  const [selectedProfesorId, setSelectedProfesorId] = useState(null);
 
   useEffect(() => {
     guardarProfesorSeleccionado(profesoresSeleccionados);
@@ -175,6 +203,10 @@ useEffect(() => {
     guardarProfesorSeleccionadoParaBorrar(usuariosSeleccionados);
   }, [usuariosSeleccionados]);
 
+  useEffect(() => {
+   
+  },[selectedProfesorId]);
+  console.log('selectedProfesorId',selectedProfesorId);
     return <>
         <ItemContainer type={newType} className={`item-container-${index}`}>
             <div  onClick={handleClick}>
@@ -217,6 +249,8 @@ useEffect(() => {
                         state={newType}
                         idMateriaProfesor={idMateria} 
                         onClick={() => {
+
+        
                          
                             setProfesoresSeleccionados((prevSeleccionados) =>
                             prevSeleccionados.filter((id) => id !== profesor.id)
@@ -237,6 +271,7 @@ useEffect(() => {
             state={newType} // Pasar el valor de type como prop state
             idMateriaProfesor={idMateria}
             onClick={() => {
+              console.log('entro',e.nombre);
             
               const newType = type === "n" ? "reload" : "n";
               updateType(newType);
@@ -245,7 +280,14 @@ useEffect(() => {
               setIdMateriaSeleccionado(idMateria);
               setUsuariosSeleccionados([...usuariosSeleccionados, e.idProfesor]);
               setType(newType);
+
+              console.log('selectedProfesorId',selectedProfesorId);
+
+              console.log('e.idProfesor',e.idProfesor);
             }}
+            selected={selectedProfesorId === e.idProfesor}
+
+           
           />
         )})}
 
@@ -258,7 +300,7 @@ useEffect(() => {
 
                 </div>
             </div>
-            <ListButton onClick={onClick}>{newType !== 'reload' ? 'X' : <RxReload style={{ fontSize: '24px' }} size={24} />} </ListButton>
+            <ListButton onClick={onClick}>{type !== 'reload' ? 'X' : <RxReload style={{ fontSize: '24px' }} size={24} />} </ListButton>
         </ItemContainer>
 
         <style jsx="true">
@@ -485,6 +527,12 @@ useMemo(() => {
    
     const [filtrarFusionada, setFiltrarMateria] = useState([]);
 
+    const eliminarMateria = (idMateria) => {
+      const updatedList = materiasList.list.filter(
+        (item) => item.idMateria !== idMateria
+      );
+      setFiltrarMateria(updatedList);
+    };
   
     if (materiaProfesor) {
       listaFusionada = materiaProfesor.map(item => ({
@@ -503,19 +551,32 @@ useMemo(() => {
       listaFusionada = [...listaFusionada, ...nuevosElementos];
     }
 
-    const eliminarMateria = (idMateria) => {
-      const updatedList = materiasList.list.filter(
-        (item) => item.idMateria !== idMateria
-      );
-      setFiltrarMateria(updatedList);
-    };
-
-    if (filtrarFusionada.length > 0) {
+      if (filtrarFusionada.length > 0) {
   
- 
+      console.log('filtrarFusionada.length',filtrarFusionada.length);
       listaFusionada = [...filtrarFusionada];
+      console.log('filtrarFusionada.length',filtrarFusionada.length);
+
+      }
+
+      if (materiaProfesores && materiaProfesores.data && Array.isArray(materiaProfesores.data.materiaProfesores)) {
+        const nuevosElementos = materiaProfesores.data.materiaProfesores.map(item => ({
+          ...item,
+          estado: "n"
+        }));
+        listaFusionada = [...listaFusionada, ...nuevosElementos];
       }
     
+    
+
+
+
+
+
+
+
+
+
 
     const [profesoresSeleccionadosBorrado, setProfesoresSeleccionadosBorrado] = useState([]);
 
