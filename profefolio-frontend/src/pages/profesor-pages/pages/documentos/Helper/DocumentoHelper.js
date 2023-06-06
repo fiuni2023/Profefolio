@@ -25,8 +25,19 @@ const getDocumento= async (id, token) => {
     });
   
   return result.status === 200 ? result : null
-
 };
 
-const ClassesService = { createDocumento,getDocumento}
+const putDocumento= async (id, body, token) => {
+    const result = await axios.put(`${APILINK}/api/Documento/${id}`, 
+        body, {
+        headers: {
+            "Authorization": 'Bearer ' + token,
+            "Content-Type": "application/json"
+        },
+    });
+  
+  return result.status === 200 ? result : null
+};
+
+const ClassesService = { createDocumento, getDocumento, putDocumento }
 export default ClassesService
