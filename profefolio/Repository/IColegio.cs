@@ -14,4 +14,5 @@ public interface IColegio : IRepository<Colegio>
     Task<bool> ExistOtherWithEqualName(string newName, int id);
     Task<bool> ExistAdminInOtherColegio(string idNewAdmin, int idColegio);
     Task<Colegio> FindAdminColegio(string idAdmin);
+    Task<Colegio> FindAdminColegioDeleted(string idAdmin);
 }

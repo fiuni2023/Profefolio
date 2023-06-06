@@ -53,6 +53,18 @@ public class ColegiosService : IColegio
             .FirstOrDefaultAsync();
     }
 
+    /**
+    * Verificar si el admin ya fue asignado a un colegio eliminado.
+    * Si fue asignado se retorna el colegio.
+    * Si aun no fue asignado Colegio = null
+    **/
+    public async Task<Colegio> FindAdminColegioDeleted(string idAdmin)
+    {
+        return await _dbContext.Colegios
+            .Where(p => p.Deleted && p.PersonaId == idAdmin)
+            .FirstOrDefaultAsync();
+    }
+
     public async Task<Persona> FindByPerson(string id)
     {
         var query = await _userManager.Users

@@ -147,7 +147,7 @@ namespace profefolio.Controllers
                 {
                     return BadRequest("Colegio no válido");
                 }
-            
+
                 if (string.IsNullOrWhiteSpace(colegio.Nombre))
                 {
                     return BadRequest("El nombre del colegio no puede estar vacío.");
@@ -166,6 +166,10 @@ namespace profefolio.Controllers
                 {
                     return BadRequest($"El administrador ya esta asignado a un colegio.");
                 }
+
+                //si elimine un colegio y quiero volver a agregar con el mismo admin
+                //actualizar el registro en lugar de agregar uno nuevo
+
 
                 // Verificar duplicados con nombre de colegio e id iguales
                 var verificar = await _colegioService.FindByNamePerson(colegio.Nombre, colegio.PersonaId);
@@ -187,17 +191,33 @@ namespace profefolio.Controllers
                 {
                     return BadRequest($"No existe el administrador.");
                 }
+                // Buscar el colegio eliminado por el ID del administrador
+                var colegioEliminado = await _colegioService.FindAdminColegioDeleted(colegio.PersonaId);
 
-                var p = _mapper.Map<Colegio>(colegio);
+                if (colegioEliminado != null)
+                {
+                    colegioEliminado.Deleted = false; // Marcar como no eliminado
+                    colegioEliminado.Nombre = colegio.Nombre; // Actualizar el nombre si es necesario
+                    var userId = User.Identity.GetUserId();
+                    colegioEliminado.ModifiedBy = userId;
+                    
+                    await _colegioService.Save();
 
-                var userId = User.Identity.GetUserId();
-                p.ModifiedBy = userId;
-                p.Deleted = false;
+                    return Ok(_mapper.Map<ColegioWithAdminDataDTO>(colegioEliminado));
+                }
+                else
+                {
+                    var p = _mapper.Map<Colegio>(colegio);
 
-                var saved = await _colegioService.Add(p);
-                await _colegioService.Save();
+                    var userId = User.Identity.GetUserId();
+                    p.ModifiedBy = userId;
+                    p.Deleted = false;
 
-                return Ok(_mapper.Map<ColegioWithAdminDataDTO>(saved));
+                    var saved = await _colegioService.Add(p);
+                    await _colegioService.Save();
+
+                    return Ok(_mapper.Map<ColegioWithAdminDataDTO>(saved));
+                }
             }
             catch (Exception e)
             {
