@@ -211,7 +211,7 @@ namespace profefolio.Controllers
             return Ok();
         }
 
-        [HttpGet("administradores/noasignados")]
+        [HttpGet("administradores/noAsignados")]
         public async Task<ActionResult<List<AdministradorDTO>>> GetAdministradoresNoAsignados()
         {
             var administradoresNoAsignados = await _colegioService.GetAdministradoresNoAsignados();
