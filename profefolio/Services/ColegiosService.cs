@@ -178,6 +178,7 @@ public class ColegiosService : IColegio
         var administradoresRolIds = administradoresRol.Select(a => a.Id);
 
         var administradoresNoAsignados = await _dbContext.Users
+            .Where(c => !c.Deleted)
             .Where(a => !administradoresAsignados.Contains(a.Id) && administradoresRolIds.Contains(a.Id))
             .ToListAsync();
 
