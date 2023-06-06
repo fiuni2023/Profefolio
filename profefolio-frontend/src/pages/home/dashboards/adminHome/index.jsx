@@ -6,6 +6,7 @@ import Card from "../../../../components/Card";
 import {DTitle, SRow} from "../../../../components/componentsStyles/StyledDashComponent"
 import AdminService from "../../../../sevices/administrador";
 import ColegioService from "../../../../sevices/colegio";
+import Spinner from "../../../../components/componentsStyles/SyledSpinner";
 
 /* 
 <Row>
@@ -40,6 +41,7 @@ const AdminHome = () => {
 
     const {getUserName, getToken} = useGeneralContext()
     const token = getToken()
+    const [loading, setLoading] = useState(true); 
 
     const [colegios, setColegios] = useState({
         background: "orange",
@@ -78,6 +80,8 @@ const AdminHome = () => {
 
 
     useEffect(()=>{
+        let loadingColegios = true;
+        let loadingAdmins = true;  
         AdminService.getAll(token)
         .then((r)=>{
             if(r.data){
@@ -98,6 +102,10 @@ const AdminHome = () => {
                         }
                     }
                 })
+            }
+            loadingAdmins = false; 
+            if (!loadingColegios){
+                setLoading(false); 
             }
         })
         ColegioService.getFirstPage(token)
@@ -121,16 +129,25 @@ const AdminHome = () => {
                     }
                 })
             }
+            loadingColegios = false; 
+            if (!loadingAdmins){
+                setLoading(false); 
+            }
         })
+        
     },[token])
 
     return(
         <Container className={styles.HomeDiv}>
              <DTitle>Bienvenido, {getUserName()}</DTitle>  
-            <SRow>
-                <Card cardInfo={colegios}></Card>
-                <Card cardInfo={administradores}></Card>
-            </SRow>
+                {loading ? <Spinner height={"calc(50vh - 80px)"} /> :
+                    <SRow>
+                        <>
+                            <Card cardInfo={colegios}></Card>
+                            <Card cardInfo={administradores}></Card>
+                        </>
+                    </SRow>
+                }
             
         </Container>
     )
