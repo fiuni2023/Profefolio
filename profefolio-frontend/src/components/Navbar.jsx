@@ -2,7 +2,8 @@ import React from "react";
 import { useGeneralContext } from "../context/GeneralContext";
 import { BsJustify } from 'react-icons/bs'
 import { FaUserCircle } from 'react-icons/fa'
-import { LogoNavBar } from "../assets";
+import { NavCenter, NavLeft, NavRight, SButtonforBar, SIcon, SMainLogo, SMainName, SMainUser, SNavBar, SSchoolName, SUserName, SmainLogoImg, navbarLogoImage } from "./componentsStyles/StyledNavBar";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = ({
     showSB = false, 
@@ -11,29 +12,39 @@ const Navbar = ({
     setShowDD = ()=> {}
 }) => {
     const { getUserName, getColegioName, cancan } = useGeneralContext()
-
+    const navigate = useNavigate();
+    
     return(
         <>
-            <div className="Navbar">
-                <div className="NButtonForSide" onClick={()=>{
-                    setShowDD(false)
-                    setShowSB(!showSB)
-                }}>
-                    <button className="buttonNavBar">  <BsJustify /> </button>
-                </div>
-                <div className="navbarmain">
-                    <div className="logonameset">
-                        <div className="logo"> <LogoNavBar width="100%" height="100%" /> </div>
-                        {cancan("Administrador de Colegio")? getColegioName():"Master"}
-                    </div>
-                    {!showDD &&
-                        <div className="user" onClick={()=>{
+            <SNavBar>
+                <NavLeft>
+                    <SButtonforBar onClick={()=>{
+                        setShowDD(false)
+                        setShowSB(!showSB)}} >
+                            <BsJustify />
+                    </SButtonforBar>
+                    <SMainLogo onClick={() => navigate("/")}>
+                        <SmainLogoImg src={navbarLogoImage} alt="Logo" />
+                    </SMainLogo>
+                </NavLeft>
+                <NavCenter>
+                    <SSchoolName>{cancan("Administrador de Colegio")? getColegioName():"Master"}</SSchoolName>
+                </NavCenter>
+                <NavRight>
+                    {!showDD && <SMainUser
+                        onClick={()=>{
                             setShowSB(false)
                             setShowDD(!showDD)
-                        }}> <span>{getUserName()}</span> <FaUserCircle size={25}/> </div>
+                        }}> 
+                            <SMainName>
+                                <SUserName>{getUserName()}</SUserName>
+                                <SIcon><FaUserCircle width={"30px"}/></SIcon>
+                            </SMainName>
+                        </SMainUser>
                     }
-                </div>
-            </div>
+                    
+                </NavRight>
+            </SNavBar>
             <style jsx="true">{`
                 .Navbar{
                     width: 100%;
