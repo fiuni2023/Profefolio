@@ -90,23 +90,20 @@ namespace profefolio
 
         public async Task<IEnumerable<Persona>> GetAdminsSinColegio()
         {
-            //Filtramos las personas por el rol
-            var queryAdmins = await _userManager.GetUsersInRoleAsync(rol);
+            var admins = await _userManager.GetUsersInRoleAsync(rol);
 
-            //Filtramos por aquellas que no han sido borradas
-            var result = queryAdmins
-                        .Where(p => !p.Deleted 
-                                    && p.Colegio == null)
-                        .ToList();
+            var colegios = await _db.Colegios.Where(a => !a.Deleted).ToListAsync();
 
-            //Creamos otra query donde obtenemos las personas cuyos Id de Persona en la tabla Colegio es NULL
-            /* var result = queryPersonas
-                .Where(p => !_db.Colegios
-                    .Any(c => c.PersonaId == null ?
-                        false : c.PersonaId.Equals(p.Id))); */
-
-            //Retornamos la query
+            //left join
+            var result = from a in admins
+                            join c in colegios
+                            on a.Id equals c.PersonaId into joinlist
+                            from col in joinlist.DefaultIfEmpty()
+                            where col is null
+                            select a;
             return result;
         }
+
+        
     }
 }

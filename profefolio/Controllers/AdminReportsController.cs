@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using profefolio.Helpers;
 using profefolio.Models.DTOs;
+using profefolio.Models.DTOs.Admin;
 using profefolio.Models.DTOs.Persona;
 
 namespace profefolio
@@ -29,7 +30,7 @@ namespace profefolio
         public async Task<ActionResult<DataListDTO<PersonaResultDTO>>> GetAssigned(int page)
         {
 
-            
+
             var query = await _adminReportService.GetPersonasConColegio(CantPerPage, page);
 
 
@@ -58,7 +59,7 @@ namespace profefolio
         public async Task<ActionResult<DataListDTO<PersonaResultDTO>>> GetNotAssigned(int page)
         {
 
-            
+
             var query = await _adminReportService.GetPersonasSinColegio(CantPerPage, page);
 
 
@@ -84,8 +85,25 @@ namespace profefolio
 
 
 
+        [HttpGet("admin/not/assigned/")]
+        [Authorize(Roles = "Master")]
+        public async Task<ActionResult<List<AdminSinColegioDTO>>> GetAdminsSingColegio()
+        {
+            try
+            {
+                var admins = await _adminReportService.GetAdminsSinColegio();
 
-        
+                return Ok(_mapper.Map<List<AdminSinColegioDTO>>(admins));
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"{e}");
+                return BadRequest("Error al obtener los administradores");
+            }
+
+        }
+
 
 
     }
