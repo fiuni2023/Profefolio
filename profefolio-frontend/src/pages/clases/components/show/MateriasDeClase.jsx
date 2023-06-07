@@ -559,14 +559,14 @@ useMemo(() => {
 
       }
 
-      if (materiaProfesores && materiaProfesores.data && Array.isArray(materiaProfesores.data.materiaProfesores)) {
+     /* if (materiaProfesores && materiaProfesores.data && Array.isArray(materiaProfesores.data.materiaProfesores)) {
         const nuevosElementos = materiaProfesores.data.materiaProfesores.map(item => ({
           ...item,
           estado: "n"
         }));
         listaFusionada = [...listaFusionada, ...nuevosElementos];
       }
-    
+    */
     
 
 
