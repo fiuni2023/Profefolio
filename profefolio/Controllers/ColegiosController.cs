@@ -247,6 +247,21 @@ namespace profefolio.Controllers
             return Ok();
         }
 
+        [HttpGet("administradores/noAsignados")]
+        public async Task<ActionResult<List<AdministradorDTO>>> GetAdministradoresNoAsignados()
+        {
+            try
+            {
+                var administradoresNoAsignados = await _colegioService.GetAdministradoresNoAsignados();
+                var administradoresDTO = _mapper.Map<List<AdministradorDTO>>(administradoresNoAsignados);
+                return Ok(administradoresDTO);
+            }
+            catch (Exception e)
+            {
+                return BadRequest("Error al obtener los administradores no asignados.");
+            }
+        }
+
 
     }
 }
