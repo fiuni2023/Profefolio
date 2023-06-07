@@ -34,7 +34,7 @@ public class CalificacionService : ICalificacion
     }
 
 
-    public async Task<PlanillaDTO> GetAll(int idMateriaLista, string user)
+    public async Task<bool> Verify(int idMateriaLista, string user)
     {
         var alumnosQuery = _db.ClasesAlumnosColegios
             .Include(c => c.Evaluaciones)
@@ -44,18 +44,7 @@ public class CalificacionService : ICalificacion
             .Where(c => c.Evaluaciones
                 .Any(y => y.Evaluacion.MateriaListaId == idMateriaLista));
 
-        var materia = await _db.MateriaListas
-            .Include(m => m.Materia)
-            .Where(m => !m.Deleted && m.Id == idMateriaLista)
-            .Select(m => m.Materia.Nombre_Materia)
-            .FirstAsync();
-        
-        var planilla = new PlanillaDTO
-        {
-            MateriaId = idMateriaLista,
-            Materia = materia,
-            Etapas = new List<EtapaDTO>()
-        };
+
 
         foreach (var alumno in alumnosQuery)
         {
@@ -65,17 +54,10 @@ public class CalificacionService : ICalificacion
             {
                 await CargarEvaluaciones(alumno, user);
             }
-
-            var etapa = new EtapaDTO();
-
-            //Obtener las etapas
-            
-            
-            planilla.Etapas.Add(etapa);
         }
 
 
-        return planilla;
+        return true;
     }
 
     private async Task CargarEvaluaciones(ClasesAlumnosColegio cac, string user)
