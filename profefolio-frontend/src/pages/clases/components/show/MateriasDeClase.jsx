@@ -145,7 +145,7 @@ const ListItem = memo(({ index, idMateria,estado ,nombre,apellido, profesores = 
     setType(newValue);
   };
 
- 
+  
 
 
   const [idMateriaSeleccionado, setIdMateriaSeleccionado] = useState();
@@ -523,42 +523,67 @@ useMemo(() => {
       listaMateriasProfesores();
     }, []);
 
-    let listaFusionada;
+    //let listaFusionada;
    
     const [filtrarFusionada, setFiltrarMateria] = useState([]);
 
-    const eliminarMateria = (idMateria) => {
+   /* const eliminarMateria = (idMateria) => {
       const updatedList = materiasList.list.filter(
         (item) => item.idMateria !== idMateria
       );
       setFiltrarMateria(updatedList);
+    };*/
+
+    const eliminarMateria = (idMateria) => {
+      const updatedListaFusionada = listaFusionada.filter(
+        (item) => item.idMateria !== idMateria
+      );
+      // Actualizar la variable listaFusionada con la lista filtrada
+
+      console.log('updatedListaFusionada',updatedListaFusionada );
+      setListaFusionada(updatedListaFusionada);
+      console.log('entro',listaFusionada );
     };
-  
-    if (materiaProfesor) {
-      listaFusionada = materiaProfesor.map(item => ({
-        ...item,
-        estado: "new"
-      }));
-    } else {
-      listaFusionada = [];
-    }
     
-    if (materiaProfesores && materiaProfesores.data && Array.isArray(materiaProfesores.data.materiaProfesores)) {
-      const nuevosElementos = materiaProfesores.data.materiaProfesores.map(item => ({
-        ...item,
-        estado: "n"
-      }));
-      listaFusionada = [...listaFusionada, ...nuevosElementos];
-    }
 
-      if (filtrarFusionada.length > 0) {
-  
-      console.log('filtrarFusionada.length',filtrarFusionada.length);
-      listaFusionada = [...filtrarFusionada];
-      console.log('filtrarFusionada.length',filtrarFusionada.length);
+    const [listaFusionada, setListaFusionada] = useState([]);
 
+    useEffect(() => {
+      if (materiaProfesor) {
+        const nuevaListaFusionada = materiaProfesor.map(item => ({
+          ...item,
+          estado: "new"
+        }));
+        setListaFusionada(nuevaListaFusionada);
+      } else {
+        setListaFusionada([]);
       }
 
+      if (
+        materiaProfesores &&
+        materiaProfesores.data &&
+        Array.isArray(materiaProfesores.data.materiaProfesores)
+      ) {
+        const nuevosElementos = materiaProfesores.data.materiaProfesores.map(item => ({
+          ...item,
+      estado: "n"
+    }));
+    setListaFusionada(prevLista => [...prevLista, ...nuevosElementos]);
+  }
+}, [materiaProfesor, materiaProfesores]);
+
+
+
+    
+    // Coloca este console.log fuera del useEffect para ver el valor actualizado de listaFusionada
+    console.log('listaFusionada', listaFusionada);
+    
+
+
+    console.log('listaFusionada',listaFusionada);
+
+
+    
      /* if (materiaProfesores && materiaProfesores.data && Array.isArray(materiaProfesores.data.materiaProfesores)) {
         const nuevosElementos = materiaProfesores.data.materiaProfesores.map(item => ({
           ...item,
@@ -604,7 +629,7 @@ useMemo(() => {
         addTitle: "Agregar Materias",
         selectTitle: "Seleccionar Materia",
         options: optionsMaterias,
-        list:  listaFusionada ?? [],
+        list: listaFusionada || [],
     }
     return <>
 
