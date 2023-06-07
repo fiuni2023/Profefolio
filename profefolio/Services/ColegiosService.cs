@@ -41,6 +41,29 @@ public class ColegiosService : IColegio
             .Where(p => !p.Deleted && p.Nombre == name)
             .FirstOrDefaultAsync();
     }
+    /**
+    * Verificar si el admin ya fue asignado a un colegio.
+    * Si fue asignado se retorna el colegio.
+    * Si aun no fue asignado Colegio = null
+    **/
+    public async Task<Colegio> FindAdminColegio(string idAdmin)
+    {
+        return await _dbContext.Colegios
+            .Where(p => !p.Deleted && p.PersonaId == idAdmin)
+            .FirstOrDefaultAsync();
+    }
+
+    /**
+    * Verificar si el admin ya fue asignado a un colegio eliminado.
+    * Si fue asignado se retorna el colegio.
+    * Si aun no fue asignado Colegio = null
+    **/
+    public async Task<Colegio> FindAdminColegioDeleted(string idAdmin)
+    {
+        return await _dbContext.Colegios
+            .Where(p => p.Deleted && p.PersonaId == idAdmin)
+            .FirstOrDefaultAsync();
+    }
 
     public async Task<Persona> FindByPerson(string id)
     {
@@ -55,12 +78,12 @@ public class ColegiosService : IColegio
         return query;
     }
 
-      public async Task<int> FindByPersonRol(string id)
+    public async Task<int> FindByPersonRol(string id)
     {
         var query = await _userManager.GetUsersInRoleAsync("Administrador de Colegio");
 
         return query
-            .Count(p => !p.Deleted  && p.Id == id);
+            .Count(p => !p.Deleted && p.Id == id);
     }
 
     /*
@@ -147,8 +170,8 @@ public class ColegiosService : IColegio
     public async Task<Colegio> FindByIdAdmin(string id)
     {
         return await _dbContext.Colegios.Include(p => p.personas).FirstOrDefaultAsync(
-                    c => !c.Deleted 
-                    && c.PersonaId != null 
+                    c => !c.Deleted
+                    && c.PersonaId != null
                     && id.Equals(c.PersonaId)
                     && !c.personas.Deleted);
     }
@@ -162,4 +185,29 @@ public class ColegiosService : IColegio
     {
         return await _dbContext.Colegios.AnyAsync(a => !a.Deleted && a.Id != idColegio && idNewAdmin.Equals(a.PersonaId));
     }
+    /*
+    * Obtener la lista de todos los administradores que no están asignados a ningún colegio. 
+    * Se devuelve correctamente el administrador eliminado de la relación en la lista de 
+    * administradores no asignados.
+    */
+    public async Task<List<Persona>> GetAdministradoresNoAsignados()
+    {
+        var administradoresAsignados = await _dbContext.Colegios
+            .Where(c => !c.Deleted)
+            .Select(c => c.PersonaId)
+            .ToListAsync();
+
+        var administradoresRol = await _userManager.GetUsersInRoleAsync("Administrador de Colegio");
+        var administradoresRolIds = administradoresRol.Select(a => a.Id);
+
+        var administradoresNoAsignados = await _dbContext.Users
+            .Where(c => !c.Deleted)
+            .Where(a => !administradoresAsignados.Contains(a.Id) && administradoresRolIds.Contains(a.Id))
+            .ToListAsync();
+
+        return administradoresNoAsignados;
+    }
+
+
+
 }

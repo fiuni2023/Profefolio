@@ -32,7 +32,7 @@ const Clases = () => {
     const handelCloseModal = () => {
         setShowModal(false);
     }
-    const [tabla, setTabla] = useState(<div>Cargando tabla...</div>);
+    const [tabla, setTabla] = useState(<div></div>);
 
     useEffect(() => {
         verifyToken()
