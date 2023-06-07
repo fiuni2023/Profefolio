@@ -51,12 +51,12 @@ function Tabla({datosTabla, selected}){
     return (
         <>
          {datosTabla && datosTabla?.filas && !datosTabla.small && <>
-            <ExcelExport
+            <ExcelExport 
                 excelData={exp}
                 fileName={datosTabla?.tituloTabla ? datosTabla?.tituloTabla : "descargado_de_ProfeFolio"}>
             </ExcelExport></>}
         { (datosTabla?.filas) ? datosTabla &&(
-            <ScrollTable>
+            <ScrollTable small={datosTabla?.small ?? false}>
                 <Table  key = {datosTabla?.tituloTabla}
                         width={datosTabla?.tableWidth ? datosTabla.tableWidth : "100%"}>
                     {datosTabla?.titulos && (
