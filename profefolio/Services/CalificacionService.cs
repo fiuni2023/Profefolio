@@ -34,8 +34,41 @@ public class CalificacionService : ICalificacion
     }
 
 
-    public Task<PlanillaDTO> GetAll(int idMateriaLista, string user)
+    public async Task<PlanillaDTO> GetAll(int idMateriaLista, string user)
     {
+        var materiaListaQuery = _db.MateriaListas
+            .Include(p => p.Profesor)
+            .Include(m => m.Materia);
+        var materiaListaVerify = materiaListaQuery 
+            .Where(ml => !ml.Deleted)
+            .Any(ml => ml.Profesor.Email.Equals(user));
+
+
+        if (!materiaListaVerify)
+        {
+            throw new UnauthorizedAccessException();
+        }
+        var evaluacionQuery = _db.Eventos
+            .Include(e => e.MateriaList)
+            .ThenInclude(m => m.Materia)
+            .Include(ea => ea.EvaluacionAlumnos)
+            .ThenInclude(a => a.ClasesAlumnosColegio)
+            .ThenInclude(ca => ca.ColegiosAlumnos)
+            .ThenInclude(p => p.Persona)
+            .Where(x => !x.Deleted && x.MateriaListaId == idMateriaLista);
+
+        var planilla = new PlanillaDTO
+        {
+            Materia = await materiaListaQuery
+                .Select(ml => ml.Materia.Nombre_Materia)
+                .FirstAsync(),
+            Etapas = new List<EtapaDTO>(),
+            MateriaId = idMateriaLista
+        };
+        
+        
+
+
         throw new NotImplementedException();
     }
 
