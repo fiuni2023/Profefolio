@@ -87,5 +87,26 @@ namespace profefolio
             return result;
 
         }
+
+        public async Task<IEnumerable<Persona>> GetAdminsSinColegio()
+        {
+            //Filtramos las personas por el rol
+            var queryAdmins = await _userManager.GetUsersInRoleAsync(rol);
+
+            //Filtramos por aquellas que no han sido borradas
+            var result = queryAdmins
+                        .Where(p => !p.Deleted 
+                                    && p.Colegio == null)
+                        .ToList();
+
+            //Creamos otra query donde obtenemos las personas cuyos Id de Persona en la tabla Colegio es NULL
+            /* var result = queryPersonas
+                .Where(p => !_db.Colegios
+                    .Any(c => c.PersonaId == null ?
+                        false : c.PersonaId.Equals(p.Id))); */
+
+            //Retornamos la query
+            return result;
+        }
     }
 }
