@@ -15,7 +15,9 @@ const handleSmall = (small, element) => {
         case "b-fheiht":
             return small ? "1em" : "2em";
         case "b-align":
-            return small ? "center" : "left";                 
+            return small ? "center" : "left";      
+        case "shadow":
+            return small ? "none" : "2px 2px 10px 2px rgba(0, 0, 0, 0.1)";            
         default: 
             return "";    
     }
@@ -88,7 +90,7 @@ const TD = styled.td`
     `;
 
 const ScrollTable = styled.div`
-    box-shadow: 2px 2px 10px 2px rgba(0, 0, 0, 0.1);
+    box-shadow: ${({ small }) => handleSmall(small, "shadow")}; 
     border-radius: 20px;
     overflow: auto; 
     width: 100%;
