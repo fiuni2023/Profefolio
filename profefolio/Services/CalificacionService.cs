@@ -34,7 +34,7 @@ public class CalificacionService : ICalificacion
     }
 
 
-    public PlanillaDTO GetAll(int idMateriaLista, string user)
+    public async Task<PlanillaDTO> GetAll(int idMateriaLista, string user)
     {
         var alumnosQuery = _db.ClasesAlumnosColegios
             .Include(c => c.Evaluaciones)
@@ -44,12 +44,12 @@ public class CalificacionService : ICalificacion
             .Where(c => c.Evaluaciones
                 .Any(y => y.Evaluacion.MateriaListaId == idMateriaLista));
 
-        var materia = _db.MateriaListas
+        var materia = await _db.MateriaListas
             .Include(m => m.Materia)
             .Where(m => !m.Deleted && m.Id == idMateriaLista)
             .Select(m => m.Materia.Nombre_Materia)
-            .First();
-            
+            .FirstAsync();
+        
         var planilla = new PlanillaDTO
         {
             MateriaId = idMateriaLista,
@@ -63,41 +63,46 @@ public class CalificacionService : ICalificacion
 
             if (evaluacionesAlumnos.IsNullOrEmpty())
             {
-                
+                await CargarEvaluaciones(alumno, user);
             }
-            foreach (var evaluacionAlumno in evaluacionesAlumnos)
-            {
-                
-            }
+
+            var etapa = new EtapaDTO();
+
+            //Obtener las etapas
+            
+            
+            planilla.Etapas.Add(etapa);
         }
 
 
         return planilla;
     }
 
-    private void CargarEvaluaciones(ClasesAlumnosColegio cac, string user, int idEvaluacion)
+    private async Task CargarEvaluaciones(ClasesAlumnosColegio cac, string user)
     {
-        var cantEvaluaciones = _db.ClasesAlumnosColegios
+        var evaluaciones = _db.ClasesAlumnosColegios
             .Include(c => c.Evaluaciones)
             .Where(c => !c.Deleted && cac.Id != c.Id)
             .Where(c => c.Evaluaciones.Any())
             .Select(c => c.Evaluaciones)
             .First()
-            .Count;
+            .Select(w => w.EvaluacionId);
 
 
-        for (var i = 0; i < cantEvaluaciones; i++)
+        foreach (var e in evaluaciones)
         {
             cac.Evaluaciones.Add(new EvaluacionAlumno()
             {
                 ClasesAlumnosColegioId = cac.Id,
                 Created = DateTime.Now,
                 CreatedBy = user,
-                EvaluacionId = idEvaluacion,
+                EvaluacionId = e,
                 PuntajeLogrado = 0,
                 PorcentajeLogrado = 0
             });
         }
+
+        await _db.SaveChangesAsync();
     }
 
    
