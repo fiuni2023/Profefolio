@@ -64,5 +64,21 @@ namespace profefolio.Controllers
                 return BadRequest("Error durante el guardado");
             }
         }
+
+        [HttpGet("{idAlumno}")]
+        [Authorize(Roles = "Profesor")]
+        public async Task<IActionResult> GetAll(string idAlumno)
+        {
+            try
+            {
+                var result = await _contEmergService.GetAllByAlumno(idAlumno);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"{e}");
+                return BadRequest("Error durante la obtencion de los contactos de emergencia");
+            }
+        }
     }
 }
