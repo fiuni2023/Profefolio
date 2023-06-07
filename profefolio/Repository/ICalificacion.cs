@@ -4,5 +4,6 @@ namespace profefolio.Repository;
 
 public interface ICalificacion : IDisposable
 { 
-    PlanillaDTO GetAll(int idMateriaLista, string user);
+    Task<PlanillaDTO> GetAll(int idMateriaLista, string user);
+    Task<bool> Verify(int idMateriaLista, string user);
 }
