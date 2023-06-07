@@ -55,7 +55,13 @@ public class CalificacionService : ICalificacion
             .ThenInclude(a => a.ClasesAlumnosColegio)
             .ThenInclude(ca => ca.ColegiosAlumnos)
             .ThenInclude(p => p.Persona)
-            .Where(x => !x.Deleted && x.MateriaListaId == idMateriaLista);
+            .Where(x => !x.Deleted && x.MateriaListaId == idMateriaLista)
+            .GroupBy(x => x.Etapa)
+            .Select(x => new
+            {
+                Etapa = x.Key,
+                Evaluaciones = x.GetEnumerator()
+            });
 
         var planilla = new PlanillaDTO
         {
@@ -65,8 +71,22 @@ public class CalificacionService : ICalificacion
             Etapas = new List<EtapaDTO>(),
             MateriaId = idMateriaLista
         };
-        
-        
+
+        foreach (var etapa in evaluacionQuery)
+        {
+            var etapaDTO = new EtapaDTO
+            {
+                Etapa = etapa.Etapa,
+                Alumnos = new List<AlumnoWithPuntajesDTO>()
+            };
+            
+            
+            while (etapa.Evaluaciones.MoveNext())
+            {
+                
+            }
+            planilla.Etapas.Add(etapaDTO);
+        }
 
 
         throw new NotImplementedException();
