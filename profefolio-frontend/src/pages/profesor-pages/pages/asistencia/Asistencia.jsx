@@ -4,22 +4,29 @@ import { AiOutlinePlus } from 'react-icons/ai'
 import { AddButton, MainContainer, TableContainer } from '../../../alumnos/styles/Styles'
 import Tabla from '../../../../components/Tabla';
 import { toast } from "react-hot-toast";
-import StyleComponentBreadcrumb from '../../../../components/StyleComponentBreadcrumb';
 import APILINK from '../../../../components/link';
 import axios from 'axios';
 import { useFetchEffect } from '../../../../components/utils/useFetchEffect';
 import { Container, Resumen, SideSection } from './componentes/StyledResumenAsistencia';
-import { useNavigate, useParams } from 'react-router-dom';
-import { useEffect } from 'react';
 import DayMonthPicker from './componentes/DayMonthPicker';
 // import {HiXCircle} from 'react-icons/hi'
 import { HiCheckCircle, HiXCircle } from 'react-icons/hi'
 import {sum} from 'lodash'
+import { Row } from 'react-bootstrap';
+import BackButton from '../../components/BackButton';
+import styled from 'styled-components';
+import { useModularContext } from '../../context';
+
+const FlexDiv = styled.div`
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 10px;
+`
 
 // const Asistencia = ({ materia = { id: 1, nombre: "Matemáticas" } }) => {
 const Asistencia = React.memo(() => {
-    const { getToken, cancan, verifyToken } = useGeneralContext()
-    const [condFetch, setCondFetch] = useState(true)
+    const { getToken } = useGeneralContext()
 
     // const [listaAsistencias, setListaAsistencias] = useState([])
     // const [listaNueva, setListaNueva] = useState([])
@@ -32,24 +39,16 @@ const Asistencia = React.memo(() => {
     const [cantAlumnos, setCantAlumnos] = useState(0)
     const [cantClases, setCantClases] = useState(0)
     const [porcentajes, setPorcentajes] = useState([])
-    const { idMateriaLista } = useParams()
-    const nombre = "Matemáticas"
+    const {stateController} = useModularContext()
+    const {materiaId} = stateController
+    // const { idMateriaLista } = useParams()
+    // const nombre = "Matemáticas"
 
-    const nav = useNavigate()
-
-    useEffect(() => {
-        verifyToken()
-        if (!cancan("Profesor")) {
-            nav('/')
-        } else {
-            setCondFetch(true)
-        }
-    }, [cancan, verifyToken, nav])
     const { doFetch, loading, error } = useFetchEffect(
         () => {
             // return axios.get(`${APILINK}/api/Asistencia/${materia?.id}`, {
             let body = {
-                "idMateriaLista": idMateriaLista,
+                "idMateriaLista": materiaId,
                 "mes": 0
             }
             return axios.post(`${APILINK}/api/Asistencia`, body, {
@@ -61,7 +60,7 @@ const Asistencia = React.memo(() => {
         },
         [],
         {
-            condition: condFetch,
+            condition: true,
             handleSuccess: (dataAsistencia) => {
                 console.log(dataAsistencia)
                 setCantAlumnos(dataAsistencia.length)
@@ -133,7 +132,7 @@ const Asistencia = React.memo(() => {
             let config = {
                 method: 'put',
                 maxBodyLength: Infinity,
-                url: `${APILINK}/api/Asistencia/${idMateriaLista}`,
+                url: `${APILINK}/api/Asistencia/${materiaId}`,
                 headers: {
                     'Authorization': `Bearer ${getToken()}`,
                     'Content-Type': 'application/json'
@@ -226,7 +225,14 @@ const Asistencia = React.memo(() => {
         <>
             <MainContainer>
                 {/* <StyleComponentBreadcrumb nombre={`Registro de Asistencia - ${materia?.nombre}`} /> */}
-                <StyleComponentBreadcrumb nombre={`Registro de Asistencia - ${nombre}`} />
+                <Row>
+                    <FlexDiv>
+                        <BackButton to="materiashow"/>
+                        <h5 className="m-0">
+                            Asistencia 
+                        </h5>
+                    </FlexDiv>
+                </Row>
                 <Container>
                     <SideSection>
                         <TableContainer>
