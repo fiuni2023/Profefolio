@@ -20,17 +20,19 @@ public class AccountController : ControllerBase
     private readonly IPersona _personasService;
     private readonly IRol _rolService;
     private readonly IColegio _colegioService;
+    private readonly IAdmin _adminService;
     private const string RolAdmin = "Administrador de Colegio";
     private static int CantPerPage => Constantes.CANT_ITEMS_POR_PAGE;
 
 
 
-    public AccountController(IMapper mapper, IPersona personasService, IRol rolService, IColegio colegioService)
+    public AccountController(IMapper mapper, IPersona personasService, IRol rolService, IColegio colegioService, IAdmin adminService)
     {
         _mapper = mapper;
         _personasService = personasService;
         _rolService = rolService;
         _colegioService = colegioService;
+        _adminService = adminService;
     }
 
     [HttpPost]
@@ -281,6 +283,19 @@ public class AccountController : ControllerBase
         }
     }
 
+
+
+    [HttpGet()]
+    [Authorize(Roles = "Master")]
+    public async ActionResult GetAdminsSingColegio(){
+        try{
+            var admins = await _adminService.GetAdminsSinColegio();
+            
+        }catch(Exception e){
+            return BadRequest("Error al obtener los administradores");
+        }
+
+    }
     private void MapOldToNew(Persona persona, PersonaEditDTO dto, string userId)
     {
         persona.Nombre = dto.Nombre;
