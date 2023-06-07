@@ -34,6 +34,11 @@ public class CalificacionService : ICalificacion
     }
 
 
+    public Task<PlanillaDTO> GetAll(int idMateriaLista, string user)
+    {
+        throw new NotImplementedException();
+    }
+
     public async Task<bool> Verify(int idMateriaLista, string user)
     {
         var alumnosQuery = _db.ClasesAlumnosColegios
