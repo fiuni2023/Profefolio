@@ -8,7 +8,7 @@ const SNavBar = styled.nav`
     background-color: white;
     display: flex;
     align-items: center;
-    padding: 22px 45px;
+    padding: 22px 22px;
     background-color: #F0544F;
     justify-content: space-between;
 `;
