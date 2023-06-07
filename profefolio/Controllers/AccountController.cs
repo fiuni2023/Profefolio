@@ -10,6 +10,7 @@ using profefolio.Models.DTOs.Colegio;
 using profefolio.Models.Entities;
 using profefolio.Repository;
 using profefolio.Helpers;
+using profefolio.Models.DTOs.Admin;
 
 namespace profefolio.Controllers;
 
@@ -285,13 +286,16 @@ public class AccountController : ControllerBase
 
 
 
-    [HttpGet()]
+    [HttpGet("SinColegios")]
     [Authorize(Roles = "Master")]
-    public async ActionResult GetAdminsSingColegio(){
+    public async Task<ActionResult<List<AdminSinColegioDTO>>> GetAdminsSingColegio(){
         try{
             var admins = await _adminService.GetAdminsSinColegio();
-            
+
+            return Ok(_mapper.Map<List<AdminSinColegioDTO>>(admins));
+        
         }catch(Exception e){
+            Console.WriteLine($"{e}");
             return BadRequest("Error al obtener los administradores");
         }
 
