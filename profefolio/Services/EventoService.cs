@@ -23,27 +23,27 @@ public class EventoService : IEvento
     }
     public async Task<Evaluacion> FindById2(int id)
     {
-        /*
+        
         return await _dbContext.Eventos
             .Where(p => !p.Deleted && p.Id == id)
-            .Include(e => e.Materias)
-            .Include(e => e.Clases)
-            .Include(e => e.Colegios)
+            .Include(e => e.MateriaList)
             .FirstOrDefaultAsync();
             
-        */
-        throw new NotImplementedException();
+        
     }
 
 
     public async Task<Evaluacion> FindByEventoRepetido(String t, DateTime f, int c, int m, int col)
     {
-        /*
+        
         return await _dbContext.Eventos
-            .Where(p => !p.Deleted && p.Tipo == t && p.Fecha == f
-             && p.MateriaId == m && p.ClaseId == c && p.ColegioId == col)
+            .Include(e => e.MateriaList)
+            .ThenInclude(c => c.Clase)
+            .Where(p => p.MateriaList != null && !p.Deleted && p.Tipo == t && p.Fecha == f 
+                        && p.MateriaList.MateriaId == m && p.MateriaList.ClaseId == c && 
+                        p.MateriaList.Clase.ColegioId == col)
             .FirstOrDefaultAsync();
-        */
+        
         throw new NotImplementedException();
     }
 

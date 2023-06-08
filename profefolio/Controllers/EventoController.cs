@@ -184,8 +184,8 @@ namespace profefolio.Controllers
                 return BadRequest("No puede matipular datos ajenos.");
             }
             //verificar que el prf pertenezca al colegio al cual quiere agregar un evento
-            Task<int> _exist = _colegioProfesorService.Count(evento.ColegioId, userEmail);
-            var resultado = _exist.Result;
+            var exist = _colegioProfesorService.Count(evento.ColegioId, userEmail);
+            var resultado = exist.Result;
             if (resultado == 0)
             {
                 return BadRequest("No puede agregar eventos en otros colegios.");
@@ -203,8 +203,9 @@ namespace profefolio.Controllers
                 var p = _mapper.Map<Evaluacion>(evento);
                 p.CreatedBy = userEmail;
                 p.Deleted = false;
-
-                var saved = await _eventoService.Add(p);
+                
+                var user = User.FindFirstValue(ClaimTypes.Name);
+                var saved = await _eventoService.Add(p, user);
                 await _eventoService.Save();
 
                 return Ok(_mapper.Map<EventoResultDTO>(saved));
