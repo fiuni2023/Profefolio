@@ -6,7 +6,7 @@ import { AiOutlinePlus, AiOutlineRight } from 'react-icons/ai';
 import { useNavigate } from 'react-router';
 import CreateModalDocumento from '../create/CreateModalDocumento';
 import Tabla from '../../../../../components/Tabla';
-
+import Spinner from '../../../../../components/componentsStyles/SyledSpinner';
 
 import ClassesService from '../Helper/DocumentoHelper';
 import { Row } from 'react-bootstrap';
@@ -23,9 +23,9 @@ const FlexDiv = styled.div`
 
 function ListarDocumentos() {
   
-  const {stateController} = useModularContext()
+  const {stateController, dataSet} = useModularContext()
   const {materiaId} = stateController
-
+  const {loading} = dataSet
   const [selectData, setSelectedData] = useState(null)
   const { getToken, cancan, verifyToken } = useGeneralContext();
   const [documento, setDocumento] = useState([]);
@@ -80,6 +80,8 @@ function ListarDocumentos() {
           </FlexDiv>
         </Row>
 
+        {loading ? <Spinner height={"calc(100vh - 90px)"}></Spinner>
+        :  
         <PanelContainerBG>
           <div >
             <Tabla
@@ -90,7 +92,7 @@ function ListarDocumentos() {
                   { titulo: 'Enlace' },
                 ],
                 clickable: { action: btndetallesDocumento },
-
+                
                 filas: documento.map((documento) => ({
                   fila: documento,
                   datos: [
@@ -103,7 +105,7 @@ function ListarDocumentos() {
                   ],
                 })),
               }}
-            />
+              />
           </div>
 
           <CreateModalDocumento onHide={handleHide} selectData={selectData} show={show} />
@@ -113,6 +115,7 @@ function ListarDocumentos() {
           </AddButton>
 
         </PanelContainerBG>
+        }
 
         <footer />
       </div>
