@@ -7,12 +7,13 @@ import BackButton from "../../components/BackButton";
 import Alumnos from "../../components/Alumnos";
 import Eventos from "../../components/Eventos";
 import ContainerColegios from "../../components/ContainerColegios";
+import Spinner from "../../../../components/componentsStyles/SyledSpinner";
 
 const ProfesorMateria = () => {
     const {getUserName} = useGeneralContext()
     const {setPage, dataSet, stateController} = useModularContext()
 
-    const {materias} = dataSet
+    const {materias, loading} = dataSet
     const {setMateriaId, setMateriaName} = stateController
 
     const handleClickCards = (id) => {
@@ -53,7 +54,10 @@ const ProfesorMateria = () => {
     return (
         <>  
             <BackButton to="clase" />
-            <ShowContainer data={componentes}/>
+            {loading ? 
+                    <Spinner height={"calc(100vh - 90px)"}></Spinner> 
+                :   <ShowContainer data={componentes}/>
+            }
         </>
     )
 }
