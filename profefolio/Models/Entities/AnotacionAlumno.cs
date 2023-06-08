@@ -26,9 +26,11 @@ namespace profefolio.Models.Entities
         [MinLength(1, ErrorMessage = "La descripcion es invalido")]
         public string Descripcion { get; set; }
 
+
+
         [Required]
         [ForeignKey("AlumnoId")]
-        public Persona Alumno { get; set; }
+        public ClasesAlumnosColegio Alumno { get; set; }
 
         [Required]
         [ForeignKey("MateriaListaId")]
