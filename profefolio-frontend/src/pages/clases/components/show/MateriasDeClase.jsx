@@ -534,16 +534,7 @@ useMemo(() => {
       setFiltrarMateria(updatedList);
     };*/
 
-    const eliminarMateria = (idMateria) => {
-      const updatedListaFusionada = listaFusionada.filter(
-        (item) => item.idMateria !== idMateria
-      );
-      // Actualizar la variable listaFusionada con la lista filtrada
-
-      console.log('updatedListaFusionada',updatedListaFusionada );
-      setListaFusionada(updatedListaFusionada);
-      console.log('entro',listaFusionada );
-    };
+   
     
 
     const [listaFusionada, setListaFusionada] = useState([]);
@@ -554,6 +545,7 @@ useMemo(() => {
           ...item,
           estado: "new"
         }));
+        console.log('nuevaListaFusionada',nuevaListaFusionada);
         setListaFusionada(nuevaListaFusionada);
       } else {
         setListaFusionada([]);
@@ -572,15 +564,29 @@ useMemo(() => {
   }
 }, [materiaProfesor, materiaProfesores]);
 
+useEffect(() => {
+  console.log('listaFusionada actualizada', listaFusionada);
+}, [listaFusionada]);
+
+
+const eliminarMateria = (idMateria) => {
+  console.log('eliminarMateria ejecutada');
+  const updatedListaFusionada = listaFusionada.filter(
+    (item) => item.idMateria !== idMateria
+  );
+
+  console.log('updatedListaFusionada eliminarMateria', updatedListaFusionada);
+  setListaFusionada(updatedListaFusionada);
+};
+
+
 
 
     
     // Coloca este console.log fuera del useEffect para ver el valor actualizado de listaFusionada
-    console.log('listaFusionada', listaFusionada);
+    console.log('listaFusionada LISTAA', listaFusionada);
     
 
-
-    console.log('listaFusionada',listaFusionada);
 
 
     
