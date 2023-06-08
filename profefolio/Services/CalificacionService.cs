@@ -139,21 +139,39 @@ public class CalificacionService : ICalificacion
         return true;
     }
 
-    public Task<PlanillaDTO> Put(int idMateriaLista, CalificacionPutDto dto, string user)
+    public async Task<PlanillaDTO> Put(int idMateriaLista, CalificacionPutDto dto, string user)
     {
         var materiaListaQuery = _db.MateriaListas
             .Include(p => p.Profesor)
             .Include(m => m.Materia);
+        
         var materiaListaVerify = materiaListaQuery 
             .Where(ml => !ml.Deleted)
-            .Any(ml => ml.Profesor.Email.Equals(user));
+            .Any(ml => ml.Profesor.Email.Equals(user) && ml.Id == idMateriaLista);
 
 
         if (!materiaListaVerify)
         {
             throw new UnauthorizedAccessException();
         }
-        throw new NotImplementedException();
+
+        var ev = await _db.EventoAlumnos
+            .Include(e => e.Evaluacion)
+            .Where(ev => !ev.Deleted && ev.Id == dto.IdEvaluacion)
+            .FirstOrDefaultAsync();
+
+        if (ev == null)
+        {
+            throw new FileNotFoundException();
+        }
+
+        ev.PuntajeLogrado = dto.Puntaje;
+        ev.PorcentajeLogrado = (dto.Puntaje * 100) / ev.Evaluacion.PuntajeTotal;
+        
+        await _db.SaveChangesAsync();
+
+        var result = await this.GetAll(idMateriaLista, user);
+        return result;
     }
 
     private async Task CargarEvaluaciones(ClasesAlumnosColegio cac, string user)
