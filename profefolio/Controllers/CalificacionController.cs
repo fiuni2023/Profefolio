@@ -17,6 +17,7 @@ public class CalificacionController : ControllerBase
         _calificacionService = calificacionService;
     }
 
+    [HttpGet]
     [Route("{idMateriaLista:int}")]
     public async Task<ActionResult<EtapaDTO>> Get(int idMateriaLista)
     {
@@ -36,7 +37,34 @@ public class CalificacionController : ControllerBase
         catch (Exception e)
         {
             Console.WriteLine(e);
-            return BadRequest("Error al realizar la peticion, revisa el Log");
+            return BadRequest("Error al realizar la peticion");
+        }
+    }
+
+    [HttpPut]
+    [Route("{idMateriaLista}")]
+    public async Task<ActionResult<PlanillaDTO>> Put(int idMateriaLista, [FromBody] CalificacionPutDto dto)
+    {
+        try
+        {
+            var user = User.FindFirstValue(ClaimTypes.Name);
+            var result = await _calificacionService.Put(idMateriaLista, dto, user);
+            return Ok(result);
+        }
+        catch (UnauthorizedAccessException e)
+        {
+            Console.WriteLine(e);
+            return Unauthorized();
+        }
+        catch (FileNotFoundException e)
+        {
+            Console.WriteLine(e);
+            return NotFound();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return BadRequest("Error en la peticion");
         }
     }
 }
