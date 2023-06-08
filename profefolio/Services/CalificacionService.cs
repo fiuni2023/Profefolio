@@ -169,7 +169,7 @@ public class CalificacionService : ICalificacion
         ev.PorcentajeLogrado = (dto.Puntaje * 100) / ev.Evaluacion.PuntajeTotal;
         
         await _db.SaveChangesAsync();
-
+        await this.Verify(idMateriaLista, user);
         var result = await this.GetAll(idMateriaLista, user);
         return result;
     }
