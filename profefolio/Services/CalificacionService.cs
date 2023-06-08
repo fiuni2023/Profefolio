@@ -41,7 +41,7 @@ public class CalificacionService : ICalificacion
             .Include(m => m.Materia);
         var materiaListaVerify = materiaListaQuery 
             .Where(ml => !ml.Deleted)
-            .Any(ml => ml.Profesor.Email.Equals(user));
+            .Any(ml =>ml.Id == idMateriaLista && ml.Profesor.Email.Equals(user));
 
 
         if (!materiaListaVerify)
@@ -139,9 +139,20 @@ public class CalificacionService : ICalificacion
         return true;
     }
 
-    public Task<PlanillaDTO> Put(int idMAteriaLista, CalificacionPutDto dto, string user)
+    public Task<PlanillaDTO> Put(int idMateriaLista, CalificacionPutDto dto, string user)
     {
-        
+        var materiaListaQuery = _db.MateriaListas
+            .Include(p => p.Profesor)
+            .Include(m => m.Materia);
+        var materiaListaVerify = materiaListaQuery 
+            .Where(ml => !ml.Deleted)
+            .Any(ml => ml.Profesor.Email.Equals(user));
+
+
+        if (!materiaListaVerify)
+        {
+            throw new UnauthorizedAccessException();
+        }
         throw new NotImplementedException();
     }
 
