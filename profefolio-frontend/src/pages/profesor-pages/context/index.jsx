@@ -52,11 +52,16 @@ export const ModularProvider = ({ children }) => {
     const [ currClase, setCurrClase ] = useState("")
     const [ currMateria, setCurrMateria ] = useState("")
     const [ loading, setLoading ] = useState(true)
+    
+    //------flags for loading----
+    const [ loadingColegio, setLoadingColegio] = useState(false)
+    const [ loadingClase, setLoadingClase] = useState(false)
+    const [ loadingOthers, setLoadingOthers ] = useState(false)
+    
     //----------------------------------------------------Effect Hooks----------------------------------------------------
 
     useEffect(()=>{
         // const body = {opcion: 'card-clases', id: 1, anho: 2023}
-        
         ProfesorPagesService.GetColegios(token)
         .then(function(d){
             setColegios(d.data)
@@ -66,35 +71,39 @@ export const ModularProvider = ({ children }) => {
 
     useEffect(()=>{
         if(colegioId){
+            setLoadingColegio(true)
             let body = {opcion: 'card-clases', id: colegioId, anho: 2023}
             ProfesorPagesService.Get(body, token)
             .then(function(d){
                 setClases(d.data)
                 setLoading(false)
+                setLoadingColegio(false)
             })
         } else {
-            setLoading(false)
+            setLoadingColegio(false)
         }
     },[fetch_data, token, colegioId])
 
     useEffect(()=>{
         if(claseId){
+            setLoadingClase(true)
             let body = {opcion: 'card-materias', id: claseId, anho: 2023}
             ProfesorPagesService.Get(body, token)
             .then(d=>setMaterias(d.data))
             body = {opcion: 'lista-alumnos', id: claseId, anho: 2023}
             ProfesorPagesService.Get(body, token)
             .then(function (d){
-                setAlumnos(d.data)
                 setLoading(false)
+                setLoadingClase(false)
             })
         } else {
-            setLoading(false)
+            setLoadingClase(false)
         }
     },[fetch_data, token, claseId])
 
     useEffect(()=>{
         if(materiaId){
+            setLoadingOthers(true)
             let isMaterias, isAsistencia, isPuntajes = false; 
             let body = {opcion: 'cards-materia', id: materiaId, anho: 2023}
             ProfesorPagesService.Get(body, token)
@@ -118,7 +127,7 @@ export const ModularProvider = ({ children }) => {
                 setPuntajes(d.data)
             })
         } else {
-            setLoading(false);
+            setLoadingOthers(false)
         }
     },[fetch_data, token, materiaId])
 
@@ -128,18 +137,23 @@ export const ModularProvider = ({ children }) => {
         setLoading(true)
         //---las siguientes lineas deben ser borradas luego de implementar las paginas de anotacion, documento, asistencia y evaluaciones
         let aux = ["anotacion", "documento", "asistencia", "evaluaciones"]
-        if (aux.includes(page)){
-            setTimeout(function(){
-                setLoading(false)
-            }, 1000);
-        }
+        if (aux.includes(page)){setTimeout(function(){setLoading(false)}, 1000);}
         //----------------------------------
+        if(isBackButton)setTimeout(function(){setLoading(false)}, 500)
 
-        if(isBackButton)setTimeout(function(){setLoading(false)},500)
         if(page === "dashboard") return setCurrentPage(pages.dashboard)
-        if(page === "clase") return setCurrentPage(pages.clase)
-        if(page === "materia") return setCurrentPage(pages.materia)
-        if(page === "materiashow") return setCurrentPage(pages.materiashow)
+        if(page === "clase"){
+            if(!loadingColegio) setTimeout(function(){setLoading(false)}, 500) 
+            return setCurrentPage(pages.clase)
+        } 
+        if(page === "materia"){
+            if(!loadingClase) setTimeout(function(){setLoading(false)}, 500) 
+            return setCurrentPage(pages.materia)
+        } 
+        if(page === "materiashow"){
+            if(!loadingOthers) setTimeout(function(){setLoading(false)}, 500) 
+            return setCurrentPage(pages.materiashow)
+        } 
         if(page === "anotacion") return setCurrentPage(pages.anotacion)
         if(page === "documento") return setCurrentPage(pages.documentos)
         if(page === "asistencia") return setCurrentPage(pages.asistencia)
@@ -155,7 +169,10 @@ export const ModularProvider = ({ children }) => {
     }
 
     const handleSetLoading = (b1, b2, b3) => {
-        if (b1 && b2 && b3) setLoading(false)
+        if (b1 && b2 && b3) {
+            setLoadingOthers(false)
+            setLoading(false)
+        }
     }
 
     //----------------------------------------------------Return Values----------------------------------------------------
