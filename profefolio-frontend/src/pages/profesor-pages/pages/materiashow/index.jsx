@@ -8,12 +8,13 @@ import PromedioAsistencia from "../../components/PromedioAsistencia";
 import MateriaCards from "../../components/MateriaCards";
 import BackButton from "../../components/BackButton";
 import MateriaHorario from "../../components/MateriaHorario";
+import Spinner from "../../../../components/componentsStyles/SyledSpinner";
 
 const ProfesorMateriaShow = () => {
     const {getUserName} = useGeneralContext()
     const {setPage, dataSet} = useModularContext()
 
-    const { materiaShow, materiaName } = dataSet
+    const { materiaShow, materiaName, loading } = dataSet
 
     // const handleClickCards = () => {
     //     setPage("dashboard")
@@ -68,7 +69,10 @@ const ProfesorMateriaShow = () => {
                 <BackButton to="materia" />
                 <MateriaHorario />
             </div>
-            <ShowContainer data={componentes}/>
+            {loading ? 
+                    <Spinner height={"calc(100vh - 90px)"}></Spinner>
+                :   <ShowContainer data={componentes}/>
+            }
         </>
     )
 }
