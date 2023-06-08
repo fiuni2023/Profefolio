@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authorization;
 using profefolio.Models.DTOs.Evento;
 using profefolio.Models.Entities;
 using profefolio.Repository;
-using log4net;
 using System.Security.Claims;
 
 namespace profefolio.Controllers
@@ -13,7 +12,6 @@ namespace profefolio.Controllers
     [ApiController]
     public class EventoController : ControllerBase
     {
-        private static readonly ILog _log = LogManager.GetLogger(typeof(EventoController));
         private IEvento _eventoService;
         private IMateriaLista _materiaListaService;
         private IColegioProfesor _colegioProfesorService;
@@ -57,18 +55,22 @@ namespace profefolio.Controllers
 
             try
             {
-                var ml = await _materiaListaService.Filter(evento.ClaseId, evento.ColegioId, evento.ProfesorId,
-                    evento.MateriaId);
-                var p = new Evaluacion
+                if (evento.ProfesorId != null)
                 {
-                    Tipo = evento.Tipo,
-                    Etapa = evento.Etapa,
-                    CreatedBy = user,
-                    Deleted = false,
-                    MateriaListaId = ml.Id
-                };
+                    var ml = await _materiaListaService.Filter(evento.ClaseId, evento.ColegioId, evento.ProfesorId,
+                        evento.MateriaId);
+                    var p = new Evaluacion
+                    {
+                        Tipo = evento.Tipo,
+                        Etapa = evento.Etapa,
+                        CreatedBy = user,
+                        Deleted = false,
+                        MateriaListaId = ml.Id
+                    };
 
-                await _eventoService.Add(p, user);
+                    await _eventoService.Add(p, user);
+                }
+
                 await _eventoService.Save();
 
                 return Ok("Guardado");
