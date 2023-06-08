@@ -94,6 +94,7 @@ public class CalificacionService : ICalificacion
                         Doc = alumnoEvaluacion.ClasesAlumnosColegio?.ColegiosAlumnos.Persona.Documento,
                         PuntajeTotalLogrado = evaluacion.EvaluacionAlumnos.Sum(ev => ev.PuntajeLogrado),
                         PorcentajeTotalLogrado = evaluacion.EvaluacionAlumnos.Sum(ev => ev.PuntajeLogrado),
+                        EvaluacionId = alumnoEvaluacion.EvaluacionId,
                         Puntajes = evaluacion.EvaluacionAlumnos.Select(ev => new PuntajeDTO
                         {
                             PuntajeLogrado = ev.PuntajeLogrado,
