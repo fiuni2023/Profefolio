@@ -8,11 +8,11 @@ import { toast } from 'react-hot-toast';
 import { map } from "lodash"
 import { useClaseContext } from '../../context/ClaseContext';
 import ClassesService from '../../Helpers/ClassesHelper';
-
-
+import Spinner from '../../../../components/componentsStyles/SyledSpinner';
 
 const InfoClase = ({ idClase }) => {
     const { colegio, setColegio, getUserMail, getToken } = useGeneralContext();
+    const [loading, setLoading] = useState(true);
 
     const [disabledInputs, setDisabledInputs] = useState(false);
 
@@ -36,6 +36,7 @@ const InfoClase = ({ idClase }) => {
                 setTurno(result.data.turno)
                 setCiclo(result.data.idCiclo)
                 setAnho(result.data.anho)
+                setLoading(false);
             }).catch(() => {
                 toast.error(`Error al obtener sus datos, recarge la pagina`);
             })
@@ -215,7 +216,9 @@ const InfoClase = ({ idClase }) => {
     return <>
         <ContainerBlock>
             <STitle>Editar Datos de la Clase</STitle>
-            <Form form={form} />
+            {loading ? <Spinner height={'60px'} /> : 
+                <Form form={form} />
+            }
         </ContainerBlock>
     </>
 }
