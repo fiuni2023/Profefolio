@@ -115,7 +115,7 @@ namespace profefolio.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
+            /*migrationBuilder.DropForeignKey(
                 name: "FK_MateriaListas_AspNetUsers_ProfesorId",
                 table: "MateriaListas");
 
@@ -170,7 +170,7 @@ namespace profefolio.Migrations
                 table: "AspNetUsers",
                 keyColumn: "Id",
                 keyValue: "e4c8c216-d986-40c5-93e3-600f284a7958");
-
+            */
             migrationBuilder.AlterColumn<int>(
                 name: "ProfesorId",
                 table: "MateriaListas",
@@ -179,7 +179,7 @@ namespace profefolio.Migrations
                 oldClrType: typeof(string),
                 oldType: "text");
 
-            migrationBuilder.InsertData(
+            /*migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
@@ -207,6 +207,7 @@ namespace profefolio.Migrations
                     { "1854d1d8-9316-4a92-8bc3-9dea6ef2b0e3", "2c0cd7c5-bce7-476a-9a81-75f84a34c3e7" },
                     { "2b0d30b1-68ce-4afb-a626-95c05f670525", "36803c9c-f213-4dc9-83ef-b58681f99e62" }
                 });
+                */
         }
     }
 }
