@@ -15,11 +15,14 @@ import DayMonthPicker from './componentes/DayMonthPicker';
 // import {HiXCircle} from 'react-icons/hi'
 import { HiCheckCircle, HiXCircle } from 'react-icons/hi'
 import {sum} from 'lodash'
+import { useModularContext } from '../../context';
 
 // const Asistencia = ({ materia = { id: 1, nombre: "Matemáticas" } }) => {
 const Asistencia = React.memo(() => {
     const { getToken, cancan, verifyToken } = useGeneralContext()
     const [condFetch, setCondFetch] = useState(true)
+    const {dataSet} = useModularContext()
+    const { materiaName, currColegio, currClase } = dataSet
 
     // const [listaAsistencias, setListaAsistencias] = useState([])
     // const [listaNueva, setListaNueva] = useState([])
@@ -226,7 +229,7 @@ const Asistencia = React.memo(() => {
         <>
             <MainContainer>
                 {/* <StyleComponentBreadcrumb nombre={`Registro de Asistencia - ${materia?.nombre}`} /> */}
-                <StyleComponentBreadcrumb nombre={`Registro de Asistencia - ${nombre}`} />
+                <StyleComponentBreadcrumb nombre={`${currColegio} - ${currClase} - ${materiaName} - Registro de Asistencia`} />
                 <Container>
                     <SideSection>
                         <TableContainer>
