@@ -7,12 +7,13 @@ import { useGeneralContext } from "../../../../context/GeneralContext";
 import { useModularContext } from "../../context";
 import ShowContainer from "../../../clases/components/ShowContainer";
 import BackButton from "../../components/BackButton";
+import Spinner from "../../../../components/componentsStyles/SyledSpinner";
 
 const ProfesorClase = () => {
     const {getUserName} = useGeneralContext()
     const {setPage, dataSet, stateController} = useModularContext()
 
-    const {clases} = dataSet
+    const {clases, loading} = dataSet
     const {setClaseId} = stateController
 
     const handleClickCards = (id) => {
@@ -41,7 +42,10 @@ const ProfesorClase = () => {
     return (
         <>
             <BackButton to="dashboard" />
-            <ShowContainer data={componentes}/>
+            {loading ? 
+                    <Spinner height={"calc(100vh - 90px)"}></Spinner>
+                :   <ShowContainer data={componentes}/>
+            }
         </>
     )
 }
