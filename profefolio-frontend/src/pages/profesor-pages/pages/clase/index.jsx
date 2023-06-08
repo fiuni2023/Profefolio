@@ -3,20 +3,19 @@ import ContainerColegios from "../../components/ContainerColegios";
 import Horarios from "../../components/Horarios";
 import Eventos from "../../components/Eventos";
 import { SRow } from "../../../../components/componentsStyles/StyledDashComponent";
-import { useGeneralContext } from "../../../../context/GeneralContext";
 import { useModularContext } from "../../context";
 import ShowContainer from "../../../clases/components/ShowContainer";
 import BackButton from "../../components/BackButton";
 import Spinner from "../../../../components/componentsStyles/SyledSpinner";
 
 const ProfesorClase = () => {
-    const {getUserName} = useGeneralContext()
     const {setPage, dataSet, stateController} = useModularContext()
 
-    const {clases, loading} = dataSet
-    const {setClaseId} = stateController
+    const {clases, loading, currColegio} = dataSet
+    const {setClaseId, setCurrClase} = stateController
 
-    const handleClickCards = (id) => {
+    const handleClickCards = (id, nombre) => {
+        setCurrClase(nombre)
         setClaseId(id)
         setPage("materia")
     }
@@ -30,7 +29,7 @@ const ProfesorClase = () => {
     }, [clases])
 
     const componentes = {
-        title: `Bienvenido Prof. ${getUserName()} - Lista de Clases`,
+        title: `${currColegio} - Lista de Clases del colegio`,
         componentes: [
             <SRow>
                 <ContainerColegios onClick={handleClickCards} lista={clasesMapped}/>

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { SRow } from "../../../../components/componentsStyles/StyledDashComponent";
-import { useGeneralContext } from "../../../../context/GeneralContext";
 import { useModularContext } from "../../context";
 import ShowContainer from "../../../clases/components/ShowContainer";
 import BackButton from "../../components/BackButton";
@@ -10,10 +9,9 @@ import ContainerColegios from "../../components/ContainerColegios";
 import Spinner from "../../../../components/componentsStyles/SyledSpinner";
 
 const ProfesorMateria = () => {
-    const {getUserName} = useGeneralContext()
     const {setPage, dataSet, stateController} = useModularContext()
 
-    const {materias, loading} = dataSet
+    const {materias, loading, currColegio, currClase} = dataSet
     const {setMateriaId, setMateriaName} = stateController
 
     const handleClickCards = (id) => {
@@ -42,7 +40,7 @@ const ProfesorMateria = () => {
     }, [materias])
 
     const componentes = {
-        title: `Bienvenido Prof. ${getUserName()} - Lista de Materias`,
+        title: `${currColegio} - ${currClase} - Lista de Materias de la clase`,
         componentes: [
             <SRow>
                 <ContainerColegios onClick={handleClickCards} lista={materiasMapped}/>

@@ -7,6 +7,7 @@ import AnotacionCard from "./componentes/AnotacionCard";
 import { useGeneralContext } from "../../../../context/GeneralContext";
 import { useModularContext } from "../../context";
 import AnotationsService from "../../services/AnotationsService";
+import { useModularContext } from "../../context";
 import Spinner from "../../../../components/componentsStyles/SyledSpinner";
 
 const FlexDiv = styled.div`
@@ -28,7 +29,8 @@ const GapDiv = styled.div`
 `
 
 const Anotacion = () => {
-
+    const {dataSet} = useModularContext()
+    const { materiaName, currColegio, currClase } = dataSet
     
     const {getToken} = useGeneralContext()
     const {dataSet} = useModularContext()
@@ -55,7 +57,7 @@ const Anotacion = () => {
             <FlexDiv>
                 <BackButton to="materiashow"/>
                 <h5 className="m-0">
-                Anotaciones 
+                {currColegio} - {currClase} - {materiaName} - Anotaciones 
                 </h5>
             </FlexDiv>
         </Row>

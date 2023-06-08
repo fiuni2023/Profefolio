@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { SRow } from "../../../../components/componentsStyles/StyledDashComponent";
-import { useGeneralContext } from "../../../../context/GeneralContext";
 import { useModularContext } from "../../context";
 import ShowContainer from "../../../clases/components/ShowContainer";
 import PromedioPuntaje from "../../components/PromedioPuntaje";
@@ -11,10 +10,9 @@ import MateriaHorario from "../../components/MateriaHorario";
 import Spinner from "../../../../components/componentsStyles/SyledSpinner";
 
 const ProfesorMateriaShow = () => {
-    const {getUserName} = useGeneralContext()
     const {setPage, dataSet} = useModularContext()
 
-    const { materiaShow, materiaName, loading } = dataSet
+    const { materiaShow, materiaName, loading, currColegio, currClase } = dataSet
 
     // const handleClickCards = () => {
     //     setPage("dashboard")
@@ -54,7 +52,7 @@ const ProfesorMateriaShow = () => {
     }
 
     const componentes = {
-        title: `Bienvenido Prof. ${getUserName()} - ${materiaName}`,
+        title: `${currColegio} - ${currClase} - ${materiaName}`,
         componentes: [
             <SRow>
                 <MateriaCards materia={materiaMapped} configuration={config} />
