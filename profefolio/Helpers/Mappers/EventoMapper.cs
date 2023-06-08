@@ -32,15 +32,15 @@ public class EventoMapper : Profile
             .ForMember(dest => dest.ModifiedBy,
                 opt => opt.Ignore());
         
-        /*
-        CreateMap<Evento, EventoResultFullDTO>()
+        
+        CreateMap<Evaluacion, EventoResultFullDTO>()
             .ForMember(dest => dest.NombreMateria,
-                        opt => opt.MapFrom(src => src.Materias.Nombre_Materia))
+                        opt => opt.Ignore())
             .ForMember(dest => dest.NombreClase,
-                        opt => opt.MapFrom(src => src.Clases.Nombre))
+                        opt => opt.Ignore())
             .ForMember(dest => dest.NombreColegio,
-                        opt => opt.MapFrom(src => src.Colegios.Nombre));
-        */
+                        opt => opt.Ignore());
+        
         CreateMap<EventoResultFullDTO, Evaluacion>()
             .ForMember(dest => dest.Id,
                 opt => opt.Ignore())
