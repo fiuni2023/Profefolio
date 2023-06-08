@@ -56,6 +56,20 @@ namespace profefolio.Services
             throw new NotImplementedException();
         }
 
+        public async Task<List<AnotacionAlumno>> GetAllByAlumnoIdAndMateriaListaId(int idAlumno, int idMateriaLista, string profesorEmail)
+        {
+            var profesor = await _context.Users.FirstOrDefaultAsync(a => a.Deleted && profesorEmail.Equals(a.Email));
+            if(profesor == null){
+                throw new FileNotFoundException("Profesor invalido");
+            }
+            return await _context.AnotacionesAlumnos
+                .Where(a => !a.Deleted
+                        && a.AlumnoId == idAlumno
+                        && a.MateriaListaId == idMateriaLista
+                        && a.MateriaLista.ProfesorId == profesor.Id)
+                .ToListAsync();
+        }
+
         public async Task Save()
         {
             await _context.SaveChangesAsync();

@@ -8,6 +8,6 @@ namespace profefolio.Repository
 {
     public interface IAnotacionAlumno : IRepository<AnotacionAlumno>
     {
-        
+        Task<List<AnotacionAlumno>> GetAllByAlumnoIdAndMateriaListaId(int idAlumno, int idMateriaLista, string profesorEmail);
     }
 }
