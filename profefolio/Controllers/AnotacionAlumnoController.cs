@@ -28,7 +28,7 @@ namespace profefolio.Controllers
             _anotAlumnoService = anotAlumnoService;
         }
 
-        [HttpPost("/get")]
+        [HttpPost("get/")]
         [Authorize(Roles = "Profesor")]
         public async Task<ActionResult<List<AnotacionAlumnoResultDTO>>> GetAll([FromBody] AnotacionAlumnoGetDTO dto)
         {
@@ -38,7 +38,7 @@ namespace profefolio.Controllers
 
                 var result = await _anotAlumnoService.GetAllByAlumnoIdAndMateriaListaId(dto.AlumnoId, dto.MateriaListaId, userEmail);
 
-                return Ok(_mapper.Map<AnotacionAlumnoResultDTO>(result));
+                return Ok(_mapper.Map<List<AnotacionAlumnoResultDTO>>(result));
             }
             catch (FileNotFoundException e)
             {

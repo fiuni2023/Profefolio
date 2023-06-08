@@ -58,7 +58,7 @@ namespace profefolio.Services
 
         public async Task<List<AnotacionAlumno>> GetAllByAlumnoIdAndMateriaListaId(int idAlumno, int idMateriaLista, string profesorEmail)
         {
-            var profesor = await _context.Users.FirstOrDefaultAsync(a => a.Deleted && profesorEmail.Equals(a.Email));
+            var profesor = await _context.Users.FirstOrDefaultAsync(a => !a.Deleted && profesorEmail.Equals(a.Email));
             if(profesor == null){
                 throw new FileNotFoundException("Profesor invalido");
             }
