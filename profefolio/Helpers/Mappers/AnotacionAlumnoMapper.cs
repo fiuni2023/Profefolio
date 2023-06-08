@@ -21,6 +21,19 @@ namespace profefolio.Helpers.Mappers
                     opt => opt.MapFrom(v => v.Descripcion))
                 .ForMember(dest => dest.Fecha,
                     opt => opt.MapFrom(v => v.Fecha));
+        
+
+            CreateMap<AnotacionAlumnoCreateDTO, AnotacionAlumno>()
+                .ForMember(dest => dest.AlumnoId,
+                    opt => opt.MapFrom(v => v.AlumnoId))
+                .ForMember(dest => dest.MateriaListaId,
+                    opt => opt.MapFrom(v => v.MateriaListaId))
+                .ForMember(dest => dest.Fecha,
+                    opt => opt.MapFrom(v => v.Fecha))
+                .ForMember(dest => dest.Titulo,
+                    opt => opt.MapFrom(v => v.Titulo))
+                .ForMember(dest => dest.Descripcion,
+                    opt => opt.MapFrom(v => v.Descripcion));
         }
     }
 }
