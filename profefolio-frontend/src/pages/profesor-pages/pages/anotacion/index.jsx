@@ -30,11 +30,8 @@ const GapDiv = styled.div`
 
 const Anotacion = () => {
     const {dataSet} = useModularContext()
-    const { materiaName, currColegio, currClase } = dataSet
-    
+    const { materiaName, currColegio, currClase, loading } = dataSet
     const {getToken} = useGeneralContext()
-    const {dataSet} = useModularContext()
-    const { loading } = dataSet
     const token = getToken()
 
     const [lista, setLista] = useState([])
