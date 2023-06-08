@@ -7,7 +7,6 @@ import AnotacionCard from "./componentes/AnotacionCard";
 import { useGeneralContext } from "../../../../context/GeneralContext";
 import { useModularContext } from "../../context";
 import AnotationsService from "../../services/AnotationsService";
-import { useModularContext } from "../../context";
 import Spinner from "../../../../components/componentsStyles/SyledSpinner";
 
 const FlexDiv = styled.div`
