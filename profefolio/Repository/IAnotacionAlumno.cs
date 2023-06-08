@@ -9,5 +9,6 @@ namespace profefolio.Repository
     public interface IAnotacionAlumno : IRepository<AnotacionAlumno>
     {
         Task<List<AnotacionAlumno>> GetAllByAlumnoIdAndMateriaListaId(int idAlumno, int idMateriaLista, string profesorEmail);
+        Task<bool> ValidarDatos(int idMateriaLista, string emailProfesor, int idAlumno);
     }
 }

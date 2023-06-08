@@ -74,5 +74,25 @@ namespace profefolio.Services
         {
             await _context.SaveChangesAsync();
         }
+
+        public async Task<bool> ValidarDatos(int idMateriaLista, string emailProfesor, int idAlumno)
+        {
+            var materialista = await _context.MateriaListas
+                .Include(a => a.Profesor)
+                .Include(a => a.Clase)
+                .FirstOrDefaultAsync(a => !a.Deleted 
+                    && a.Id == idMateriaLista 
+                    && emailProfesor.Equals(a.Profesor.Email));
+            if(materialista == null){
+                return false;
+            }
+
+            var alumno = await _context.ClasesAlumnosColegios
+                .FirstOrDefaultAsync(a => !a.Deleted
+                    && a.Id == idAlumno
+                    && a.ClaseId == materialista.ClaseId);
+            
+            return alumno != null;
+        }
     }
 }
