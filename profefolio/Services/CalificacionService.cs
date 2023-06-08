@@ -139,6 +139,12 @@ public class CalificacionService : ICalificacion
         return true;
     }
 
+    public Task<PlanillaDTO> Put(int idMAteriaLista, CalificacionPutDto dto, string user)
+    {
+        
+        throw new NotImplementedException();
+    }
+
     private async Task CargarEvaluaciones(ClasesAlumnosColegio cac, string user)
     {
         var evaluaciones = _db.ClasesAlumnosColegios
