@@ -28,7 +28,7 @@ const ScrollTableCiclo = ({ studentsList, isLoading = true}) => {
                     </SHeader>}
                 {studentsList?.list &&
                     <SBody background={studentsList?.background ?? "gray"}>
-                        {isLoading ? <p>Cargando lista</p>
+                        {isLoading ? <p></p>
                         : studentsList.list.length === 0 ? <p>No hay listas para mostrar</p>
                         : <List>
                             {studentsList?.list?.map((student, index) => (
