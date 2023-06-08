@@ -1,13 +1,10 @@
-using AutoMapper;
-using Microsoft.AspNet.Identity;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using profefolio.Models.DTOs;
 using profefolio.Models.DTOs.Evento;
 using profefolio.Models.Entities;
 using profefolio.Repository;
 using log4net;
-using profefolio.Helpers;
 using System.Security.Claims;
 
 namespace profefolio.Controllers
@@ -17,31 +14,20 @@ namespace profefolio.Controllers
     public class EventoController : ControllerBase
     {
         private static readonly ILog _log = LogManager.GetLogger(typeof(EventoController));
-        private readonly IEvento _eventoService;
-        private static int _cantPorPag => Constantes.CANT_ITEMS_POR_PAGE;
-        private readonly IMapper _mapper;
-        private readonly IMateria _materiaService;
-        private readonly IClase _claseService;
-        private readonly IColegio _colegioService;
-        private readonly IColegioProfesor _colegioProfesorService;
-        private readonly IProfesor _profesorService;
+        private IEvento _eventoService;
+        private IMateriaLista _materiaListaService;
+        private IColegioProfesor _colegioProfesorService;
 
-        public EventoController(IEvento eventoService, IMapper mapper, IMateria materiaService,
-        IClase claseService, IColegio colegioService, IColegioProfesor colegioProfesorService,
-        IProfesor profesorService)
+        public EventoController(IEvento eventoService, IMateriaLista materiaListaService, IColegioProfesor colegioProfesorService)
         {
             _eventoService = eventoService;
-            _mapper = mapper;
-            _materiaService = materiaService;
-            _claseService = claseService;
-            _colegioService = colegioService;
+            _materiaListaService = materiaListaService;
             _colegioProfesorService = colegioProfesorService;
-            _profesorService = profesorService;
         }
         
         [HttpPost]
         [Authorize(Roles = "Profesor")]
-        public async Task<ActionResult<EventoResultDTO>> PostEvento([FromBody] EventoDTO evento)
+        public async Task<ActionResult> PostEvento([FromBody] EventoDTO evento)
         {
 
             if (!ModelState.IsValid)
@@ -68,21 +54,45 @@ namespace profefolio.Controllers
                 return BadRequest("No puede agregar eventos en otros colegios.");
             }
 
-           
+
             try
             {
-                var p = _mapper.Map<Evaluacion>(evento);
-                p.CreatedBy = user;
-                p.Deleted = false;
-                var saved = await _eventoService.Add(p, user);
+                var ml = await _materiaListaService.Filter(evento.ClaseId, evento.ColegioId, evento.ProfesorId,
+                    evento.MateriaId);
+                var p = new Evaluacion
+                {
+                    Tipo = evento.Tipo,
+                    Etapa = evento.Etapa,
+                    CreatedBy = user,
+                    Deleted = false,
+                    MateriaListaId = ml.Id
+                };
+
+                await _eventoService.Add(p, user);
                 await _eventoService.Save();
 
                 return Ok("Guardado");
             }
             catch (BadHttpRequestException e)
             {
-
+                Console.WriteLine(e);
                 return BadRequest($"Error al crear el evento");
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                Console.WriteLine(e);
+                return Unauthorized();
+            }
+            catch (FileNotFoundException e)
+            {
+                Console.WriteLine(e);
+                return NotFound();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return BadRequest("Error al realizar la consulta");
+
             }
 
         }
