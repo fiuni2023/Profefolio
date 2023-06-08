@@ -56,6 +56,7 @@ public class CalificacionService : ICalificacion
             .ThenInclude(ca => ca == null ? null : ca.ColegiosAlumnos)
             .ThenInclude(p =>p == null ? null : p.Persona)
             .Where(x => !x.Deleted && x.MateriaListaId == idMateriaLista)
+            .AsEnumerable()
             .GroupBy(x => x.Etapa)
             .Select(x => new
             {
