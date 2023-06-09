@@ -70,6 +70,56 @@ namespace profefolio.Services
                 .ToListAsync();
         }
 
+        public async Task<(string, string, string, string, List<string>, List<AnotacionAlumno>)> GetAllWithInfoByAlumnoIdAndMateriaListaId(int idAlumno, int idMateriaLista, string profesorEmail)
+        {
+            var profesor = await _context.Users
+                .Include(a => a.ListaMaterias)
+                .FirstOrDefaultAsync(a => !a.Deleted && profesorEmail.Equals(a.Email));
+            if(profesor == null){
+                throw new FileNotFoundException("Profesor invalido");
+            }
+
+            var materialista = profesor.ListaMaterias.FirstOrDefault(a => !a.Deleted && a.Id == idMateriaLista);
+            if(materialista == null){
+                throw new BadHttpRequestException("El Profesor no enseña en la materia");
+            }
+
+            var alumno = await _context.ClasesAlumnosColegios
+                .Include(a => a.ColegiosAlumnos)
+                .Include(a => a.ColegiosAlumnos.Persona)
+                .FirstOrDefaultAsync(a => !a.Deleted && a.Id == idAlumno && a.ClaseId == materialista.ClaseId);
+
+            if(alumno == null){
+                throw new FileNotFoundException("Alumno no disponible");
+            }
+
+            var materias = await _context.MateriaListas
+                .Where(a => !a.Deleted && a.ClaseId == materialista.ClaseId)
+                .Include(a => a.Materia)
+                .Select(a => a.Materia.Nombre_Materia)
+                .ToListAsync();
+
+            var claseModelo = await _context.Clases
+                        .Include(a => a.Ciclo)
+                        .FirstOrDefaultAsync(a => !a.Deleted && a.Id == materialista.ClaseId);
+            
+            if(claseModelo == null){
+                throw new FileNotFoundException("Clase no disponible");
+            }
+
+            var clase = claseModelo.Nombre;
+            var ciclo = claseModelo.Ciclo.Nombre;
+
+            var anotaciones =  await _context.AnotacionesAlumnos
+                .Where(a => !a.Deleted
+                        && a.AlumnoId == idAlumno
+                        && a.MateriaListaId == idMateriaLista
+                        && a.MateriaLista.ProfesorId == profesor.Id)
+                .ToListAsync();
+
+            return (alumno.ColegiosAlumnos.Persona.Nombre, alumno.ColegiosAlumnos.Persona.Apellido, clase, ciclo, materias, anotaciones);
+        }
+
         public async Task Save()
         {
             await _context.SaveChangesAsync();
