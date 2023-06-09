@@ -9,6 +9,15 @@ const H1 = styled.h1`
     color: #000000;
 `;
 
+const H2 = styled.h2`
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 1em;
+    text-align: left;
+    color: #000000;
+`
+
 const Text = styled.div`
     font-family: 'Poppins';
     font-style: normal;
@@ -20,4 +29,4 @@ const SHeader = styled(ModalHeader)`
     padding-bottom: 5px;
 `;
 
-export {H1, Text, SHeader};    
+export {H1, H2, Text, SHeader};    
