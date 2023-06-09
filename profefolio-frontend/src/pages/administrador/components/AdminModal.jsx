@@ -93,7 +93,7 @@ function ModalAdmin({
                         invalidText: "Ingrese un correo electónico válido",
                     },
                     {
-                        key: "direccion", label: "Dirrección",
+                        key: "direccion", label: "Dirección",
                         type: "text", placeholder: "Ingrese la dirección",
                         disabled: disabled,
                     },
