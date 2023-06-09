@@ -553,13 +553,24 @@ useMemo(() => {
 
       console.log('optionsMaterias 11',optionsMaterias);
 
-      const updatedOptions = optionsMaterias.filter(
-        (option) => option.value !== idMateria
-      );
+      const updatedOptions = optionsMaterias.map((option) => {
+        if (option.value === idMateria) {
+          return { ...option, status: 'not_used' };
+        }
+        return option;
+      });
+
+      console.log('updatedOptions 11',updatedOptions);
+
+      setOptionsMaterias(updatedOptions);
     };
-   
+
+
+    console.log('optionsMaterias 22',optionsMaterias);
     
-  
+   
+
+
     useEffect(() => {
       if (materiaProfesor) {
         const nuevaListaFusionada = materiaProfesor.map(item => ({
