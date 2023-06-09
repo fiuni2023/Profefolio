@@ -55,7 +55,20 @@ function ModalProfesor({
               if (typeof (error.response.data) === "string" ? true : false) {
                 toast.error(error.response.data)
               } else {
-                toast.error(error.response.data?.errors.Password ? error.response.data?.errors.Password[0] : error.response.data?.errors.Email[0])
+                let errArr = error.response.data?.errors
+                let single = ""
+                console.log(errArr)
+                if(errArr?.Apellido) single = errArr.Apellido[0]
+                if(errArr?.Password) single = errArr.Password[0]
+                if(errArr?.ConfirmPassword) single = errArr.ConfirmPassword[0]
+                if(errArr?.Documento) single = errArr.Genero[0]
+                if(errArr?.DocumentoTipo) single = errArr.DocumentoTipo[0]
+                if(errArr?.Email) single = errArr.Email[0]
+                if(errArr?.Genero) single = errArr.Genero[0]
+                if(errArr?.Nombre) single = errArr.Nombre[0]
+                if(errArr?.Telefono) single = errArr.Telefono[0]
+                if(errArr["$.nacimiento"]) single = "La fecha de nacimiento es requerida"
+                toast.error(single)
               }
             });
 
@@ -275,7 +288,7 @@ function ModalProfesor({
             {
                 key: "telefono", label: "Telefono",
                 type: "text", placeholder: "Ingrese su Telefono",
-                disabled: disabled,
+                disabled: disabled, required: true,
                 invalidText: "Ingrese un telefono válido",
             },
             {
