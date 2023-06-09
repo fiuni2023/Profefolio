@@ -1,2 +1,3 @@
-const APILINK = 'https://profefolio-develop.azurewebsites.net'
+const APILINK = 'https://profefolio-test.azurewebsites.net'
+
 export default APILINK
