@@ -9,7 +9,7 @@ import {ButtonContainer, ModalContent, ModalContainer} from "../components/style
 const ModalMensajeProfesor= ({ profesor, isOpen, onAdd, onCancel, onSuccess}) => {
   const { getColegioId, getToken } = useGeneralContext()
   const colegioId = getColegioId()
-  console.log(profesor);
+
   const addProfesor = () => {
     let newProfesor = { "colegioId": colegioId, "profesorId": profesor.id }
     toast.promise(ProfeHelper.addProfesorToSchool(newProfesor, getToken()), {
