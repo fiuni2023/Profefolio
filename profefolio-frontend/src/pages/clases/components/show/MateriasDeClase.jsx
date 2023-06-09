@@ -392,11 +392,18 @@ useMemo(() => {
   const handleCrearMateriaProfesor = async () => {
     const idProfesoresArray = profesoresSeleccionados;
     const idProfesoresArrayBorrado = profesoresSeleccionadosBorrado;  
+
+
+   
+   
+
+
     const body = {
       "idClase": getClaseSelectedId(),
       "materias": []
     };
   
+
     idProfesoresArray.forEach((idProfesor) => {
       const profesor = {
         "idProfesor": idProfesor,
@@ -404,7 +411,7 @@ useMemo(() => {
       };
   
       const materia = {
-        "idMateria": idMateria,
+        "idMateria": idMateria ? idMateria : idMateriaSeleccionada,
         "profesores": [profesor]
       };
   
@@ -481,8 +488,6 @@ useMemo(() => {
     }, [getClaseSelectedId, getToken])
 
 
-    console.log('materiaProfesor',materiaProfesor)
-
     const addMateriaToList = (materia,idMateria) => {
         const newMateria = {
             idMateria,
@@ -492,8 +497,6 @@ useMemo(() => {
         };
         setMateriaProfesor((materiaProfesor) => [...materiaProfesor, newMateria]);
 
-        console.log('materiaProfesor adentro',materiaProfesor)
-
     };
 
     const handleSelectOptionMateria = (e) => {
@@ -501,7 +504,6 @@ useMemo(() => {
       setOptionSelected(e.target.value);
       setIdMateria(e.target.value);      
 
-      console.log('e.target.value',e.target.value)
       const index = optionsMaterias.findIndex(a => a.value === parseInt(e.target.value))
       addMateriaToList(optionsMaterias[index].label,parseInt(e.target.value));
 
@@ -542,16 +544,13 @@ useMemo(() => {
     const [listaFusionada, setListaFusionada] = useState([]);
 
     const eliminarMateria = (idMateria) => {
-      console.log('eliminarMateria ejecutada');
 
       setListaFusionada((before)=>{return before.filter(
         (item) => item.idMateria !== idMateria
       );})
       
       setMateriaProfesor([]);
-      console.log('listaFusionada eliminada',listaFusionada);
 
-      console.log('optionsMaterias 11',optionsMaterias);
 
       const updatedOptions = optionsMaterias.map((option) => {
         if (option.value === idMateria) {
@@ -560,24 +559,17 @@ useMemo(() => {
         return option;
       });
 
-      console.log('updatedOptions 11',updatedOptions);
 
       setOptionsMaterias(updatedOptions);
     };
 
-
-    console.log('optionsMaterias 22',optionsMaterias);
-    
-   
-
-
+  
     useEffect(() => {
       if (materiaProfesor) {
         const nuevaListaFusionada = materiaProfesor.map(item => ({
           ...item,
           estado: "new"
         }));
-        console.log('nuevaListaFusionada',nuevaListaFusionada);
         setListaFusionada(nuevaListaFusionada);
       } else {
         setListaFusionada([]);
@@ -596,41 +588,6 @@ useMemo(() => {
   }
 }, [materiaProfesor, materiaProfesores]);
 
-useEffect(() => {
-  console.log('listaFusionada actualizada', listaFusionada);
-}, [listaFusionada]);
-
-
-
-
-
-
-
-    
-    // Coloca este console.log fuera del useEffect para ver el valor actualizado de listaFusionada
-    console.log('listaFusionada LISTAA', listaFusionada);
-    
-
-
-
-    
-     /* if (materiaProfesores && materiaProfesores.data && Array.isArray(materiaProfesores.data.materiaProfesores)) {
-        const nuevosElementos = materiaProfesores.data.materiaProfesores.map(item => ({
-          ...item,
-          estado: "n"
-        }));
-        listaFusionada = [...listaFusionada, ...nuevosElementos];
-      }
-    */
-    
-
-
-
-
-
-
-
-
 
 
     const [profesoresSeleccionadosBorrado, setProfesoresSeleccionadosBorrado] = useState([]);
@@ -647,6 +604,8 @@ useEffect(() => {
 
     const guardarIdMateriaSeleccionado=(idMateriaSeleccionada)=> {
         setIdMateriaSeleccionada(idMateriaSeleccionada);
+
+        console.log('idMateriaSeleccionada',idMateriaSeleccionada);
     }
 
   
