@@ -112,7 +112,7 @@ function ModalAdmin({
                     {
                         key: "telefono", label: "Telefono",
                         type: "text", placeholder: "Ingrese su Telefono",
-                        disabled: disabled, 
+                        disabled: disabled, required: true,
                         invalidText: "Ingrese un telefono válido",
                     },
                     {

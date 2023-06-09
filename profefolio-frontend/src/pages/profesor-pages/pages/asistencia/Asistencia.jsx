@@ -4,22 +4,29 @@ import { AiOutlinePlus } from 'react-icons/ai'
 import { AddButton, MainContainer, TableContainer } from '../../../alumnos/styles/Styles'
 import Tabla from '../../../../components/Tabla';
 import { toast } from "react-hot-toast";
-import StyleComponentBreadcrumb from '../../../../components/StyleComponentBreadcrumb';
 import APILINK from '../../../../components/link';
 import axios from 'axios';
 import { useFetchEffect } from '../../../../components/utils/useFetchEffect';
 import { Container, Resumen, SideSection } from './componentes/StyledResumenAsistencia';
-import { useNavigate, useParams } from 'react-router-dom';
-import { useEffect } from 'react';
 import DayMonthPicker from './componentes/DayMonthPicker';
-// import {HiXCircle} from 'react-icons/hi'
-import { HiCheckCircle, HiXCircle } from 'react-icons/hi'
+import { HiCheckCircle } from 'react-icons/hi'
 import {sum} from 'lodash'
+import { Row } from 'react-bootstrap';
+import BackButton from '../../components/BackButton';
+import styled from 'styled-components';
+import { useModularContext } from '../../context';
+import { RxCross1 } from 'react-icons/rx';
+
+const FlexDiv = styled.div`
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 10px;
+`
 
 // const Asistencia = ({ materia = { id: 1, nombre: "Matemáticas" } }) => {
 const Asistencia = React.memo(() => {
-    const { getToken, cancan, verifyToken } = useGeneralContext()
-    const [condFetch, setCondFetch] = useState(true)
+    const { getToken } = useGeneralContext()
 
     // const [listaAsistencias, setListaAsistencias] = useState([])
     // const [listaNueva, setListaNueva] = useState([])
@@ -32,24 +39,16 @@ const Asistencia = React.memo(() => {
     const [cantAlumnos, setCantAlumnos] = useState(0)
     const [cantClases, setCantClases] = useState(0)
     const [porcentajes, setPorcentajes] = useState([])
-    const { idMateriaLista } = useParams()
-    const nombre = "Matemáticas"
+    const {stateController} = useModularContext()
+    const {materiaId} = stateController
+    // const { idMateriaLista } = useParams()
+    // const nombre = "Matemáticas"
 
-    const nav = useNavigate()
-
-    useEffect(() => {
-        verifyToken()
-        if (!cancan("Profesor")) {
-            nav('/')
-        } else {
-            setCondFetch(true)
-        }
-    }, [cancan, verifyToken, nav])
     const { doFetch, loading, error } = useFetchEffect(
         () => {
             // return axios.get(`${APILINK}/api/Asistencia/${materia?.id}`, {
             let body = {
-                "idMateriaLista": idMateriaLista,
+                "idMateriaLista": materiaId,
                 "mes": 0
             }
             return axios.post(`${APILINK}/api/Asistencia`, body, {
@@ -61,9 +60,9 @@ const Asistencia = React.memo(() => {
         },
         [],
         {
-            condition: condFetch,
+            condition: true,
             handleSuccess: (dataAsistencia) => {
-                console.log(dataAsistencia)
+                setPorcentajes((before)=> {return []})
                 setCantAlumnos(dataAsistencia.length)
                 setCantClases(dataAsistencia[0]?.asistencias?.length)
                 // setListaAsistencias(dataAsistencia)
@@ -80,7 +79,7 @@ const Asistencia = React.memo(() => {
                         { titulo: "%" }
                     ],
                     filas: dataAsistencia.map((dato) => {
-                        setPorcentajes([dato.porcentajePresentes, ...porcentajes])
+                        setPorcentajes((before)=>{return [...before, dato.porcentajePresentes]})
                         return {
                             fila: dato,
                             datos: [
@@ -133,14 +132,13 @@ const Asistencia = React.memo(() => {
             let config = {
                 method: 'put',
                 maxBodyLength: Infinity,
-                url: `${APILINK}/api/Asistencia/${idMateriaLista}`,
+                url: `${APILINK}/api/Asistencia/${materiaId}`,
                 headers: {
                     'Authorization': `Bearer ${getToken()}`,
                     'Content-Type': 'application/json'
                 },
                 data: data
             };
-            console.log(data)
             axios(config)
                 .then(function (response) {
                     if (response.status >= 400) {
@@ -148,7 +146,6 @@ const Asistencia = React.memo(() => {
                     }
                     else if (response.status >= 200) {
                         toast.success("Guardado correctamente")
-                        console.log(response)
                         setAdding(false)
                         doFetch()
                     }
@@ -157,7 +154,7 @@ const Asistencia = React.memo(() => {
                     if (!!typeof (error.response?.data) === "string") {
                         toast.error(error.response.data)
                     } else {
-                        console.log(error)
+                        toast.error("Error al agregar la asistencia, revise la fecha a agregar")
                     }
                 });
         }
@@ -174,7 +171,6 @@ const Asistencia = React.memo(() => {
         setNuevaAsistencia((prevAsistencia) => {
             const nuevaAsistencia = [...prevAsistencia];
             nuevaAsistencia[indice].estado = nuevoValor;
-            console.log(nuevaAsistencia)
             return nuevaAsistencia;
         });
     };
@@ -192,8 +188,6 @@ const Asistencia = React.memo(() => {
     }
     const addDate = () => {
         if (!adding) {
-            console.log(tablaAsistencia)
-            console.log(columnHandler)
 
             let prevTitulos = tablaAsistencia.titulos?.length > 1 ? tablaAsistencia.titulos.slice(0, -1) : tablaAsistencia.titulos
             const nuevosTitulos = [
@@ -216,9 +210,13 @@ const Asistencia = React.memo(() => {
         }
         setAdding(prevState => !prevState)
     }
+
+    const getPromedios = () => {
+        return (sum(porcentajes)/(porcentajes?.length ? porcentajes.length : 1)).toFixed(2)
+    }
+
     const columnHandler = [
         { key: 'datePicker', componente: <DayMonthPicker /> },
-        { key: 'xbt', componente: <HiXCircle size={18} color='red' />, action: addDate },
         { key: 'okbt', componente: <HiCheckCircle size={18} color='green' />, action: handleSubmitAddAsistencia }
     ]
 
@@ -226,13 +224,24 @@ const Asistencia = React.memo(() => {
         <>
             <MainContainer>
                 {/* <StyleComponentBreadcrumb nombre={`Registro de Asistencia - ${materia?.nombre}`} /> */}
-                <StyleComponentBreadcrumb nombre={`Registro de Asistencia - ${nombre}`} />
+                <Row>
+                    <FlexDiv>
+                        <BackButton to="materiashow"/>
+                        <h5 className="m-0">
+                            Asistencia 
+                        </h5>
+                    </FlexDiv>
+                </Row>
                 <Container>
                     <SideSection>
                         <TableContainer>
                             <Tabla datosTabla={tablaAsistencia} />
                             <AddButton onClick={addDate}>
-                                <AiOutlinePlus size={"35px"} />
+                                {!adding?
+                                    <AiOutlinePlus size={"35px"} />
+                                    :
+                                    <RxCross1 size={"30px"}/>
+                                }
                             </AddButton>
                         </TableContainer >
                     </SideSection>
@@ -241,7 +250,7 @@ const Asistencia = React.memo(() => {
                             <Resumen>
                                 <p>{cantAlumnos} alumnos</p>
                                 <p>{cantClases} {cantClases < 1 ? "Aún no hay clases" : cantClases > 1 ? "clases" : "clase"}</p>
-                                <p>{(sum(porcentajes)/(porcentajes?.length ? porcentajes.length : 1)).toFixed(2)} promedio de asistencias</p>
+                                <p>{getPromedios()} promedio de asistencias</p>
                             </Resumen>
                         }
                     </SideSection>
