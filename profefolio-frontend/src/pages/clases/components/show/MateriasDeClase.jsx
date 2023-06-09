@@ -481,6 +481,7 @@ useMemo(() => {
     }, [getClaseSelectedId, getToken])
 
 
+    console.log('materiaProfesor',materiaProfesor)
 
     const addMateriaToList = (materia,idMateria) => {
         const newMateria = {
@@ -491,12 +492,16 @@ useMemo(() => {
         };
         setMateriaProfesor((materiaProfesor) => [...materiaProfesor, newMateria]);
 
+        console.log('materiaProfesor adentro',materiaProfesor)
+
     };
 
     const handleSelectOptionMateria = (e) => {
       e.preventDefault();
       setOptionSelected(e.target.value);
       setIdMateria(e.target.value);      
+
+      console.log('e.target.value',e.target.value)
       const index = optionsMaterias.findIndex(a => a.value === parseInt(e.target.value))
       addMateriaToList(optionsMaterias[index].label,parseInt(e.target.value));
 
@@ -534,11 +539,27 @@ useMemo(() => {
       setFiltrarMateria(updatedList);
     };*/
 
-   
-    
-
     const [listaFusionada, setListaFusionada] = useState([]);
 
+    const eliminarMateria = (idMateria) => {
+      console.log('eliminarMateria ejecutada');
+
+      setListaFusionada((before)=>{return before.filter(
+        (item) => item.idMateria !== idMateria
+      );})
+      
+      setMateriaProfesor([]);
+      console.log('listaFusionada eliminada',listaFusionada);
+
+      console.log('optionsMaterias 11',optionsMaterias);
+
+      const updatedOptions = optionsMaterias.filter(
+        (option) => option.value !== idMateria
+      );
+    };
+   
+    
+  
     useEffect(() => {
       if (materiaProfesor) {
         const nuevaListaFusionada = materiaProfesor.map(item => ({
@@ -569,15 +590,7 @@ useEffect(() => {
 }, [listaFusionada]);
 
 
-const eliminarMateria = (idMateria) => {
-  console.log('eliminarMateria ejecutada');
-  const updatedListaFusionada = listaFusionada.filter(
-    (item) => item.idMateria !== idMateria
-  );
 
-  console.log('updatedListaFusionada eliminarMateria', updatedListaFusionada);
-  setListaFusionada(updatedListaFusionada);
-};
 
 
 
@@ -660,7 +673,6 @@ const eliminarMateria = (idMateria) => {
                                     guardarProfesorSeleccionado={guardarProfesorSeleccionado}
                                     guardarProfesorSeleccionadoParaBorrar={guardarProfesorSeleccionadoParaBorrar}
                                     guardarIdMateriaSeleccionado={guardarIdMateriaSeleccionado}
-
                                     onClick={(event) => {
                                         console.log(
                                           `${materia.idMateria} materia seleccionado`,
