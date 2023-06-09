@@ -3,6 +3,8 @@ import { SBody, SCard, SHeader } from '../../../../components/componentsStyles/S
 import { Col, Row } from 'react-bootstrap'
 import styled from 'styled-components';
 import EventosTabla from '../EventosTabla';
+import { useModularContext } from '../../context';
+import CreateEvent from './CreateEvent';
 
 const EventTagDiv = styled.div`
     display: flex;
@@ -63,6 +65,9 @@ const Eventos = ({
             color: "#F6E7A7"
         }
     ]
+    
+    const {stateController} = useModularContext();
+    const {currPageName} = stateController;
     return <>
         <SCard>
             <SHeader>Eventos</SHeader>
@@ -79,6 +84,9 @@ const Eventos = ({
                             })}
                         </GridDiv>
                     </Row>
+                    {currPageName && currPageName === "materia" && 
+                            <CreateEvent></CreateEvent>
+                        }
             </SBody>
         </SCard>
     </>
