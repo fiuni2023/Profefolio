@@ -81,6 +81,9 @@ function Form({ form }) {
             event.stopPropagation();
         }
         form?.onSubmit?.action(event);
+        if (form?.preventDefault){
+            event.preventDefault();
+        }
         setValidated(true);
 
     };
@@ -169,7 +172,10 @@ function Form({ form }) {
                                         </Row>
                                     }
 
-                                    {input?.text && <RForm.Text key="additional" muted>{input.text}</RForm.Text>}
+                                    {input?.text && <>
+                                        <RForm.Text key="additional" muted>{input.text}</RForm.Text>
+                                        
+                                    </>}
                                 </SGroup>
                             </Col>
                         )
