@@ -51,6 +51,8 @@ export const ModularProvider = ({ children }) => {
     const [ currColegio, setCurrColegio ] = useState("")
     const [ currClase, setCurrClase ] = useState("")
     const [ currMateria, setCurrMateria ] = useState("")
+    const [ currPageName, setCurrPageName ] = useState("dashboard")
+    const [ materiasSelect, setMateriasSelect ] = useState([])
     //----------------------------------------------------Effect Hooks----------------------------------------------------
 
     useEffect(()=>{
@@ -92,9 +94,24 @@ export const ModularProvider = ({ children }) => {
         }
     },[fetch_data, token, materiaId])
 
+    useEffect(()=>{
+        let newSelect = []
+        materias.forEach(element => {
+            if (element.id && element.nombre){
+                let dato = {
+                     value: element.id,
+                     text: element.nombre
+                }
+                newSelect.push(dato)
+            }
+        })
+        setMateriasSelect(newSelect)
+    },[materias])
+
     //----------------------------------------------------Functions----------------------------------------------------
 
     const setPage = (page = "") =>{
+        setCurrPageName(page)
         if(page === "dashboard") return setCurrentPage(pages.dashboard)
         if(page === "clase") return setCurrentPage(pages.clase)
         if(page === "materia") return setCurrentPage(pages.materia)
@@ -124,7 +141,8 @@ export const ModularProvider = ({ children }) => {
         setMateriaName, 
         setCurrColegio, 
         setCurrClase, 
-        setCurrMateria
+        setCurrMateria, 
+        currPageName
     }
 
     const dataSet = {
@@ -138,7 +156,8 @@ export const ModularProvider = ({ children }) => {
         alumnos,
         currColegio, 
         currClase,
-        currMateria
+        currMateria,
+        materiasSelect
     }
 
 
