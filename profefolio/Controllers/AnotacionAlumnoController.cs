@@ -53,17 +53,58 @@ namespace profefolio.Controllers
             }
         }
 
+        [HttpPost("getWithInfo/")]
+        [Authorize(Roles = "Profesor")]
+        public async Task<ActionResult<AnotacionesWithInfoAlumnoResultDTO>> GetAllWithInfo([FromBody] AnotacionAlumnoGetDTO dto)
+        {
+            try
+            {
+                var userEmail = User.FindFirstValue(ClaimTypes.Name);
+
+                var (nombre, apellido, clase, ciclo, materias, anotaciones) = await _anotAlumnoService.GetAllWithInfoByAlumnoIdAndMateriaListaId(dto.AlumnoId, dto.MateriaListaId, userEmail);
+
+                var result = new AnotacionesWithInfoAlumnoResultDTO()
+                {
+                    Nombre = nombre,
+                    Apellido = apellido,
+                    Clase = clase,
+                    Ciclo = ciclo,
+                    Materias = materias,
+                    Anotaciones = _mapper.Map<List<AnotacionAlumnoResultDTO>>(anotaciones)
+                };
+                return Ok(result);
+            }
+            catch (FileNotFoundException e)
+            {
+                Console.WriteLine($"{e}");
+                return Unauthorized();
+            }
+            catch (BadHttpRequestException e)
+            {
+                Console.WriteLine($"{e}");
+                return BadRequest(e.Message);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"{e}");
+                return BadRequest("Error durante la obtencion de los datos");
+
+            }
+        }
+
 
         [HttpPost]
         [Authorize(Roles = "Profesor")]
-        public async Task<IActionResult> Post([FromBody]AnotacionAlumnoCreateDTO dto)
+        public async Task<IActionResult> Post([FromBody] AnotacionAlumnoCreateDTO dto)
         {
-            try{
+            try
+            {
                 // validar que el profesor sea profesor de la materia lista
                 // valdiar que el alumno sea de la clase de la materia
                 var userEmail = User.FindFirstValue(ClaimTypes.Name);
 
-                if(await _anotAlumnoService.ValidarDatos(dto.MateriaListaId, userEmail, dto.AlumnoId)){
+                if (await _anotAlumnoService.ValidarDatos(dto.MateriaListaId, userEmail, dto.AlumnoId))
+                {
                     var model = _mapper.Map<AnotacionAlumno>(dto);
                     model.Created = DateTime.Now;
                     model.CreatedBy = userEmail;
@@ -76,7 +117,9 @@ namespace profefolio.Controllers
 
                 return BadRequest("Datos incorrectos");
 
-            }catch(Exception e){
+            }
+            catch (Exception e)
+            {
                 Console.WriteLine($"{e}");
                 return BadRequest("Error al tratar de guardar");
             }
