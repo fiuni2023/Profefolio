@@ -11,16 +11,17 @@ const ProfesorPage = () => {
     const {getUserName} = useGeneralContext()
     const {setPage, dataSet, stateController} = useModularContext()
 
-    const { setColegioId } = stateController 
+    const { setColegioId, setCurrColegio } = stateController 
     const { colegios } = dataSet
 
-    const handleClickCards = (id) => {
+    const handleClickCards = (id, nombre) => {
+        setCurrColegio(nombre); 
         setColegioId(id)
         setPage("clase")
     }
 
     const componentes = {
-        title: `Bienvenido Prof. ${getUserName()} Dashboard`,
+        title: `Bienvenido Prof. ${getUserName()} `,
         componentes: [
             <SRow>
                 <ContainerColegios onClick={handleClickCards} lista={colegios}/>

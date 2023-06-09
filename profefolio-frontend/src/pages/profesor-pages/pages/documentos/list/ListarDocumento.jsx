@@ -23,7 +23,7 @@ const FlexDiv = styled.div`
 
 function ListarDocumentos() {
   
-  const {stateController} = useModularContext()
+  const {stateController, dataSet} = useModularContext()
   const {materiaId} = stateController
 
   const [selectData, setSelectedData] = useState(null)
@@ -32,6 +32,7 @@ function ListarDocumentos() {
   const token = getToken()
 
   const [fetch_data, setFetchData] = useState([])
+  const { materiaName, currColegio, currClase } = dataSet
 
   const nav = useNavigate()
 
@@ -75,7 +76,7 @@ function ListarDocumentos() {
           <FlexDiv>
             <BackButton to="materiashow" />
             <h5 className="m-0">
-              Documentos
+            {currColegio} - {currClase} - {materiaName} - Documentos
             </h5>
           </FlexDiv>
         </Row>

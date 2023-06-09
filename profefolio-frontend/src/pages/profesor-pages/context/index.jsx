@@ -38,7 +38,7 @@ export const ModularProvider = ({ children }) => {
     const [ fetch_data, setFetchData ] = useState(false)
     const [ currentPage, setCurrentPage ] = useState(pages.dashboard)
     const [ colegios, setColegios ] = useState([])
-    const [colegioId, setColegioId] = useState(0) 
+    const [ colegioId, setColegioId] = useState(0) 
     const [ clases, setClases ] = useState([])
     const [ claseId, setClaseId] = useState(0)
     const [ materias, setMaterias ] = useState([])
@@ -48,6 +48,9 @@ export const ModularProvider = ({ children }) => {
     const [ asistencias, setAsistencias ] = useState([])
     const [ puntajes, setPuntajes ] = useState([])
     const [ alumnos, setAlumnos ] = useState([])
+    const [ currColegio, setCurrColegio ] = useState("")
+    const [ currClase, setCurrClase ] = useState("")
+    const [ currMateria, setCurrMateria ] = useState("")
     //----------------------------------------------------Effect Hooks----------------------------------------------------
 
     useEffect(()=>{
@@ -118,7 +121,10 @@ export const ModularProvider = ({ children }) => {
         setClaseId,
         materiaId, 
         setMateriaId,
-        setMateriaName
+        setMateriaName, 
+        setCurrColegio, 
+        setCurrClase, 
+        setCurrMateria
     }
 
     const dataSet = {
@@ -129,7 +135,10 @@ export const ModularProvider = ({ children }) => {
         materiaName,
         asistencias,
         puntajes,
-        alumnos
+        alumnos,
+        currColegio, 
+        currClase,
+        currMateria
     }
 
 

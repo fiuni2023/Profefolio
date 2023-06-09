@@ -28,7 +28,7 @@ const Navbar = ({
                     </SMainLogo>
                 </NavLeft>
                 <NavCenter>
-                    <SSchoolName>{cancan("Administrador de Colegio")? getColegioName():"Master"}</SSchoolName>
+                    <SSchoolName>{cancan("Administrador de Colegio") ? getColegioName() : ""}</SSchoolName>
                 </NavCenter>
                 <NavRight>
                     {!showDD && <SMainUser
