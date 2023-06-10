@@ -5,5 +5,5 @@ public class PlanillaDTO
 {
     public int MateriaId { get; set; }
     public string? Materia { get; set; }
-    private List<AlumnoWithPuntajesDTO>? Alumno { get; set; }
+    public List<AlumnoWithPuntajesDTO>? Alumnos { get; set; }
 }
