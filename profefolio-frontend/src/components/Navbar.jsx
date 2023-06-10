@@ -4,6 +4,7 @@ import { BsJustify } from 'react-icons/bs'
 import { FaUserCircle } from 'react-icons/fa'
 import { NavCenter, NavLeft, NavRight, SButtonforBar, SIcon, SMainLogo, SMainName, SMainUser, SNavBar, SSchoolName, SUserName, SmainLogoImg, navbarLogoImage } from "./componentsStyles/StyledNavBar";
 import { useNavigate } from "react-router-dom";
+import { useModularContext } from "../pages/profesor-pages/context";
 
 const Navbar = ({
     showSB = false, 
@@ -13,22 +14,29 @@ const Navbar = ({
 }) => {
     const { getUserName, getColegioName, cancan } = useGeneralContext()
     const navigate = useNavigate();
+    const isProfesor = cancan("Profesor")
     
+    const handleClick = () =>{
+        navigate("/")
+    }
+
     return(
         <>
             <SNavBar>
                 <NavLeft>
+                    {!isProfesor &&
                     <SButtonforBar onClick={()=>{
                         setShowDD(false)
                         setShowSB(!showSB)}} >
                             <BsJustify />
                     </SButtonforBar>
-                    <SMainLogo onClick={() => navigate("/")}>
+                    }
+                    <SMainLogo clickable={!isProfesor} onClick={handleClick}>
                         <SmainLogoImg src={navbarLogoImage} alt="Logo" />
                     </SMainLogo>
                 </NavLeft>
                 <NavCenter>
-                    <SSchoolName>{cancan("Administrador de Colegio")? getColegioName():"Master"}</SSchoolName>
+                    <SSchoolName>{cancan("Administrador de Colegio") ? getColegioName() : ""}</SSchoolName>
                 </NavCenter>
                 <NavRight>
                     {!showDD && <SMainUser

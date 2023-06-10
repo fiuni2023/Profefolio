@@ -5,7 +5,9 @@ import { Row, Col } from "react-bootstrap";
 import AnotacionShow from "./componentes/AnotacionShow";
 import AnotacionCard from "./componentes/AnotacionCard";
 import { useGeneralContext } from "../../../../context/GeneralContext";
+import { useModularContext } from "../../context";
 import AnotationsService from "../../services/AnotationsService";
+import Spinner from "../../../../components/componentsStyles/SyledSpinner";
 
 const FlexDiv = styled.div`
     display: flex;
@@ -26,8 +28,8 @@ const GapDiv = styled.div`
 `
 
 const Anotacion = () => {
-
-    
+    const {dataSet} = useModularContext()
+    const { materiaName, currColegio, currClase, loading } = dataSet
     const {getToken} = useGeneralContext()
     const token = getToken()
 
@@ -51,11 +53,12 @@ const Anotacion = () => {
             <FlexDiv>
                 <BackButton to="materiashow"/>
                 <h5 className="m-0">
-                Anotaciones 
+                {currColegio} - {currClase} - {materiaName} - Anotaciones 
                 </h5>
             </FlexDiv>
         </Row>
-        <Row className="my-2">
+        { loading ? <Spinner height={"calc(100vh - 90px)"}></Spinner>
+        :   <Row className="my-2">
             <Col md={8}>
                 <GridDiv>
                     {lista.map(l=>{return <AnotacionCard onClick={setSelected} observacion={l} />})}
@@ -65,7 +68,8 @@ const Anotacion = () => {
             <Col md={4}>
                 <AnotacionShow doFetch={doFetch} setSelectedAnotation={setSelected} selectedAnotation={selected}/>
             </Col>
-        </Row>
+            </Row>
+        }
         <GapDiv />
     </>
 }

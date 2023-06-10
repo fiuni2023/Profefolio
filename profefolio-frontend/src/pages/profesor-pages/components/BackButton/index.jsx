@@ -13,7 +13,7 @@ const BackButton = ({
     const {setPage} = useModularContext()
     return <>
         <BBdiv>
-            <BiArrowBack size={20} style={{cursor: "pointer"}} onClick={()=>setPage(to)} />
+            <BiArrowBack size={20} style={{cursor: "pointer"}} onClick={()=>setPage(to, true)} />
         </BBdiv>
 
     </>

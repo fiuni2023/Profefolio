@@ -11,22 +11,14 @@ import { Container, Resumen, SideSection } from './componentes/StyledResumenAsis
 import DayMonthPicker from './componentes/DayMonthPicker';
 import { HiCheckCircle } from 'react-icons/hi'
 import {sum} from 'lodash'
-import { Row } from 'react-bootstrap';
-import BackButton from '../../components/BackButton';
-import styled from 'styled-components';
 import { useModularContext } from '../../context';
-import { RxCross1 } from 'react-icons/rx';
-
-const FlexDiv = styled.div`
-    display: flex;
-    align-items: center;
-    width: 100%;
-    gap: 10px;
-`
 
 // const Asistencia = ({ materia = { id: 1, nombre: "Matemáticas" } }) => {
 const Asistencia = React.memo(() => {
-    const { getToken } = useGeneralContext()
+    const { getToken, cancan, verifyToken } = useGeneralContext()
+    const [condFetch, setCondFetch] = useState(true)
+    const {dataSet} = useModularContext()
+    const { materiaName, currColegio, currClase } = dataSet
 
     // const [listaAsistencias, setListaAsistencias] = useState([])
     // const [listaNueva, setListaNueva] = useState([])
@@ -224,14 +216,7 @@ const Asistencia = React.memo(() => {
         <>
             <MainContainer>
                 {/* <StyleComponentBreadcrumb nombre={`Registro de Asistencia - ${materia?.nombre}`} /> */}
-                <Row>
-                    <FlexDiv>
-                        <BackButton to="materiashow"/>
-                        <h5 className="m-0">
-                            Asistencia 
-                        </h5>
-                    </FlexDiv>
-                </Row>
+                <StyleComponentBreadcrumb nombre={`${currColegio} - ${currClase} - ${materiaName} - Registro de Asistencia`} />
                 <Container>
                     <SideSection>
                         <TableContainer>
