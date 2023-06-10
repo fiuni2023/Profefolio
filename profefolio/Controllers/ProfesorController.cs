@@ -9,6 +9,8 @@ using Microsoft.AspNet.Identity;
 using System.Security.Claims;
 using profefolio.Helpers;
 using profefolio.Models.DTOs.ColegioProfesor;
+using profefolio.Models.DTOs.Profesor;
+
 namespace profefolio.Controllers
 {
     [ApiController]
@@ -141,24 +143,20 @@ namespace profefolio.Controllers
 
         }
 
-
         [HttpPost]
         [Authorize(Roles = "Administrador de Colegio")]
-        public async Task<ActionResult<ColegioProfesorResultOfCreatedDTO>> Post([FromBody] PersonaDTO dto)
+        public async Task<ActionResult<ProfesorGetDTO>> Post([FromBody] PersonaDTO dto)
         {
-
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+
+
+
             if (dto.Nacimiento > DateTime.Now)
             {
                 return BadRequest("El nacimiento no puede ser mayor a la fecha de hoy");
-            }
-
-            if (dto.Genero == null)
-            {
-                return BadRequest("El genero no puede ser nulo");
             }
 
             if (!(dto.Genero.Equals("M") || dto.Genero.Equals("F")))
@@ -166,51 +164,42 @@ namespace profefolio.Controllers
                 return BadRequest("Solo se aceptan valores F para femenino y M para masculino");
             }
 
-            if (dto.Password == null)
-            {
-                return BadRequest("Falta el Password");
-            }
-
-            if (dto.ConfirmPassword == null)
-            {
-                return BadRequest("Falta confirmacion de Password");
-            }
+            var adminEmail = User.FindFirstValue(ClaimTypes.Name);
 
 
-            var name = User.FindFirstValue(ClaimTypes.Name);
             var entity = _mapper.Map<Persona>(dto);
-
             entity.Deleted = false;
-            entity.CreatedBy = name;
-
-            if (await _personasService.ExistMail(dto.Email))
-            {
-                return BadRequest("El email al cual quiere registrarse ya existe");
-            }
+            entity.CreatedBy = adminEmail;
 
             try
             {
-                var adminEmail = User.FindFirstValue(ClaimTypes.Name);
-                var admin = await _personasService.FindByEmail(adminEmail);
+                var adminColegio = await _personasService.FindByEmail(adminEmail);
 
-                if (admin == null || admin.Colegio == null)
+                // verificar que no exista el profesor
+                var profe = await _personasService.FindByDocumentoAndRole(dto.Documento, dto.DocumentoTipo, "Profesor");
+                if (profe != null)
                 {
-                    return BadRequest("Hay problemas con sus credenciales");
+                    // validar si el profesor pertenece al colegio
+                    if (profe.ColegiosProfesor.Any(a => a.ColegioId == adminColegio.Colegio.Id))
+                    {
+                        return BadRequest("El Profesor ya existe en el colegio");
+                    }
+                    // si el profesor existe pero no en el colegio del administrador
+                    return new CustomStatusResult<ProfesorGetDTO>(230, _mapper.Map<ProfesorGetDTO>(profe));
                 }
-                else
+
+                var (result, except) = await _profesorService.Add(entity, dto.Password, PROFESOR_ROLE, adminColegio.Colegio.Id);
+
+                if (result != null)
                 {
-                    var result = await _profesorService.Add(entity, dto.Password, PROFESOR_ROLE, admin.Colegio.Id);
-
-
-                    if (result.resultado != null)
-                    {
-                        return Ok(result.resultado);
-                    }
-                    if (result.ex != null)
-                    {
-                        return BadRequest(result.ex.Message);
-                    }
+                    return Ok(_mapper.Map<ProfesorGetDTO>(result));
                 }
+                if (except != null)
+                {
+                    return BadRequest(except.Message);
+                }
+                return BadRequest("Error");
+
             }
             catch (BadHttpRequestException e)
             {
@@ -232,10 +221,102 @@ namespace profefolio.Controllers
                 return BadRequest("Error durante el guardado");
             }
 
-            return BadRequest($"Error al crear al Usuario ${dto.Email}");
         }
+        /*         [HttpPost]
+                [Authorize(Roles = "Administrador de Colegio")]
+                public async Task<ActionResult<ColegioProfesorResultOfCreatedDTO>> Post([FromBody] PersonaDTO dto)
+                {
 
-         /// <summary>
+                    if (!ModelState.IsValid)
+                    {
+                        return BadRequest(ModelState);
+                    }
+                    if (dto.Nacimiento > DateTime.Now)
+                    {
+                        return BadRequest("El nacimiento no puede ser mayor a la fecha de hoy");
+                    }
+
+                    if (dto.Genero == null)
+                    {
+                        return BadRequest("El genero no puede ser nulo");
+                    }
+
+                    if (!(dto.Genero.Equals("M") || dto.Genero.Equals("F")))
+                    {
+                        return BadRequest("Solo se aceptan valores F para femenino y M para masculino");
+                    }
+
+                    if (dto.Password == null)
+                    {
+                        return BadRequest("Falta el Password");
+                    }
+
+                    if (dto.ConfirmPassword == null)
+                    {
+                        return BadRequest("Falta confirmacion de Password");
+                    }
+
+
+                    var name = User.FindFirstValue(ClaimTypes.Name);
+                    var entity = _mapper.Map<Persona>(dto);
+
+                    entity.Deleted = false;
+                    entity.CreatedBy = name;
+
+                    if (await _personasService.ExistMail(dto.Email))
+                    {
+                        return BadRequest("El email al cual quiere registrarse ya existe");
+                    }
+
+                    try
+                    {
+                        var adminEmail = User.FindFirstValue(ClaimTypes.Name);
+                        var admin = await _personasService.FindByEmail(adminEmail);
+
+                        if (admin == null || admin.Colegio == null)
+                        {
+                            return BadRequest("Hay problemas con sus credenciales");
+                        }
+                        else
+                        {
+                            var result = await _profesorService.Add(entity, dto.Password, PROFESOR_ROLE, admin.Colegio.Id);
+
+
+                            if (result.resultado != null)
+                            {
+                                return Ok(result.resultado);
+                            }
+                            if (result.ex != null)
+                            {
+                                return BadRequest(result.ex.Message);
+                            }
+                        }
+                    }
+                    catch (BadHttpRequestException e)
+                    {
+                        Console.WriteLine(e.Message);
+                        return BadRequest(e.Message);
+                    }
+                    catch (InvalidOperationException e)
+                    {
+                        Console.WriteLine(e.Message);
+                        return BadRequest("Formato invalido de contraseña. Debe contener mayusculas, minusculas, numeros y caracteres.");
+                    }
+                    catch (FileNotFoundException e)
+                    {
+                        return NotFound();
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                        return BadRequest("Error durante el guardado");
+                    }
+
+                    return BadRequest($"Error al crear al Usuario ${dto.Email}");
+                }
+         */
+
+        /// <summary>
         /// Edita un profesor que fue creado por admin que hace la peticion.
         /// https://localhost:7063/api/Profesor/{IdProfesor}
         /// </summary>
