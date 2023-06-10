@@ -101,6 +101,7 @@ builder.Services.AddScoped<IEvento, EventoService>();
 builder.Services.AddScoped<IAsistencia, AsistenciaService>();
 builder.Services.AddScoped<IAnotacion, AnotacionesService>();
 builder.Services.AddScoped<IDocumento, DocumentoService>();
+builder.Services.AddScoped<IAnotacionAlumno, AnotacionAlumnoService>();
 builder.Services.AddScoped<ICalificacion, CalificacionService>();
 var app = builder.Build();
 
