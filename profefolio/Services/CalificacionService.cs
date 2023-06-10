@@ -1,3 +1,4 @@
+using Microsoft.CodeAnalysis.VisualBasic.Syntax;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using profefolio.Models;
@@ -37,6 +38,14 @@ public class CalificacionService : ICalificacion
     //TO-DO Corregir
     public Task<PlanillaDTO> GetAll(int idMateriaLista, string user)
     {
+
+        var alumnoQuery = _db.ClasesAlumnosColegios
+            .Include(ev => ev.Evaluaciones)
+            .ThenInclude(e => e.Evaluacion)
+            .Include(ca => ca.ColegiosAlumnos)
+            .ThenInclude(a => a.Persona)
+            .Where(aq => !aq.Deleted);
+            
         throw new NotImplementedException();
     }
 
