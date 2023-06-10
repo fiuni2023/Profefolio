@@ -203,11 +203,12 @@ useEffect(() => {
     guardarProfesorSeleccionadoParaBorrar(usuariosSeleccionados);
   }, [usuariosSeleccionados]);
 
+
+
   useEffect(() => {
    
   },[selectedProfesorId]);
-  console.log('selectedProfesorId',selectedProfesorId);
-    return <>
+      return <>
         <ItemContainer type={newType} className={`item-container-${index}`}>
             <div  onClick={handleClick}>
             <Item>{index}- {nombre} </Item>
@@ -223,20 +224,23 @@ useEffect(() => {
 
                     </ListButton>
 
-                {isSelectOpen && (
-                <TagNombreSelect>
-                    <TagSelect onChange={seleccionarProfesor}>
-                        <option value={0} >
-                          {`Elija un Profesor`}
-                        </option>
-                    {profeProfesor.map((profesor) => (
-                        <option key={profesor.id} value={profesor.id}>
-                        {profesor.nombre}
-                        </option>
-                    ))}
-                    </TagSelect>
-                </TagNombreSelect>
-                )}
+                    {isSelectOpen && (
+                        <TagNombreSelect>
+                          <TagSelect onChange={seleccionarProfesor}>
+                            <option value={0}>
+                              {`Elija un Profesor`}
+                            </option>
+                            {profeProfesor
+                              .filter((profesor) => !profesoresSeleccionados.includes(profesor.id))
+                              .map((profesor) => (
+                                <option key={profesor.id} value={profesor.id}>
+                                  {profesor.nombre}
+                                </option>
+                              ))}
+                          </TagSelect>
+                        </TagNombreSelect>
+                      )}
+
 
                 {profeProfesor.map((profesor) => {
                   return (
@@ -349,6 +353,8 @@ const MateriasDeClase = () => {
     const handleClickProfesor = (materia) => {
         const nuevosProfesores = materia.profesores.map((profesor) => profesor.id);
         setProfesoresSeleccionados([...profesoresSeleccionados, ...nuevosProfesores]);
+
+        console.log('nuevosProfesores',nuevosProfesores);
       };
       
 
@@ -394,9 +400,7 @@ useMemo(() => {
     const idProfesoresArrayBorrado = profesoresSeleccionadosBorrado;  
 
 
-   
-   
-
+  
 
     const body = {
       "idClase": getClaseSelectedId(),
@@ -543,7 +547,11 @@ useMemo(() => {
 
     const [listaFusionada, setListaFusionada] = useState([]);
 
+    
     const eliminarMateria = (idMateria) => {
+
+
+      console.log('materiaProfesor',materiaProfesor);
 
       setListaFusionada((before)=>{return before.filter(
         (item) => item.idMateria !== idMateria
@@ -559,9 +567,17 @@ useMemo(() => {
         return option;
       });
 
-
       setOptionsMaterias(updatedOptions);
+
+
+      const profesoresIds = profesoresSeleccionados.map((profesor) => profesor.id);
+      setProfesoresSeleccionados([]);
+
+
+      console.log('profesoresSeleccionados', profesoresSeleccionados);
     };
+
+    console.log('listaFusionada',listaFusionada);
 
   
     useEffect(() => {
@@ -646,8 +662,13 @@ useMemo(() => {
                                     onClick={(event) => {
                                         console.log(
                                           `${materia.idMateria} materia seleccionado`,
+                                          
                                         );
                                         if (materia.estado === "new") {
+
+                                        //  const profesoresIds = materia.profesores.map((profesor) => profesor.id);
+
+                                         // console.log('profesoresIds',profesoresIds);
 
                                           eliminarMateria(materia.idMateria);
                                        
