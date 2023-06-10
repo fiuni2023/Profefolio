@@ -40,8 +40,8 @@ public class CalificacionService : ICalificacion
     {
 
         var alumnoQuery = _db.ClasesAlumnosColegios
-            .Include(ev => ev.Evaluaciones)
-            .ThenInclude(e => e.Evaluacion)
+            .Include(ev => ev.Evaluaciones.Where(x => !x.Deleted))
+            .ThenInclude(e => e.Evaluacion.Deleted ? null : e.Evaluacion)
             .Include(ca => ca.ColegiosAlumnos)
             .ThenInclude(a => a.Persona)
             .Where(aq => !aq.Deleted);
