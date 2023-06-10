@@ -9,5 +9,4 @@ public class AlumnoWithPuntajesDTO
     public string? Apellido { get; set; }
     public string? Doc { get; set; }
     public List<PuntajeDTO>? Puntajes { get; set; }
-    public int EvaluacionId { get; set; }
 }
