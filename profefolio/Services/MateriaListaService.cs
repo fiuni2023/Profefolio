@@ -352,7 +352,7 @@ namespace profefolio.Services
 
             var query = await _db.MateriaListas
                 .Include(ml => ml.Clase)
-                .Where(ml => ml.Deleted)
+                .Where(ml => !ml.Deleted)
                 .Where(ml => ml.Clase.Colegio != null
                              && idClase == ml.ClaseId 
                              && ml.ProfesorId.Equals(idProfesor) 
