@@ -19,7 +19,7 @@ function ModalColegio({
        
         const nombre = document.getElementById("nombreColegio").value
         const idAdmin = document.getElementById("administradorColegio").value
-
+        if (nombre === "" || idAdmin === "") return toast.error("Revise los datos, los campos deben ser completados")
         let data = JSON.stringify({
             "nombre": nombre,
             "personaId": idAdmin

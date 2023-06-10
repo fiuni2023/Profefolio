@@ -23,5 +23,15 @@ const GetColegios = async (token) => {
     return result.status === 200 ? result : null
 }
 
-const ProfesorPagesService = { GetColegios, Get }
+const GetEventos = async (token) => {
+    const result = await axios.get(`${APILINK}/api/Evento`,
+    {
+        headers:{
+            "Authorization": 'bearer ' + token,
+        }
+    })
+    return result.status === 200 ? result : null
+}
+
+const ProfesorPagesService = { GetColegios, Get, GetEventos }
 export default ProfesorPagesService
