@@ -27,7 +27,7 @@ const ContainerColegios = ({
             xs: 12, sm: 12, md: 6, lg: 3,
             background: getColor(indice),
             hover: true,
-            action: ()=>onClick(objeto?.id),
+            action: ()=>onClick(objeto?.id, objeto?.nombre),
             header: {
                 title: `${objeto?.nombre}`,
             },

@@ -6,21 +6,23 @@ import Horarios from '../../components/Horarios/index.jsx'
 import Eventos from '../../components/Eventos/index.jsx'
 import { useGeneralContext } from '../../../../context/GeneralContext.jsx'
 import { useModularContext } from '../../context/index.jsx'
+import Spinner from '../../../../components/componentsStyles/SyledSpinner.jsx'
 
 const ProfesorPage = () => {
     const {getUserName} = useGeneralContext()
     const {setPage, dataSet, stateController} = useModularContext()
 
-    const { setColegioId } = stateController 
-    const { colegios } = dataSet
+    const { setColegioId, setCurrColegio } = stateController 
+    const { colegios, loading } = dataSet
 
-    const handleClickCards = (id) => {
+    const handleClickCards = (id, nombre) => {
+        setCurrColegio(nombre); 
         setColegioId(id)
         setPage("clase")
     }
 
     const componentes = {
-        title: `Bienvenido Prof. ${getUserName()} Dashboard`,
+        title: `Bienvenido Prof. ${getUserName()} `,
         componentes: [
             <SRow>
                 <ContainerColegios onClick={handleClickCards} lista={colegios}/>
@@ -30,7 +32,9 @@ const ProfesorPage = () => {
         ]
     };
     return <>
-        <ShowContainer data={componentes}/>
+        {loading ? <Spinner height={"calc(100vh - 90px)"}></Spinner> : 
+            <ShowContainer data={componentes}/>
+        }
     </>
 }
 
