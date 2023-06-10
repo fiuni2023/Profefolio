@@ -16,13 +16,14 @@ namespace profefolio.Controllers
         private IMateriaLista _materiaListaService;
         private IColegioProfesor _colegioProfesorService;
 
-        public EventoController(IEvento eventoService, IMateriaLista materiaListaService, IColegioProfesor colegioProfesorService)
+        public EventoController(IEvento eventoService, IMateriaLista materiaListaService,
+            IColegioProfesor colegioProfesorService)
         {
             _eventoService = eventoService;
             _materiaListaService = materiaListaService;
             _colegioProfesorService = colegioProfesorService;
         }
-        
+
         [HttpPost]
         [Authorize(Roles = "Profesor")]
         public async Task<ActionResult> PostEvento([FromBody] EventoDTO evento)
@@ -37,7 +38,10 @@ namespace profefolio.Controllers
                                                   || evento.Tipo.Equals("Parcial")
                                                   || evento.Tipo.Equals("Prueba sumatoria")
                                                   || evento.Tipo.Equals("Evento"));
-            if (evalue)
+
+            var evalueEtapa = evento.Etapa is not ("Primera" or "Segunda");
+
+            if (evalue || evalueEtapa)
             {
                 return BadRequest("Tipo de evento invalido");
             }
