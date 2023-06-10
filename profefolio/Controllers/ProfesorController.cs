@@ -188,6 +188,11 @@ namespace profefolio.Controllers
                     return new CustomStatusResult<ProfesorGetDTO>(230, _mapper.Map<ProfesorGetDTO>(profe));
                 }
 
+                //se valida que no exista un usuario con el email del dto
+                var profesor = await _personasService.FindByEmail($"{dto.Email}");
+                if(profesor != null){
+                    return BadRequest("Ya existe un usuario con el un email similar");
+                }
                 var (result, except) = await _profesorService.Add(entity, dto.Password, PROFESOR_ROLE, adminColegio.Colegio.Id);
 
                 if (result != null)
