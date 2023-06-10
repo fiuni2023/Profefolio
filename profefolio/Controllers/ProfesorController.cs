@@ -68,6 +68,56 @@ namespace profefolio.Controllers
             return Ok(result);
         }
 
+
+        [HttpPost("ByColegio/page")]
+        [Authorize(Roles = "Administrador de Colegio")]
+        public async Task<ActionResult<DataListDTO<PersonaResultDTO>>> GetPageByColegio([FromBody] ProfesorGetPageRequestDTO dto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Modelo invlaido");
+            }
+
+            if (dto.Pagina < 0)
+            {
+                return BadRequest("El numero de pagina debe ser mayor o igual que cero");
+            }
+            try
+            {
+                var adminEmail = User.FindFirstValue(ClaimTypes.Name);
+
+                var (profesores, total) = await _profesorService.FindAllProfesoresOfColegioPage(dto.Pagina, CantPorPage, adminEmail, dto.ColegioId);
+
+
+                int cantPages = (int)Math.Ceiling((double)total / (double)CantPorPage);
+
+
+                var result = new DataListDTO<PersonaResultDTO>();
+
+                if (dto.Pagina >= cantPages)
+                {
+                    return BadRequest($"No existe la pagina: {dto.Pagina}");
+                }
+                var enumerable = profesores.ToArray();
+                result.CantItems = enumerable.Length;
+                result.CurrentPage = dto.Pagina;
+                result.Next = result.CurrentPage + 1 < cantPages;
+                result.DataList = _mapper.Map<List<PersonaResultDTO>>(enumerable.ToList());
+                result.TotalPage = cantPages;
+
+                return Ok(result);
+            }
+            catch (FieldAccessException e)
+            {
+                return Unauthorized();
+            }
+            catch (Exception e)
+            {
+                return BadRequest("Error durante la obtencion de datos");
+            }
+        }
+
+
         [HttpGet("{id}")]
         [Authorize(Roles = "Administrador de Colegio,Profesor")]
         public async Task<ActionResult<PersonaResultDTO>> Get(string id)
@@ -190,7 +240,8 @@ namespace profefolio.Controllers
 
                 //se valida que no exista un usuario con el email del dto
                 var profesor = await _personasService.FindByEmail($"{dto.Email}");
-                if(profesor != null){
+                if (profesor != null)
+                {
                     return BadRequest("Ya existe un usuario con el un email similar");
                 }
                 var (result, except) = await _profesorService.Add(entity, dto.Password, PROFESOR_ROLE, adminColegio.Colegio.Id);
