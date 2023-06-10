@@ -12,11 +12,12 @@ import DayMonthPicker from './componentes/DayMonthPicker';
 import { HiCheckCircle } from 'react-icons/hi'
 import {sum} from 'lodash'
 import { useModularContext } from '../../context';
-
+import { RxCross1 } from 'react-icons/rx';
+import StyleComponentBreadcrumb from '../../../../components/StyleComponentBreadcrumb';
 // const Asistencia = ({ materia = { id: 1, nombre: "Matemáticas" } }) => {
 const Asistencia = React.memo(() => {
-    const { getToken, cancan, verifyToken } = useGeneralContext()
-    const [condFetch, setCondFetch] = useState(true)
+    const { getToken/*, cancan, verifyToken*/ } = useGeneralContext()
+    //const [condFetch, setCondFetch] = useState(true)
     const {dataSet} = useModularContext()
     const { materiaName, currColegio, currClase } = dataSet
 

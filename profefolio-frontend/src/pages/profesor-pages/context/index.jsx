@@ -38,7 +38,7 @@ export const ModularProvider = ({ children }) => {
     const [ fetch_data, setFetchData ] = useState(false)
     const [ currentPage, setCurrentPage ] = useState(pages.dashboard)
     const [ colegios, setColegios ] = useState([])
-    const [ eventos, setEventos ] = useState([])
+    const [ eventos/* , setEventos */ ] = useState([])
     const [ colegioId, setColegioId] = useState(0) 
     const [ clases, setClases ] = useState([])
     const [ claseId, setClaseId] = useState(0)
@@ -48,7 +48,7 @@ export const ModularProvider = ({ children }) => {
     const [ materiaName, setMateriaName ] = useState("")
     const [ asistencias, setAsistencias ] = useState([])
     const [ puntajes, setPuntajes ] = useState([])
-    const [ alumnos, setAlumnos ] = useState([])
+    const [ alumnos/* , setAlumnos */ ] = useState([])
     const [ currColegio, setCurrColegio ] = useState("")
     const [ currClase, setCurrClase ] = useState("")
     const [ currMateria, setCurrMateria ] = useState("")
@@ -204,7 +204,7 @@ export const ModularProvider = ({ children }) => {
         asistencias,
         puntajes,
         alumnos,
-        eventos
+        eventos,
         loading,
         currColegio, 
         currClase,

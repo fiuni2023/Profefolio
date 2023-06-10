@@ -4,7 +4,7 @@ import { BsJustify } from 'react-icons/bs'
 import { FaUserCircle } from 'react-icons/fa'
 import { NavCenter, NavLeft, NavRight, SButtonforBar, SIcon, SMainLogo, SMainName, SMainUser, SNavBar, SSchoolName, SUserName, SmainLogoImg, navbarLogoImage } from "./componentsStyles/StyledNavBar";
 import { useNavigate } from "react-router-dom";
-import { useModularContext } from "../pages/profesor-pages/context";
+//import { useModularContext } from "../pages/profesor-pages/context";
 
 const Navbar = ({
     showSB = false, 
