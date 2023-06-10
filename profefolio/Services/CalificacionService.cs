@@ -42,8 +42,8 @@ public class CalificacionService : ICalificacion
         var alumnoQuery = _db.ClasesAlumnosColegios
             .Include(ev => ev.Evaluaciones.Where(x => !x.Deleted))
             .ThenInclude(e => e.Evaluacion.Deleted ? null : e.Evaluacion)
-            .Include(ca => ca.ColegiosAlumnos)
-            .ThenInclude(a => a.Persona)
+            .Include(ca => ca.Deleted ? null : ca.ColegiosAlumnos)
+            .ThenInclude(a => a == null || a.Deleted ? null : a.Persona)
             .Where(aq => !aq.Deleted);
             
         throw new NotImplementedException();
