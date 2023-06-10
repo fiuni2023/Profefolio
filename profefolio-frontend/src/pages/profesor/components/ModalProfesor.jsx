@@ -4,6 +4,7 @@ import Modal from '../../../components/Modal';
 import { toast } from 'react-hot-toast';
 import axios from 'axios';
 import APILINK from '../../../components/link';
+import ModalMensajeProfesor from './ModalMensajeProfesor';
 
 function ModalProfesor({
     show = false,
@@ -13,6 +14,8 @@ function ModalProfesor({
 }) {
     const { getToken } = useGeneralContext()
     const disabled = false
+    const [openAviso, setOpenAviso] = useState(false)
+    const [existingpProfesor, setProfesor] = useState("")
 
     const handleCreateSubmit = () => {
         const nombre = document.getElementById("nombre").value;
@@ -41,7 +44,7 @@ function ModalProfesor({
             "documentoTipo": tipoDocumento
         }
 
-        axios.post(`${APILINK}/api/profesor`, data, {
+        const postResult = axios.post(`${APILINK}/api/profesor`, data, {
             headers: {
               Authorization: `Bearer ${getToken()}`,
             }
@@ -53,7 +56,14 @@ function ModalProfesor({
             })
             .catch(error => {
               if (typeof (error.response.data) === "string" ? true : false) {
-                toast.error(error.response.data)
+                console.log("Hay que borrar el if que hay debajo de este mensaje en ModalProfesor -> HandlecreateSubmit")
+                if (error.response.data !== "El email al cual quiere registrarse ya existe")
+                {
+                    //Solo debe quedar este toast, el resto esta solo para referencia
+                    toast.error(error.response.data)
+                } else {
+                    setOpenAviso(true)
+                }
               } else {
                 let errArr = error.response.data?.errors
                 let single = ""
@@ -71,6 +81,10 @@ function ModalProfesor({
                 toast.error(single)
               }
             });
+        if (postResult && postResult.status === 230 && postResult.data) {
+            setProfesor(postResult.data)
+            setOpenAviso(true)
+        } 
 
         
 
@@ -182,8 +196,8 @@ function ModalProfesor({
                 invalidText: "Ingrese un correo electónico válido",
             },
             {
-                key: "direccion", label: "Dirrección",
-                type: "text", placeholder: "Ingrese la dirrección",
+                key: "direccion", label: "Dirección",
+                type: "text", placeholder: "Ingrese la dirección",
                 disabled: disabled,
             },
             {
@@ -269,7 +283,7 @@ function ModalProfesor({
                 invalidText: "Ingrese un correo electónico válido",
             },
             {
-                key: "direccion", label: "Dirrección",
+                key: "direccion", label: "Dirección",
                 type: "text", placeholder: "Ingrese la dirección",
                 disabled: disabled,
             },
@@ -410,9 +424,27 @@ function ModalProfesor({
         onHide()
     }
 
+    const addNewExistingSuccess = () => {
+        handleHide()
+        fetchFunc()
+    }
+
+    const handleCancelAviso = () => {
+        setOpenAviso(false)
+    }
+
+
+
     return (
         <>
             <Modal show={show} onHide={handleHide} datosModal={datosModal} />
+            <ModalMensajeProfesor 
+                isOpen={openAviso} 
+                onAdd={onHide} 
+                profesor={existingpProfesor} 
+                onCancel={handleCancelAviso} 
+                onSuccess={addNewExistingSuccess}
+            />
         </>
     )
 }
