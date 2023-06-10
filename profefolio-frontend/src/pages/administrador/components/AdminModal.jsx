@@ -93,7 +93,7 @@ function ModalAdmin({
                         invalidText: "Ingrese un correo electónico válido",
                     },
                     {
-                        key: "direccion", label: "Dirrección",
+                        key: "direccion", label: "Dirección",
                         type: "text", placeholder: "Ingrese la dirección",
                         disabled: disabled,
                     },
@@ -112,7 +112,7 @@ function ModalAdmin({
                     {
                         key: "telefono", label: "Telefono",
                         type: "text", placeholder: "Ingrese su Telefono",
-                        disabled: disabled, 
+                        disabled: disabled, required: true,
                         invalidText: "Ingrese un telefono válido",
                     },
                     {

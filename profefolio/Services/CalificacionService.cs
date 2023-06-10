@@ -34,82 +34,87 @@ public class CalificacionService : ICalificacion
     }
 
 
+    //TO-DO Corregir
     public async Task<PlanillaDTO> GetAll(int idMateriaLista, string user)
     {
-        var materiaListaQuery = _db.MateriaListas
-            .Include(p => p.Profesor)
-            .Include(m => m.Materia);
-        var materiaListaVerify = materiaListaQuery 
-            .Where(ml => !ml.Deleted)
-            .Any(ml =>ml.Id == idMateriaLista && ml.Profesor.Email.Equals(user));
 
-
-        if (!materiaListaVerify)
-        {
-            throw new UnauthorizedAccessException();
-        }
-        var evaluacionQuery = _db.Eventos
-            .Include(e => e.MateriaList)
-            .ThenInclude(m =>m==null?null: m.Materia)
-            .Include(ea => ea.EvaluacionAlumnos)
-            .ThenInclude(a => a.ClasesAlumnosColegio)
-            .ThenInclude(ca => ca == null ? null : ca.ColegiosAlumnos)
-            .ThenInclude(p =>p == null ? null : p.Persona)
-            .Where(x => !x.Deleted && x.MateriaListaId == idMateriaLista)
-            .AsEnumerable()
-            .GroupBy(x => x.Etapa)
-            .Select(x => new
-            {
-                Etapa = x.Key,
-                Evaluaciones = x.GetEnumerator()
-            });
+        var alumnoQuery = _db.ClasesAlumnosColegios
+            .Include(ev => ev.Evaluaciones
+                .Where(x => !x.Deleted))
+            .ThenInclude(e => e.Evaluacion)
+            .Include(ca => ca.ColegiosAlumnos)
+            .ThenInclude(a => a.Persona)
+            .Where(aq => !aq.Deleted && aq.Evaluaciones
+                .Any(x => x.Evaluacion.MateriaListaId == idMateriaLista && !x.Deleted));
+            
+        var materiaQuery = await _db.MateriaListas
+            .Include(x => x.Materia)
+            .Where(x => x.Id == idMateriaLista && !x.Deleted)
+            .Select(x => x.Materia.Nombre_Materia)
+            .FirstOrDefaultAsync();
+        
+        if (materiaQuery == null)
+            throw new FileNotFoundException();
 
         var planilla = new PlanillaDTO
         {
-            Materia = await materiaListaQuery
-                .Select(ml => ml.Materia.Nombre_Materia)
-                .FirstAsync(),
-            Etapas = new List<EtapaDTO>(),
-            MateriaId = idMateriaLista
+            MateriaId = idMateriaLista,
+            Materia = materiaQuery,
+            Alumnos = new List<AlumnoWithPuntajesDTO>()
         };
 
-        foreach (var etapa in evaluacionQuery)
+        foreach (var al in alumnoQuery)
         {
-            var etapaDto = new EtapaDTO
+            var alumnoPuntaje = new AlumnoWithPuntajesDTO
             {
-                Etapa = etapa.Etapa,
-                Alumnos = new List<AlumnoWithPuntajesDTO>()
+                Nombre = al.ColegiosAlumnos.Persona.Nombre,
+                AlumnoId = al.Id,
+                Apellido = al.ColegiosAlumnos.Persona.Apellido,
+                Doc = al.ColegiosAlumnos.Persona.Documento,
+                Etapas = new List<EtapaDTO>()
             };
-            
-            
-            while (etapa.Evaluaciones.MoveNext())
-            {
-                var evaluacion = etapa.Evaluaciones.Current;
-                foreach (var alumnoEvaluacion in evaluacion.EvaluacionAlumnos)
+
+            var evaluaciones = al.Evaluaciones
+                .GroupBy(x => x.Evaluacion.Etapa)
+                .Select(x => new
                 {
-                    var alumnoPuntaje = new AlumnoWithPuntajesDTO
-                    {
-                        AlumnoId = alumnoEvaluacion.ClasesAlumnosColegioId,
-                        Nombre = alumnoEvaluacion.ClasesAlumnosColegio?.ColegiosAlumnos.Persona.Nombre,
-                        Apellido = alumnoEvaluacion.ClasesAlumnosColegio?.ColegiosAlumnos.Persona.Apellido,
-                        Doc = alumnoEvaluacion.ClasesAlumnosColegio?.ColegiosAlumnos.Persona.Documento,
-                        PuntajeTotalLogrado = evaluacion.EvaluacionAlumnos.Sum(ev => ev.PuntajeLogrado),
-                        PorcentajeTotalLogrado = evaluacion.EvaluacionAlumnos.Sum(ev => ev.PuntajeLogrado),
-                        EvaluacionId = alumnoEvaluacion.EvaluacionId,
-                        Puntajes = evaluacion.EvaluacionAlumnos.Select(ev => new PuntajeDTO
+                    Etapa = x.Key,
+                    Evaluaciones = x.AsEnumerable()
+                });
+
+            foreach (var ev in evaluaciones)
+            {
+                var etapa = new EtapaDTO
+                {
+                    Etapa = ev.Etapa,
+                    Puntajes = ev.Evaluaciones
+                        .Where(e => !e.Deleted)
+                        .Where(e => e.Evaluacion.MateriaListaId == idMateriaLista)
+                        .Where(e => e.ClasesAlumnosColegioId == al.Id)
+                        .Select(e => new PuntajeDTO()
                         {
-                            PuntajeLogrado = ev.PuntajeLogrado,
-                            PorcentajeLogrado = ev.PorcentajeLogrado,
-                            PuntajeTotal = evaluacion.PuntajeTotal
-                        }).ToList()
-                    };
-                    etapaDto.Alumnos.Add(alumnoPuntaje);
-                }
-
+                            PuntajeLogrado = e.PuntajeLogrado,
+                            PorcentajeLogrado = e.PorcentajeLogrado,
+                            PuntajeTotal = e.Evaluacion.PuntajeTotal,
+                            IdEvaluacion = e.Id
+                        }).ToList(),
+                    PorcentajeTotalLogrado = ev.Evaluaciones
+                        .Where(e => !e.Deleted)
+                        .Where(e => e.Evaluacion.MateriaListaId == idMateriaLista)
+                        .Where(e => e.ClasesAlumnosColegioId == al.Id)
+                        .Sum(e => e.PorcentajeLogrado),
+                    PuntajeTotalLogrado = ev.Evaluaciones
+                        .Where(e => !e.Deleted)
+                        .Where(e => e.Evaluacion.MateriaListaId == idMateriaLista)
+                        .Where(e => e.ClasesAlumnosColegioId == al.Id)
+                        .Sum(e => e.PuntajeLogrado)
+                };
+                
+                alumnoPuntaje.Etapas.Add(etapa);
             }
-            planilla.Etapas.Add(etapaDto);
+            
+            planilla.Alumnos.Add(alumnoPuntaje);
         }
-
 
         return planilla;
     }
@@ -158,7 +163,7 @@ public class CalificacionService : ICalificacion
 
         var ev = await _db.EventoAlumnos
             .Include(e => e.Evaluacion)
-            .Where(ev => !ev.Deleted && ev.Id == dto.IdEvaluacion)
+            .Where(ev => ev.Id == dto.IdEvaluacion)
             .FirstOrDefaultAsync();
 
         if (ev == null)
@@ -168,8 +173,8 @@ public class CalificacionService : ICalificacion
 
         ev.PuntajeLogrado = dto.Puntaje;
         ev.PorcentajeLogrado = (dto.Puntaje * 100) / ev.Evaluacion.PuntajeTotal;
-        
         await _db.SaveChangesAsync();
+        
         await this.Verify(idMateriaLista, user);
         var result = await this.GetAll(idMateriaLista, user);
         return result;

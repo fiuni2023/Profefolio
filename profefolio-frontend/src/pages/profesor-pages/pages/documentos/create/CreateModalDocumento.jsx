@@ -30,29 +30,23 @@ function CreateModalDocumento({
         const nombre = document.getElementById("nombre").value;
         const enlace = document.getElementById("enlace").value;
       
-
         let data = {
             "nombre": nombre,
             "enlace": enlace,
-          
+            "materiaListaId": materiaId
         }
 
-        axios.put(`${APILINK}/api/Documento/${selectData.id}`, data, {
-            headers: {
-              Authorization: `Bearer ${getToken()}`,
-            }
-          })
-            .then(response => {
-              toast.success("Guardado exitoso");
-              handleHide()
-    
+        ClassesService.putDocumento(selectData.id, data, token )
+            .then(() => {
+                toast.success("Guardado exitoso");
+                handleHide()
             })
             .catch(error => {
-              if (typeof (error.response.data) === "string" ? true : false) {
-                toast.error(error.response.data)
-              } else {
-              //  toast.error(error.response.data?.errors.Password ? error.response.data?.errors.Password[0] : error.response.data?.errors.Email[0])
-              }
+                if (typeof (error.response.data) === "string" ? true : false) {
+                    toast.error(error.response.data)
+                } else {
+                //  toast.error(error.response.data?.errors.Password ? error.response.data?.errors.Password[0] : error.response.data?.errors.Email[0])
+                }
             });
     }
 
@@ -61,7 +55,6 @@ function CreateModalDocumento({
         if (selectData) {
             document.getElementById("nombre").value = selectData.nombre;
             document.getElementById("enlace").value = selectData.enlace;
-           
         }
     }, [selectData])
 
@@ -100,6 +93,7 @@ function CreateModalDocumento({
 
         .then(() => {
           toast.success("Los datos fueron enviados correctamente.");
+          onHide()
         })
         .catch(() => {
           toast.error("No se pudieron guardar los cambios. Intente de nuevo o recargue la página.");
@@ -129,7 +123,7 @@ function CreateModalDocumento({
            
             {
 
-                key: "enlace", label: "Dirrección",
+                key: "enlace", label: "Dirección",
                 type: "text", placeholder: "Ingrese el nombre del document",
 
                 disabled: disabled,
@@ -173,8 +167,11 @@ function CreateModalDocumento({
                             },
                             {
                                 style: "text",
-                                type: "save2",
-                                onclick: { action: () => {} }
+                                type: "save",
+                                onclick: { action: (event) => {
+                                    event.preventDefault()
+                                    handleEditSubmit()
+                                } }
                             },
                         ]
                         :

@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { PanelContainerBG } from '../../../../profesor/components/LayoutAdmin';
 import { useGeneralContext } from "../../../../../context/GeneralContext";
 import styled from "styled-components";
-import { AiOutlinePlus } from 'react-icons/ai';
+import { AiOutlinePlus, AiOutlineRight } from 'react-icons/ai';
 import { useNavigate } from 'react-router';
 import CreateModalDocumento from '../create/CreateModalDocumento';
 import Tabla from '../../../../../components/Tabla';
-
+import Spinner from '../../../../../components/componentsStyles/SyledSpinner';
 
 import ClassesService from '../Helper/DocumentoHelper';
 import { Row } from 'react-bootstrap';
@@ -23,15 +23,16 @@ const FlexDiv = styled.div`
 
 function ListarDocumentos() {
   
-  const {stateController} = useModularContext()
+  const {stateController, dataSet} = useModularContext()
   const {materiaId} = stateController
-
+  const {loading} = dataSet
   const [selectData, setSelectedData] = useState(null)
   const { getToken, cancan, verifyToken } = useGeneralContext();
   const [documento, setDocumento] = useState([]);
   const token = getToken()
 
   const [fetch_data, setFetchData] = useState([])
+  const { materiaName, currColegio, currClase } = dataSet
 
   const nav = useNavigate()
 
@@ -49,20 +50,15 @@ function ListarDocumentos() {
 
 
   useEffect(() => {
-    console.log(materiaId)
     const listaMateriasProfesores = async () => {
       try {
-        const dataList = await ClassesService.getDocumento(1, token);
-        console.log(dataList)
+        const dataList = await ClassesService.getDocumento(materiaId, token);
         setDocumento(dataList.data ?? []);
       } catch (e) {
         setDocumento([]);
       }
     };
     listaMateriasProfesores();
-
-
-
   }, [cancan, verifyToken, nav, token, fetch_data, materiaId]);
 
 
@@ -80,11 +76,13 @@ function ListarDocumentos() {
           <FlexDiv>
             <BackButton to="materiashow" />
             <h5 className="m-0">
-              Documentos
+            {currColegio} - {currClase} - {materiaName} - Documentos
             </h5>
           </FlexDiv>
         </Row>
 
+        {loading ? <Spinner height={"calc(100vh - 90px)"}></Spinner>
+        :  
         <PanelContainerBG>
           <div >
             <Tabla
@@ -93,20 +91,22 @@ function ListarDocumentos() {
                 titulos: [
                   { titulo: 'Nombre' },
                   { titulo: 'Enlace' },
-
                 ],
                 clickable: { action: btndetallesDocumento },
-
+                
                 filas: documento.map((documento) => ({
                   fila: documento,
                   datos: [
                     { dato: documento.nombre },
                     { dato: documento.enlace },
-
+                    { componente: <InvisibleButton onClick={(e)=>{
+                      e.stopPropagation()
+                      window.open(documento.enlace, "_blank")
+                    }}><AiOutlineRight size={20} /></InvisibleButton>}
                   ],
                 })),
               }}
-            />
+              />
           </div>
 
           <CreateModalDocumento onHide={handleHide} selectData={selectData} show={show} />
@@ -116,6 +116,7 @@ function ListarDocumentos() {
           </AddButton>
 
         </PanelContainerBG>
+        }
 
         <footer />
       </div>
@@ -161,4 +162,20 @@ const AddButton = styled.button`
     filter: brightness(0.8);
   }
 `;
+
+const InvisibleButton = styled.button`
+  width: 30px;
+  height: 30px;
+  background-color: white;
+  border: none;
+  outline: none;
+  border-radius: 50%;
+  &:hover {
+    filter: brightness(0.7);
+  }
+  &:active {
+    filter: brightness(0.6);
+  }
+`;
+
 export default ListarDocumentos

@@ -347,6 +347,25 @@ namespace profefolio.Services
                 .FirstOrDefaultAsync();
         }
 
-      
+        public async Task<MateriaLista> Filter(int idClase, int idColegio, string idProfesor, int idMateria)
+        {
+
+            var query = await _db.MateriaListas
+                .Include(ml => ml.Clase)
+                .Where(ml => !ml.Deleted)
+                .Where(ml => ml.Clase.Colegio != null
+                             && idClase == ml.ClaseId 
+                             && ml.ProfesorId.Equals(idProfesor) 
+                             && ml.MateriaId == idMateria 
+                             && ml.Clase.Colegio.Id == idColegio)
+                .FirstOrDefaultAsync();
+
+            if (query == null)
+            {
+                throw new FileNotFoundException();
+            }
+            return query;
+
+        }
     }
 }
