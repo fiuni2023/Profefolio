@@ -1,5 +1,6 @@
 namespace profefolio.Models.DTOs.Calificacion;
 
+// ReSharper disable once InconsistentNaming
 public class PuntajeDTO
 {
     public double PuntajeTotal { get; set; }
