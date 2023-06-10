@@ -65,7 +65,8 @@ namespace profefolio.Controllers
                         Etapa = evento.Etapa,
                         CreatedBy = user,
                         Deleted = false,
-                        MateriaListaId = ml.Id
+                        MateriaListaId = ml.Id,
+                        PuntajeTotal = evento.Puntaje
                     };
 
                     await _eventoService.Add(p, user);
