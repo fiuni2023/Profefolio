@@ -34,7 +34,7 @@ const Anotacion = () => {
     const token = getToken()
 
     const [lista, setLista] = useState([])
-    const [selected, setSelected] = useState({})
+    const [selected, setSelected] = useState(null)
     const [fetchdata, setFetchData] = useState([])
 
     useEffect(()=>{

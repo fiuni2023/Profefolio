@@ -167,8 +167,11 @@ function CreateModalDocumento({
                             },
                             {
                                 style: "text",
-                                type: "save2",
-                                onclick: { action: () => {handleEditSubmit()} }
+                                type: "save",
+                                onclick: { action: (event) => {
+                                    event.preventDefault()
+                                    handleEditSubmit()
+                                } }
                             },
                         ]
                         :

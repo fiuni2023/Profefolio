@@ -38,6 +38,7 @@ export const ModularProvider = ({ children }) => {
     const [ fetch_data, setFetchData ] = useState(false)
     const [ currentPage, setCurrentPage ] = useState(pages.dashboard)
     const [ colegios, setColegios ] = useState([])
+    const [ eventos, setEventos ] = useState([])
     const [ colegioId, setColegioId] = useState(0) 
     const [ clases, setClases ] = useState([])
     const [ claseId, setClaseId] = useState(0)
@@ -63,6 +64,9 @@ export const ModularProvider = ({ children }) => {
     useEffect(()=>{
         // const body = {opcion: 'card-clases', id: 1, anho: 2023}
         ProfesorPagesService.GetColegios(token)
+        //.then(d=>setColegios(d.data))
+        // ProfesorPagesService.GetEventos(token)
+        // .then(d=>{console.log(d)})
         .then(function(d){
             setColegios(d.data)
             setLoading(false);
@@ -200,6 +204,7 @@ export const ModularProvider = ({ children }) => {
         asistencias,
         puntajes,
         alumnos,
+        eventos
         loading,
         currColegio, 
         currClase,
