@@ -95,11 +95,11 @@ const AnotacionShow = ({
 
     return <>
         <AnotacionShowDiv>
-            <InputTitulo value={titulo} 
+            <InputTitulo value={titulo}  placeholder="Titulo"
             onChange={(event)=>{
                 setTitulo(event?.target?.value)
             }} />
-            <InputContenido value={contenido} 
+            <InputContenido value={contenido} placeholder="Contenido"
             onChange={(event)=>{
                 setContenido(event?.target?.value)
             }} />
@@ -112,11 +112,11 @@ const AnotacionShow = ({
                     </>
                     :
                     <>
-                        <TextButton buttonType={"danger"} enabled={true} onClick={()=>{setErasing(true)}} />
+                        <TextButton buttonType={"danger"} enabled={!!selectedAnotation?.id} onClick={()=>{setErasing(true)}} />
                     </>
 
                 }
-                <TextButton buttonType={"save"} enabled={true} onClick={()=>{handleCreate(titulo, contenido)}} />
+                <TextButton buttonType={"save"} enabled={!erasing} onClick={()=>{handleCreate(titulo, contenido)}} />
             </div>
         </AnotacionShowDiv>
     </>

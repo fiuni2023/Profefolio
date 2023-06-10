@@ -86,7 +86,7 @@ const InfoClase = ({ idClase }) => {
         e.preventDefault()
 
         const obj = {
-            "colegioId": colegio.id,
+            "colegioId": colegio.id ?? colegio,
             "cicloId": parseInt(ciclo),
             "nombre": nombre,
             "turno": turno,
