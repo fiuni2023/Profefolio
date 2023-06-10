@@ -34,84 +34,10 @@ public class CalificacionService : ICalificacion
     }
 
 
-    public async Task<PlanillaDTO> GetAll(int idMateriaLista, string user)
+    //TO-DO Corregir
+    public Task<PlanillaDTO> GetAll(int idMateriaLista, string user)
     {
-        var materiaListaQuery = _db.MateriaListas
-            .Include(p => p.Profesor)
-            .Include(m => m.Materia);
-        var materiaListaVerify = materiaListaQuery 
-            .Where(ml => !ml.Deleted)
-            .Any(ml =>ml.Id == idMateriaLista && ml.Profesor.Email.Equals(user));
-
-
-        if (!materiaListaVerify)
-        {
-            throw new UnauthorizedAccessException();
-        }
-        var evaluacionQuery = _db.Eventos
-            .Include(e => e.MateriaList)
-            .ThenInclude(m =>m==null?null: m.Materia)
-            .Include(ea => ea.EvaluacionAlumnos)
-            .ThenInclude(a => a.ClasesAlumnosColegio)
-            .ThenInclude(ca => ca == null ? null : ca.ColegiosAlumnos)
-            .ThenInclude(p =>p == null ? null : p.Persona)
-            .Where(x => !x.Deleted && x.MateriaListaId == idMateriaLista)
-            .AsEnumerable()
-            .GroupBy(x => x.Etapa)
-            .Select(x => new
-            {
-                Etapa = x.Key,
-                Evaluaciones = x.GetEnumerator()
-            });
-
-        var planilla = new PlanillaDTO
-        {
-            Materia = await materiaListaQuery
-                .Select(ml => ml.Materia.Nombre_Materia)
-                .FirstAsync(),
-            Etapas = new List<EtapaDTO>(),
-            MateriaId = idMateriaLista
-        };
-
-        foreach (var etapa in evaluacionQuery)
-        {
-            var etapaDto = new EtapaDTO
-            {
-                Etapa = etapa.Etapa,
-                Alumnos = new List<AlumnoWithPuntajesDTO>()
-            };
-            
-            
-            while (etapa.Evaluaciones.MoveNext())
-            {
-                var evaluacion = etapa.Evaluaciones.Current;
-                foreach (var alumnoEvaluacion in evaluacion.EvaluacionAlumnos)
-                {
-                    var alumnoPuntaje = new AlumnoWithPuntajesDTO
-                    {
-                        AlumnoId = alumnoEvaluacion.ClasesAlumnosColegioId,
-                        Nombre = alumnoEvaluacion.ClasesAlumnosColegio?.ColegiosAlumnos.Persona.Nombre,
-                        Apellido = alumnoEvaluacion.ClasesAlumnosColegio?.ColegiosAlumnos.Persona.Apellido,
-                        Doc = alumnoEvaluacion.ClasesAlumnosColegio?.ColegiosAlumnos.Persona.Documento,
-                        PuntajeTotalLogrado = evaluacion.EvaluacionAlumnos.Sum(ev => ev.PuntajeLogrado),
-                        PorcentajeTotalLogrado = evaluacion.EvaluacionAlumnos.Sum(ev => ev.PuntajeLogrado),
-                        EvaluacionId = alumnoEvaluacion.EvaluacionId,
-                        Puntajes = evaluacion.EvaluacionAlumnos.Select(ev => new PuntajeDTO
-                        {
-                            PuntajeLogrado = ev.PuntajeLogrado,
-                            PorcentajeLogrado = ev.PorcentajeLogrado,
-                            PuntajeTotal = evaluacion.PuntajeTotal
-                        }).ToList()
-                    };
-                    etapaDto.Alumnos.Add(alumnoPuntaje);
-                }
-
-            }
-            planilla.Etapas.Add(etapaDto);
-        }
-
-
-        return planilla;
+        throw new NotImplementedException();
     }
 
     public async Task<bool> Verify(int idMateriaLista, string user)
