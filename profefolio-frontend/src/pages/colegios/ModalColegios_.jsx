@@ -16,9 +16,10 @@ function ModalColegio({
     const disabled = false
 
     const handleCreateSubmit = () => {
+       
         const nombre = document.getElementById("nombreColegio").value
         const idAdmin = document.getElementById("administradorColegio").value
-
+        if (nombre === "" || idAdmin === "") return toast.error("Revise los datos, los campos deben ser completados")
         let data = JSON.stringify({
             "nombre": nombre,
             "personaId": idAdmin
@@ -53,7 +54,7 @@ function ModalColegio({
     const handleEditSubmit = () => {
         const nombre = document.getElementById("nombreColegio").value
         const idAdmin = document.getElementById("administradorColegio").value
-
+        
         if (nombre === "" || idAdmin === "") return toast.error("revisa los datos, los campos deben ser completados")
         let data = JSON.stringify({
             "id": selected_data.id,
@@ -88,6 +89,7 @@ function ModalColegio({
     }
 
     const handleDelete = () => {
+        
         axios.delete(`${APILINK}/api/Colegios/${selected_data.id}`, {
             headers: {
                 Authorization: `Bearer ${getToken()}`,
@@ -118,6 +120,7 @@ function ModalColegio({
     const [deleting, setDeleting] = useState(false)
 
     useEffect(() => {
+        console.log(administrators)
         setDatosModal({
             header: selected_data ? deleting ? "ELIMINAR COLEGIO?" : "Editar Colegio" : "Agregar Colegio",
             form: {

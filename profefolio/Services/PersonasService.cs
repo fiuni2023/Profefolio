@@ -111,13 +111,13 @@ public class PersonasService : IPersona
         {
             var existOtherMail = await _userManager.Users
                 .Where(x => !x.Deleted)
-                .Where(x => !x.Id.Equals(p.Id))
+                .Where(x => x.Id != p.Id)
                 .Where(x => x.Documento.Equals(p.Documento) && x.DocumentoTipo.Equals(p.DocumentoTipo))
-                .CountAsync() > 0;
+                .AnyAsync();
 
                 if(existOtherMail)
                 {
-                    throw new BadHttpRequestException($"El user con el Id {p.Id} ya existe");
+                    throw new BadHttpRequestException($"Ocurrio un error al editar");
                 }
         }
 
@@ -235,7 +235,8 @@ public class PersonasService : IPersona
     public async Task<Persona> FindByIdAndRole(string id, string role)
     {
         var query = await _userManager.Users
-            .Where(p => !p.Deleted && p.Id.Equals(id))
+            .Where(p => !p.Deleted)
+            .Where(p => p.Id.Equals(id))
             .FirstOrDefaultAsync();
 
         if (null == query || !(await _userManager.IsInRoleAsync(query, role)))
@@ -244,9 +245,6 @@ public class PersonasService : IPersona
         }
 
         return query;
-
-
-
     }
 
     public async Task<bool> DeleteByUserAndRole(string id, string role)
@@ -279,6 +277,7 @@ public class PersonasService : IPersona
             .Where(a => a.DocumentoTipo.Equals(DocumentoTipo))
             .Where(a => a.Documento.Equals(NumeroDocumento))
             .Include(a => a.ColegiosAlumnos)
+            .Include(a => a.ColegiosProfesor)
             .FirstOrDefaultAsync();
         if (persona != null)
         {

@@ -12,6 +12,8 @@ import { useNavigate } from 'react-router';
 import Tabla from '../../../components/Tabla';
 import ModalConfirmacion from '../modal/ModalConfirmarDelete.jsx';
 import IconButton from '../../../components/IconButton';
+import Spinner from '../../../components/componentsStyles/SyledSpinner';
+
 function ListarMaTerias() {
 
   const [materias, setMaterias] = useState([]);
@@ -31,7 +33,9 @@ function ListarMaTerias() {
   const [nombre_Materia_delete, setNombreMateriaDelete] = useState('');
   const [showModalCiclo, setShowModalCiclo] = useState(false);
   const [nombre_Ciclo_delete, setNombreCicloDelete] = useState('');
-  const nav = useNavigate()
+  const nav = useNavigate();
+  const [loadingMaterias, setLoadingMaterias] = useState(true); 
+  const [loadingCiclos, setLoadingCiclos] = useState(true); 
 
   const getCiclos = () => {
     if (!cancan("Administrador de Colegio")) {
@@ -51,7 +55,8 @@ function ListarMaTerias() {
       axios.request(config)
         .then((response) => {
 
-          setCiclos(response.data)
+          setCiclos(response.data);
+          setLoadingCiclos(false);
 
         })
         .catch((error) => {
@@ -77,6 +82,7 @@ function ListarMaTerias() {
 
         .then(response => {
           setMaterias(response.data);
+          setLoadingMaterias(false);
         })
         .catch(error => {
           toast.error(error);
@@ -95,7 +101,7 @@ function ListarMaTerias() {
 
   const handleSubmitMateria = () => {
 
-    if (nombre_Materia === "") toast.error("revisa los datos, los campos deben ser completados")
+    if (nombre_Materia === "" || nombre_Materia === null) toast.error("revisa los datos, los campos deben ser completados")
     else {
       axios.post(`${APILINK}/api/Materia`, {
         nombre_Materia,
@@ -122,8 +128,7 @@ function ListarMaTerias() {
   }
 
   const handleSubmitCiclo = () => {
-
-    if (nombreCiclo === "") toast.error("revisa los datos, los campos deben ser completados")
+    if (nombreCiclo === "" || nombreCiclo === null ) toast.error("revisa los datos, los campos deben ser completados")
     else {
       axios.post(`${APILINK}/api/Ciclo`, {
         "nombre": nombreCiclo,
@@ -316,6 +321,7 @@ function ListarMaTerias() {
           <div className={styles.tableContainer}>
             <div className={styles.container} id={styles.containerMaterias} >
               <div id={styles.materiasTable}>
+              {loadingMaterias ? <Spinner height={'calc(100vh - 80px)'} /> :
                 <Tabla
                   datosTabla={{
                     tituloTabla: 'Lista_de_Materias',
@@ -338,6 +344,7 @@ function ListarMaTerias() {
                   }}
                   selected={id ?? '-'}
                 />
+              }
               </div>
               <ModalConfirmacion
                 show={showModal}
@@ -379,6 +386,7 @@ function ListarMaTerias() {
 
             <div className={styles.container} id={styles.containerCiclos} >
               <div id={styles.ciclosTable}>
+              {loadingCiclos ? <Spinner height={'calc(100vh - 80px)'} /> :
                 <Tabla
                   datosTabla={{
                     tituloTabla: 'Lista_de_ciclos',
@@ -398,6 +406,7 @@ function ListarMaTerias() {
                   }}
                   selected={id ?? '-'}
                 />
+              }
                 <ModalConfirmacion
                   show={showModalCiclo}
                   onHide={() => setShowModalCiclo(false)}
@@ -426,7 +435,7 @@ function ListarMaTerias() {
                   : <div className={styles.divAddCiclos}>
                     <label className={styles.label}> <strong>Agregar Ciclo</strong></label>
                     <br />
-                    <input value={nombreCiclo || ''} className={styles.inputAdd} placeholder='Nombre del Ciclo' onChange={(event) => handleNombreCiclo(event)} ></input>
+                    <input type='text' className={styles.inputAdd} placeholder='Nombre del Ciclo' onChange={(event) => handleNombreCiclo(event)} value={nombreCiclo || ''} ></input>
                     <div className={styles.buttonGuardar}>
 
                       <TextButton enabled={true} buttonType='save' onClick={() => handleSubmitCiclo()} />

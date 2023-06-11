@@ -42,6 +42,7 @@
     transition: 0.25s all;
     background-color: rgba(255, 255, 255, .5);
     z-index: 100;
+    top: 44px;
 }
 
 .ExitContainer {

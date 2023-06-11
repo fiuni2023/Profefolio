@@ -55,7 +55,7 @@ function Profesores() {
       //axios.get(`https://miapi.com/products?page=${page}&size=${size}`, {
 
       setLoading(true);
-      axios.get(`${APILINK}/api/profesor/page/${page}`, {
+      axios.get(`${APILINK}/api/profesor/page/${currentPage}`, {
         headers: {
           Authorization: `Bearer ${getToken()}`,
         }
@@ -78,7 +78,7 @@ function Profesores() {
           setLoading(false);
         });
     }
-  }, [page, cancan, verifyToken, nav, getToken, fetch_data]);
+  }, [page, cancan, verifyToken, nav, getToken, fetch_data, currentPage]);
 
   const doFetch = () => {
     setFetchData((before) => [before])

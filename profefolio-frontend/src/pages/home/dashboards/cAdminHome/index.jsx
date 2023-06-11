@@ -10,12 +10,14 @@ import ProfesorService from "../../../../sevices/profesor";
 import MateriaService from "../../../../sevices/materia";
 import CicloService from "../../../../sevices/ciclo";
 import ClaseService from "../../../../sevices/clase";
+import Spinner from "../../../../components/componentsStyles/SyledSpinner";
 
 const CAdminHome = () => {
 
     const {getUserName, getToken, getColegioId } = useGeneralContext()
     const token = getToken()
     const colegioId = getColegioId()
+    const [loading, setLoading] = useState(true);
 
     const [alumnos, setAlumnos] = useState({
         xs: 12, sm:12, md: 6, lg:3,
@@ -92,6 +94,10 @@ const CAdminHome = () => {
     })
 
     useEffect(()=>{
+        let loadingAlumnos = true; 
+        let loadingProfesores = true; 
+        let loadingMaterias = true; 
+        let loadingClases = true; 
         AlumnoService.getFirstPage(token)
         .then(r=>{
             if(r.data){
@@ -109,12 +115,18 @@ const CAdminHome = () => {
                         table: {
                             small: true, 
                             titulos: [ {titulo: "Nombre y Apellido"}], 
-                            filas: listaAlumno.length === 0? [{datos:[{dato: "No hay datos nuevos"}]}]:listaAlumno.map(a=>{return {datos:[{dato: a.nombre}]}})
+                            filas: listaAlumno.length === 0? [
+                                {datos:[{dato: "No hay datos nuevos"}]}]
+                                :listaAlumno.map(a=>{return {datos:[{dato: `${a.nombre} ${a.apellido}`}]}})
                         }
                     }
                 
                 })
-            }
+            } 
+            loadingAlumnos = false;
+            if (!loadingClases && !loadingMaterias && !loadingProfesores){
+                setLoading(false); 
+            } 
         })
         ProfesorService.getFirstPage(token)
         .then(r=>{
@@ -137,6 +149,10 @@ const CAdminHome = () => {
                         }
                     }
                 })
+            }
+            loadingProfesores = false; 
+            if (!loadingAlumnos && !loadingClases && !loadingMaterias){
+                setLoading(false); 
             }
         })
         MateriaService.getFirstPage(token)
@@ -172,6 +188,10 @@ const CAdminHome = () => {
                             }
                         })
                     }
+                    loadingMaterias = false; 
+                    if (!loadingClases && !loadingAlumnos && !loadingProfesores){
+                        setLoading(false);
+                    }
                 })
                 
             }
@@ -198,6 +218,10 @@ const CAdminHome = () => {
                     }
                 })
             }
+            loadingClases = false; 
+            if (!loadingAlumnos && !loadingMaterias && !loadingProfesores){
+                setLoading(false);
+            }
         })
         
     },[token, colegioId])
@@ -207,16 +231,20 @@ const CAdminHome = () => {
             <Row className="mb-3">
                 <DTitle>Bienvenido, {getUserName()}</DTitle>  
             </Row>
-            <SRow>
-                <Card cardInfo={alumnos}></Card>
-                <Card cardInfo={profesores}></Card>
-                <Card cardInfo={materias}></Card>
-                <Card cardInfo={clases}></Card>
-            </SRow>
-            <SRow>
-                <Separator></Separator>
-                <Card cardInfo={Stats}></Card>
-            </SRow>
+            {loading ? <Spinner height={"calc(100vh - 80px)"} /> :
+            <>
+                <SRow>
+                    <Card cardInfo={alumnos}></Card>
+                    <Card cardInfo={profesores}></Card>
+                    <Card cardInfo={materias}></Card>
+                    <Card cardInfo={clases}></Card>
+                </SRow>
+                <SRow>
+                    <Separator></Separator>
+                    <Card cardInfo={Stats}></Card>
+                </SRow>
+            </>
+            }
         </Container>
     )
 }

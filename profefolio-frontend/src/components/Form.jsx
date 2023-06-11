@@ -190,7 +190,7 @@ function Form({ form }) {
                                             key={i}
                                             enabled={button?.enabled ?? true}
                                             buttonType={button.type}
-                                            onClick={!button.submit ? () => button.onclick.action() : null}
+                                            onClick={!button.submit ? (event) => button.onclick.action(event) : null}
                                         ></TextButton>
                                     }
                                 </div>

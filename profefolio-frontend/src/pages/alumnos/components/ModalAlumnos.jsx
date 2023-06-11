@@ -158,8 +158,8 @@ function ModalAlumnos({
                         invalidText: "Ingrese un correo electónico válido",
                     },
                     {
-                        key: "direccion", label: "Dirrección",
-                        type: "text", placeholder: "Ingrese la dirrección",
+                        key: "direccion", label: "Dirección",
+                        type: "text", placeholder: "Ingrese la dirección",
                         disabled: disabled,
                     },
                     {

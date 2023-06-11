@@ -13,9 +13,8 @@ const Paginations = ({ totalPage, currentPage, setCurrentPage, next }) => {
     };
 
 
-
     return (<>
-
+        {totalPage <= 1 ? <></> : 
         <div className={styles.pagination}>
 
             <IconButton enabled={currentPage > 0} buttonType='arrowL' onClick={restar} />
@@ -25,6 +24,7 @@ const Paginations = ({ totalPage, currentPage, setCurrentPage, next }) => {
             <IconButton enabled={next} buttonType='arrowR' onClick={sumar} />
 
         </div>
+        }
 
 
 

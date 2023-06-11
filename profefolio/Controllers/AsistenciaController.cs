@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using profefolio.Helpers;
 using profefolio.Models.DTOs.Asistencia;
 using profefolio.Models.Entities;
@@ -35,25 +36,25 @@ namespace profefolio.Controllers
         /// <summary>
         /// Obtiene todas las asistencias, recibe en el link el id de MateriaLista
         /// </summary>
-        ///
+        /// <exception cref="ArgumentNullException"></exception>
         /// <remarks>
         /// Recibe en el link el Id de MateriaLista. 
         /// <a href="https://nande-y.atlassian.net/browse/PF-316">Ticket PF-316</a>
-        ///
+        /// 
         /// Modificaciones: 
-        ///
+        /// 
         /// <a href="https://nande-y.atlassian.net/browse/PF-336">Ticket PF-336</a>
-        ///
-        ///
+        /// 
+        /// 
         /// Body:
-        ///
+        /// 
         ///     {
         ///         "idMateriaLista": 0,
         ///         "mes": 0  // entre 1 y 12 si se manda uno distinto se usara el mes actual
         ///     }
-        ///
+        /// 
         /// Respuesta:
-        ///
+        /// 
         ///     [
         ///        {
         ///            "id": 0,                                     // id del alumno en ClaseAlumnoColegio
@@ -74,7 +75,7 @@ namespace profefolio.Controllers
         ///        }
         ///     ]
         /// </remarks>
-        ///
+        /// 
         [HttpPost]
         [Authorize(Roles = "Profesor")]
         public async Task<ActionResult<List<AsistenciaResultDTO>>> GetAll([FromBody]AsistenciaGetDTO dto)
@@ -83,38 +84,66 @@ namespace profefolio.Controllers
             try
             {
                 var alumnosColegios = await _asistenciaService.FindAll(dto.IdMateriaLista, userEmail);
+                
 
                 var results = new List<AsistenciaResultDTO>();
 
-                var mes = dto.Mes > 12 || dto.Mes < 1 ? DateTime.Now.Month : dto.Mes;
+                var mes = dto.Mes is > 12 or < 1 ? DateTime.Now.Month : dto.Mes;
 
                 foreach (var alumnoColegio in alumnosColegios.GroupBy(a => a.ColegiosAlumnosId).ToList())
                 {
 
-
                     foreach (var item in alumnoColegio)
                     {
+                        var asistencias = item.Asistencias;
+                        var verify = asistencias.IsNullOrEmpty() && 
+                                     !_asistenciaService.HasAsistencia(dto.IdMateriaLista, item.ColegiosAlumnosId);
+                        var asistenciaList = new List<Asistencia>();
+                        if (asistenciaList == null) throw new ArgumentNullException(nameof(asistenciaList));
+
+                        if (verify)
+                        {
+                            var fechas = await _asistenciaService.FilterFecha(dto.IdMateriaLista, userEmail);
+                            asistenciaList.AddRange(fechas.Select(fecha => new Asistencia()
+                            {
+                                Estado = 'A',
+                                Fecha = fecha,
+                                Observacion = "",
+                                MateriaListaId = dto.IdMateriaLista,
+                                ClasesAlumnosColegioId = item.ColegiosAlumnosId,
+                                Created = DateTime.Now,
+                                CreatedBy = userEmail
+                            }));
+
+                            item.Asistencias = asistenciaList;
+                            await _asistenciaService.Save();
+                        }
+                        
                         var resultDto = _mapper.Map<AsistenciaResultDTO>(item);
-                        resultDto.Asistencias = item.Asistencias.OrderBy(a => a.Fecha)
+
+                        var asistenciaToOrder = verify ? asistenciaList : item.Asistencias;
+                        if (asistenciaToOrder != null)
+                            resultDto.Asistencias = asistenciaToOrder.OrderBy(a => a.Fecha)
                                 .TakeWhile(a => a.Fecha.Month == mes)
-                                .Select(b => new AssitenciasFechaResult()
+                                .ToList()
+                                .ConvertAll(b => new AssitenciasFechaResult()
                                 {
                                     Fecha = b.Fecha,
                                     Id = b.Id,
                                     Estado = b.Estado,
                                     Observacion = b.Observacion
-                                })
-                                .ToList();
+                                });
+
                         var totalAsistencias = resultDto.Asistencias.Count;
                         
                         var porcentajePresentes = totalAsistencias > 0 ? ((float)resultDto.Asistencias.Sum(a => a.Estado == 'P' ? 1 : 0) / totalAsistencias) * 100 : 0;
-                        var PorcentajeAusentes = totalAsistencias > 0 ? ((float)resultDto.Asistencias.Sum(a => a.Estado == 'A' ? 1 : 0) / totalAsistencias) * 100 : 0;
-                        var PorcentajeJustificados = totalAsistencias > 0 ? ((float)resultDto.Asistencias.Sum(a => a.Estado == 'J' ? 1 : 0) / totalAsistencias) * 100 : 0;
+                        var porcentajeAusentes = totalAsistencias > 0 ? ((float)resultDto.Asistencias.Sum(a => a.Estado == 'A' ? 1 : 0) / totalAsistencias) * 100 : 0;
+                        var porcentajeJustificados = totalAsistencias > 0 ? ((float)resultDto.Asistencias.Sum(a => a.Estado == 'J' ? 1 : 0) / totalAsistencias) * 100 : 0;
                         
                         resultDto.PorcentajePresentes = porcentajePresentes;
-                        resultDto.PorcentajeAusentes = PorcentajeAusentes;
-                        resultDto.PorcentajeJustificados = PorcentajeJustificados;
-
+                        resultDto.PorcentajeAusentes = porcentajeAusentes;
+                        resultDto.PorcentajeJustificados = porcentajeJustificados;
+                        
                         results.Add(resultDto);
                     }
 
@@ -128,12 +157,10 @@ namespace profefolio.Controllers
                 Console.WriteLine($"{e}");
                 return BadRequest(e.Message);
             }
-            catch (Exception e)
-            {
-                Console.WriteLine($"{e}");
-                return BadRequest("Error durante la obtencion de asistencias");
-            }
+            
         }
+        
+        
 
 
         /// <summary>
@@ -223,7 +250,7 @@ namespace profefolio.Controllers
                         asistencia.ModifiedBy = userEmail;
                         asistencia.Estado = item.Estado;
                         asistencia.Observacion = item.Observacion;
-                        asistencia.Fecha = item.Fecha;
+                        //asistencia.Fecha = item.Fecha;
 
                         _asistenciaService.Edit(asistencia);
 

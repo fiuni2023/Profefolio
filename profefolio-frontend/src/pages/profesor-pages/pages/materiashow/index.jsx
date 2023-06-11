@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { SRow } from "../../../../components/componentsStyles/StyledDashComponent";
-import { useGeneralContext } from "../../../../context/GeneralContext";
 import { useModularContext } from "../../context";
 import ShowContainer from "../../../clases/components/ShowContainer";
 import PromedioPuntaje from "../../components/PromedioPuntaje";
@@ -8,12 +7,12 @@ import PromedioAsistencia from "../../components/PromedioAsistencia";
 import MateriaCards from "../../components/MateriaCards";
 import BackButton from "../../components/BackButton";
 import MateriaHorario from "../../components/MateriaHorario";
+import Spinner from "../../../../components/componentsStyles/SyledSpinner";
 
 const ProfesorMateriaShow = () => {
-    const {getUserName} = useGeneralContext()
     const {setPage, dataSet} = useModularContext()
 
-    const { materiaShow, materiaName } = dataSet
+    const { materiaShow, materiaName, loading, currColegio, currClase } = dataSet
 
     // const handleClickCards = () => {
     //     setPage("dashboard")
@@ -46,11 +45,14 @@ const ProfesorMateriaShow = () => {
 
 
     const config = {
-        onAnotation: ()=>{setPage("anotacion")}
+        onAnotation: ()=>{setPage("anotacion")},
+        onAsistencia: ()=>{setPage("asistencia")},
+        onDocumento: ()=>{setPage("documento")},
+        onEvaluacion: ()=>{setPage("evaluaciones")}
     }
 
     const componentes = {
-        title: `Bienvenido Prof. ${getUserName()} - ${materiaName}`,
+        title: `${currColegio} - ${currClase} - ${materiaName}`,
         componentes: [
             <SRow>
                 <MateriaCards materia={materiaMapped} configuration={config} />
@@ -65,7 +67,10 @@ const ProfesorMateriaShow = () => {
                 <BackButton to="materia" />
                 <MateriaHorario />
             </div>
-            <ShowContainer data={componentes}/>
+            {loading ? 
+                    <Spinner height={"calc(100vh - 90px)"}></Spinner>
+                :   <ShowContainer data={componentes}/>
+            }
         </>
     )
 }
