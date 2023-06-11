@@ -482,6 +482,19 @@ namespace profefolio.Services
 
           public async Task<List<DashboardPuntajeDTO>> ShowPuntajes(string user, int idMateriaLista)
           {
+
+              var validateMateria = await _context.MateriaListas
+                  .Include(x => x.Profesor)
+                  .AnyAsync(ml => !ml.Deleted
+                               && ml.Id == idMateriaLista
+                               && ml.Profesor.Email.Equals(user));
+
+              if (!validateMateria)
+              {
+                  throw new UnauthorizedAccessException();
+              }
+
+
               var queryEvaluaciones = await _context.Eventos
                   .Where(e => !e.Deleted && e.MateriaListaId == idMateriaLista)
                   .Include(ev => ev.EvaluacionAlumnos)

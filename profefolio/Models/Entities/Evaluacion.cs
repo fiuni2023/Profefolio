@@ -9,6 +9,9 @@ using System.ComponentModel.DataAnnotations;
 public class Evaluacion : Data
 {
     [Required(ErrorMessage = "Requerido")]
+    [MaxLength(32, ErrorMessage = "Parametro no valido")]
+    public string? Nombre { get; set; }
+    [Required(ErrorMessage = "Requerido")]
     [MaxLength(16, ErrorMessage = "Parametro no valido")]
     public string? Etapa { get; set; }
     public MateriaLista? MateriaList{ get; set; }
