@@ -10,8 +10,8 @@ namespace profefolio.Models.Entities
         public int ColegioId { get; set; }
 
         public string? PersonaId { get; set; }
-        public Colegio Colegio { get; set; }
-        public Persona Persona { get; set; } = new();
+        public Colegio? Colegio { get; set; }
+        public Persona? Persona { get; set; }
 
         public ICollection<ClasesAlumnosColegio> ClasesAlumnosColegios { get; set; } = new List<ClasesAlumnosColegio>();
 

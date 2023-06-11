@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 [Table("EvaluacionAlumnos")]
 public class EvaluacionAlumno : Data
 {
-    public Evaluacion Evaluacion { get; set; } = new();
+    public Evaluacion? Evaluacion { get; set; }
     [Required(ErrorMessage = "Requerido")]
     public int EvaluacionId { get; set; }
     public double PuntajeLogrado { get; set; }
