@@ -14,60 +14,52 @@ public class EventoService : IEvento
     {
         _dbContext = dbContext;
     }
-    public async Task<Evaluacion> FindById(int id)
+    
+    public async Task<Evaluacion> Add(Evaluacion t, string user)
     {
-        return await _dbContext.Eventos
-            .Where(p => !p.Deleted && p.Id == id)
-            .FirstOrDefaultAsync();
-    }
-    public async Task<Evaluacion> FindById2(int id)
-    {
-        /*
-        return await _dbContext.Eventos
-            .Where(p => !p.Deleted && p.Id == id)
-            .Include(e => e.Materias)
-            .Include(e => e.Clases)
-            .Include(e => e.Colegios)
-            .FirstOrDefaultAsync();
+        var profesor =await _dbContext.Users
+            .Where(p => !p.Deleted)
+            .FirstOrDefaultAsync(p => p.Email.Equals(user));
+
+        var verifyProfe = await _dbContext.MateriaListas
+            .AnyAsync(ml => !ml.Deleted && ml.Id == t.MateriaListaId);
+        
+        
             
-        */
-        throw new NotImplementedException();
-    }
+        
+        
+        if (!verifyProfe || profesor == null)
+        {
+            throw new UnauthorizedAccessException();
+        }
 
-
-    public async Task<Evaluacion> FindByEventoRepetido(String t, DateTime f, int c, int m, int col)
-    {
-        /*
-        return await _dbContext.Eventos
-            .Where(p => !p.Deleted && p.Tipo == t && p.Fecha == f
-             && p.MateriaId == m && p.ClaseId == c && p.ColegioId == col)
+        var claseId = await _dbContext.MateriaListas
+            .Where(ml => !ml.Deleted)
+            .Where(ml => ml.ProfesorId.Equals(profesor.Id) && ml.Id == t.MateriaListaId)
+            .Select(c => c.ClaseId)
             .FirstOrDefaultAsync();
-        */
-        throw new NotImplementedException();
-    }
 
-    public async Task<List<Evaluacion>> GetAll(String prfId)
-    {
-        /*
-        return await _dbContext.Eventos
-        .Where(p => !p.Deleted)
-        .Where(p => p.ProfesorId == prfId)
-        .Include(e => e.Materias)
-        .Include(e => e.Clases)
-        .Include(e => e.Colegios)
-        .ToListAsync();
-        */
-        throw new NotImplementedException();
-    }
 
-    public Evaluacion Edit(Evaluacion t)
-    {
-        _dbContext.Entry(t).State = EntityState.Modified;
-        return t;
-    }
+        var alumnosQuery = _dbContext.ClasesAlumnosColegios
+            .Where(cac => !cac.Deleted)
+            .Where(cac => cac.ClaseId == claseId);
 
-    public async Task<Evaluacion> Add(Evaluacion t)
-    {
+        t.EvaluacionAlumnos = new List<EvaluacionAlumno>();
+
+        foreach (var alumno in alumnosQuery)
+        {
+            var evaluacion = new EvaluacionAlumno
+            {
+                PuntajeLogrado = 0,
+                PorcentajeLogrado = 0,
+                ClasesAlumnosColegioId = alumno.Id,
+                Created = DateTime.Now,
+                CreatedBy = user
+            };
+            
+            t.EvaluacionAlumnos.Add(evaluacion);
+        }
+        
         var result = await _dbContext.Eventos.AddAsync(t);
         return result.Entity;
     }
@@ -76,17 +68,7 @@ public class EventoService : IEvento
     {
         await _dbContext.SaveChangesAsync();
     }
-
-    public int Count()
-    {
-        return _dbContext.Eventos
-            .Count(p => !p.Deleted);
-    }
-
-    public bool Exist()
-    {
-        return Count() > 0;
-    }
+    
     protected virtual void Dispose(bool disposing)
     {
         if (!this._disposed)
@@ -104,13 +86,4 @@ public class EventoService : IEvento
         Dispose(true);
         GC.SuppressFinalize(this);
     }
-
-    public IEnumerable<Evaluacion> GetAll(int page, int cantPorPag)
-    {
-        return _dbContext.Eventos
-         .Where(p => !p.Deleted)
-         .Skip(page * cantPorPag)
-         .Take(cantPorPag);
-    }
-
 }
