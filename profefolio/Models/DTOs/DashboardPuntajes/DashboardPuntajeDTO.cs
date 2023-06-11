@@ -4,5 +4,6 @@ namespace profefolio.Models.DTOs.DashboardPuntajes;
 public class DashboardPuntajeDTO
 {
     public string? NombreEvaluacion { get; set; }
+    public string? Tipo { get; set; }
     public double Promedio { get; set; }
 }

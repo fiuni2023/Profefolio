@@ -9,6 +9,8 @@ public class EventoDTO
      [Required(ErrorMessage = "Requerido")]
      public string? Tipo { get; set; }
      [Required(ErrorMessage = "Requerido")]
+     public string? Nombre { get; set; }
+     [Required(ErrorMessage = "Requerido")]
      public string? Etapa { get; set; }
      [Required(ErrorMessage = "Requerido")]
      public DateTime Fecha { get; set; }

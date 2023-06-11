@@ -121,7 +121,10 @@ public class CalificacionService : ICalificacion
                                     PuntajeLogrado = e.PuntajeLogrado,
                                     PorcentajeLogrado = e.PorcentajeLogrado,
                                     PuntajeTotal = e.Evaluacion.PuntajeTotal,
-                                    IdEvaluacion = e.Id
+                                    IdEvaluacion = e.Id,
+                                    NombreEvaluacion = e.Evaluacion.Nombre,
+                                    Tipo = e.Evaluacion.Tipo
+
                                 };
                             return null;
                         } ).ToList(),

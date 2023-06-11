@@ -504,7 +504,7 @@ namespace profefolio.Services
 
               foreach (var evaluacion in queryEvaluaciones)
               {
-                  var dashPuntaje = new DashboardPuntajeDTO();
+                  
                   var porcentajesSum = evaluacion.EvaluacionAlumnos
                       .Where(x => !x.Deleted)
                       .Sum(y => y.PorcentajeLogrado);
@@ -513,10 +513,14 @@ namespace profefolio.Services
                       .Count(x => !x.Deleted);
 
                   var prom = porcentajesSum / cant;
+                  var dashPuntaje = new DashboardPuntajeDTO
+                  {
+                      Promedio = prom,
+                      NombreEvaluacion = evaluacion.Nombre,
+                      Tipo = evaluacion.Tipo
+                  };
 
-                  dashPuntaje.Promedio = prom;
-                  dashPuntaje.NombreEvaluacion = evaluacion.Tipo;
-                  
+
                   result.Add(dashPuntaje);
               }
 

@@ -72,7 +72,8 @@ namespace profefolio.Controllers
                         MateriaListaId = ml.Id,
                         PuntajeTotal = evento.Puntaje,
                         Created = DateTime.Now,
-                        Fecha = evento.Fecha
+                        Fecha = evento.Fecha,
+                        Nombre = evento.Nombre
                     };
 
                     await _eventoService.Add(p, user);
