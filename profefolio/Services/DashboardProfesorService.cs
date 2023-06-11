@@ -480,30 +480,34 @@ namespace profefolio.Services
             return eventosClase;
         }
 
-          public Task<List<DashboardPuntajeDTO>> ShowPuntajes(string user, int idMateriaLista)
+          public async Task<List<DashboardPuntajeDTO>> ShowPuntajes(string user, int idMateriaLista)
           {
-              var queryEvaluaciones = _context.Eventos
+              var queryEvaluaciones = await _context.Eventos
                   .Where(e => !e.Deleted && e.MateriaListaId == idMateriaLista)
-                  .Include(ev => ev.EvaluacionAlumnos);
+                  .Include(ev => ev.EvaluacionAlumnos)
+                  .ToListAsync();
+
+              var result = new List<DashboardPuntajeDTO>();
 
               foreach (var evaluacion in queryEvaluaciones)
               {
                   var dashPuntaje = new DashboardPuntajeDTO();
-                  var q = evaluacion.EvaluacionAlumnos
-                      .Where(ev => !ev.Deleted)
-                      ;
+                  var porcentajesSum = evaluacion.EvaluacionAlumnos
+                      .Where(x => !x.Deleted)
+                      .Sum(y => y.PorcentajeLogrado);
+                  
+                  var cant = evaluacion.EvaluacionAlumnos
+                      .Count(x => !x.Deleted);
 
+                  var prom = porcentajesSum / cant;
 
+                  dashPuntaje.Promedio = prom;
+                  dashPuntaje.NombreEvaluacion = evaluacion.Tipo;
+                  
+                  result.Add(dashPuntaje);
               }
-              
-                  
-                  
-                  
-                  
-              var dashboard = new List<DashboardPuntajeDTO>();
-              
-              
-              throw new NotImplementedException();
+
+              return result;
           }
     }
 }
