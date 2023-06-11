@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using profefolio.Helpers;
 using profefolio.Models.DTOs;
 using profefolio.Models.DTOs.Persona;
-
+using profefolio.Models.DTOs.Admin;
 namespace profefolio
 {
     [ApiController]
@@ -82,6 +82,25 @@ namespace profefolio
             return Ok(result);
         }
 
+        [HttpGet("admin/not/assigned")]
+        [Authorize(Roles = "Master")]
+        public async Task<ActionResult<List<AdminSinColegioDTO>>> GetAdminsSingColegio()
+        {
+            Console.WriteLine("*******************en get");
+            try
+            {
+                var admins = await _adminReportService.GetAdminsSinColegio();
+
+                return Ok(_mapper.Map<List<AdminSinColegioDTO>>(admins));
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"{e}");
+                return BadRequest("Error al obtener los administradores");
+            }
+
+        }
 
 
 
