@@ -2,6 +2,11 @@ import styled from 'styled-components';
 
 const navbarLogoImage = require('../../assets/images/BigLogo.png');
 
+const handleClickable = (clickable) => {
+    if (clickable) return 'pointer;'
+    else return 'auto !important;'
+}
+
 const SNavBar = styled.nav`
     width: 100%;
     height: 100%;
@@ -27,6 +32,7 @@ const SMainLogo = styled.button`
     outline: none;
     border: none;
     background-color: #F0544F;
+    cursor: ${({ clickable }) => handleClickable(clickable)};
     display: flex;
     align-items: center;
     height: 2.1em;
