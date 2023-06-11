@@ -181,6 +181,7 @@ useEffect(() => {
   }, [usuariosSeleccionados]);
 
 
+  const [typeP, setTypeP] = useState("n");
 
   useEffect(() => {
    
@@ -240,7 +241,7 @@ useEffect(() => {
 
   {/* Este es un comentario en React*/}
   {Array.isArray(profesores) && profesores.map((e, i) => {
-  const [type, setType] = useState("n"); // Estado individual para cada componente
+   // Estado individual para cada componente
 
   return (
     <TagProfesor
@@ -248,15 +249,15 @@ useEffect(() => {
       id={e.idProfesor}
       nombre={`${e.nombre}`}
       apellido={`${e.apellido}`}
-      state={type} // Pasar el estado individual como prop state
+      state={typeP} // Pasar el estado individual como prop state
       idMateriaProfesor={idMateria}
       onClick={() => {
         console.log('entro', e.nombre);
         console.log('type', type);
 
-        const newType = type === "n" ? "reload" : "n";
+        const newType = typeP === "n" ? "reload" : "n";
 
-        setType(newType); // Actualizar el estado individual
+        setTypeP(newType); // Actualizar el estado individual
         updateType(newType);
         setStatus(estado);
         setStatusProfesorMateria(idMateria, e.id, newType);
