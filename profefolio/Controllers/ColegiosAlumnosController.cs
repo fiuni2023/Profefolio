@@ -89,8 +89,9 @@ namespace profefolio.Controllers
             try
             {
                 var alumnoColegios = await _cAlumnosService.FindAll(adminEmail, page, CantPorPage);
-
-                int cantPages = (int)Math.Ceiling((double)(await _cAlumnosService.Count(adminEmail)) / (double)CantPorPage);
+                
+                Console.WriteLine("Colegio ALumnos");
+                var cantPages = (int)Math.Ceiling((double)(await _cAlumnosService.Count(adminEmail)) / (double)CantPorPage);
 
                 var result = new DataListDTO<ColegioAlumnosDTO>();
 
@@ -249,7 +250,6 @@ namespace profefolio.Controllers
                 }
 
                 var colAlumno = _mapper.Map<ColegiosAlumnos>(dto);
-
                 colAlumno.CreatedBy = nameUser;
                 colAlumno.Created = DateTime.Now;
                 colAlumno.Deleted = false;
