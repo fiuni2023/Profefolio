@@ -98,11 +98,8 @@ namespace profefolio.Helpers.Mappers
                 .ForMember(dest => dest.Asistencias,
                     opt => opt.MapFrom(v => 25))
                 .ForMember(dest => dest.Calificaciones,
-                    opt => opt.MapFrom(v => new DBCardsMateriaInfoCalificaciones()
-                    {
-                        Calificaciones = 32,
-                        SinCalificaciones = 5
-                    }));
+                    opt => opt.MapFrom(v => 32
+                     ));
         }
     }
 }
