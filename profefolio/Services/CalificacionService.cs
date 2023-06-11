@@ -103,8 +103,6 @@ public class CalificacionService : ICalificacion
                 }
 
                 var porcentajeTotal = (puntajeTotalLogrado / total) * 100;
-                Console.WriteLine("Puntajes");
-                Console.WriteLine($"Total: {total} | Puntaje: {puntajeTotalLogrado} | Porcentaje: {porcentajeTotal}");
 
                 var etapa = new EtapaDTO
                 {

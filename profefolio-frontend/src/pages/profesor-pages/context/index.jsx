@@ -48,7 +48,7 @@ export const ModularProvider = ({ children }) => {
     const [ materiaName, setMateriaName ] = useState("")
     const [ asistencias, setAsistencias ] = useState([])
     const [ puntajes, setPuntajes ] = useState([])
-    const [ alumnos/* , setAlumnos */ ] = useState([])
+    const [ alumnos, setAlumnos ] = useState([])
     const [ currColegio, setCurrColegio ] = useState("")
     const [ currClase, setCurrClase ] = useState("")
     const [ currMateria, setCurrMateria ] = useState("")
@@ -97,6 +97,7 @@ export const ModularProvider = ({ children }) => {
             body = {opcion: 'lista-alumnos', id: claseId, anho: 2023}
             ProfesorPagesService.Get(body, token)
             .then(function (d){
+                setAlumnos(d.data)
                 setLoading(false)
                 setLoadingClase(false)
             })
