@@ -13,7 +13,17 @@ import { HiCheckCircle } from 'react-icons/hi'
 import {sum} from 'lodash'
 import { useModularContext } from '../../context';
 import { RxCross1 } from 'react-icons/rx';
-import StyleComponentBreadcrumb from '../../../../components/StyleComponentBreadcrumb';
+import BackButton from '../../components/BackButton';
+import styled from 'styled-components';
+import AsistenciaUnit from './componentes/AsistenciaUnit';
+
+const FlexDiv = styled.div`
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 10px;
+`
+
 // const Asistencia = ({ materia = { id: 1, nombre: "Matemáticas" } }) => {
 const Asistencia = React.memo(() => {
     const { getToken/*, cancan, verifyToken*/ } = useGeneralContext()
@@ -27,6 +37,8 @@ const Asistencia = React.memo(() => {
     const [tablaAsistencia, setDatosTabla] = useState([]);
     const [datosTablaOriginales, setDatosTablaOriginales] = useState([]);
 
+    const [disableEdit, setDisableEdit] = useState(false)
+
     const [nuevaAsistencia, setNuevaAsistencia] = useState([])
     const [adding, setAdding] = useState(false)
     const [cantAlumnos, setCantAlumnos] = useState(0)
@@ -39,6 +51,7 @@ const Asistencia = React.memo(() => {
 
     const { doFetch, loading, error } = useFetchEffect(
         () => {
+            setDisableEdit(true)
             // return axios.get(`${APILINK}/api/Asistencia/${materia?.id}`, {
             let body = {
                 "idMateriaLista": materiaId,
@@ -55,6 +68,7 @@ const Asistencia = React.memo(() => {
         {
             condition: true,
             handleSuccess: (dataAsistencia) => {
+                console.log(dataAsistencia)
                 setPorcentajes((before)=> {return []})
                 setCantAlumnos(dataAsistencia.length)
                 setCantClases(dataAsistencia[0]?.asistencias?.length)
@@ -72,6 +86,7 @@ const Asistencia = React.memo(() => {
                         { titulo: "%" }
                     ],
                     filas: dataAsistencia.map((dato) => {
+                        console.log(dato)
                         setPorcentajes((before)=>{return [...before, dato.porcentajePresentes]})
                         return {
                             fila: dato,
@@ -79,7 +94,7 @@ const Asistencia = React.memo(() => {
                                 { dato: dato?.nombre ? `${dato.apellido}, ${dato.nombre} ` : " " },
                                 ...(dato.asistencias?.length > 0
                                     ? dato.asistencias.map((fecha) => {
-                                        return { dato: fecha?.estado ? fecha.estado : "" };
+                                        return { dato: fecha?.estado ? fecha.estado : "", componente: <AsistenciaUnit disable={disableEdit} fetchFunc = {()=>{doFetch()}} fecha={fecha}/> };
                                     })
                                     : []),
                                 { dato: dato?.porcentajePresentes.toFixed(2) }
@@ -98,6 +113,7 @@ const Asistencia = React.memo(() => {
                     }
                 })
                 )
+                setDisableEdit(false)
             },
             handleError: () => {
                 if (!loading) {
@@ -217,7 +233,12 @@ const Asistencia = React.memo(() => {
         <>
             <MainContainer>
                 {/* <StyleComponentBreadcrumb nombre={`Registro de Asistencia - ${materia?.nombre}`} /> */}
-                <StyleComponentBreadcrumb nombre={`${currColegio} - ${currClase} - ${materiaName} - Registro de Asistencia`} />
+                <FlexDiv>
+                    <BackButton to="materiashow"/>
+                    <h5 className="m-0">
+                        {currColegio} - {currClase} - {materiaName} - Registro de Asistencia 
+                    </h5>
+                </FlexDiv>
                 <Container>
                     <SideSection>
                         <TableContainer>
