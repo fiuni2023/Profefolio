@@ -78,15 +78,26 @@ public class AlumnosController : ControllerBase
 
 
             var saved = await _personasService.CreateUser(entity, $"{dto.Email}.Mm123");
+           
 
             if (await _rolService.AsignToUser("Alumno", saved)){
+                
+                Console.WriteLine("****************************************************************************");
+                Console.WriteLine($"Id Saved: {saved.Id} Nombre {saved.Nombre}");
                 // se agrega el alumno al colegio del administrador
-                await _colAlumnosService.Add(new ColegiosAlumnos(){
+
+                var ca = new ColegiosAlumnos()
+                {
                     ColegioId = adminColegio.Colegio.Id,
                     CreatedBy = adminEmail,
                     Created = DateTime.Now,
                     PersonaId = saved.Id
-                });
+                };
+               var res =  await _colAlumnosService.Add(ca);
+               Console.WriteLine("COLEGIO *********************************************************");
+               Console.WriteLine($"IdColAl: {ca.ColegioId} PersonaId: {ca.PersonaId} Nombre: {ca.Persona.Nombre}");
+               Console.WriteLine("COLEGIO *********************************************************");
+               Console.WriteLine($"IdColAl: {res.ColegioId} PersonaId: {res.PersonaId} Nombre: {res.Persona.Nombre}");
                 await _colAlumnosService.Save();
                 
                 return Ok(_mapper.Map<AlumnoGetDTO>(saved));
