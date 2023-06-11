@@ -250,7 +250,7 @@ namespace profefolio.Controllers
                         asistencia.ModifiedBy = userEmail;
                         asistencia.Estado = item.Estado;
                         asistencia.Observacion = item.Observacion;
-                        asistencia.Fecha = item.Fecha;
+                        //asistencia.Fecha = item.Fecha;
 
                         _asistenciaService.Edit(asistencia);
 
