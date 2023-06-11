@@ -131,7 +131,7 @@ function Profesores() {
 
                   <Tabla
                     datosTabla={{
-                      tituloTabla: 'Lista de profesores',
+                      tituloTabla: 'Lista_de_profesores',
                       titulos: [
                         { titulo: 'CI' },
                         { titulo: 'Nombre' },

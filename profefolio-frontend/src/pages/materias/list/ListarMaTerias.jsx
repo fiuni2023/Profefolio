@@ -318,7 +318,7 @@ function ListarMaTerias() {
               <div id={styles.materiasTable}>
                 <Tabla
                   datosTabla={{
-                    tituloTabla: 'Lista de Materias',
+                    tituloTabla: 'Lista_de_Materias',
                     titulos: [
                       { titulo: 'Materias' },
                     ],
@@ -381,7 +381,7 @@ function ListarMaTerias() {
               <div id={styles.ciclosTable}>
                 <Tabla
                   datosTabla={{
-                    tituloTabla: 'Lista de Ciclos',
+                    tituloTabla: 'Lista_de_ciclos',
                     titulos: [
                       { titulo: 'Ciclos' },
                     ],

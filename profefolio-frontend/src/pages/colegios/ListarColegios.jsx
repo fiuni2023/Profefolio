@@ -32,7 +32,7 @@ function ListarColegios() {
   const [fetch_data, setFetchData] = useState([]);
   const [administrators, setAdministrators] = useState([])
   const [datosTabla, setDatosTabla] = useState({
-    tituloTabla: "studentsList",
+    tituloTabla: "Lista_de_colegios",
     titulos: [{ titulo: "Numero" }, { titulo: "Nombre" }, { titulo: "Administrador" }]
   });
   const [selectedId, setSelectedId] = useState(null)
