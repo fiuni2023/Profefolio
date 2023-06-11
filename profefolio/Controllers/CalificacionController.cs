@@ -6,7 +6,7 @@ using profefolio.Repository;
 
 namespace profefolio.Controllers;
 
-[Route("api/{controller}")]
+[Route("api/[controller]")]
 [Authorize(Roles = "Profesor")]
 public class CalificacionController : ControllerBase
 {
