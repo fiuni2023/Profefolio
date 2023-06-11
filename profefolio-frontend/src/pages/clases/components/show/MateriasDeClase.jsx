@@ -39,92 +39,69 @@ justify-content: space-around;
 
 
 
-const TagProfesor = memo(({ id, nombre = "",apellido = "", state="n", onClick = () => { },selected  }) => {
+const TagProfesor = memo(({ id, nombre = "", apellido = "", state = "n", onClick = () => { }, selected }) => {
   const uid = useId();
-  const unicId = uid.substring(1, uid.length - 1)
+  const unicId = uid.substring(1, uid.length - 1);
 
-  const [type, setType] = useState("d");
+  const [type, setType] = useState(state);
 
-
-  const bgColor = (estado, isSelected) => {
-    if (isSelected) {
-      return "#C2C2C2"; // Color cuando está seleccionado
-    } else {
-      switch (`${estado.toLowerCase()}`) {
-        case "reload":
-          return "#F3E6AE";
-        case "d":
-          return "#D1F0E6";
-             
-        case "n":
-          return "#C2C2C2";
-        default:
-          return "#C2C2C2";
-      }
+  const bgColor = (estado) => {
+    switch (`${estado.toLowerCase()}`) {
+      case "reload":
+        return "#F3E6AE";
+      case "d":
+        return "#D1F0E6";
+      case "n":
+        return "#C2C2C2";
+      default:
+        return "#C2C2C2";
     }
   };
 
   useEffect(() => {
-    setType(bgColor(state, selected));
-  }, [state, selected]);
-
-/*
-  const bgColor = (estado) => {
-      switch (`${estado.toLowerCase()}`) {
-          case "reload":
-              return "#F3E6AE";
-          case "d":
-              return "#D1F0E6";
-            case "n":
-              return "#C2C2C2";
-      }
-  }
-
-  useEffect(() => {
-      setType(bgColor(state))
+    setType(state);
   }, [state]);
-*/
-  return <>
-      <TagTeacher className={`tag-teacher-${unicId}`}>
-          <Item className='item-nombre-profe'>{nombre} {apellido}</Item>
-          <ListButton onClick={onClick}>{state !== 'reload' ? 'X' : <RxReload style={{ fontSize: '24px' }} size={24} />}</ListButton>
 
+  return (
+    <>
+      <TagTeacher className={`tag-teacher-${unicId}`}>
+        <Item className="item-nombre-profe">{nombre} {apellido}</Item>
+        <ListButton onClick={onClick}>{type !== 'reload' ? 'X' : <RxReload style={{ fontSize: '24px' }} size={24} />}</ListButton>
       </TagTeacher>
       <style jsx="true">{
           `
-          .item-nombre-profe {
-              padding-left: 5px;
-              overflow: hidden;
-              text-overflow: ellipsis;
-              max-width: calc(15rem - 24px);
-              font-size: 15px;
-              display: flex;
-              align-items: center;
-              white-space: nowrap;
-            }
-            
-            .tag-teacher-${unicId} {
-              background-color: ${type};
-              padding: 0.2rem;
-              max-width: 10rem;
-              width: fit-content;
-              height: 24px;
-              display: flex;
-              align-items: center;
-              flex-wrap: nowrap;
-              white-space: nowrap;
-            }
-            
-            
-            
-          .btn-cancelar{
-              background-color: red;
-              min-width: 1rem;
-          }
-      `
-      }</style>
-  </>
-})
+        .item-nombre-profe {
+          padding-left: 5px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          max-width: calc(15rem - 24px);
+          font-size: 15px;
+          display: flex;
+          align-items: center;
+          white-space: nowrap;
+        }
+
+        .tag-teacher-${unicId} {
+          background-color: ${bgColor(type)};
+          padding: 0.2rem;
+          max-width: 10rem;
+          width: fit-content;
+          height: 24px;
+          display: flex;
+          align-items: center;
+          flex-wrap: nowrap;
+          white-space: nowrap;
+        }
+
+        .btn-cancelar {
+          background-color: red;
+          min-width: 1rem;
+        }
+      `}</style>
+    </>
+  );
+});
+
 
 
 
@@ -253,9 +230,6 @@ useEffect(() => {
                         state={newType}
                         idMateriaProfesor={idMateria} 
                         onClick={() => {
-
-        
-                         
                             setProfesoresSeleccionados((prevSeleccionados) =>
                             prevSeleccionados.filter((id) => id !== profesor.id)
                             );
@@ -266,41 +240,36 @@ useEffect(() => {
 
   {/* Este es un comentario en React*/}
   {Array.isArray(profesores) && profesores.map((e, i) => {
-    return(
-          <TagProfesor
-            key={i}
-            id={e.idProfesor}
-            nombre={`${e.nombre}`}
-            apellido={`${e.apellido}`}
-            state={newType} // Pasar el valor de type como prop state
-            idMateriaProfesor={idMateria}
-            onClick={() => {
-              console.log('entro',e.nombre);
-            
-              const newType = type === "n" ? "reload" : "n";
-              updateType(newType);
-              setStatus(estado);
-              setStatusProfesorMateria(idMateria, e.id, newType);
-              setIdMateriaSeleccionado(idMateria);
-              setUsuariosSeleccionados([...usuariosSeleccionados, e.idProfesor]);
-              setType(newType);
+  const [type, setType] = useState("n"); // Estado individual para cada componente
 
-              console.log('selectedProfesorId',selectedProfesorId);
+  return (
+    <TagProfesor
+      key={i}
+      id={e.idProfesor}
+      nombre={`${e.nombre}`}
+      apellido={`${e.apellido}`}
+      state={type} // Pasar el estado individual como prop state
+      idMateriaProfesor={idMateria}
+      onClick={() => {
+        console.log('entro', e.nombre);
+        console.log('type', type);
 
-              console.log('e.idProfesor',e.idProfesor);
-            }}
-            selected={selectedProfesorId === e.idProfesor}
+        const newType = type === "n" ? "reload" : "n";
 
-           
-          />
-        )})}
-
+        setType(newType); // Actualizar el estado individual
+        updateType(newType);
+        setStatus(estado);
+        setStatusProfesorMateria(idMateria, e.id, newType);
+        setIdMateriaSeleccionado(idMateria);
+        setUsuariosSeleccionados([...usuariosSeleccionados, e.idProfesor]);
+        console.log('e.idProfesor', e.idProfesor);
+      }}
+    />
+  );
+})}
 
 
 
-
-
-            
 
                 </div>
             </div>
