@@ -45,6 +45,7 @@ namespace profefolio.Controllers
 
                 if (evalue || evalueEtapa)
                 {
+
                     return BadRequest("Tipo de evento invalido");
                 }
 

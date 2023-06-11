@@ -7,4 +7,6 @@ public class PuntajeDTO
     public double PuntajeLogrado { get; set; }
     public double PorcentajeLogrado { get; set; }
     public int IdEvaluacion { get; set; }
+    public string? NombreEvaluacion { get; set; }
+    public string? Tipo { get; set; }
 }

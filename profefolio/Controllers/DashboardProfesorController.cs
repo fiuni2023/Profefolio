@@ -11,6 +11,7 @@ using profefolio.Helpers;
 using profefolio.Repository;
 using profefolio.Models.DTOs.DashboardProfesor;
 using profefolio.Models.DTOs.DashboardProfesor.GetWithOpcions;
+using profefolio.Models.DTOs.DashboardPuntajes;
 
 namespace profefolio.Controllers
 {
@@ -133,6 +134,39 @@ namespace profefolio.Controllers
             }
 
 
+        }
+
+        ///<summary>
+        /// Lista de Nombre de evaluaciones con sus promedios de porcentajes logrados
+        /// por los alumnos
+        /// 
+        ///</summary>
+
+        [HttpGet]
+        [Route("showpuntajes/{idMateriaLista:int}")]
+        public async Task<ActionResult<List<DashboardPuntajeDTO>>> ShowPuntajes(int idMateriaLista)
+        {
+            try
+            {
+                var user = User.FindFirstValue(ClaimTypes.Name);
+                var query = await _dashBoardService.ShowPuntajes(user, idMateriaLista);
+                return Ok(query);
+            }
+            catch (FileNotFoundException e)
+            {
+                Console.WriteLine(e);
+                return NotFound();
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                Console.WriteLine(e);
+                return Unauthorized();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return BadRequest();
+            }
         }
 
 
