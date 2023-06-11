@@ -19,7 +19,7 @@ public class CalificacionController : ControllerBase
 
     [HttpGet]
     [Route("{idMateriaLista:int}")]
-    public async Task<ActionResult<EtapaDTO>> Get(int idMateriaLista)
+    public async Task<ActionResult<PlanillaDTO>> Get(int idMateriaLista)
     {
         try
         {
