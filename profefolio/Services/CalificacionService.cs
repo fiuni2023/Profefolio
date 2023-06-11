@@ -198,13 +198,40 @@ public class CalificacionService : ICalificacion
             throw new FileNotFoundException();
         }
 
-        ev.PuntajeLogrado = dto.Puntaje;
-        if (ev.Evaluacion != null) ev.PorcentajeLogrado = (dto.Puntaje * 100) / ev.Evaluacion.PuntajeTotal;
-        await _db.SaveChangesAsync();
+        switch (dto.Modo)
+        {
+            case "p" :
+                ev.PuntajeLogrado = dto.Puntaje;
+                if (ev.Evaluacion != null) ev.PorcentajeLogrado = (dto.Puntaje * 100) / ev.Evaluacion.PuntajeTotal;
+                await _db.SaveChangesAsync();
         
-        await this.Verify(idMateriaLista, user);
-        var result = await this.GetAll(idMateriaLista, user);
-        return result;
+                await this.Verify(idMateriaLista, user);
+                var result = await this.GetAll(idMateriaLista, user);
+                return result;
+            case "pt" :
+                if (ev.Evaluacion != null)
+                {
+                    ev.Evaluacion.PuntajeTotal = dto.PuntajeTotal;
+                    ev.PorcentajeLogrado = (ev.PuntajeLogrado * 100) / ev.Evaluacion.PuntajeTotal;
+                    await _db.SaveChangesAsync();
+                }
+
+                await this.Verify(idMateriaLista, user);
+                return await this.GetAll(idMateriaLista, user);
+            case "nn":
+                if (ev.Evaluacion != null)
+                {
+                    ev.Evaluacion.Nombre = dto.NombreEvaluacion;
+                    await _db.SaveChangesAsync();
+                }
+                await this.Verify(idMateriaLista, user);
+                return await this.GetAll(idMateriaLista, user);
+            
+            default:
+                throw new BadHttpRequestException("Modo no valido");
+        }
+
+       
     }
 
     private async Task CargarEvaluaciones(ClasesAlumnosColegio cac, string user)
