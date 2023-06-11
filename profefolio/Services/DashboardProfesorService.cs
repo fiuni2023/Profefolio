@@ -1,14 +1,10 @@
-using System.Text.RegularExpressions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using profefolio.Helpers;
 using profefolio.Models;
 using profefolio.Models.Entities;
 using profefolio.Models.DTOs.Materia;
 using profefolio.Models.DTOs.DashboardProfesor.GetWithOpcions;
+using profefolio.Models.DTOs.DashboardPuntajes;
 using profefolio.Repository;
 
 namespace profefolio.Services
@@ -484,6 +480,51 @@ namespace profefolio.Services
             return eventosClase;
         }
 
+          public async Task<List<DashboardPuntajeDTO>> ShowPuntajes(string user, int idMateriaLista)
+          {
 
+              var validateMateria = await _context.MateriaListas
+                  .Include(x => x.Profesor)
+                  .AnyAsync(ml => !ml.Deleted
+                               && ml.Id == idMateriaLista
+                               && ml.Profesor.Email.Equals(user));
+
+              if (!validateMateria)
+              {
+                  throw new UnauthorizedAccessException();
+              }
+
+
+              var queryEvaluaciones = await _context.Eventos
+                  .Where(e => !e.Deleted && e.MateriaListaId == idMateriaLista)
+                  .Include(ev => ev.EvaluacionAlumnos)
+                  .ToListAsync();
+
+              var result = new List<DashboardPuntajeDTO>();
+
+              foreach (var evaluacion in queryEvaluaciones)
+              {
+                  
+                  var porcentajesSum = evaluacion.EvaluacionAlumnos
+                      .Where(x => !x.Deleted)
+                      .Sum(y => y.PorcentajeLogrado);
+                  
+                  var cant = evaluacion.EvaluacionAlumnos
+                      .Count(x => !x.Deleted);
+
+                  var prom = porcentajesSum / cant;
+                  var dashPuntaje = new DashboardPuntajeDTO
+                  {
+                      Promedio = prom,
+                      NombreEvaluacion = evaluacion.Nombre,
+                      Tipo = evaluacion.Tipo
+                  };
+
+
+                  result.Add(dashPuntaje);
+              }
+
+              return result;
+          }
     }
 }

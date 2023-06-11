@@ -342,9 +342,18 @@ namespace profefolio.Services
         }
         public async Task<MateriaLista> FindById(int id)
         {
-            return await _db.MateriaListas
-                .Where(p => p != null && !p.Deleted && p.Id == id)
+            var query = await _db.MateriaListas
+                .Include(c => c.Clase)
+                .ThenInclude(col => col.Colegio)
+                .Where(p => !p.Deleted && p.Id == id)
                 .FirstOrDefaultAsync();
+
+            if (query == null)
+            {
+                throw new FileNotFoundException();
+            }
+
+            return query;
         }
 
         public async Task<MateriaLista> Filter(int idClase, int idColegio, string idProfesor, int idMateria)

@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using profefolio.Models.Entities;
 using profefolio.Models.DTOs.Materia;
 using profefolio.Models.DTOs.DashboardProfesor.GetWithOpcions;
+using profefolio.Models.DTOs.DashboardPuntajes;
+
 namespace profefolio.Repository
 {
     public interface IDashboardProfesor : IRepository<ColegioProfesor> 
@@ -28,5 +30,6 @@ namespace profefolio.Repository
         Task<List<DBCardEventosColegioDTO>> FindEventosOfClase(String idprofesor, int idColegio);
         Task<List<DBCardEventosClaseDTO>> FindEventosOfClase(String idprofesor);
         Task<List<DBCardEventosMateriaDTO>> FindEventosMaterias(String idprofesor, int idClase);
+        Task<List<DashboardPuntajeDTO>> ShowPuntajes(string user, int idMateriaLista);
     }
 }
