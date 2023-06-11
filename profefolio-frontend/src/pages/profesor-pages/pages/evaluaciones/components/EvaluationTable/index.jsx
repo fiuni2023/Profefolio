@@ -49,7 +49,7 @@ const EvaluationTable = () => {
 
     const { dataSet, functions, stateHandlers } = usePageContext()
     const { evalAlumnos, etapas } = dataSet
-    const { handleAddEtapa, handleDeleteEtapa, handleEditEventName, handleEditCalification } = functions
+    const { handleAddEtapa, handleDeleteEtapa, handleEditCalification } = functions
     const { setShowModal, setEtapaName } = stateHandlers
 
     const getCalif = (e) => {
@@ -65,6 +65,7 @@ const EvaluationTable = () => {
             valor = e.map((ev)=>{return ev.porcentaje_logrado}).reduce((b, a) => { return b + a })
             valor = valor / e.length
             sumatoria += valor
+            return e
         });
         sumatoria = sumatoria / etapas.length
         return sumatoria.toFixed(2)
