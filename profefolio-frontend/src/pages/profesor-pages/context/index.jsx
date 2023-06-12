@@ -38,7 +38,9 @@ export const ModularProvider = ({ children }) => {
     const [ fetch_data, setFetchData ] = useState(false)
     const [ currentPage, setCurrentPage ] = useState(pages.dashboard)
     const [ colegios, setColegios ] = useState([])
-    const [ eventos/* , setEventos */ ] = useState([])
+    const [ eventos , setEventos] = useState([])
+    const [ eventosColegio , setEventosColegio] = useState([])
+    const [ eventosClase , setEventosClase] = useState([])
     const [ colegioId, setColegioId] = useState(0) 
     const [ clases, setClases ] = useState([])
     const [ claseId, setClaseId] = useState(0)
@@ -89,6 +91,31 @@ export const ModularProvider = ({ children }) => {
     },[fetch_data, token, colegioId])
 
     useEffect(()=>{
+        if(colegioId){
+            setLoadingColegio(true)
+            let body = {opcion: 'eventos-clases', id: colegioId, anho: 2023}
+            ProfesorPagesService.Get(body, token)
+            .then(function(d){
+                setEventosColegio(d.data)
+                setLoading(false)
+                setLoadingColegio(false)
+            })
+        } else {
+            setLoadingColegio(false)
+        }
+    },[fetch_data, token, colegioId])
+
+    useEffect(()=>{
+            let body = {opcion: 'eventos-colegios', id: 1, anho: 2023}
+            ProfesorPagesService.Get(body, token)
+            .then(function(d){
+                setEventos(d.data)
+                setLoading(false)
+            })
+       
+    },[fetch_data, token])
+
+    useEffect(()=>{
         if(claseId){
             setLoadingClase(true)
             let body = {opcion: 'card-materias', id: claseId, anho: 2023}
@@ -97,7 +124,23 @@ export const ModularProvider = ({ children }) => {
             body = {opcion: 'lista-alumnos', id: claseId, anho: 2023}
             ProfesorPagesService.Get(body, token)
             .then(function (d){
+                console.log("d.data alumnos:"); // Imprimir d.data en la consola
                 setAlumnos(d.data)
+                setLoading(false)
+                setLoadingClase(false)
+            })
+        } else {
+            setLoadingClase(false)
+        }
+    },[fetch_data, token, claseId])
+
+    useEffect(()=>{
+        if(claseId){
+            setLoadingClase(true)
+            let body = {opcion: 'eventos-materias', id: claseId, anho: 2023}
+            ProfesorPagesService.Get(body, token)
+            .then(function (d){
+                setEventosClase(d.data)
                 setLoading(false)
                 setLoadingClase(false)
             })
@@ -206,6 +249,8 @@ export const ModularProvider = ({ children }) => {
         puntajes,
         alumnos,
         eventos,
+        eventosColegio,
+        eventosClase,
         loading,
         currColegio, 
         currClase,
