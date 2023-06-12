@@ -49,28 +49,30 @@ const Anotacion = () => {
     }
 
     return <>
-        <Row>
-            <FlexDiv>
-                <BackButton to="materiashow"/>
-                <h5 className="m-0">
-                {currColegio} - {currClase} - {materiaName} - Anotaciones 
-                </h5>
-            </FlexDiv>
-        </Row>
-        { loading ? <Spinner height={"calc(100vh - 90px)"}></Spinner>
-        :   <Row className="my-2">
-            <Col md={8}>
-                <GridDiv>
-                    {lista.map(l=>{return <AnotacionCard onClick={setSelected} observacion={l} />})}
-                </GridDiv>
-                {/* <Paginations /> */}
-            </Col>
-            <Col md={4}>
-                <AnotacionShow doFetch={doFetch} setSelectedAnotation={setSelected} selectedAnotation={selected}/>
-            </Col>
+        <div className="m-4">
+            <Row>
+                <FlexDiv>
+                    <BackButton to="materiashow"/>
+                    <h5 className="m-0">
+                    {currColegio} - {currClase} - {materiaName} - Anotaciones 
+                    </h5>
+                </FlexDiv>
             </Row>
-        }
-        <GapDiv />
+            { loading ? <Spinner height={"calc(100vh - 90px)"}></Spinner>
+            :   <Row className="my-2">
+                <Col md={8}>
+                    <GridDiv>
+                        {lista.map(l=>{return <AnotacionCard onClick={setSelected} observacion={l} />})}
+                    </GridDiv>
+                    {/* <Paginations /> */}
+                </Col>
+                <Col md={4}>
+                    <AnotacionShow doFetch={doFetch} setSelectedAnotation={setSelected} selectedAnotation={selected}/>
+                </Col>
+                </Row>
+            }
+            <GapDiv />
+        </div>
     </>
 }
 

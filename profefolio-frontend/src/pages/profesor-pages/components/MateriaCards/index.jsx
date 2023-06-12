@@ -45,10 +45,7 @@ const MateriaCards = ({
         },
         body: {
             first: {
-                title: `${materia?.calification_count} planillas de calificaciones`
-            },
-            second: {
-                title: `${materia?.event_yet} eventos sin calificar`
+                title: `${materia?.calification_count} calificaciones`
             }
         }
     }

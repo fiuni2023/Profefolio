@@ -13,13 +13,13 @@ import { useNavigate } from 'react-router';
 import APILINK from "../../../../components/link";
 import { useGeneralContext } from "../../../../context/GeneralContext";
 const ProfesorMateriaShow = () => {
-    const { setPage, dataSet, stateController} = useModularContext();
-    const { getToken, cancan, verifyToken, getMateriaId } = useGeneralContext();
-    const {materiaId} = stateController
+    const { setPage, dataSet, stateController } = useModularContext();
+    const { getToken, cancan, verifyToken } = useGeneralContext();
+    const { materiaId } = stateController
     const { materiaShow, materiaName, loading, currColegio, currClase } = dataSet
-    const [datosDashboard, setDatosDashboard]=useState([]);
+    const [datosDashboard, setDatosDashboard] = useState([]);
     const nav = useNavigate()
- 
+
     useEffect(() => {
         verifyToken()
         if (!cancan("Profesor")) {
@@ -38,16 +38,17 @@ const ProfesorMateriaShow = () => {
                 }
             })
                 .then(response => {
-                   setDatosDashboard(response.data)
-                   console.log(datosDashboard)
+                    setDatosDashboard(response.data)
+                    console.log(datosDashboard)
 
                 })
                 .catch(error => {
                     console.error(error);
-                    
+
                 });
 
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [cancan, verifyToken, getToken]);
 
     const [materiaMapped, setMateriaMapped] = useState({
@@ -65,7 +66,7 @@ const ProfesorMateriaShow = () => {
             const newMateria = {
                 anotations: materiaShow.anotaciones,
                 name: materiaName,
-                calification_count: materiaShow.calificaciones?.calificaciones,
+                calification_count: materiaShow.calificaciones,
                 event_yet: materiaShow.calificaciones?.sinCalificaciones,
                 classes_yet: 1,
                 documents: materiaShow.documentos,
@@ -84,7 +85,6 @@ const ProfesorMateriaShow = () => {
     }
 
     const componentes = {
-        title: `${currColegio} - ${currClase} - ${materiaName}`,
         componentes: [
             <SRow>
                 <MateriaCards materia={materiaMapped} configuration={config} />
@@ -95,8 +95,11 @@ const ProfesorMateriaShow = () => {
     };
     return (
         <>
-            <div className="d-flex align-items-center justify-content-between">
-                <BackButton to="materia" />
+            <div className="d-flex align-items-center m-4 justify-content-between">
+                <div className="d-flex align-items-center gap-3">
+                    <BackButton to="materia" />
+                    <h5 className="m-0">{`${currColegio} - ${currClase} - ${materiaName}`}</h5>
+                </div>
                 <MateriaHorario />
             </div>
             {loading ?
