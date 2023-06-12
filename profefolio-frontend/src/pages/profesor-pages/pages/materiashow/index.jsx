@@ -8,29 +8,61 @@ import MateriaCards from "../../components/MateriaCards";
 import BackButton from "../../components/BackButton";
 import MateriaHorario from "../../components/MateriaHorario";
 import Spinner from "../../../../components/componentsStyles/SyledSpinner";
-
+import axios from 'axios';
+import { useNavigate } from 'react-router';
+import APILINK from "../../../../components/link";
+import { useGeneralContext } from "../../../../context/GeneralContext";
 const ProfesorMateriaShow = () => {
-    const {setPage, dataSet} = useModularContext()
-
+    const { setPage, dataSet, stateController} = useModularContext();
+    const { getToken, cancan, verifyToken, getMateriaId } = useGeneralContext();
+    const {materiaId} = stateController
     const { materiaShow, materiaName, loading, currColegio, currClase } = dataSet
+    const [datosDashboard, setDatosDashboard]=useState([]);
+    const nav = useNavigate()
+ 
+    useEffect(() => {
+        verifyToken()
+        if (!cancan("Profesor")) {
+            nav("/")
+        } else {
 
-    // const handleClickCards = () => {
-    //     setPage("dashboard")
-    // }
+            let data = JSON.stringify({
+                opcion: "cards-materia",
+                id: materiaId,                              // id materiaLista
+                anho: 2023
+            });
+            axios.post(`${APILINK}/api/DashboardProfesor`, data, {
+                headers: {
+                    Authorization: `Bearer ${getToken()}`,
+                    "Content-Type": "application/json"
+                }
+            })
+                .then(response => {
+                   setDatosDashboard(response.data)
+                   console.log(datosDashboard)
+
+                })
+                .catch(error => {
+                    console.error(error);
+                    
+                });
+
+        }
+    }, [cancan, verifyToken, getToken]);
 
     const [materiaMapped, setMateriaMapped] = useState({
-                anotations: 0,
-                name: "",
-                calification_count: 0,
-                event_yet: 0,
-                classes_yet: 0,
-                documents: 0,
-                asistencias: 0
-            })
+        anotations: 0,
+        name: "",
+        calification_count: 0,
+        event_yet: 0,
+        classes_yet: 0,
+        documents: 0,
+        asistencias: 0
+    })
 
-    useEffect(()=>{
-        if(materiaShow && materiaName){
-            const newMateria ={
+    useEffect(() => {
+        if (materiaShow && materiaName) {
+            const newMateria = {
                 anotations: materiaShow.anotaciones,
                 name: materiaName,
                 calification_count: materiaShow.calificaciones?.calificaciones,
@@ -45,10 +77,10 @@ const ProfesorMateriaShow = () => {
 
 
     const config = {
-        onAnotation: ()=>{setPage("anotacion")},
-        onAsistencia: ()=>{setPage("asistencia")},
-        onDocumento: ()=>{setPage("documento")},
-        onEvaluacion: ()=>{setPage("evaluaciones")}
+        onAnotation: () => { setPage("anotacion") },
+        onAsistencia: () => { setPage("asistencia") },
+        onDocumento: () => { setPage("documento") },
+        onEvaluacion: () => { setPage("evaluaciones") }
     }
 
     const componentes = {
@@ -57,19 +89,19 @@ const ProfesorMateriaShow = () => {
             <SRow>
                 <MateriaCards materia={materiaMapped} configuration={config} />
             </SRow>,
-            <PromedioPuntaje/>,
-            <PromedioAsistencia/>
+            <PromedioPuntaje />,
+            <PromedioAsistencia />
         ]
     };
     return (
-        <>  
+        <>
             <div className="d-flex align-items-center justify-content-between">
                 <BackButton to="materia" />
                 <MateriaHorario />
             </div>
-            {loading ? 
-                    <Spinner height={"calc(100vh - 90px)"}></Spinner>
-                :   <ShowContainer data={componentes}/>
+            {loading ?
+                <Spinner height={"calc(100vh - 90px)"}></Spinner>
+                : <ShowContainer data={componentes} />
             }
         </>
     )

@@ -26,7 +26,7 @@ function ListarColegios() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(0);
-  const [datoColegio, setDatoColegio] = useState('');
+  const [datoColegio, setDatoColegio] = useState(null);
   const [next, setNext] = useState(false);
   const [totalPage, setTotalPage] = useState(0);
   const [fetch_data, setFetchData] = useState([]);
@@ -74,16 +74,20 @@ function ListarColegios() {
 
         const config = {
           method: 'get',
-          url: `${APILINK}/api/administrador`,
+          url: `${APILINK}/api/colegios/administradores/noAsignados`,
           headers: {
             Authorization: `Bearer ${getToken()}`,
           },
         };
 
-        const adminResponse = await axios(config);
-        setAdministrators(adminResponse.data);
+        await axios(config)
+        .then((response)=>{
+          setAdministrators(response.data)
+          setLoading(false);
+        }
+        )
 
-        setLoading(false);
+       
       } catch (error) {
         setLoading(false);
         setError(error);
