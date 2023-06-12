@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -20,7 +16,7 @@ namespace profefolio.Controllers
         private IClase _claseService;
         private IColegiosAlumnos _colegiosAlumnosService;
         private IMapper _mapper;
-        public ClasesAlumnosColegioController(IMapper mapper, IClasesAlumnosColegio clasesAlumnosColegio, IClase claseService, IColegiosAlumnos colegiosAlumnos)
+        public ClasesAlumnosColegioController(IMapper mapper, IClasesAlumnosColegio clasesAlumnosColegio, IClase claseService, IColegiosAlumnos colegiosAlumnos, IAsistencia asistenciaService, IMateriaLista materiaListaService)
         {
             _mapper = mapper;
             _clasesAlumnosColegioService = clasesAlumnosColegio;
@@ -173,6 +169,7 @@ namespace profefolio.Controllers
                         relacion.Deleted = true;
 
                         _clasesAlumnosColegioService.Edit(relacion);
+                        await _colegiosAlumnosService.Save();
                     }
                     else if (element.Estado == 'N')
                     {
@@ -199,21 +196,10 @@ namespace profefolio.Controllers
                             _clasesAlumnosColegioService.Dispose();
                             return BadRequest("Ya se tiene registrado el alumno en la clase");
                         }
-                        var dto = new ClasesAlumnosColegioDTO()
-                        {
-                            ClaseId = claseId,
-                            ColegioAlumnoId = element.ColegioAlumnoId
-                        };
-
-                        var model = _mapper.Map<ClasesAlumnosColegio>(dto);
-                        model.Deleted = false;
-                        model.Created = DateTime.Now;
-                        model.CreatedBy = adminEmail;
-
-                        await _clasesAlumnosColegioService.Add(model);
+                        await _clasesAlumnosColegioService.AssingFull(claseId, element.ColegioAlumnoId, adminEmail);
                     }
                 };
-                await _clasesAlumnosColegioService.Save();
+                
 
                 return NoContent();
             }

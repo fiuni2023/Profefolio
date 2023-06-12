@@ -76,6 +76,7 @@ namespace profefolio.Controllers
         ///     ]
         /// </remarks>
         /// 
+
         [HttpPost]
         [Authorize(Roles = "Profesor")]
         public async Task<ActionResult<List<AsistenciaResultDTO>>> GetAll([FromBody]AsistenciaGetDTO dto)
@@ -84,66 +85,44 @@ namespace profefolio.Controllers
             try
             {
                 var alumnosColegios = await _asistenciaService.FindAll(dto.IdMateriaLista, userEmail);
-                
 
                 var results = new List<AsistenciaResultDTO>();
 
-                var mes = dto.Mes is > 12 or < 1 ? DateTime.Now.Month : dto.Mes;
+                var mes = dto.Mes > 12 || dto.Mes < 1 ? DateTime.Now.Month : dto.Mes;
 
-                foreach (var alumnoColegio in alumnosColegios.GroupBy(a => a.ColegiosAlumnosId).ToList())
+                foreach (var alumnoColegio in alumnosColegios.GroupBy(a => a.ColegiosAlumnosId)
+                             .Select(z => new
+                             {
+                                 Key = z.Key,
+                                 Collection = z.AsEnumerable()
+                             })
+                             .ToList())
                 {
 
-                    foreach (var item in alumnoColegio)
+
+                    foreach (var item in alumnoColegio.Collection)
                     {
-                        var asistencias = item.Asistencias;
-                        var verify = asistencias.IsNullOrEmpty() && 
-                                     !_asistenciaService.HasAsistencia(dto.IdMateriaLista, item.ColegiosAlumnosId);
-                        var asistenciaList = new List<Asistencia>();
-                        if (asistenciaList == null) throw new ArgumentNullException(nameof(asistenciaList));
-
-                        if (verify)
-                        {
-                            var fechas = await _asistenciaService.FilterFecha(dto.IdMateriaLista, userEmail);
-                            asistenciaList.AddRange(fechas.Select(fecha => new Asistencia()
-                            {
-                                Estado = 'A',
-                                Fecha = fecha,
-                                Observacion = "",
-                                MateriaListaId = dto.IdMateriaLista,
-                                ClasesAlumnosColegioId = item.ColegiosAlumnosId,
-                                Created = DateTime.Now,
-                                CreatedBy = userEmail
-                            }));
-
-                            item.Asistencias = asistenciaList;
-                            await _asistenciaService.Save();
-                        }
-                        
                         var resultDto = _mapper.Map<AsistenciaResultDTO>(item);
-
-                        var asistenciaToOrder = verify ? asistenciaList : item.Asistencias;
-                        if (asistenciaToOrder != null)
-                            resultDto.Asistencias = asistenciaToOrder.OrderBy(a => a.Fecha)
-                                .TakeWhile(a => a.Fecha.Month == mes)
-                                .ToList()
-                                .ConvertAll(b => new AssitenciasFechaResult()
+                        resultDto.Asistencias = item.Asistencias.OrderBy(a => a.Fecha)
+                                .Where(a => a.Fecha.Month == mes)
+                                .Select(b => new AssitenciasFechaResult()
                                 {
                                     Fecha = b.Fecha,
                                     Id = b.Id,
                                     Estado = b.Estado,
                                     Observacion = b.Observacion
-                                });
-
+                                })
+                                .ToList();
                         var totalAsistencias = resultDto.Asistencias.Count;
                         
                         var porcentajePresentes = totalAsistencias > 0 ? ((float)resultDto.Asistencias.Sum(a => a.Estado == 'P' ? 1 : 0) / totalAsistencias) * 100 : 0;
-                        var porcentajeAusentes = totalAsistencias > 0 ? ((float)resultDto.Asistencias.Sum(a => a.Estado == 'A' ? 1 : 0) / totalAsistencias) * 100 : 0;
-                        var porcentajeJustificados = totalAsistencias > 0 ? ((float)resultDto.Asistencias.Sum(a => a.Estado == 'J' ? 1 : 0) / totalAsistencias) * 100 : 0;
+                        var PorcentajeAusentes = totalAsistencias > 0 ? ((float)resultDto.Asistencias.Sum(a => a.Estado == 'A' ? 1 : 0) / totalAsistencias) * 100 : 0;
+                        var PorcentajeJustificados = totalAsistencias > 0 ? ((float)resultDto.Asistencias.Sum(a => a.Estado == 'J' ? 1 : 0) / totalAsistencias) * 100 : 0;
                         
                         resultDto.PorcentajePresentes = porcentajePresentes;
-                        resultDto.PorcentajeAusentes = porcentajeAusentes;
-                        resultDto.PorcentajeJustificados = porcentajeJustificados;
-                        
+                        resultDto.PorcentajeAusentes = PorcentajeAusentes;
+                        resultDto.PorcentajeJustificados = PorcentajeJustificados;
+
                         results.Add(resultDto);
                     }
 
@@ -157,10 +136,12 @@ namespace profefolio.Controllers
                 Console.WriteLine($"{e}");
                 return BadRequest(e.Message);
             }
-            
+            catch (Exception e)
+            {
+                Console.WriteLine($"{e}");
+                return BadRequest("Error durante la obtencion de asistencias");
+            }
         }
-        
-        
 
 
         /// <summary>
