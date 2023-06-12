@@ -8,6 +8,6 @@ namespace profefolio.Models.DTOs.DashboardProfesor.GetWithOpcions
     public class DBCardsMateriaInfoCalificaciones
     {
         public int Calificaciones { get; set; }
-        public int SinCalificaciones { get; set; }
+
     }
 }

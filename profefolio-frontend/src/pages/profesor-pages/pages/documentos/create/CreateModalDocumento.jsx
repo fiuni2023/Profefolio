@@ -123,7 +123,7 @@ function CreateModalDocumento({
            
             {
 
-                key: "enlace", label: "Dirrección",
+                key: "enlace", label: "Dirección",
                 type: "text", placeholder: "Ingrese el nombre del document",
 
                 disabled: disabled,
@@ -167,8 +167,11 @@ function CreateModalDocumento({
                             },
                             {
                                 style: "text",
-                                type: "save2",
-                                onclick: { action: () => {handleEditSubmit()} }
+                                type: "save",
+                                onclick: { action: (event) => {
+                                    event.preventDefault()
+                                    handleEditSubmit()
+                                } }
                             },
                         ]
                         :

@@ -1,14 +1,10 @@
-using System.Text.RegularExpressions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using profefolio.Helpers;
 using profefolio.Models;
 using profefolio.Models.Entities;
 using profefolio.Models.DTOs.Materia;
 using profefolio.Models.DTOs.DashboardProfesor.GetWithOpcions;
+using profefolio.Models.DTOs.DashboardPuntajes;
 using profefolio.Repository;
 
 namespace profefolio.Services
@@ -242,7 +238,7 @@ namespace profefolio.Services
             }
         }
 
-        public async Task<int> GetEventosOfMateria(string idProfesor, int materia, int idClase)
+        public Task<int> GetEventosOfMateria(string idProfesor, int materia, int idClase)
         {
             /*
             List<Evento> duraciones = await _context.Eventos
@@ -254,7 +250,7 @@ namespace profefolio.Services
 
             return duraciones.Count;
             */
-            return 0;
+            return Task.FromResult(0);
         }
 
         public async Task<List<HorasCatedrasMaterias>> FindAllHorariosClasesByEmailProfesorAndIdColegio(int idColegio, string email, int anho)
@@ -285,19 +281,65 @@ namespace profefolio.Services
             return result;
         }
 
-        public async Task<MateriaLista> FindDataForCardOfInfoMateria(int idMateriaLista, string emailProfesor)
+        /*
+        Obtener:
         {
-            Console.WriteLine($"\n\n\n\n\n\n\n\n\nHace falta terminar de implementar, ya que falta que se creen todavia las tablas de claificaciones y otros mas parque este completo este servicio \n\n\n\n\n\n\n\n\n");
-
+		///			anotaciones: 25,
+		///			calificaciones:	4, //numero de evaluaciones en esa materia
+		///			asistencias: 8,    //porcentaje asistencias en esa materia
+		///			documentos: 4
+		///		}    
+        */
+        public async Task<DBCardsMateriaInfo> FindDataForCardOfInfoMateria(int idMateriaLista, string emailProfesor)
+        {
             var materia = await _context.MateriaListas
-                    .Include(a => a.Profesor)
-                    .FirstOrDefaultAsync(a => !a.Deleted && a.Id == idMateriaLista && emailProfesor.Equals(a.Profesor.Email));
+                .Include(a => a.Profesor)
+                .FirstOrDefaultAsync(a => !a.Deleted && a.Id == idMateriaLista && emailProfesor.Equals(a.Profesor.Email));
+
             if (materia == null)
             {
                 throw new FileNotFoundException("La materia no fue encontrada.");
             }
-            return materia;
+
+            var dbCardsMateriaInfo = new DBCardsMateriaInfo();
+
+            // Obtener el número de anotaciones del prf
+            dbCardsMateriaInfo.Anotaciones = await _context.Anotaciones
+                .CountAsync(a => a.MateriaListaId == idMateriaLista && a.CreatedBy == emailProfesor && !a.Deleted);
+
+
+            // Obtener el número total de evaluaciones (calificaciones)
+            dbCardsMateriaInfo.Calificaciones = await _context.Eventos
+                .CountAsync(e => e.MateriaListaId == idMateriaLista && e.CreatedBy == emailProfesor && !e.Deleted);
+
+            /*
+            Para calcular el porcentaje de presentes en la materia
+            obtener tanto el número total de presentes como el número total de registros
+            en la tabla Asistencias para la materia específica. 
+            */
+            var totalPresentes = await _context.Asistencias
+            .CountAsync(a => a.MateriaListaId == idMateriaLista && a.Estado == 'P' && !a.Deleted);
+
+            var totalRegistros = await _context.Asistencias
+                .CountAsync(a => a.MateriaListaId == idMateriaLista && !a.Deleted);
+
+            double porcentajePresentes = 0;
+            if (totalRegistros > 0)
+            {
+                porcentajePresentes = (double)totalPresentes / totalRegistros * 100;
+            }
+
+            dbCardsMateriaInfo.Asistencias = Math.Round(porcentajePresentes, 2);
+
+            // Obtener el número de documentos
+            dbCardsMateriaInfo.Documentos = await _context.Documentos
+                .CountAsync(d => d.MateriaListaId == idMateriaLista && d.CreatedBy == emailProfesor && !d.Deleted);
+
+            return dbCardsMateriaInfo;
         }
+
+
+
 
         public async Task<MateriaLista> GetPromediosPuntajesByIdMateriaLista(int idMateriaLista, string emailProfesor)
         {
@@ -423,7 +465,7 @@ namespace profefolio.Services
             return eventosClase;
         }
 
-          public async Task<List<DBCardEventosClaseDTO>> FindEventosOfClase(string idProfesor)
+        public async Task<List<DBCardEventosClaseDTO>> FindEventosOfClase(string idProfesor)
         {
             var clases = await _context.Clases
                 .Include(c => c.Colegio)
@@ -454,7 +496,7 @@ namespace profefolio.Services
             return eventosClase;
         }
 
-          public async Task<List<DBCardEventosMateriaDTO>> FindEventosMaterias(string idProfesor, int idClase)
+        public async Task<List<DBCardEventosMateriaDTO>> FindEventosMaterias(string idProfesor, int idClase)
         {
             var clases = await _context.Clases
                 .Where(c => c.Id == idClase)
@@ -484,6 +526,51 @@ namespace profefolio.Services
             return eventosClase;
         }
 
+        public async Task<List<DashboardPuntajeDTO>> ShowPuntajes(string user, int idMateriaLista)
+        {
 
+            var validateMateria = await _context.MateriaListas
+                .Include(x => x.Profesor)
+                .AnyAsync(ml => !ml.Deleted
+                             && ml.Id == idMateriaLista
+                             && ml.Profesor.Email.Equals(user));
+
+            if (!validateMateria)
+            {
+                throw new UnauthorizedAccessException();
+            }
+
+
+            var queryEvaluaciones = await _context.Eventos
+                .Where(e => !e.Deleted && e.MateriaListaId == idMateriaLista)
+                .Include(ev => ev.EvaluacionAlumnos)
+                .ToListAsync();
+
+            var result = new List<DashboardPuntajeDTO>();
+
+            foreach (var evaluacion in queryEvaluaciones)
+            {
+
+                var porcentajesSum = evaluacion.EvaluacionAlumnos
+                    .Where(x => !x.Deleted)
+                    .Sum(y => y.PorcentajeLogrado);
+
+                var cant = evaluacion.EvaluacionAlumnos
+                    .Count(x => !x.Deleted);
+
+                var prom = porcentajesSum / cant;
+                var dashPuntaje = new DashboardPuntajeDTO
+                {
+                    Promedio = prom,
+                    NombreEvaluacion = evaluacion.Nombre,
+                    Tipo = evaluacion.Tipo
+                };
+
+
+                result.Add(dashPuntaje);
+            }
+
+            return result;
+        }
     }
 }

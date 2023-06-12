@@ -277,6 +277,7 @@ public class PersonasService : IPersona
             .Where(a => a.DocumentoTipo.Equals(DocumentoTipo))
             .Where(a => a.Documento.Equals(NumeroDocumento))
             .Include(a => a.ColegiosAlumnos)
+            .Include(a => a.ColegiosProfesor)
             .FirstOrDefaultAsync();
         if (persona != null)
         {

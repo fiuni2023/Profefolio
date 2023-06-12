@@ -37,7 +37,7 @@ function Tabla({datosTabla, selected}){
             if(current){
                 let j = 0; 
                 titulos.forEach(element => {
-                   newFila[element?.titulo] = current[j].dato;
+                   newFila[element?.titulo] = current[j]?.dato;
                    j++; 
                 });
                 newExp[i] = newFila;
@@ -51,12 +51,12 @@ function Tabla({datosTabla, selected}){
     return (
         <>
          {datosTabla && datosTabla?.filas && !datosTabla.small && <>
-            <ExcelExport
+            <ExcelExport 
                 excelData={exp}
                 fileName={datosTabla?.tituloTabla ? datosTabla?.tituloTabla : "descargado_de_ProfeFolio"}>
             </ExcelExport></>}
         { (datosTabla?.filas) ? datosTabla &&(
-            <ScrollTable>
+            <ScrollTable small={datosTabla?.small ?? false}>
                 <Table  key = {datosTabla?.tituloTabla}
                         width={datosTabla?.tableWidth ? datosTabla.tableWidth : "100%"}>
                     {datosTabla?.titulos && (

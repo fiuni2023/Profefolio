@@ -10,6 +10,7 @@ import MateriasService from "../../Helpers/MateriasHelper.js"
 import { useGeneralContext } from '../../../../context/GeneralContext';
 import ClassesService from '../../Helpers/ClassesHelper';
 import { toast } from 'react-hot-toast';
+import Spinner from '../../../../components/componentsStyles/SyledSpinner';
 
 
 import { GrAddCircle } from 'react-icons/gr'
@@ -320,7 +321,7 @@ useEffect(() => {
 const MateriasDeClase = () => {
     const [optionSelected, setOptionSelected] = useState("");
     const [optionsMaterias, setOptionsMaterias] = useState([]);
-
+    const [loading, setLoading] = useState(true);
     const [profeProfesor, setProfeProfesor] = useState([]);
 
     const [idMateria , setIdMateria]= useState("");
@@ -517,7 +518,7 @@ useMemo(() => {
         try {
           const dataList = await ClassesService.getMateriasProfesores(getClaseSelectedId(),getToken());
           setMateriaProfesores(dataList ?? []);        
-
+          setLoading(false);
         } catch (e) {
           setMateriaProfesores([]);
         }
@@ -654,6 +655,7 @@ useMemo(() => {
 
                 {materiasList?.list &&
                     <SBody background={materiasList?.background ?? "gray"}>
+                      {loading ? <Spinner height={'60px'} /> : 
                         <List>
                            {Array.isArray(materiasList?.list) && materiasList.list.map((materia, index) => (
                                 <ListItem key={index}
@@ -701,6 +703,7 @@ useMemo(() => {
 
                             ))}
                         </List>
+                      }
                     </SBody>}
         
                 <SForm onSubmit={materiasList?.onSubmit ?? null} >
@@ -715,6 +718,7 @@ useMemo(() => {
                         )) :
                         <option value="" disabled>No hay materias sin asignar</option>
                         }
+
                     </Select>
                     <div style={{ textAlign: 'right' }}>
                                     <TextButton 

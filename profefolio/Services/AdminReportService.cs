@@ -2,19 +2,21 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using profefolio.Models;
 using profefolio.Models.Entities;
-
+using profefolio.Repository;
 namespace profefolio
 {
     public class AdminReportService : IAdmin
     {
         private readonly ApplicationDbContext _db;
         private readonly UserManager<Persona> _userManager;
+        private readonly IPersona _personasService;
         private const string rol = "Administrador de colegio";
 
-        public AdminReportService(ApplicationDbContext db, UserManager<Persona> userManager)
+        public AdminReportService(ApplicationDbContext db, UserManager<Persona> userManager,IPersona personasService)
         {
             _db = db;
             _userManager = userManager;
+            _personasService = personasService;
         }
 
         public async Task<IEnumerable<Persona>> GetPersonasSinColegio(int cantPerPage, int page)
@@ -87,5 +89,23 @@ namespace profefolio
             return result;
 
         }
+
+         public async Task<IEnumerable<Persona>> GetAdminsSinColegio()
+        {
+            var admins = await _personasService.GetAllByRol(rol);
+            
+
+            var colegios = await _db.Colegios.Where(a => !a.Deleted).ToListAsync();
+
+            //left join
+            var result = from a in admins
+                            join c in colegios
+                            on a.Id equals c.PersonaId into joinlist
+                            from col in joinlist.DefaultIfEmpty()
+                            where col is null
+                            select a;
+            return result;
+        }
+
     }
 }

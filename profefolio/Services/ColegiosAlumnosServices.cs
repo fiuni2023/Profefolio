@@ -83,11 +83,12 @@ namespace profefolio.Services
         public async Task<IEnumerable<ColegiosAlumnos>> FindAllByIdColegio(int page, int cantPorPag, int idColegio)
         {
             return await _context.ColegiosAlumnos
+                    .Include(a => a.Persona)
                     .Where(ca => !ca.Deleted && ca.ColegioId == idColegio)
                     .OrderByDescending(ca => ca.Id)
                     .Skip(page * cantPorPag)
                     .Take(page)
-                    .Include(a => a.Persona)
+                    
                     .ToListAsync();
         }
 
@@ -156,7 +157,7 @@ namespace profefolio.Services
             var colegio = await _context.Colegios
                 .Include(t => t.personas)
                 .Where(t => !t.Deleted)
-                .Where(t => t.personas != null && t.personas.Id.Equals(userLogged.Id))
+                .Where(t => t.personas.Id.Equals(userLogged.Id))
                 .FirstOrDefaultAsync();
 
             if (colegio == null)
@@ -167,8 +168,7 @@ namespace profefolio.Services
             var colegiosAlumnos = _context.ColegiosAlumnos
                 .Include(ca => ca.Colegio)
                 .Include(ca => ca.Persona)
-                .Where(ca => !ca.Deleted)
-                .Where(ca => ca.ColegioId == colegio.Id)
+                .Where(ca => !ca.Deleted && ca.ColegioId == colegio.Id)
                 .OrderBy(ca => ca.Persona.Apellido)
                 .ThenBy(ca => ca.Persona.Nombre)
                 .ThenBy(ca => ca.Persona.Documento)
