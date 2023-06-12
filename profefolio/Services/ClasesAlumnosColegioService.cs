@@ -133,9 +133,9 @@ namespace profefolio.Services
                     cac.Asistencias.Add(asist);
                 }
 
-               await _context.ClasesAlumnosColegios.AddAsync(cac);
+               
             }
-
+            await _context.ClasesAlumnosColegios.AddAsync(cac);
             await _context.SaveChangesAsync();
         }
         private async Task<List<DateTime>> FilterFecha(int idMateriaLista, string user)
