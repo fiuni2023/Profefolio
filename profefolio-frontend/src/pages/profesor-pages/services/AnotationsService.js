@@ -23,6 +23,16 @@ const Get = async (token) => {
     return result.status === 200 ? result : null
 }
 
+const GetByIdMateriaLista = async (token, idMateriaLista) => {
+    const result = await axios.get(`${APILINK}/api/Anotacion/${idMateriaLista}`,
+    {
+        headers:{
+            "Authorization": 'bearer ' + token
+        }
+    })
+    return result.status === 200 ? result : null
+}
+
 const Delete = async (id, token) => {
     const result = await axios.delete(`${APILINK}/api/Anotacion/${id}`,
     {
@@ -33,5 +43,5 @@ const Delete = async (id, token) => {
     return result.status === 200 ? result : null
 }
 
-const AnotationsService = { Post, Get, Delete }
+const AnotationsService = { Post, Get, Delete, GetByIdMateriaLista}
 export default AnotationsService

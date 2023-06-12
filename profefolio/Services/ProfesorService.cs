@@ -194,7 +194,9 @@ namespace profefolio.Services
                     .Include(a => a.Persona)
                     .Include(a => a.Colegio)
                     .Where(a => !a.Deleted
-                        && a.ColegioId == idColegio)
+                        && a.ColegioId == idColegio
+                        && a.Persona != null 
+                        && !a.Persona.Deleted)
                     .Select(a => a.Persona)
                     .ToListAsync();
 
