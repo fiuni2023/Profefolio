@@ -39,6 +39,7 @@ const InfoClase = ({ idClase }) => {
                 setLoading(false);
             }).catch(() => {
                 toast.error(`Error al obtener sus datos, recarge la pagina`);
+                setLoading(false);
             })
     }, [getToken, getClaseSelectedId])
 
