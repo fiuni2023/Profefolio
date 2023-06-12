@@ -155,8 +155,6 @@ const ListItem = memo(({ index, idMateria,estado ,nombre,apellido, profesores = 
 
 const seleccionarProfesor = (event) => {
   const idProfesorSeleccionado = event.target.value;
-
-  console.log('idMateria',idMateria);
   setProfesoresSeleccionados((prevSeleccionados) =>
     prevSeleccionados.includes(idProfesorSeleccionado)
       ? prevSeleccionados.filter((id) => id !== idProfesorSeleccionado)
@@ -174,8 +172,6 @@ useEffect(() => {
 
   useEffect(() => {
     guardarProfesorSeleccionado(profesoresSeleccionados);
-
-    console.log('profesoresSeleccionados',profesoresSeleccionados)
   }, [profesoresSeleccionados]);
   
 
@@ -573,16 +569,14 @@ useMemo(() => {
       const profesoresIds = profesoresSeleccionados.map((profesor) => profesor.id);
     
        // Establecer profesoresSeleccionados como un array vacío
-  setProfesoresSeleccionados([]);
+        setProfesoresSeleccionados([]);
 
-  // Llamar a guardarProfesorSeleccionado con profesoresSeleccionados vacío
-  guardarProfesorSeleccionado([]);
+        // Llamar a guardarProfesorSeleccionado con profesoresSeleccionados vacío
+        guardarProfesorSeleccionado([]);
 
 
     };
 
-
-    console.log('profesoresSeleccionados',profesoresSeleccionados);
 
     useEffect(() => {
       if (materiaProfesor) {
@@ -628,7 +622,6 @@ useMemo(() => {
 
     }
 
-
     const profesoresDisponibles = useMemo(() => {
       if (!idMateriaSeleccionada) {
         return []; // Retorna un array vacío si idMateriaSeleccionada no existe
@@ -640,7 +633,6 @@ useMemo(() => {
       });
     }, [profeProfesor, listaFusionada, idMateriaSeleccionada]);
     
-
     
 
   
@@ -681,14 +673,10 @@ useMemo(() => {
                                     guardarIdMateriaSeleccionado={guardarIdMateriaSeleccionado}
                                     onClick={(event) => {
                                         console.log(
-                                         // `${materia.idMateria} materia seleccionado`,
+                                          //`${materia.idMateria} materia seleccionado`,
                                           
                                         );
                                         if (materia.estado === "new") {
-
-                                        //  const profesoresIds = materia.profesores.map((profesor) => profesor.id);
-
-                                         // console.log('profesoresIds',profesoresIds);
 
                                           eliminarMateria(materia.idMateria);
                                        
@@ -701,10 +689,6 @@ useMemo(() => {
                                         setIdMateria(materia.id); // Guardar el ID de la materia
                                         setIdMateriaProfesores(index);
                                         setSelectProfesores(profeProfesor);
-
-                                       /* setIdMateriaProfesores((prevSeleccionados) =>
-                                        prevSeleccionados.filter((id) => id !== materia.idMateria)
-                                        );*/
                                         setStatusMateria(
                                           materia.id,
                                           materia.status === "new" ? "reload" : "new"
