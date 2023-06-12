@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import ContainerColegios from "../../components/ContainerColegios";
 import Horarios from "../../components/Horarios";
 import Eventos from "../../components/Eventos";
+import EventosColegio from "../../components/EventosTabla/eventosColegio";
 import { SRow } from "../../../../components/componentsStyles/StyledDashComponent";
 import { useModularContext } from "../../context";
 import ShowContainer from "../../../clases/components/ShowContainer";
@@ -35,7 +36,7 @@ const ProfesorClase = () => {
                 <ContainerColegios onClick={handleClickCards} lista={clasesMapped}/>
             </SRow>,
             <Horarios/>,
-            <Eventos/>
+            <Eventos tablaEventos={<EventosColegio has_colegio={false} has_clase={true} />} />
         ]
     };
     return (
