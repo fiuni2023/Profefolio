@@ -66,7 +66,7 @@ const ProfesorMateriaShow = () => {
             const newMateria = {
                 anotations: materiaShow.anotaciones,
                 name: materiaName,
-                calification_count: materiaShow.calificaciones?.calificaciones,
+                calification_count: materiaShow.calificaciones,
                 event_yet: materiaShow.calificaciones?.sinCalificaciones,
                 classes_yet: 1,
                 documents: materiaShow.documentos,
@@ -85,7 +85,6 @@ const ProfesorMateriaShow = () => {
     }
 
     const componentes = {
-        title: `${currColegio} - ${currClase} - ${materiaName}`,
         componentes: [
             <SRow>
                 <MateriaCards materia={materiaMapped} configuration={config} />
@@ -96,8 +95,11 @@ const ProfesorMateriaShow = () => {
     };
     return (
         <>
-            <div className="d-flex align-items-center justify-content-between">
-                <BackButton to="materia" />
+            <div className="d-flex align-items-center m-4 justify-content-between">
+                <div className="d-flex align-items-center gap-3">
+                    <BackButton to="materia" />
+                    <h5 className="m-0">{`${currColegio} - ${currClase} - ${materiaName}`}</h5>
+                </div>
                 <MateriaHorario />
             </div>
             {loading ?

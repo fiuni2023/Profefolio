@@ -32,7 +32,6 @@ const ProfesorClase = () => {
     }, [clases])
     
     const componentes = {
-        title: `${currColegio} - Lista de Clases del colegio`,
         componentes: [
             <SRow>
                 <ContainerColegios onClick={handleClickCards} lista={clasesMapped}/>
@@ -43,7 +42,10 @@ const ProfesorClase = () => {
     };
     return (
         <>
-            <BackButton to="dashboard" />
+            <div className="d-flex align-items-center gap-4 ms-4 mt-4">
+                <BackButton to="dashboard" />
+                <h5 className="m-0">{`${currColegio} - Lista de Clases del colegio`}</h5>
+            </div>
             {loading ? 
                     <Spinner height={"calc(100vh - 90px)"}></Spinner>
                 :   <ShowContainer data={componentes}/>

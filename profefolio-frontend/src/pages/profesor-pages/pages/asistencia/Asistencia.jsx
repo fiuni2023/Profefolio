@@ -265,43 +265,45 @@ const Asistencia = React.memo(() => {
         <>
             <MainContainer>
                 {/* <StyleComponentBreadcrumb nombre={`Registro de Asistencia - ${materia?.nombre}`} /> */}
-                <FlexDiv>
-                    <BackButton to="materiashow"/>
-                    <h5 className="m-0">
-                        {currColegio} - {currClase} - {materiaName} - Registro de Asistencia 
-                    </h5>
-                </FlexDiv>
-                <Container>
-                    <SideSection>
-                        <TableContainer>
-                            <Tabla datosTabla={tablaAsistencia} />
-                            <AddButton onClick={addDate}>
-                                {!adding?
-                                    <AiOutlinePlus size={"35px"} />
-                                    :
-                                    <RxCross1 size={"30px"}/>
-                                }
-                            </AddButton>
-                        </TableContainer >
-                    </SideSection>
-                    <SideSection>
-                        {!error && !loading &&
-                            <Resumen>
-                                <InvisibleSelect value={mesValue} onChange={(e)=>{setMesValue(Number(e.target.value))}}>
-                                    <option value={0}>Mes Actual</option>
-                                    {VALUEMES.map((v,i)=>{
-                                        return <option key={i} value={v.value}>{v.text}</option>
-                                    })
-
+                <div className='m-4'>
+                    <FlexDiv>
+                        <BackButton to="materiashow"/>
+                        <h5 className="m-0">
+                            {currColegio} - {currClase} - {materiaName} - Registro de Asistencia 
+                        </h5>
+                    </FlexDiv>
+                    <Container>
+                        <SideSection>
+                            <TableContainer>
+                                <Tabla datosTabla={tablaAsistencia} />
+                                <AddButton onClick={addDate}>
+                                    {!adding?
+                                        <AiOutlinePlus size={"35px"} />
+                                        :
+                                        <RxCross1 size={"30px"}/>
                                     }
-                                </InvisibleSelect>
-                                <p>{cantAlumnos} alumnos</p>
-                                <p>{cantClases} {cantClases < 1 ? "Aún no hay clases" : cantClases > 1 ? "clases" : "clase"}</p>
-                                <p>{getPromedios()} promedio de asistencias</p>
-                            </Resumen>
-                        }
-                    </SideSection>
-                </Container>
+                                </AddButton>
+                            </TableContainer >
+                        </SideSection>
+                        <SideSection>
+                            {!error && !loading &&
+                                <Resumen>
+                                    <InvisibleSelect value={mesValue} onChange={(e)=>{setMesValue(Number(e.target.value))}}>
+                                        <option value={0}>Mes Actual</option>
+                                        {VALUEMES.map((v,i)=>{
+                                            return <option key={i} value={v.value}>{v.text}</option>
+                                        })
+
+                                        }
+                                    </InvisibleSelect>
+                                    <p>{cantAlumnos} alumnos</p>
+                                    <p>{cantClases} {cantClases < 1 ? "Aún no hay clases" : cantClases > 1 ? "clases" : "clase"}</p>
+                                    <p>{getPromedios()} promedio de asistencias</p>
+                                </Resumen>
+                            }
+                        </SideSection>
+                    </Container>
+                </div>
             </MainContainer >
         </>
     )
