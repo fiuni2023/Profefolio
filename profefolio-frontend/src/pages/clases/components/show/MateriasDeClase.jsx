@@ -111,6 +111,18 @@ const TagProfesor = memo(({ id, nombre = "", apellido = "", state = "n", onClick
 const ListItem = memo(({ index, idMateria,estado ,nombre,apellido, profesores = [] ,profeProfesor = [], type ,onClick,guardarProfesorSeleccionado,guardarProfesorSeleccionadoParaBorrar,guardarIdMateriaSeleccionado} ) => {
 
 
+  const [newTypeArray, setNewTypeArray] = useState(Array(profesores.length).fill(type));
+
+  // Actualizar el estado individual de un componente TagProfesor
+  const updateType = (index, newValue) => {
+    setNewTypeArray((prevArray) => {
+      const newArray = [...prevArray];
+      newArray[index] = newValue;
+      return newArray;
+    });
+  };
+
+
   const [newType, setType] = useState(type);
 
   useEffect(() => {
@@ -118,9 +130,9 @@ const ListItem = memo(({ index, idMateria,estado ,nombre,apellido, profesores = 
   }, [type]);
 
   // Update the newType value
-  const updateType = (newValue) => {
+  /*const updateType = (newValue) => {
     setType(newValue);
-  };
+  };*/
 
   
 
@@ -240,32 +252,50 @@ useEffect(() => {
                     )})}
 
   {/* Este es un comentario en React*/}
-  {Array.isArray(profesores) && profesores.map((e, i) => {
-   // Estado individual para cada componente
-
-  return (
+  
+  {Array.isArray(profesores) ? (
+  profesores.map((e, i) => (
     <TagProfesor
       key={i}
       id={e.idProfesor}
       nombre={`${e.nombre}`}
       apellido={`${e.apellido}`}
-      state={typeP} // Pasar el estado individual como prop state
+      state={newTypeArray[i]} // Pasar el estado individual como prop state
       idMateriaProfesor={idMateria}
       onClick={() => {
-        const newType = typeP === "n" ? "reload" : "n";
-
-        setTypeP(newType); // Actualizar el estado individual
-        updateType(newType);
+        const newType = newTypeArray[i] === "n" ? "reload" : "n";
+        updateType(i, newType); // Actualizar el estado individual
         setStatus(estado);
         setStatusProfesorMateria(idMateria, e.id, newType);
         setIdMateriaSeleccionado(idMateria);
         setUsuariosSeleccionados([...usuariosSeleccionados, e.idProfesor]);
-        console.log('e.idProfesor', e.idProfesor);
       }}
     />
-  );
-})}
+  ))
+) : (
+  <p></p>
+)}
 
+{/*
+  {profesores.map((e, i) => (
+        <TagProfesor
+          key={i}
+          id={e.idProfesor}
+          nombre={`${e.nombre}`}
+          apellido={`${e.apellido}`}
+          state={newTypeArray[i]} // Pasar el estado individual como prop state
+          idMateriaProfesor={idMateria}
+          onClick={() => {
+            const newType = newTypeArray[i] === "n" ? "reload" : "n";
+            updateType(i, newType); // Actualizar el estado individual
+            setStatus(estado);
+            setStatusProfesorMateria(idMateria, e.id, newType);
+            setIdMateriaSeleccionado(idMateria);
+            setUsuariosSeleccionados([...usuariosSeleccionados, e.idProfesor]);
+          }}
+        />
+      ))}
+    */}
 
 
 
