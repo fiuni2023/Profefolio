@@ -1,11 +1,13 @@
-import { TD, TH, TR, Table, Tbody, Thead } from '../../../../components/componentsStyles/StyledTable'
-import Tools from '../../helpers/Tools.js'
-import { map } from "lodash"
+//import { TD, TH, TR, Table, Tbody, Thead } from '../../../../components/componentsStyles/StyledTable'
+//import Tools from '../../helpers/Tools.js'
+//import { map } from "lodash"
 import { memo, useEffect, useState } from "react";
-import { SContainerScrollable } from '../ComponentStyles/ComponentsEvent';
-import EventosService from '../../helpers/EventosHelpers';
-import { useGeneralContext } from '../../../../context/GeneralContext';
+//import { SContainerScrollable } from '../ComponentStyles/ComponentsEvent';
+//import EventosService from '../../helpers/EventosHelpers';
+//import { useGeneralContext } from '../../../../context/GeneralContext';
 import { useModularContext } from '../../context';
+
+// eslint-disable-next-line no-unused-vars
 import { SBody, SCard, SHeader } from '../../../../components/componentsStyles/StyledDashComponent'
 import Tabla from '../../../../components/Tabla';
 
@@ -46,7 +48,7 @@ const TableEvents = memo(({ style = {} }) => {
             filas: newList
         })
     }, [eventos])
-    
+
     return <>
         <SCard>
             <SBody>

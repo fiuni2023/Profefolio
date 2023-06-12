@@ -25,7 +25,6 @@ namespace profefolio.Services
         }
 
 
-
         protected virtual void Dispose(bool disposing)
         {
             if (!disposedValue)
@@ -34,6 +33,7 @@ namespace profefolio.Services
                 {
                     _db.Dispose();
                 }
+
                 disposedValue = true;
             }
         }
@@ -45,46 +45,49 @@ namespace profefolio.Services
         }
 
 
-
         public async Task<bool> IsUsedMateria(int idMateria)
         {
             return await _db.MateriaListas.AnyAsync(d => d.MateriaId == idMateria);
         }
 
 
-
         public async Task<ClaseDetallesDTO> FindByIdClase(int idClase, string user)
         {
+            var userL = await _db.Users
+                .Where(u => !u.Deleted && u.Email.Equals(user))
+                .FirstAsync();
+
+
             var colegio = await _db.Colegios
-                .Include(c => c.personas)
-                .Where(c => !c.Deleted)
-                .Where(c => c.personas.Email.Equals(user))
-                .FirstOrDefaultAsync();
+                .Where(c => c.PersonaId != null && !c.Deleted && c.PersonaId.Equals(userL.Id))
+                .FirstAsync();
 
             if (colegio == null)
             {
                 throw new BadHttpRequestException("Accion no valida");
             }
 
-            var profesores = _db.Users.ToList();
+            var profesores = _db.Users
+                .Where(p => !p.Deleted)
+                .ToList();
 
             var clase = await _db.Clases
                 .Include(c => c.MateriaListas)
-                .Where(c => !c.Deleted)
-                .Where(c => c.Id == idClase)
+                .Where(c => !c.Deleted && c.Id == idClase)
                 .FirstOrDefaultAsync();
 
-            if (clase == null || clase.Nombre == null || (colegio.Id != clase.ColegioId) || clase.MateriaListas == null)
+
+            if (clase?.Nombre == null || (colegio.Id != clase.ColegioId) || clase.MateriaListas == null)
             {
                 throw new FileNotFoundException();
             }
 
 
-
             var materias = _db.Materias
                 .Include(x => x.MateriaListas)
                 .Where(x => !x.Deleted)
-                .Where(x => x.MateriaListas.Any(y => y.ClaseId == clase.Id));
+                .Where(x => x.MateriaListas.Any(y => y.ClaseId == clase.Id))
+                .ToList();
 
 
             var result = new ClaseDetallesDTO();
@@ -96,16 +99,13 @@ namespace profefolio.Services
 
             foreach (var item in materias)
             {
-                var materiaLista = item.MateriaListas.Where(d => !d.Deleted);
+                var materiaLista = item.MateriaListas
+                    .Where(d => !d.Deleted)
+                    .ToList();
 
-                if (item.MateriaListas.All(x => x.Deleted))
-                {
-                    continue;
-                }
-                else
+                if (!item.MateriaListas.All(x => x.Deleted))
                 {
                     var materiaProfesores = new MateriaProfesoresDTO();
-
                     materiaProfesores.IdMateria = item.Id;
                     materiaProfesores.Materia = item.Nombre_Materia;
 
@@ -115,23 +115,26 @@ namespace profefolio.Services
                     {
                         var profesor = profesores.Find(x => x.Id.Equals(itemLista.ProfesorId));
 
+                        var colegioProfesorVerify = _db.ColegiosProfesors
+                            .Any(cp => profesor != null && cp.PersonaId != null && !cp.Deleted &&
+                                       cp.PersonaId.Equals(profesor.Id)
+                                       && cp.ColegioId == colegio.Id);
 
-                        var profeSimple = new ProfesorSimpleDTO();
-
-                        profeSimple.Apellido = profesor.Apellido;
-                        profeSimple.IdProfesor = profesor.Id;
-                        profeSimple.Nombre = profesor.Nombre;
-
-                        profesorSimpleList.Add(profeSimple);
+                        var mlVerify = itemLista.ProfesorId.Equals(profesor?.Id);
+                        if (colegioProfesorVerify && mlVerify)
+                        {
+                            var profeSimple = new ProfesorSimpleDTO();
+                            profeSimple.Apellido = profesor.Apellido;
+                            profeSimple.IdProfesor = profesor.Id;
+                            profeSimple.Nombre = profesor.Nombre;
+                            profesorSimpleList.Add(profeSimple);
+                        }
                     }
 
                     materiaProfesores.Profesores = profesorSimpleList;
 
                     materiaProfesoresList.Add(materiaProfesores);
                 }
-
-
-
             }
 
             result.MateriaProfesores = materiaProfesoresList;
@@ -140,37 +143,36 @@ namespace profefolio.Services
         }
 
 
-
         public async Task<List<MateriaLista>> FindByIdClaseAndUser(int idClase, string userEmail = "", string role = "")
         {
-
             if ("Administrador de Colegio".Equals(role))
             {
-                var colegio = await _db.Colegios.FirstOrDefaultAsync(a => !a.Deleted && userEmail.Equals(a.personas.Email));
+                var colegio =
+                    await _db.Colegios.FirstOrDefaultAsync(a => !a.Deleted && userEmail.Equals(a.personas.Email));
                 if (colegio == null)
                 {
                     throw new FileNotFoundException("No es Administrador del Colegio");
                 }
 
                 return await _db.MateriaListas
-                            .Where(a => !a.Deleted
-                            && a.Clase.ColegioId == colegio.Id
-                            && a.ClaseId == idClase)
-                            .Include(a => a.Materia)
-                            .Include(a => a.Profesor)
-                            .ToListAsync();
+                    .Where(a => !a.Deleted
+                                && a.Clase.ColegioId == colegio.Id
+                                && a.ClaseId == idClase)
+                    .Include(a => a.Materia)
+                    .Include(a => a.Profesor)
+                    .ToListAsync();
             }
 
 
             if ("Profesor".Equals(role))
             {
                 return await _db.MateriaListas
-                            .Where(a => !a.Deleted
-                            && userEmail.Equals(a.Profesor.Email)
-                            && a.ClaseId == idClase)
-                            .Include(a => a.Materia)
-                            .Include(a => a.Profesor)
-                            .ToListAsync();
+                    .Where(a => !a.Deleted
+                                && userEmail.Equals(a.Profesor.Email)
+                                && a.ClaseId == idClase)
+                    .Include(a => a.Materia)
+                    .Include(a => a.Profesor)
+                    .ToListAsync();
             }
 
             throw new BadHttpRequestException("El usuario no tienen acceso");
@@ -228,11 +230,11 @@ namespace profefolio.Services
                 {
                     throw new FileNotFoundException();
                 }
+
                 var profesorDist = materia.Profesores.DistinctBy(mp => mp.IdProfesor);
 
                 foreach (var profesor in profesorDist)
                 {
-
                     //Validar los roles del profesor
                     var profe = await _db.Users.FindAsync(profesor.IdProfesor);
 
@@ -265,8 +267,8 @@ namespace profefolio.Services
                     var existProfeEnColeg = colegio.ColegioProfesores
                         .Where(cp => !cp.Deleted)
                         .Any(cp => cp.ColegioId == colegio.Id
-                            && cp.PersonaId != null
-                            && cp.PersonaId.Equals(profesor.IdProfesor));
+                                   && cp.PersonaId != null
+                                   && cp.PersonaId.Equals(profesor.IdProfesor));
 
                     if (!existProfeEnColeg)
                     {
@@ -286,7 +288,6 @@ namespace profefolio.Services
                                 Deleted = false,
                                 CreatedBy = email,
                                 Created = DateTime.Now
-
                             };
                             await _db.MateriaListas.AddAsync(materiaLista);
                             break;
@@ -295,51 +296,49 @@ namespace profefolio.Services
                                 .Include(ml => ml.Horarios)
                                 .Where(ml => !ml.Deleted)
                                 .Where(ml => ml.ClaseId == dto.IdClase
-                                    && ml.MateriaId == materia.IdMateria
-                                    && ml.ProfesorId.Equals(profesor.IdProfesor))
+                                             && ml.MateriaId == materia.IdMateria
+                                             && ml.ProfesorId.Equals(profesor.IdProfesor))
                                 .FirstOrDefaultAsync();
 
                             if (materiaListaD == null)
                             {
                                 throw new FileNotFoundException();
                             }
+
                             materiaListaD.ModifiedBy = email;
                             materiaListaD.Modified = DateTime.Now;
                             materiaListaD.Deleted = true;
                             break;
-
-                        default: throw new BadHttpRequestException("Comando no valido");
+                        
+                        case  '-' : 
+                            break;
+                        default: 
+                            throw new BadHttpRequestException("Comando no valido");
                     }
-
-
                 }
             }
-            try
-            {
-                await _db.SaveChangesAsync();
-                return true;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
 
+
+            await _db.SaveChangesAsync();
+            return true;
         }
 
         public async Task<Persona> GetProfesorOfMateria(int idMateriaLista, string profesorEmail)
         {
             var materia = await _db.MateriaListas
-                    .Include(a => a.Profesor)
-                    .FirstOrDefaultAsync(a => !a.Deleted
-                        && a.Id == idMateriaLista
-                        && profesorEmail.Equals(a.Profesor.Email));
+                .Include(a => a.Profesor)
+                .FirstOrDefaultAsync(a => !a.Deleted
+                                          && a.Id == idMateriaLista
+                                          && profesorEmail.Equals(a.Profesor.Email));
 
             if (materia == null)
             {
                 throw new FileNotFoundException("No es Profesor de la Materia");
             }
+
             return materia.Profesor;
         }
+
         public async Task<MateriaLista> FindById(int id)
         {
             var query = await _db.MateriaListas
@@ -358,14 +357,13 @@ namespace profefolio.Services
 
         public async Task<MateriaLista> Filter(int idClase, int idColegio, string idProfesor, int idMateria)
         {
-
             var query = await _db.MateriaListas
                 .Include(ml => ml.Clase)
                 .Where(ml => !ml.Deleted)
                 .Where(ml => ml.Clase.Colegio != null
-                             && idClase == ml.ClaseId 
-                             && ml.ProfesorId.Equals(idProfesor) 
-                             && ml.MateriaId == idMateria 
+                             && idClase == ml.ClaseId
+                             && ml.ProfesorId.Equals(idProfesor)
+                             && ml.MateriaId == idMateria
                              && ml.Clase.Colegio.Id == idColegio)
                 .FirstOrDefaultAsync();
 
@@ -373,13 +371,13 @@ namespace profefolio.Services
             {
                 throw new FileNotFoundException();
             }
-            return query;
 
+            return query;
         }
 
         public async Task<List<MateriaLista>> FilterByIdClase(int idClase)
         {
-            var query =await _db.MateriaListas
+            var query = await _db.MateriaListas
                 .Where(d => !d.Deleted && d.ClaseId == idClase)
                 .ToListAsync();
 

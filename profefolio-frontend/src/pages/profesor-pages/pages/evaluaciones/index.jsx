@@ -13,10 +13,6 @@ const FlexDiv = styled.div`
     gap: 10px;
 `
 
-const GapDiv = styled.div`
-    height: 30px;
-`
-
 const Evaluaciones = () => {
 
     const {dataSet} = useModularContext()
@@ -24,18 +20,19 @@ const Evaluaciones = () => {
 
     return <>
         <PageProvider>
-            <Row>
-                <FlexDiv>
-                    <BackButton to="materiashow"/>
-                    <h5 className="m-0">
-                    {currColegio} - {currClase} - {materiaName} - Calificaciones
-                    </h5>
-                </FlexDiv>
-            </Row>
-            <Row>
-                <EvaluationTable />
-            </Row>
-            <GapDiv />
+            <div className="m-4">
+                <Row>
+                    <FlexDiv>
+                        <BackButton to="materiashow"/>
+                        <h5 className="m-0">
+                        {currColegio} - {currClase} - {materiaName} - Calificaciones
+                        </h5>
+                    </FlexDiv>
+                </Row>
+                <Row>
+                    <EvaluationTable />
+                </Row>
+            </div>
         </PageProvider>
     </>
 }

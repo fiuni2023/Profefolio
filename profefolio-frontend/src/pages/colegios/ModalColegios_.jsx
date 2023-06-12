@@ -14,7 +14,6 @@ function ModalColegio({
 }) {
     const { getToken } = useGeneralContext()
     const disabled = false
-    const [adminNew, setAdminNew] = useState([]);
 
     const handleCreateSubmit = () => {
 
@@ -113,20 +112,23 @@ function ModalColegio({
         if (selected_data) {
             document.getElementById("nombreColegio").value = selected_data.nombre
             document.getElementById("administradorColegio").value = selected_data.idAdmin ?? ""
-            setAdminNew([...administrators, {
-                id: selected_data.idAdmin,
-                nombre: selected_data.nombreAdministrador,
-                apellido: selected_data.apellido
-            }]);
-            console.log("adminnew", adminNew);
-            console.log(selected_data);
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selected_data])
 
     const [datosModal, setDatosModal] = useState(null);
     const [deleting, setDeleting] = useState(false)
 
     useEffect(() => {
+        let adminNew=administrators;
+        if(selected_data){
+            let admin={
+                id: selected_data.idAdmin,
+                nombre: selected_data.nombreAdministrador,
+                apellido: selected_data.apellido
+            }
+            adminNew=[...adminNew, admin];
+        }
 
         setDatosModal({
             header: selected_data ? deleting ? "ELIMINAR COLEGIO?" : "Editar Colegio" : "Agregar Colegio",
@@ -142,11 +144,11 @@ function ModalColegio({
                     {
                         key: "administradorColegio", label: "Administrador",
                         type: "select",
-                        disabled: disabled, required: true,
+                        disabled: disabled, required: true, value: selected_data?.idAdmin,
                         invalidText: "Seleccione un Administrador",
                         select: {
                             default: "Seleccione un Administrador",
-                            options: administrators.map((a) => {
+                            options: adminNew.map((a) => {
                                 return {
                                     value: a.id,
                                     text: a.nombre + " " + a.apellido

@@ -60,6 +60,7 @@ function ListarMaTerias() {
 
         })
         .catch((error) => {
+          setLoadingCiclos(false);
           toast.error(error)
         });
     }
@@ -85,6 +86,7 @@ function ListarMaTerias() {
           setLoadingMaterias(false);
         })
         .catch(error => {
+          setLoadingMaterias(false);
           toast.error(error);
         });
     }
