@@ -100,8 +100,8 @@ const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = 
             className="modal-crear-clases"
             size={"lg"}
         >
-            <SHeader closeButton >
-                <Modal.Title>{title}</Modal.Title>
+            <SHeader closeButton style={{paddingBottom: "5px"}} >
+                <Modal.Title style={{fontSize: "1.5em"}}>{title}</Modal.Title>
             </SHeader>
             <Modal.Body >
                 <Formik
@@ -212,9 +212,6 @@ const ModalCreateClase = ({ title = "My Modal", handleClose = () => { }, show = 
                                 <SRow>
                                     <Col className="btn-container pe-2" md={10}>
                                         <TextButton enabled={!(addCiclos || isSend)} buttonType='accept' onClick={()=>{handleSubmit(values)}} />
-                                    </Col>
-                                    <Col className="btn-container" md={2}>
-                                        <TextButton enabled={!(addCiclos || isSend)} buttonType='cancel' onClick={handleClose} />
                                     </Col>
                                 </SRow>
                             </Form>

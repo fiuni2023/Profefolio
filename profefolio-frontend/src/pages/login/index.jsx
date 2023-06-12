@@ -34,7 +34,7 @@ const Login = ({changeState = () => {}}) => {
         <>
             <div className={styles.LoginContainer}>
                 <div className={styles.LoginPanel}>
-                    <Logo className={styles.Image} width="80%" height="14%"/>
+                    <Logo className={styles.Image} width="80%" height="12%"/>
                     <h3 className={styles.Loginh3}>Iniciar Sesión</h3>
                     <LoginInput placeholder={"Correo Electrónico"} value={mail} handleChange={(event)=>{setMail(event.target.value)}} />
                     <LoginInput placeholder={"Contraseña"} type={"password"} value={pass} handleChange={(event)=>{setPass(event.target.value)}} />

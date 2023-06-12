@@ -12,7 +12,7 @@ const SRow = styled.div`
 `;
 
 const Info = styled.div`
-    font-size: 1.2em;
+    font-size: 10pt;
     color: #282828;
     margin-left: calc(var(--bs-gutter-x) * .5);
 `;
@@ -21,11 +21,13 @@ const SControl = styled(FormControl)`
     border-radius: 10px;
     background-color: #E4E4E4;
     color: #282828;
-    font-size: 1.2em; 
+    font-size: 10pt; 
     font-weight: 500;
+    padding-top: 0.3rem;
+    padding-bottom: 0.3rem;
     ::placeholder{
         color: #6C6C6C;  
-        font-size: 1.2em; 
+        font-size: 10pt; 
     }
 `;
 
@@ -37,23 +39,24 @@ const SSelect = styled(FormSelect)`
     border-radius: 10px;
     background-color: #E4E4E4;
     color: #282828;
-    font-size: 1.2em; 
+    font-size: 10pt; 
     font-weight: 500;
     ::placeholder{
         color: #6C6C6C;  
-        font-size: 1.2em; 
+        font-size: 10pt; 
     }
 `;
 
 const SLabel = styled(FormLabel)`
-    font-size: 1.2em;
+    font-size: 10pt;
+    font-weight: 600;
     color: #282828;
     margin: 0;
     padding: .375rem 0.75rem .1rem 0.75rem;
 `;
 
 const SCheck = styled(FormCheck)`
-    font-size: 1.2em;
+    font-size: 10pt;
     color: #282828;
     margin: 0;
     margin-left: calc(var(--bs-gutter-x) * .5);
@@ -81,12 +84,12 @@ const SCheck = styled(FormCheck)`
 
 const SDOption = styled.option`
     color: #6C6C6C;  
-    font-size: 1.2em; 
+    font-size: 10pt; 
 `;
 
 const SOption = styled.option`
     color: #282828;  
-    font-size: 1.2em; 
+    font-size: 10pt; 
 `;
 
 export {SContainer, SRow, Info, SControl, SLabel, SSelect, SCheck, SGroup, SOption, SDOption};

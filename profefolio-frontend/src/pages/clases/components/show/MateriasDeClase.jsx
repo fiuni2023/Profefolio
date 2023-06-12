@@ -76,7 +76,7 @@ const TagProfesor = memo(({ id, nombre = "", apellido = "", state = "n", onClick
           overflow: hidden;
           text-overflow: ellipsis;
           max-width: calc(15rem - 24px);
-          font-size: 15px;
+          font-size: 10pt;
           display: flex;
           align-items: center;
           white-space: nowrap;

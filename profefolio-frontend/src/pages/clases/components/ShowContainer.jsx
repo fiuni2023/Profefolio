@@ -23,13 +23,14 @@ const ShowContainer = ({ data = {} }) => {
         <style jsx="true">
             {`
                 .principal-container{
-                    margin-top: 0px;
+                    margin-top: 1rem;
                 }
                 .srow-showclase{
                     padding-bottom: 3rem;
                     flex-wrap: wrap;
                 }
                 .scol-showclase {
+                    display: flex;
                     box-sizing: border-box;
                     padding: 1rem;
                 }

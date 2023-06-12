@@ -165,28 +165,30 @@ function ModalProfesor({
     const getInputs = () => {
         if (selected_data) return [
             {
+                md: 6, lg: 6,
                 key: "nombre", label: "Nombre del Profesor",
                 type: "text", placeholder: "Ingrese el nombre",
                 disabled: disabled, required: true,
                 invalidText: "Ingrese un nombre",
             },
             {
+                md: 6, lg: 6,
                 key: "apellido", label: "Apellido del Profesor",
                 type: "text", placeholder: "Ingrese el apellido",
                 disabled: disabled, required: true,
                 invalidText: "Ingrese un apellido",
             },
             {
-                key: "fecha", label: "Fecha de nacimiento",
-                type: "date", placeholder: "Seleccione la fecha",
-                disabled: disabled,
-                required: true,
-            },
-            {
                 key: "email", label: "Correo Electónico",
                 type: "text", placeholder: "Ingrese correo electónico",
                 disabled: disabled, required: true,
                 invalidText: "Ingrese un correo electónico válido",
+            },
+            {
+                key: "fecha", label: "Fecha de nacimiento",
+                type: "date", placeholder: "Seleccione la fecha",
+                disabled: disabled,
+                required: true,
             },
             {
                 key: "direccion", label: "Dirección",
@@ -220,12 +222,7 @@ function ModalProfesor({
                 }
             },
             {
-                key: "documento", label: "Documento",
-                type: "text", placeholder: "Ingrese el número de documento",
-                disabled: disabled, required: true,
-                invalidText: "Ingrese un número",
-            },
-            {
+                md: 6, lg: 6,
                 key: "tipoDocumento", label: "Tipo de Documento",
                 type: "select",
                 disabled: disabled, required: true,
@@ -246,28 +243,31 @@ function ModalProfesor({
                             text: "Pasaporte"
                         }
                     ],
-
+                    
                 }
+            },
+            {
+                md: 6, lg: 6,
+                key: "documento", label: "Documento",
+                type: "text", placeholder: "Ingrese el número de documento",
+                disabled: disabled, required: true,
+                invalidText: "Ingrese un número",
             },
         ]
         return [
             {
+                md: 6, lg: 6,
                 key: "nombre", label: "Nombre del Profesor",
                 type: "text", placeholder: "Ingrese el nombre",
                 disabled: disabled, required: true,
                 invalidText: "Ingrese un nombre",
             },
             {
+                md: 6, lg: 6,
                 key: "apellido", label: "Apellido del Profesor",
                 type: "text", placeholder: "Ingrese el apellido",
                 disabled: disabled, required: true,
                 invalidText: "Ingrese un apellido",
-            },
-            {
-                key: "fecha", label: "Fecha de nacimiento",
-                type: "date", placeholder: "Seleccione la fecha",
-                disabled: disabled,
-                required: true,
             },
             {
                 key: "email", label: "Correo Electónico",
@@ -276,29 +276,39 @@ function ModalProfesor({
                 invalidText: "Ingrese un correo electónico válido",
             },
             {
-                key: "direccion", label: "Dirección",
-                type: "text", placeholder: "Ingrese la dirección",
-                disabled: disabled,
-            },
-            {
+                md: 6, lg: 6,
                 key: "pass", label: "Contraseña",
                 type: "password", placeholder: "Ingrese su Contraseña",
                 disabled: disabled, required: true,
                 invalidText: "Ingrese una Contraseña válida",
             },
             {
+                md: 6, lg: 6,
                 key: "passConf", label: "Confirme Contraseña",
                 type: "password", placeholder: "Confirme su Contraseña",
                 disabled: disabled, required: true,
                 invalidText: "Ingrese una Contraseña válida",
             },
             {
+                key: "fecha", label: "Fecha de nacimiento",
+                type: "date", placeholder: "Seleccione la fecha",
+                disabled: disabled,
+                required: true,
+            },
+            {
+                key: "direccion", label: "Dirección",
+                type: "text", placeholder: "Ingrese la dirección",
+                disabled: disabled,
+            },
+            {
+                
                 key: "telefono", label: "Telefono",
                 type: "text", placeholder: "Ingrese su Telefono",
                 disabled: disabled, required: true,
                 invalidText: "Ingrese un telefono válido",
             },
             {
+                
                 key: "genero", label: "Genero",
                 type: "select",
                 disabled: disabled, required: true,
@@ -319,12 +329,7 @@ function ModalProfesor({
                 }
             },
             {
-                key: "documento", label: "Documento",
-                type: "text", placeholder: "Ingrese el número de documento",
-                disabled: disabled, required: true,
-                invalidText: "Ingrese un número",
-            },
-            {
+                md: 6, lg: 6,
                 key: "tipoDocumento", label: "Tipo de Documento",
                 type: "select",
                 disabled: disabled, required: true,
@@ -345,8 +350,15 @@ function ModalProfesor({
                             text: "Pasaporte"
                         }
                     ],
-
+                    
                 }
+            },
+            {
+                md: 6, lg: 6,
+                key: "documento", label: "Numero de documento",
+                type: "text", placeholder: "Ingrese el número de documento",
+                disabled: disabled, required: true,
+                invalidText: "Ingrese un número",
             },
         ]
     }
