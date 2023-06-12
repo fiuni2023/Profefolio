@@ -15,6 +15,7 @@ const Alumnos = () => {
 
 
     useEffect(() => {
+        console.log(alumnos); 
         const newList = alumnos.map((a, i) => {
             return {
                 datos: [

@@ -44,7 +44,7 @@ const Eventos = ({
     const tipos_eventos = [
         {
             id: 1,
-            texto: "Evento",
+            texto: "Eventos",
             color: "#C8BFD9"
         },
         {
