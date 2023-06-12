@@ -623,7 +623,7 @@ useMemo(() => {
     const profesoresDisponibles = useMemo(() => {
       return profeProfesor.filter((profesor) => {
         const materiaSeleccionada = listaFusionada.find((materia) => materia.idMateria === idMateriaSeleccionada);
-        return !materiaSeleccionada || !materiaSeleccionada.profesores.some((p) => p.idProfesor === profesor.id);
+        return !materiaSeleccionada || !Array.isArray(materiaSeleccionada.profesores) || !materiaSeleccionada.profesores.some((p) => p.idProfesor === profesor.id);
       });
     }, [profeProfesor, listaFusionada, idMateriaSeleccionada]);
     
