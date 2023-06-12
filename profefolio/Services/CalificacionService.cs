@@ -202,6 +202,10 @@ public class CalificacionService : ICalificacion
         {
             case "p" :
                 ev.PuntajeLogrado = dto.Puntaje;
+                if(ev.Evaluacion != null && ev.Evaluacion.PuntajeTotal < ev.PuntajeLogrado)
+                {
+                    ev.Evaluacion.PuntajeTotal = ev.PuntajeLogrado;
+                }
                 if (ev.Evaluacion != null) ev.PorcentajeLogrado = (dto.Puntaje * 100) / ev.Evaluacion.PuntajeTotal;
                 await _db.SaveChangesAsync();
         
@@ -212,6 +216,9 @@ public class CalificacionService : ICalificacion
                 if (ev.Evaluacion != null)
                 {
                     ev.Evaluacion.PuntajeTotal = dto.PuntajeTotal;
+                    if (ev.Evaluacion.PuntajeTotal < ev.PuntajeLogrado)
+                        ev.PuntajeLogrado = ev.Evaluacion.PuntajeTotal;
+                    
                     ev.PorcentajeLogrado = (ev.PuntajeLogrado * 100) / ev.Evaluacion.PuntajeTotal;
                     await _db.SaveChangesAsync();
                 }
@@ -226,7 +233,21 @@ public class CalificacionService : ICalificacion
                 }
                 await this.Verify(idMateriaLista, user);
                 return await this.GetAll(idMateriaLista, user);
-            
+            case  "d" :
+                if (ev.Evaluacion != null) ev.Evaluacion.Deleted = true;
+
+                var qea = _db.EventoAlumnos
+                    .Where(d => !d.Deleted && d.EvaluacionId == ev.EvaluacionId);
+                foreach (var q in qea)
+                {
+                    q.Deleted = true;
+                    q.Modified = DateTime.Now;
+                    q.ModifiedBy = user;
+                }
+                await _db.SaveChangesAsync();
+                await this.Verify(idMateriaLista, user);
+                return await this.GetAll(idMateriaLista, user);
+                
             default:
                 throw new BadHttpRequestException("Modo no valido");
         }

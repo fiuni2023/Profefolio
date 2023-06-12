@@ -14,9 +14,10 @@ function ModalColegio({
 }) {
     const { getToken } = useGeneralContext()
     const disabled = false
+    const [adminNew, setAdminNew] = useState([]);
 
     const handleCreateSubmit = () => {
-       
+
         const nombre = document.getElementById("nombreColegio").value
         const idAdmin = document.getElementById("administradorColegio").value
         if (nombre === "" || idAdmin === "") return toast.error("Revise los datos, los campos deben ser completados")
@@ -54,7 +55,7 @@ function ModalColegio({
     const handleEditSubmit = () => {
         const nombre = document.getElementById("nombreColegio").value
         const idAdmin = document.getElementById("administradorColegio").value
-        
+
         if (nombre === "" || idAdmin === "") return toast.error("revisa los datos, los campos deben ser completados")
         let data = JSON.stringify({
             "id": selected_data.id,
@@ -89,7 +90,7 @@ function ModalColegio({
     }
 
     const handleDelete = () => {
-        
+
         axios.delete(`${APILINK}/api/Colegios/${selected_data.id}`, {
             headers: {
                 Authorization: `Bearer ${getToken()}`,
@@ -108,11 +109,17 @@ function ModalColegio({
                 console.error(error);
             });
     }
-
     useEffect(() => {
         if (selected_data) {
             document.getElementById("nombreColegio").value = selected_data.nombre
             document.getElementById("administradorColegio").value = selected_data.idAdmin ?? ""
+            setAdminNew([...administrators, {
+                id: selected_data.idAdmin,
+                nombre: selected_data.nombreAdministrador,
+                apellido: selected_data.apellido
+            }]);
+            console.log("adminnew", adminNew);
+            console.log(selected_data);
         }
     }, [selected_data])
 
@@ -120,7 +127,7 @@ function ModalColegio({
     const [deleting, setDeleting] = useState(false)
 
     useEffect(() => {
-        console.log(administrators)
+
         setDatosModal({
             header: selected_data ? deleting ? "ELIMINAR COLEGIO?" : "Editar Colegio" : "Agregar Colegio",
             form: {
@@ -142,7 +149,7 @@ function ModalColegio({
                             options: administrators.map((a) => {
                                 return {
                                     value: a.id,
-                                    text: a.nombre
+                                    text: a.nombre + " " + a.apellido
                                 }
                             }),
 
