@@ -376,5 +376,14 @@ namespace profefolio.Services
             return query;
 
         }
+
+        public async Task<List<MateriaLista>> FilterByIdClase(int idClase)
+        {
+            var query =await _db.MateriaListas
+                .Where(d => !d.Deleted && d.ClaseId == idClase)
+                .ToListAsync();
+
+            return query;
+        }
     }
 }
