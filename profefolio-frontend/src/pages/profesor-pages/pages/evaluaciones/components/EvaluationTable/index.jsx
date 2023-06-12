@@ -8,19 +8,19 @@ import CreateEventModal from "./components/createEventmodal";
 import DeleteEventConfirmationModal from "./components/deleteEventConfirmationModal";
 
 const ETable = styled.table`
-    border: 1px solid black;
+    border: 1px solid #DDDDDD;
     margin-top: 2vh;
     width: 100%;
 `;
 
 const ETH = styled.th`
-    border: 1px solid black;
-    background-color: #C6D8D3;
+    border: 1px solid #ababab;
+    background-color: #DDDDDD;
     min-width: 150px;
 `;
 
 const ETD = styled.td`
-    border: 1px solid black;
+    border: 1px solid #ababab;
     min-width: ${props => props.minWidth};
 `;
 
@@ -28,7 +28,7 @@ const ButtonDivStyle = styled.button`
     width: 20px;
     padding: 1px;
     border-radius: 50%;
-    background-color: #C6D8D3;
+    background-color: #DDDDDD;
     cursor: pointer;
     border: none;
 &:hover {
