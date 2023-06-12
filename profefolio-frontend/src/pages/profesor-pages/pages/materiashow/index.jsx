@@ -13,13 +13,13 @@ import { useNavigate } from 'react-router';
 import APILINK from "../../../../components/link";
 import { useGeneralContext } from "../../../../context/GeneralContext";
 const ProfesorMateriaShow = () => {
-    const { setPage, dataSet, stateController} = useModularContext();
-    const { getToken, cancan, verifyToken, getMateriaId } = useGeneralContext();
-    const {materiaId} = stateController
+    const { setPage, dataSet, stateController } = useModularContext();
+    const { getToken, cancan, verifyToken } = useGeneralContext();
+    const { materiaId } = stateController
     const { materiaShow, materiaName, loading, currColegio, currClase } = dataSet
-    const [datosDashboard, setDatosDashboard]=useState([]);
+    const [datosDashboard, setDatosDashboard] = useState([]);
     const nav = useNavigate()
- 
+
     useEffect(() => {
         verifyToken()
         if (!cancan("Profesor")) {
@@ -38,16 +38,17 @@ const ProfesorMateriaShow = () => {
                 }
             })
                 .then(response => {
-                   setDatosDashboard(response.data)
-                   console.log(datosDashboard)
+                    setDatosDashboard(response.data)
+                    console.log(datosDashboard)
 
                 })
                 .catch(error => {
                     console.error(error);
-                    
+
                 });
 
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [cancan, verifyToken, getToken]);
 
     const [materiaMapped, setMateriaMapped] = useState({
