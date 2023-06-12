@@ -28,48 +28,47 @@ const GapDiv = styled.div`
 `
 
 const Anotacion = () => {
-    const {dataSet, stateController} = useModularContext()
+    const { dataSet, stateController } = useModularContext()
     const { materiaName, currColegio, currClase, loading } = dataSet
-    const {getToken} = useGeneralContext()
+    const { getToken } = useGeneralContext()
     const token = getToken()
-    const {materiaId} = stateController
+    const { materiaId } = stateController
 
     const [lista, setLista] = useState([])
     const [selected, setSelected] = useState(null)
     const [fetchdata, setFetchData] = useState([])
 
-    useEffect(()=>{
-        console.log("idMateria", materiaId)
+    useEffect(() => {
         AnotationsService.GetByIdMateriaLista(token, materiaId)
-        .then(r=>{
-            setLista(r.data)
-        })
+            .then(r => {
+                setLista(r.data)
+            })
     }, [token, fetchdata, materiaId])
 
     const doFetch = () => {
-        setFetchData((before)=>{return [before]})
+        setFetchData((before) => { return [before] })
     }
 
     return <>
         <Row>
             <FlexDiv>
-                <BackButton to="materiashow"/>
+                <BackButton to="materiashow" />
                 <h5 className="m-0">
-                {currColegio} - {currClase} - {materiaName} - Anotaciones 
+                    {currColegio} - {currClase} - {materiaName} - Anotaciones
                 </h5>
             </FlexDiv>
         </Row>
-        { loading ? <Spinner height={"calc(100vh - 90px)"}></Spinner>
-        :   <Row className="my-2">
-            <Col md={8}>
-                <GridDiv>
-                    {lista.map((l, indx)=>{return <AnotacionCard key={`anotacion-key-${indx}`} onClick={setSelected} observacion={l} />})}
-                </GridDiv>
-                {/* <Paginations /> */}
-            </Col>
-            <Col md={4}>
-                <AnotacionShow doFetch={doFetch} setSelectedAnotation={setSelected} selectedAnotation={selected}/>
-            </Col>
+        {loading ? <Spinner height={"calc(100vh - 90px)"}></Spinner>
+            : <Row className="my-2">
+                <Col md={8}>
+                    <GridDiv>
+                        {lista.map((l, indx) => { return <AnotacionCard key={`anotacion-key-${indx}`} onClick={setSelected} observacion={l} /> })}
+                    </GridDiv>
+                    {/* <Paginations /> */}
+                </Col>
+                <Col md={4}>
+                    <AnotacionShow doFetch={doFetch} setSelectedAnotation={setSelected} selectedAnotation={selected} />
+                </Col>
             </Row>
         }
         <GapDiv />
