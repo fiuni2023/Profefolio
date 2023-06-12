@@ -4,14 +4,12 @@ import { AiOutlinePlus } from 'react-icons/ai'
 import { AddButton, MainContainer, TableContainer } from './styles/Styles'
 import StudentHelper from './helpers/StudentHelper'
 import Tabla from '../../components/Tabla';
-import { toast } from "react-hot-toast";
 import { useNavigate } from 'react-router-dom';
 import { useFetchEffect } from '../../components/utils/useFetchEffect';
 import StyleComponentBreadcrumb from '../../components/StyleComponentBreadcrumb';
 import ModalAlumnos from './components/ModalAlumnos'
 import Paginations from '../../components/Paginations'
 import Spinner from '../../components/componentsStyles/SyledSpinner'
-import Text from '../../components/componentsStyles/StyledText'
 
 const Alumnos = () => {
     const { getToken, cancan, verifyToken } = useGeneralContext()
@@ -46,6 +44,7 @@ const Alumnos = () => {
         setShow(true)
     }
 
+    // eslint-disable-next-line no-unused-vars
     const { doFetch, loading, error} = useFetchEffect(
         () => {
             return StudentHelper.getStudentsPage(currentPage, getToken())
@@ -71,10 +70,8 @@ const Alumnos = () => {
 
                 })
             },
-            handleError: () => {
-                if (!loading) {
-                    toast.error('No se pudieron obtener los datos. Intente recargar la página');
-                }
+            handleError: (e) => {
+                
             }
         }
     )
@@ -88,7 +85,6 @@ const Alumnos = () => {
         <MainContainer>
             <StyleComponentBreadcrumb nombre="Alumnos" />
             {loading ? <Spinner height={'calc(100vh - 80px)'} />
-                : error ? <Text>Lamentamos esto, ha ocurrido un error al obtener los datos.</Text>
                     : <>
                         <TableContainer>
                             <Tabla datosTabla={datosTabla} />

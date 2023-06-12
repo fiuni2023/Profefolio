@@ -5,8 +5,8 @@ import styled from 'styled-components';
 */
 const StyledIconButton = styled.button`
   margin:5px;
-  width: 40px;
-  height: 40px;
+  width: 35px;
+  height: 35px;
   background-color: ${props =>
         props.buttonType === 'delete'
             ? '#E57BA4' :

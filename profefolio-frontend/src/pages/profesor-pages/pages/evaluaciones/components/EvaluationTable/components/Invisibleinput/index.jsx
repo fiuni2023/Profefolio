@@ -8,7 +8,7 @@ const II = styled.input`
     border: none;
     text-align:center;
     appearance: none;
-    background-color: ${(props)=>{return props.back === "gray"? `#C6D8D3` : `#FFFFFF` }};
+    background-color: ${(props)=>{return props.back === "gray"? `#DDDDDD` : `#FFFFFF` }};
     &:hover {
         filter: brightness(0.95);
     }

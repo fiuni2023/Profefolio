@@ -61,9 +61,60 @@ namespace profefolio.Services
             return await _context.Anotaciones.Where(c => !c.Deleted).ToArrayAsync();
         }
 
+        public async Task<IEnumerable<Anotacion>> GetAll(int idMateriaLista, string emailProfesor)
+        {
+            return await _context.Anotaciones
+                        .Include(a => a.MateriaLista)
+                        .Include(a => a.MateriaLista.Profesor)
+                        .Where(a => !a.Deleted 
+                        && a.MateriaListaId == idMateriaLista 
+                        && !a.MateriaLista.Deleted
+                        && !a.MateriaLista.Profesor.Deleted
+                        && emailProfesor.Equals(a.MateriaLista.Profesor.Email))
+                        .ToListAsync();
+        }
+
         public Task Save()
         {
             return _context.SaveChangesAsync();
+        }
+
+        public async Task<bool> VerificacionPreguardado(int idMateriaLista, string emailProfesor, string tituloNuevo)
+        {       
+            // se verificca que el prof ensenhe en la materia
+            var verifMateria =  await _context.Anotaciones
+                        .Include(a => a.MateriaLista)
+                        .Include(a => a.MateriaLista.Profesor)
+                        .FirstOrDefaultAsync(a => !a.Deleted
+                        && a.MateriaListaId == idMateriaLista 
+                        && !a.MateriaLista.Deleted
+                        && !a.MateriaLista.Profesor.Deleted
+                        && emailProfesor.Equals(a.MateriaLista.Profesor.Email));
+            
+            if(verifMateria == null){
+                throw new UnauthorizedAccessException();
+            }
+
+            var verifNombreRepetido = await _context.Anotaciones
+                        .Include(a => a.MateriaLista)
+                        .FirstOrDefaultAsync(a => !a.Deleted
+                            && a.Titulo.ToLower().Equals(tituloNuevo.ToLower())
+                            && a.MateriaListaId == idMateriaLista
+                            && !a.MateriaLista.Deleted); 
+            
+            return verifMateria != null && verifNombreRepetido == null;
+        }
+
+        public async Task<bool> VerificarProfesor(int idAnotacion, string emailProfesor)
+        {
+            return await _context.Anotaciones
+                    .Include(a => a.MateriaLista)
+                    .Include(a => a.MateriaLista.Profesor)
+                    .AnyAsync(a => !a.Deleted 
+                        && a.Id == idAnotacion 
+                        && !a.MateriaLista.Deleted
+                        && !a.MateriaLista.Profesor.Deleted
+                        && emailProfesor.Equals(a.MateriaLista.Profesor.Email)); 
         }
     }
 }

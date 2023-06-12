@@ -53,11 +53,14 @@ namespace profefolio.Services
 
         public async Task<ClaseDetallesDTO> FindByIdClase(int idClase, string user)
         {
+            var userL = await _db.Users
+                .Where(u => !u.Deleted && u.Email.Equals(user))
+                .FirstAsync();
+
+
             var colegio = await _db.Colegios
-                .Include(c => c.personas)
-                .Where(c => !c.Deleted)
-                .Where(c => c.personas.Email.Equals(user))
-                .FirstOrDefaultAsync();
+                .Where(c => c.PersonaId != null && !c.Deleted && c.PersonaId.Equals(userL.Id))
+                .FirstAsync();
 
             if (colegio == null)
             {
@@ -65,12 +68,14 @@ namespace profefolio.Services
             }
 
             var profesores = _db.Users
+                .Where(p => !p.Deleted)
                 .ToList();
 
             var clase = await _db.Clases
                 .Include(c => c.MateriaListas)
                 .Where(c => !c.Deleted && c.Id == idClase)
                 .FirstOrDefaultAsync();
+
 
             if (clase?.Nombre == null || (colegio.Id != clase.ColegioId) || clase.MateriaListas == null)
             {
@@ -115,7 +120,8 @@ namespace profefolio.Services
                                        cp.PersonaId.Equals(profesor.Id)
                                        && cp.ColegioId == colegio.Id);
 
-                        if (colegioProfesorVerify)
+                        var mlVerify = itemLista.ProfesorId.Equals(profesor?.Id);
+                        if (colegioProfesorVerify && mlVerify)
                         {
                             var profeSimple = new ProfesorSimpleDTO();
                             profeSimple.Apellido = profesor.Apellido;
@@ -225,9 +231,14 @@ namespace profefolio.Services
                     throw new FileNotFoundException();
                 }
 
-                var profesorDist = materia.Profesores.DistinctBy(mp => mp.IdProfesor);
+                var profesorDist = materia.Profesores
+                    .DistinctBy(x => x.IdProfesor);
 
-                foreach (var profesor in profesorDist)
+                if (profesorDist.Count() != materia.Profesores.Count())
+                    throw new BadHttpRequestException("No se admiten elementos repetidos");
+                
+
+                foreach (var profesor in materia.Profesores)
                 {
                     //Validar los roles del profesor
                     var profe = await _db.Users.FindAsync(profesor.IdProfesor);
@@ -303,21 +314,18 @@ namespace profefolio.Services
                             materiaListaD.Modified = DateTime.Now;
                             materiaListaD.Deleted = true;
                             break;
-
-                        default: throw new BadHttpRequestException("Comando no valido");
+                        
+                        case  '-' : 
+                            break;
+                        default: 
+                            throw new BadHttpRequestException("Comando no valido");
                     }
                 }
             }
 
-            try
-            {
-                await _db.SaveChangesAsync();
-                return true;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+
+            await _db.SaveChangesAsync();
+            return true;
         }
 
         public async Task<Persona> GetProfesorOfMateria(int idMateriaLista, string profesorEmail)

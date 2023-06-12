@@ -41,7 +41,7 @@ const SCard = styled(Card)`
 const SHeader = styled(Card.Header)`
     background-color: ${({ background }) => handleColorType(background, true)};
     border: none;
-    font-size: 1.5em;
+    font-size: 16px;
     font-weight: 600;
     text-align: center;
     border-radius: 20px 20px 0 0 !important;
@@ -51,7 +51,7 @@ const SBody = styled(Card.Body)`
     background-color: ${({ background }) => handleColorType(background, false)};
     border: none;
     text-align: center;
-    font-size: 1.2em;
+    font-size: 10pt;
     border-radius: 0 0 20px 20px;
 `;
 
@@ -62,7 +62,7 @@ const STitle = styled.div`
 `;
 
 const DTitle = styled.h3`
-  font-size: 1.5em;
+  font-size: 16px;
 `
 
 const SCol = styled(Col)`
@@ -84,19 +84,19 @@ const TwoCol = styled.div`
 const FirstCol = styled.div`
   width: 50%;
   font-weight: 600;
-  font-size: 1.2em;  
+  font-size: 10pt;  
   text-align: initial; 
 `;
 
 const SecondCol = styled.div`
   width: 50%;
   font-weight: 400;
-  font-size: 1.2em;  
+  font-size: 10pt;  
   text-align: initial; 
 `;
 const SingleCol = styled.div`
     font-weight: 600;
-    font-size: 1.2em; 
+    font-size: 10pt; 
     text-align: initial; 
 `;
 

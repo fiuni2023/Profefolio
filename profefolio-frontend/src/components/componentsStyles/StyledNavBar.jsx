@@ -13,7 +13,7 @@ const SNavBar = styled.nav`
     background-color: white;
     display: flex;
     align-items: center;
-    padding: 22px 22px;
+    padding: 0 15px;
     background-color: #F0544F;
     justify-content: space-between;
 `;
@@ -22,7 +22,7 @@ const SButtonforBar = styled.button`
     outline: none;
     border: none;
     background-color: #F0544F;
-    font-size: 30px;
+    font-size: 25px;
     color: white;
     display: flex; 
     align-items: center; 
@@ -33,6 +33,7 @@ const SMainLogo = styled.button`
     border: none;
     background-color: #F0544F;
     cursor: ${({ clickable }) => handleClickable(clickable)};
+    margin: auto;
     display: flex;
     align-items: center;
     height: 2.1em;
@@ -59,12 +60,12 @@ const SMainName = styled.div`
 `;
 
 const SUserName = styled.span`
-    font-size: 1.5em;
+    font-size: 16px;
 `;
 
 const SSchoolName = styled.div`
     color: #ffffff; 
-    font-size: 2em;
+    font-size: 18px;
 `;
 
 const NavLeft = styled.div`

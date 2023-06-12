@@ -1,9 +1,9 @@
 .pagination{
     display: flex;
     font-size: medium;
-    padding-top: 2%;
+    
 }
 
 .text{
-    padding-top: 1%;
+    margin: auto 5px;
 }
