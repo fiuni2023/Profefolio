@@ -38,11 +38,11 @@ const EventosTabla = ({ has_clase, has_colegio, lista }) => {
     });
     const getRowColor = (tipo) => {
         switch (tipo) {
-            case "parcial":
+            case "Parcial":
                 return "#C1E1FA"; // Color para el tipo "parcial"
-            case "examen":
+            case "Examen":
                 return "#F6E7A7"; // Color para el tipo "examen"
-            case "prueba":
+            case "Prueba sumatoria":
                 return "#FCC6AC"; // Color para el tipo "prueba sumatoria"
             default:
                 return "#C8BFD9"; // Color predeterminado

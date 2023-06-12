@@ -70,7 +70,7 @@ function ListarDocumentos() {
 
   return (
     <>
-      <div>
+      <div className='m-4'>
         
         <Row>
           <FlexDiv>
