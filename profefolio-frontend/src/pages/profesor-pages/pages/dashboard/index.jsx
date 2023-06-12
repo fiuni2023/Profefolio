@@ -4,6 +4,7 @@ import { SRow } from '../../../../components/componentsStyles/StyledDashComponen
 import ShowContainer from '../../../clases/components/ShowContainer.jsx'
 import Horarios from '../../components/Horarios/index.jsx'
 import Eventos from '../../components/Eventos/index.jsx'
+import EventosTabla from "../../components/EventosTabla";
 import { useGeneralContext } from '../../../../context/GeneralContext.jsx'
 import { useModularContext } from '../../context/index.jsx'
 import Spinner from '../../../../components/componentsStyles/SyledSpinner.jsx'
@@ -13,7 +14,7 @@ const ProfesorPage = () => {
     const {setPage, dataSet, stateController} = useModularContext()
 
     const { setColegioId, setCurrColegio } = stateController 
-    const { colegios, loading } = dataSet
+    const { colegios,eventos, loading } = dataSet
 
     const handleClickCards = (id, nombre) => {
         setCurrColegio(nombre); 
@@ -28,7 +29,7 @@ const ProfesorPage = () => {
                 <ContainerColegios onClick={handleClickCards} lista={colegios}/>
             </SRow>,
             <Horarios/>,
-            <Eventos has_clase={true} has_colegio={true} />
+            <Eventos tablaEventos={<EventosTabla has_colegio={true} has_clase={true} lista={eventos} />} />
         ]
     };
     return <>

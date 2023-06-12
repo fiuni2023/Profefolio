@@ -5,13 +5,14 @@ import ShowContainer from "../../../clases/components/ShowContainer";
 import BackButton from "../../components/BackButton";
 import Alumnos from "../../components/Alumnos";
 import Eventos from "../../components/Eventos";
+import EventosTabla from "../../components/EventosTabla";
 import ContainerColegios from "../../components/ContainerColegios";
 import Spinner from "../../../../components/componentsStyles/SyledSpinner";
 
 const ProfesorMateria = () => {
     const {setPage, dataSet, stateController} = useModularContext()
 
-    const {materias, loading, currColegio, currClase} = dataSet
+    const {materias,eventosClase, loading, currColegio, currClase} = dataSet
     const {setMateriaId, setMateriaName} = stateController
 
     const handleClickCards = (id) => {
@@ -46,7 +47,7 @@ const ProfesorMateria = () => {
                 <ContainerColegios onClick={handleClickCards} lista={materiasMapped}/>
             </SRow>,
             <Alumnos />,
-            <Eventos />
+            <Eventos tablaEventos={<EventosTabla has_colegio={false} has_clase={false} lista={eventosClase} />} />
         ]
     };
     return (
