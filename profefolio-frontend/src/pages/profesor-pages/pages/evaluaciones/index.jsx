@@ -13,10 +13,6 @@ const FlexDiv = styled.div`
     gap: 10px;
 `
 
-const GapDiv = styled.div`
-    height: 30px;
-`
-
 const Evaluaciones = () => {
 
     const {dataSet} = useModularContext()
