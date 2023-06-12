@@ -66,7 +66,7 @@ const ProfesorMateriaShow = () => {
             const newMateria = {
                 anotations: materiaShow.anotaciones,
                 name: materiaName,
-                calification_count: materiaShow.calificaciones?.calificaciones,
+                calification_count: materiaShow.calificaciones,
                 event_yet: materiaShow.calificaciones?.sinCalificaciones,
                 classes_yet: 1,
                 documents: materiaShow.documentos,
