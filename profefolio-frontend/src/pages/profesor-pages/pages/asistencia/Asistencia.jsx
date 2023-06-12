@@ -24,8 +24,38 @@ const FlexDiv = styled.div`
     gap: 10px;
 `
 
+const InvisibleSelect = styled.select`
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    outline: none;
+    border: none;
+    appearance: none;
+    background-color: #FFFFFF;
+    text-align:center;
+    &:hover{
+        filter: brightness(0.8);
+    }
+`;
+
 // const Asistencia = ({ materia = { id: 1, nombre: "Matemáticas" } }) => {
 const Asistencia = React.memo(() => {
+
+    const VALUEMES = [
+        {value: 1, text: "ENERO"},
+        {value: 2, text: "FEBRERO"},
+        {value: 3, text: "MARZO"},
+        {value: 4, text: "ABRIL"},
+        {value: 5, text: "MAYO"},
+        {value: 6, text: "JUNIO"},
+        {value: 7, text: "JULIO"},
+        {value: 8, text: "AGOSTO"},
+        {value: 9, text: "SEPTIEMBRE"},
+        {value: 10, text: "OCTUBRE"},
+        {value: 11, text: "NOVIEMBRE"},
+        {value: 12, text: "DICIEMBRE"},
+    ]
+
     const { getToken/*, cancan, verifyToken*/ } = useGeneralContext()
     //const [condFetch, setCondFetch] = useState(true)
     const {dataSet} = useModularContext()
@@ -46,6 +76,8 @@ const Asistencia = React.memo(() => {
     const [porcentajes, setPorcentajes] = useState([])
     const {stateController} = useModularContext()
     const {materiaId} = stateController
+
+    const [ mesValue, setMesValue ] = useState(0)
     // const { idMateriaLista } = useParams()
     // const nombre = "Matemáticas"
 
@@ -55,8 +87,9 @@ const Asistencia = React.memo(() => {
             // return axios.get(`${APILINK}/api/Asistencia/${materia?.id}`, {
             let body = {
                 "idMateriaLista": materiaId,
-                "mes": 0
+                "mes": mesValue
             }
+            console.log(body)
             return axios.post(`${APILINK}/api/Asistencia`, body, {
                 headers: {
                     Authorization: 'Bearer ' + getToken(),
@@ -64,11 +97,10 @@ const Asistencia = React.memo(() => {
                 },
             }).then(response => response.data);
         },
-        [],
+        [mesValue],
         {
             condition: true,
             handleSuccess: (dataAsistencia) => {
-                console.log(dataAsistencia)
                 setPorcentajes((before)=> {return []})
                 setCantAlumnos(dataAsistencia.length)
                 setCantClases(dataAsistencia[0]?.asistencias?.length)
@@ -255,6 +287,14 @@ const Asistencia = React.memo(() => {
                     <SideSection>
                         {!error && !loading &&
                             <Resumen>
+                                <InvisibleSelect value={mesValue} onChange={(e)=>{setMesValue(Number(e.target.value))}}>
+                                    <option value={0}>Mes Actual</option>
+                                    {VALUEMES.map((v,i)=>{
+                                        return <option key={i} value={v.value}>{v.text}</option>
+                                    })
+
+                                    }
+                                </InvisibleSelect>
                                 <p>{cantAlumnos} alumnos</p>
                                 <p>{cantClases} {cantClases < 1 ? "Aún no hay clases" : cantClases > 1 ? "clases" : "clase"}</p>
                                 <p>{getPromedios()} promedio de asistencias</p>

@@ -49,8 +49,7 @@ const EvaluationTable = () => {
 
     const { dataSet, functions, stateHandlers } = usePageContext()
     const { evalAlumnos, etapas } = dataSet
-    // eslint-disable-next-line no-unused-vars
-    const { handleAddEtapa, handleDeleteEtapa, handleEditEventName, handleEditCalification } = functions
+    const { handleAddEtapa, handleDeleteEtapa, handleEditCalification, handleEditCalificationNombre, handleEditCalificationPT } = functions
     const { setShowModal, setEtapaName } = stateHandlers
 
     const getCalif = (e) => {
@@ -66,6 +65,7 @@ const EvaluationTable = () => {
             valor = e.map((ev) => { return ev.porcentaje_logrado }).reduce((b, a) => { return b + a })
             valor = valor / e.length
             sumatoria += valor
+            return e
         });
         sumatoria = sumatoria / etapas.length
         return sumatoria.toFixed(2)
@@ -90,8 +90,7 @@ const EvaluationTable = () => {
                         {
                             etapas.map((e, i) => {
                                 return <ETH colSpan={e.etapas.length + 2} key={`Etapas${i}`}> {e.etapa}
-                                    <ButtonDivStyle onClick={() => { handleDelegateCreateModal(e.etapa) }}><RxPlus /></ButtonDivStyle>
-                                    <ButtonDivStyle onClick={() => { handleDeleteEtapa(i) }}><RxCross2 /></ButtonDivStyle>
+                                    <ButtonDivStyle onClick={() => {handleDelegateCreateModal(e.etapa)}}><RxPlus /></ButtonDivStyle>
                                 </ETH>
                             })
                         }
@@ -102,8 +101,8 @@ const EvaluationTable = () => {
                             etapas.map((e, i) => {
                                 return <>
                                     {
-                                        e.etapas.map((ev, x) => {
-                                            return <ETH key={`EEN${i}${ev.id}${x}`}><InvisibleInput value={ev.nombre} handleBlur={(text) => { /*handleEditEventName(ev.id, text)*/ }} /></ETH>
+                                        e.etapas.map((ev,x) => {
+                                            return <ETH key={`EEN${i}${ev.id}${x}`}><InvisibleInput value={ev.nombre} handleBlur={(text) => { handleEditCalificationNombre(ev.id, ev.puntaje_total, 0, text) }} /></ETH>
                                         })
                                     }
                                     <ETH rowSpan={2} key={`ETP${i}`}>Total</ETH>
@@ -117,8 +116,8 @@ const EvaluationTable = () => {
                             etapas.map((e, i) => {
                                 return <>
                                     {
-                                        e.etapas.map((ev, x) => {
-                                            return <ETH key={`EEP${i}${ev.id}${x}`}>{`P.T:  ${ev.puntaje_total}`}</ETH>
+                                        e.etapas.map((ev,x) => {
+                                            return <ETH key={`EEP${i}${ev.id}${x}`}>P.T: <InvisibleInput width="20%" value={ev.puntaje_total} handleBlur={(text) => { handleEditCalificationPT(ev.id, parseInt(text), 0, ev.nombre) }} /></ETH>
                                         })
                                     }
                                 </>
@@ -136,7 +135,7 @@ const EvaluationTable = () => {
                                         return <>
                                             {
                                                 e.map((p) => {
-                                                    return <ETD key={`LEP${p.id}`}><InvisibleInput type="number" value={p.puntaje} max={p.puntaje_total} back={"white"} handleBlur={(text) => { handleEditCalification(p.id, p.puntaje_total, parseInt(text)) }} /></ETD>
+                                                    return <ETD key={`LEP${p.id}`}><InvisibleInput type="number" value={p.puntaje} max={p.puntaje_total} back={"white"} handleBlur={(text) => { handleEditCalification(p.id, p.puntaje_total, parseInt(text), p.nombre) }} /></ETD>
                                                 })
                                             }
                                             <ETD key={`AETP${i},${a.id}`}>{`${getTotal(e)}`}</ETD>
