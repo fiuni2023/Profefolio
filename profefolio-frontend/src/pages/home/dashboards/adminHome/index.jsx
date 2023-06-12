@@ -107,6 +107,11 @@ const AdminHome = () => {
             if (!loadingColegios){
                 setLoading(false); 
             }
+        }).catch((e) => {
+            loadingAdmins = false; 
+            if (!loadingColegios){
+                setLoading(false); 
+            }
         })
         ColegioService.getFirstPage(token)
         .then((r)=>{
@@ -129,6 +134,11 @@ const AdminHome = () => {
                     }
                 })
             }
+            loadingColegios = false; 
+            if (!loadingAdmins){
+                setLoading(false); 
+            }
+        }).catch((e) => {
             loadingColegios = false; 
             if (!loadingAdmins){
                 setLoading(false); 
