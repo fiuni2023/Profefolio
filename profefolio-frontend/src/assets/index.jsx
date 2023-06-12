@@ -21,7 +21,6 @@ export const LogoNavBar = ({
 }
 
 export const Logo = ({
-    width = "100%",
     height = "100%",
     className=""
 }) => {
@@ -33,8 +32,9 @@ export const Logo = ({
             </div>
             <style jsx="true">{`
                 .imageContainer{
-                    width: ${width};
                     height: ${height};
+                    margin-left: 30px;
+                    margin-right: 30px;
                 }
             `}</style>
         </>

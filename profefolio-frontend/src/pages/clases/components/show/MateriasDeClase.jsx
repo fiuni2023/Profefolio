@@ -76,7 +76,7 @@ const TagProfesor = memo(({ id, nombre = "", apellido = "", state = "n", onClick
           overflow: hidden;
           text-overflow: ellipsis;
           max-width: calc(15rem - 24px);
-          font-size: 15px;
+          font-size: 10pt;
           display: flex;
           align-items: center;
           white-space: nowrap;
@@ -134,8 +134,6 @@ const ListItem = memo(({ index, idMateria,estado ,nombre,apellido, profesores = 
   const [idMateriaSeleccionado, setIdMateriaSeleccionado] = useState();
     const [profesoresSeleccionados, setProfesoresSeleccionados] = useState([]);
 
-    const [profesoresMateriaSeleccionados, setProfesoresMateriaSeleccionados] = useState([]);
-
     const { setStatusProfesorMateria } = useClaseContext();
 
     const [isSelectOpen, setIsSelectOpen] = useState(false);
@@ -158,6 +156,7 @@ const ListItem = memo(({ index, idMateria,estado ,nombre,apellido, profesores = 
 const seleccionarProfesor = (event) => {
   const idProfesorSeleccionado = event.target.value;
 
+  console.log('idMateria',idMateria);
   setProfesoresSeleccionados((prevSeleccionados) =>
     prevSeleccionados.includes(idProfesorSeleccionado)
       ? prevSeleccionados.filter((id) => id !== idProfesorSeleccionado)
@@ -175,11 +174,14 @@ useEffect(() => {
 
   useEffect(() => {
     guardarProfesorSeleccionado(profesoresSeleccionados);
+
+    console.log('profesoresSeleccionados',profesoresSeleccionados)
   }, [profesoresSeleccionados]);
   
 
   useEffect(() => {
     guardarProfesorSeleccionadoParaBorrar(usuariosSeleccionados);
+
   }, [usuariosSeleccionados]);
 
 
@@ -261,7 +263,14 @@ useEffect(() => {
         setStatus(estado);
         setStatusProfesorMateria(idMateria, e.id, newType);
         setIdMateriaSeleccionado(idMateria);
-        setUsuariosSeleccionados([...usuariosSeleccionados, e.idProfesor]);
+        if (newType === "n") {
+          setUsuariosSeleccionados(usuariosSeleccionados.filter(id => id !== e.idProfesor));
+        
+        } else {
+          setUsuariosSeleccionados([...usuariosSeleccionados, e.idProfesor]);
+         
+        }
+       // setUsuariosSeleccionados([...usuariosSeleccionados, e.idProfesor]);
       }}
     />
   ))
@@ -427,7 +436,6 @@ useMemo(() => {
       body.materias.push(materia);
     });
   
-    console.log('body',body);
     ClassesService.createMateriaProfesor(body, getToken())
       .then(() => {
         
@@ -521,6 +529,7 @@ useMemo(() => {
           setMateriaProfesores(dataList ?? []);        
           setLoading(false);
         } catch (e) {
+          setLoading(false);
           setMateriaProfesores([]);
         }
       };
@@ -563,10 +572,18 @@ useMemo(() => {
 
 
       const profesoresIds = profesoresSeleccionados.map((profesor) => profesor.id);
-      setProfesoresSeleccionados([]);
+    
+       // Establecer profesoresSeleccionados como un array vacío
+  setProfesoresSeleccionados([]);
+
+  // Llamar a guardarProfesorSeleccionado con profesoresSeleccionados vacío
+  guardarProfesorSeleccionado([]);
+
 
     };
 
+
+    console.log('profesoresSeleccionados',profesoresSeleccionados);
 
     useEffect(() => {
       if (materiaProfesor) {
@@ -613,14 +630,18 @@ useMemo(() => {
     }
 
 
-
     const profesoresDisponibles = useMemo(() => {
+      if (!idMateriaSeleccionada) {
+        return []; // Retorna un array vacío si idMateriaSeleccionada no existe
+      }
+    
       return profeProfesor.filter((profesor) => {
         const materiaSeleccionada = listaFusionada.find((materia) => materia.idMateria === idMateriaSeleccionada);
         return !materiaSeleccionada || !Array.isArray(materiaSeleccionada.profesores) || !materiaSeleccionada.profesores.some((p) => p.idProfesor === profesor.id);
       });
     }, [profeProfesor, listaFusionada, idMateriaSeleccionada]);
     
+
     
 
   

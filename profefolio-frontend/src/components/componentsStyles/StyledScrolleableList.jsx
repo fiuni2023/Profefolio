@@ -29,8 +29,8 @@ const ScrollTable = styled(Card)`
 const SHeader = styled(Card.Header)`
     background-color: white;
     border-bottom: solid 1px #D2D2D2;
-    font-size: 1.5em;
-    font-weight: 400;
+    font-size: 13pt;
+    font-weight: 500;
     padding-left: 20px;
     border-radius: 20px 20px 0 0 !important;
 `;
@@ -63,8 +63,8 @@ const Container = styled.div`
 const SForm = styled.form`
     background-color: white;
     border-top: solid 1px #D2D2D2;
-    font-size: 1.4em;
-    font-weight: 300;
+    font-size: 13pt;
+    font-weight: 500;
     padding: 30px;
     padding-top: 10px;
     padding-bottom: 20px;
@@ -73,7 +73,7 @@ const SForm = styled.form`
 const Select = styled(FormSelect)`
     background-color: #F5F5F5;
     border: none;
-    font-size: 1.1em;
+    font-size: 10pt;
     font-weight: 400;
     border-radius: 5px;
     width: 100%;
@@ -90,7 +90,7 @@ const List = styled.ol`
 `;
 
 const Item = styled.li`
-    font-size: 1.1em;
+    font-size: 10pt;
     font-weight: 500;
     text-align: left;
 `;

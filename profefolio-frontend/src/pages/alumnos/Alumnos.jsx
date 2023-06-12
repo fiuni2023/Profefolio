@@ -71,10 +71,8 @@ const Alumnos = () => {
 
                 })
             },
-            handleError: () => {
-                if (!loading) {
-                    toast.error('No se pudieron obtener los datos. Intente recargar la página');
-                }
+            handleError: (e) => {
+                
             }
         }
     )
@@ -88,7 +86,6 @@ const Alumnos = () => {
         <MainContainer>
             <StyleComponentBreadcrumb nombre="Alumnos" />
             {loading ? <Spinner height={'calc(100vh - 80px)'} />
-                : error ? <Text>Lamentamos esto, ha ocurrido un error al obtener los datos.</Text>
                     : <>
                         <TableContainer>
                             <Tabla datosTabla={datosTabla} />

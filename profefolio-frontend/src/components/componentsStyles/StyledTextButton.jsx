@@ -7,10 +7,10 @@ import styled from 'styled-components';
 const StyledTextButton = styled.button`
   font-weight: 600;
   width: 124px;
-  height: 40px;
+  height: 35px;
   border: none;
-  border-radius: 5px;
-  font-size: 20px;
+  border-radius: 7px;
+  font-size: 16px;
   margin:5px;
   cursor: ${props => props.enabled ? 'pointer' : 'not-allowed'};
   opacity: ${props => props.enabled ? 1 : 0.5};
