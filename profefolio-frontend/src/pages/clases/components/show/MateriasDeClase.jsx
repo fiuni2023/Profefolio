@@ -236,7 +236,6 @@ useEffect(() => {
                         state='d'
                         idMateriaProfesor={idMateria} 
                         onClick={() => {
-                              console.log('entro',idMateria);
                             setProfesoresSeleccionados((prevSeleccionados) =>
                             prevSeleccionados.filter((id) => id !== profesor.id)
                             );
@@ -345,7 +344,6 @@ const MateriasDeClase = () => {
         const nuevosProfesores = materia.profesores.map((profesor) => profesor.id);
         setProfesoresSeleccionados([...profesoresSeleccionados, ...nuevosProfesores]);
 
-        console.log('nuevosProfesores',nuevosProfesores);
       };
       
 
@@ -544,8 +542,6 @@ useMemo(() => {
     const eliminarMateria = (idMateria) => {
 
 
-      console.log('materiaProfesor',materiaProfesor);
-
       setListaFusionada((before)=>{return before.filter(
         (item) => item.idMateria !== idMateria
       );})
@@ -566,13 +562,9 @@ useMemo(() => {
       const profesoresIds = profesoresSeleccionados.map((profesor) => profesor.id);
       setProfesoresSeleccionados([]);
 
-
-      console.log('profesoresSeleccionados', profesoresSeleccionados);
     };
 
-    console.log('listaFusionada',listaFusionada);
 
-  
     useEffect(() => {
       if (materiaProfesor) {
         const nuevaListaFusionada = materiaProfesor.map(item => ({
@@ -614,12 +606,10 @@ useMemo(() => {
     const guardarIdMateriaSeleccionado=(idMateriaSeleccionada)=> {
         setIdMateriaSeleccionada(idMateriaSeleccionada);
 
-        console.log('idMateriaSeleccionada',idMateriaSeleccionada);
+
     }
 
-    console.log('idMateriaSeleccionada',idMateriaSeleccionada);
 
-    console.log('idMateria',idMateria);
 
     const profesoresDisponibles = useMemo(() => {
       return profeProfesor.filter((profesor) => {
@@ -629,9 +619,7 @@ useMemo(() => {
     }, [profeProfesor, listaFusionada, idMateriaSeleccionada]);
     
     
-    
-    console.log('profesoresDisponibles',profesoresDisponibles);
-    console.log('listaFusionada',listaFusionada);
+
   
     let materiasList = {
         onSubmit: () => handleClickProfesor(idMateria),
@@ -670,7 +658,7 @@ useMemo(() => {
                                     guardarIdMateriaSeleccionado={guardarIdMateriaSeleccionado}
                                     onClick={(event) => {
                                         console.log(
-                                          `${materia.idMateria} materia seleccionado`,
+                                         // `${materia.idMateria} materia seleccionado`,
                                           
                                         );
                                         if (materia.estado === "new") {
