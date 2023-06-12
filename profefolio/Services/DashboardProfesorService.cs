@@ -451,7 +451,7 @@ namespace profefolio.Services
             var materiaListaIds = materiaListas.Select(m => m.Id).ToList();
 
             var eventos = await _context.Eventos
-                .Where(e => materiaListaIds.Contains(e.MateriaListaId))
+                .Where(e => materiaListaIds.Contains(e.MateriaListaId) && !e.Deleted)
                 .ToListAsync();
 
             var eventosClase = eventos.Select(e => new DBCardEventosColegioDTO

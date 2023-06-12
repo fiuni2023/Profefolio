@@ -124,7 +124,6 @@ export const ModularProvider = ({ children }) => {
             body = {opcion: 'lista-alumnos', id: claseId, anho: 2023}
             ProfesorPagesService.Get(body, token)
             .then(function (d){
-                console.log("d.data alumnos:"); // Imprimir d.data en la consola
                 setAlumnos(d.data)
                 setLoading(false)
                 setLoadingClase(false)

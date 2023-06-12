@@ -54,6 +54,7 @@ const EvaluationTable = () => {
     const { setShowModal, setEtapaName, setModalDeleteFunction, setShowDeleteModal } = stateHandlers
 
     const getCalif = (e) => {
+        if(e.length === 0) return 0
         let valor = e.map((ev) => { return ev.porcentaje_logrado }).reduce((b, a) => { return b + a })
         valor = valor / e.length
         return valor.toFixed(2)
@@ -63,9 +64,13 @@ const EvaluationTable = () => {
         let sumatoria = 0
         let valor = 0
         etapas.forEach(e => {
-            valor = e.map((ev) => { return ev.porcentaje_logrado }).reduce((b, a) => { return b + a })
-            valor = valor / e.length
-            sumatoria += valor
+            if(e.length > 0){
+                valor = e.map((ev) => { return ev.porcentaje_logrado }).reduce((b, a) => { return b + a })
+                valor = valor / e.length
+            }else{
+                valor = 0
+            }
+            sumatoria = sumatoria + valor
             return e
         });
         sumatoria = sumatoria / etapas.length
