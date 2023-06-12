@@ -231,9 +231,14 @@ namespace profefolio.Services
                     throw new FileNotFoundException();
                 }
 
-                var profesorDist = materia.Profesores.DistinctBy(mp => mp.IdProfesor);
+                var profesorDist = materia.Profesores
+                    .DistinctBy(x => x.IdProfesor);
 
-                foreach (var profesor in profesorDist)
+                if (profesorDist.Count() != materia.Profesores.Count())
+                    throw new BadHttpRequestException("No se admiten elementos repetidos");
+                
+
+                foreach (var profesor in materia.Profesores)
                 {
                     //Validar los roles del profesor
                     var profe = await _db.Users.FindAsync(profesor.IdProfesor);
