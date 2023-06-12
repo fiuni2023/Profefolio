@@ -129,13 +129,6 @@ const ListItem = memo(({ index, idMateria,estado ,nombre,apellido, profesores = 
     setType(type);
   }, [type]);
 
-  // Update the newType value
-  /*const updateType = (newValue) => {
-    setType(newValue);
-  };*/
-
-  
-
 
   const [idMateriaSeleccionado, setIdMateriaSeleccionado] = useState();
     const [profesoresSeleccionados, setProfesoresSeleccionados] = useState([]);
@@ -145,10 +138,6 @@ const ListItem = memo(({ index, idMateria,estado ,nombre,apellido, profesores = 
     const { setStatusProfesorMateria } = useClaseContext();
 
     const [isSelectOpen, setIsSelectOpen] = useState(false);
-
-    const [selected, setSelected] = useState(false);
-
-  
     
     
     const [status, setStatus] = useState("");
@@ -232,6 +221,9 @@ useEffect(() => {
                       )}
 
 
+
+
+
                 {profeProfesor.map((profesor) => {
                   return (
                     profesoresSeleccionados.includes(profesor.id) && (
@@ -243,6 +235,7 @@ useEffect(() => {
                         state='d'
                         idMateriaProfesor={idMateria} 
                         onClick={() => {
+                              console.log('entro',idMateria);
                             setProfesoresSeleccionados((prevSeleccionados) =>
                             prevSeleccionados.filter((id) => id !== profesor.id)
                             );
@@ -356,8 +349,10 @@ const MateriasDeClase = () => {
       
 
 
+      const [profesoresSeleccionadosPreviamente, setProfesoresSeleccionadosPreviamente] = useState([]);
 
   
+      
       
      
 
@@ -621,6 +616,21 @@ useMemo(() => {
         console.log('idMateriaSeleccionada',idMateriaSeleccionada);
     }
 
+    console.log('idMateriaSeleccionada',idMateriaSeleccionada);
+
+    console.log('idMateria',idMateria);
+
+    const profesoresDisponibles = useMemo(() => {
+      return profeProfesor.filter((profesor) => {
+        const materiaSeleccionada = listaFusionada.find((materia) => materia.idMateria === idMateriaSeleccionada);
+        return !materiaSeleccionada || !materiaSeleccionada.profesores.some((p) => p.idProfesor === profesor.id);
+      });
+    }, [profeProfesor, listaFusionada, idMateriaSeleccionada]);
+    
+    
+    
+    console.log('profesoresDisponibles',profesoresDisponibles);
+    console.log('listaFusionada',listaFusionada);
   
     let materiasList = {
         onSubmit: () => handleClickProfesor(idMateria),
@@ -651,7 +661,7 @@ useMemo(() => {
                                     index={index + 1}
                                     nombre={materia.materia}
                                     profesores={materia.profesores}
-                                    profeProfesor={profeProfesor}
+                                    profeProfesor={profesoresDisponibles}
                                     type={materia.estado}
                                     guardarProfesorSeleccionado={guardarProfesorSeleccionado}
                                     guardarProfesorSeleccionadoParaBorrar={guardarProfesorSeleccionadoParaBorrar}
