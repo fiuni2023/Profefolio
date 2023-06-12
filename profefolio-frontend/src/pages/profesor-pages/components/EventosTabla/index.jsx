@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { useModularContext } from '../../context';
-import { SBody, SCard, SHeader } from '../../../../components/componentsStyles/StyledDashComponent';
-import Tabla from '../../../../components/Tabla';
+//import { useModularContext } from '../../context';
+//import { SBody, SCard, SHeader } from '../../../../components/componentsStyles/StyledDashComponent';
+//import Tabla from '../../../../components/Tabla';
 import styles from './index.module.css';
 
 const ETtable = styled.table`
@@ -20,19 +20,20 @@ const ETR = styled.tr`
 
 const ETD = styled.td``;
 
-const EventosTabla = ({has_clase,has_colegio, lista}) => {
+const EventosTabla = ({ has_clase, has_colegio, lista }) => {
 
     const colors = ["#C8BFD9", "#C1E1FA", "#FCC6AC", "#F6E7A7"];
 
+    // eslint-disable-next-line no-unused-vars
     const getColor = (i = 0) => {
         return colors[i % 4];
     };
     const eventos = lista;
-  
-    console.log("lista:",lista);
-    console.log("eventos:",eventos);
+
+    console.log("lista:", lista);
+    console.log("eventos:", eventos);
     const [datosTabla, setDatosTabla] = useState({
-        
+
         filas: [], // Inicializar filas como un arreglo vacío
     });
     const getRowColor = (tipo) => {
@@ -61,7 +62,7 @@ const EventosTabla = ({has_clase,has_colegio, lista}) => {
                     { dato: `${a.nombreMateria}` },
                     ...(has_clase ? [{ dato: `${a.nombreClase}` }] : []), // Agregar dato "Nombre de Clase" si has_clase es true
                     ...(has_colegio ? [{ dato: `${a.nombreColegio}` }] : []), // Agregar dato "Nombre de Colegio" si has_colegio es true
-               
+
                 ],
             };
         });
@@ -70,6 +71,7 @@ const EventosTabla = ({has_clase,has_colegio, lista}) => {
             ...prevState,
             filas: sortedFilas,
         }));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [eventos]);
 
 

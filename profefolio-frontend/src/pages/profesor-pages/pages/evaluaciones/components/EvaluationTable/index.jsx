@@ -49,11 +49,12 @@ const EvaluationTable = () => {
 
     const { dataSet, functions, stateHandlers } = usePageContext()
     const { evalAlumnos, etapas } = dataSet
+    // eslint-disable-next-line no-unused-vars
     const { handleAddEtapa, handleDeleteEtapa, handleEditEventName, handleEditCalification } = functions
     const { setShowModal, setEtapaName } = stateHandlers
 
     const getCalif = (e) => {
-        let valor = e.map((ev)=>{return ev.porcentaje_logrado}).reduce((b, a) => { return b + a })
+        let valor = e.map((ev) => { return ev.porcentaje_logrado }).reduce((b, a) => { return b + a })
         valor = valor / e.length
         return valor.toFixed(2)
     }
@@ -61,8 +62,8 @@ const EvaluationTable = () => {
     const getCalifFinal = (etapas) => {
         let sumatoria = 0
         let valor = 0
-        etapas.map(e => {
-            valor = e.map((ev)=>{return ev.porcentaje_logrado}).reduce((b, a) => { return b + a })
+        etapas.forEach(e => {
+            valor = e.map((ev) => { return ev.porcentaje_logrado }).reduce((b, a) => { return b + a })
             valor = valor / e.length
             sumatoria += valor
         });
@@ -72,7 +73,7 @@ const EvaluationTable = () => {
 
     const getTotal = (e = []) => {
         if (e.length === 0) return 0
-        return e?.map((ev)=>{return ev.puntaje}).reduce((b, a) => { return b + a })
+        return e?.map((ev) => { return ev.puntaje }).reduce((b, a) => { return b + a })
     }
 
     const handleDelegateCreateModal = (name) => {
@@ -89,7 +90,7 @@ const EvaluationTable = () => {
                         {
                             etapas.map((e, i) => {
                                 return <ETH colSpan={e.etapas.length + 2} key={`Etapas${i}`}> {e.etapa}
-                                    <ButtonDivStyle onClick={() => {handleDelegateCreateModal(e.etapa)}}><RxPlus /></ButtonDivStyle>
+                                    <ButtonDivStyle onClick={() => { handleDelegateCreateModal(e.etapa) }}><RxPlus /></ButtonDivStyle>
                                     <ButtonDivStyle onClick={() => { handleDeleteEtapa(i) }}><RxCross2 /></ButtonDivStyle>
                                 </ETH>
                             })
@@ -101,7 +102,7 @@ const EvaluationTable = () => {
                             etapas.map((e, i) => {
                                 return <>
                                     {
-                                        e.etapas.map((ev,x) => {
+                                        e.etapas.map((ev, x) => {
                                             return <ETH key={`EEN${i}${ev.id}${x}`}><InvisibleInput value={ev.nombre} handleBlur={(text) => { /*handleEditEventName(ev.id, text)*/ }} /></ETH>
                                         })
                                     }
@@ -116,7 +117,7 @@ const EvaluationTable = () => {
                             etapas.map((e, i) => {
                                 return <>
                                     {
-                                        e.etapas.map((ev,x) => {
+                                        e.etapas.map((ev, x) => {
                                             return <ETH key={`EEP${i}${ev.id}${x}`}>{`P.T:  ${ev.puntaje_total}`}</ETH>
                                         })
                                     }

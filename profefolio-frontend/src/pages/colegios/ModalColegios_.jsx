@@ -121,6 +121,7 @@ function ModalColegio({
             console.log("adminnew", adminNew);
             console.log(selected_data);
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selected_data])
 
     const [datosModal, setDatosModal] = useState(null);
