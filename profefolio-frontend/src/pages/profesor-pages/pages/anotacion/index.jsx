@@ -28,21 +28,23 @@ const GapDiv = styled.div`
 `
 
 const Anotacion = () => {
-    const {dataSet} = useModularContext()
+    const {dataSet, stateController} = useModularContext()
     const { materiaName, currColegio, currClase, loading } = dataSet
     const {getToken} = useGeneralContext()
     const token = getToken()
+    const {materiaId} = stateController
 
     const [lista, setLista] = useState([])
     const [selected, setSelected] = useState(null)
     const [fetchdata, setFetchData] = useState([])
 
     useEffect(()=>{
-        AnotationsService.Get(token)
+        console.log("idMateria", materiaId)
+        AnotationsService.GetByIdMateriaLista(token, materiaId)
         .then(r=>{
             setLista(r.data)
         })
-    }, [token, fetchdata])
+    }, [token, fetchdata, materiaId])
 
     const doFetch = () => {
         setFetchData((before)=>{return [before]})
@@ -61,7 +63,7 @@ const Anotacion = () => {
         :   <Row className="my-2">
             <Col md={8}>
                 <GridDiv>
-                    {lista.map(l=>{return <AnotacionCard onClick={setSelected} observacion={l} />})}
+                    {lista.map((l, indx)=>{return <AnotacionCard key={`anotacion-key-${indx}`} onClick={setSelected} observacion={l} />})}
                 </GridDiv>
                 {/* <Paginations /> */}
             </Col>
