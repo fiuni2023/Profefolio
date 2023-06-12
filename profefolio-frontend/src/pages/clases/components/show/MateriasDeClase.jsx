@@ -228,7 +228,7 @@ useEffect(() => {
                         id={profesor.id}
                         nombre={`${profesor.nombre}`}
                         apellido={`${profesor.apellido ?? ""}`}
-                        state={newType}
+                        state='d'
                         idMateriaProfesor={idMateria} 
                         onClick={() => {
                             setProfesoresSeleccionados((prevSeleccionados) =>
@@ -252,9 +252,6 @@ useEffect(() => {
       state={typeP} // Pasar el estado individual como prop state
       idMateriaProfesor={idMateria}
       onClick={() => {
-        console.log('entro', e.nombre);
-        console.log('type', type);
-
         const newType = typeP === "n" ? "reload" : "n";
 
         setTypeP(newType); // Actualizar el estado individual
