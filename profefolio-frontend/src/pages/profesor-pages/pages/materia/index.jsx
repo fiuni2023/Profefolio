@@ -1,18 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { SRow } from "../../../../components/componentsStyles/StyledDashComponent";
-import { useGeneralContext } from "../../../../context/GeneralContext";
 import { useModularContext } from "../../context";
 import ShowContainer from "../../../clases/components/ShowContainer";
 import BackButton from "../../components/BackButton";
 import Alumnos from "../../components/Alumnos";
 import Eventos from "../../components/Eventos";
 import ContainerColegios from "../../components/ContainerColegios";
+import Spinner from "../../../../components/componentsStyles/SyledSpinner";
 
 const ProfesorMateria = () => {
-    const {getUserName} = useGeneralContext()
     const {setPage, dataSet, stateController} = useModularContext()
 
-    const {materias} = dataSet
+    const {materias, loading, currColegio, currClase} = dataSet
     const {setMateriaId, setMateriaName} = stateController
 
     const handleClickCards = (id) => {
@@ -41,7 +40,7 @@ const ProfesorMateria = () => {
     }, [materias])
 
     const componentes = {
-        title: `Bienvenido Prof. ${getUserName()} - Lista de Materias`,
+        title: `${currColegio} - ${currClase} - Lista de Materias de la clase`,
         componentes: [
             <SRow>
                 <ContainerColegios onClick={handleClickCards} lista={materiasMapped}/>
@@ -53,7 +52,10 @@ const ProfesorMateria = () => {
     return (
         <>  
             <BackButton to="clase" />
-            <ShowContainer data={componentes}/>
+            {loading ? 
+                    <Spinner height={"calc(100vh - 90px)"}></Spinner> 
+                :   <ShowContainer data={componentes}/>
+            }
         </>
     )
 }

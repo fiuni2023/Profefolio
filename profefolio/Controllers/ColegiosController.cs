@@ -107,7 +107,8 @@ namespace profefolio.Controllers
 
             // verificar que el id del administrador nuevo no este asugnado a un colegio distinto al actual
             var existeAdmin = await _colegioService.ExistAdminInOtherColegio(colegio.PersonaId, id);
-            if(existeAdmin){
+            if (existeAdmin)
+            {
                 return BadRequest("El administrador ya esta asignado a otro colegio.");
             }
 
@@ -135,59 +136,95 @@ namespace profefolio.Controllers
         [HttpPost]
         public async Task<ActionResult<ColegioWithAdminDataDTO>> PostColegio([FromBody] ColegioDTO colegio)
         {
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest("Objeto No valido");
-            }
-            if (colegio.PersonaId == null)
-            {
-                return BadRequest("Colegio No valido");
-            }
-            var rol = await _colegioService.FindByPersonRol(colegio.PersonaId);
-            if (rol == 0)
-            {
-                return BadRequest("Persona No valido");
-            }
-            //VERIFICAR REPETIDOS con nombre de colegio e id iguales
-            var verificar = await _colegioService.FindByNamePerson(colegio.Nombre, colegio.PersonaId);
-            if (verificar != null)
-            {
-                return BadRequest($"Ya existe el colegio y el id persona ingresado.");
-            }
-
-            //VERIFICAR REPETIDOS con nombre de colegio igual
-            var verificarNombreColegio = await _colegioService.FindByNameColegio(colegio.Nombre);
-            if (verificarNombreColegio != null)
-            {
-                return BadRequest($"Ya existe un colegio con el mismo nombre.");
-            }
-            //VERIFICAR ID
-            var persona = await _colegioService.FindByPerson(colegio.PersonaId);
-            if (persona == null)
-            {
-                return BadRequest($"No existe el administrador.");
-            }
             try
             {
-                var p = _mapper.Map<Colegio>(colegio);
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest("Objeto no válido");
+                }
 
-                var userId = User.Identity.GetUserId();
-                p.ModifiedBy = userId;
-                p.Deleted = false;
-                var saved = await _colegioService.Add(p);
-                await _colegioService.Save();
-                //return Ok("Colegio: " + p.Nombre + ", Id: " + p.Id + ", PersonaId: " + p.PersonaId);
-                return Ok(_mapper.Map<ColegioWithAdminDataDTO>(saved));
+                if (colegio.PersonaId == null)
+                {
+                    return BadRequest("Colegio no válido");
+                }
+
+                if (string.IsNullOrWhiteSpace(colegio.Nombre))
+                {
+                    return BadRequest("El nombre del colegio no puede estar vacío.");
+                }
+
+                var rol = await _colegioService.FindByPersonRol(colegio.PersonaId);
+                if (rol == 0)
+                {
+                    return BadRequest("Persona no válida");
+                }
+                //verificar si el id ya fue asignado a un colegio
+                //"El administrador ya esta asignado a un colegio."
+                //buscar en la tabla colegios ese id administrador
+                var verificarAdmin = await _colegioService.FindAdminColegio(colegio.PersonaId);
+                if (verificarAdmin != null)
+                {
+                    return BadRequest($"El administrador ya esta asignado a un colegio.");
+                }
+
+                //si elimine un colegio y quiero volver a agregar con el mismo admin
+                //actualizar el registro en lugar de agregar uno nuevo
+
+
+                // Verificar duplicados con nombre de colegio e id iguales
+                var verificar = await _colegioService.FindByNamePerson(colegio.Nombre, colegio.PersonaId);
+                if (verificar != null)
+                {
+                    return BadRequest($"Ya existe el colegio y el ID de persona ingresado.");
+                }
+
+                // Verificar duplicados con nombre de colegio igual
+                var verificarNombreColegio = await _colegioService.FindByNameColegio(colegio.Nombre);
+                if (verificarNombreColegio != null)
+                {
+                    return BadRequest($"Ya existe un colegio con el mismo nombre.");
+                }
+
+                // Verificar ID
+                var persona = await _colegioService.FindByPerson(colegio.PersonaId);
+                if (persona == null)
+                {
+                    return BadRequest($"No existe el administrador.");
+                }
+                // Buscar el colegio eliminado por el ID del administrador
+                var colegioEliminado = await _colegioService.FindAdminColegioDeleted(colegio.PersonaId);
+
+                if (colegioEliminado != null)
+                {
+                    colegioEliminado.Deleted = false; // Marcar como no eliminado
+                    colegioEliminado.Nombre = colegio.Nombre; // Actualizar el nombre si es necesario
+                    var userId = User.Identity.GetUserId();
+                    colegioEliminado.ModifiedBy = userId;
+                    
+                    await _colegioService.Save();
+
+                    return Ok(_mapper.Map<ColegioWithAdminDataDTO>(colegioEliminado));
+                }
+                else
+                {
+                    var p = _mapper.Map<Colegio>(colegio);
+
+                    var userId = User.Identity.GetUserId();
+                    p.ModifiedBy = userId;
+                    p.Deleted = false;
+
+                    var saved = await _colegioService.Add(p);
+                    await _colegioService.Save();
+
+                    return Ok(_mapper.Map<ColegioWithAdminDataDTO>(saved));
+                }
             }
-            catch (BadHttpRequestException e)
+            catch (Exception e)
             {
-
-                return BadRequest($"Error al crear el colegio ${colegio.Nombre}");
+                return BadRequest("Error al crear el colegio.");
             }
-
-            //return BadRequest($"Error al crear el colegio ${colegio.Id}");
         }
+
 
         // DELETE: api/Colegios/1
         //TODO: estado = false al eliminar.
@@ -208,6 +245,21 @@ namespace profefolio.Controllers
             await _colegioService.Save();
 
             return Ok();
+        }
+
+        [HttpGet("administradores/noAsignados")]
+        public async Task<ActionResult<List<AdministradorDTO>>> GetAdministradoresNoAsignados()
+        {
+            try
+            {
+                var administradoresNoAsignados = await _colegioService.GetAdministradoresNoAsignados();
+                var administradoresDTO = _mapper.Map<List<AdministradorDTO>>(administradoresNoAsignados);
+                return Ok(administradoresDTO);
+            }
+            catch (Exception e)
+            {
+                return BadRequest("Error al obtener los administradores no asignados.");
+            }
         }
 
 

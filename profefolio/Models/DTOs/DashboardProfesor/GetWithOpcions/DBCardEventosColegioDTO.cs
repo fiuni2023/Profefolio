@@ -1,6 +1,4 @@
 namespace profefolio.Models.DTOs.DashboardProfesor.GetWithOpcions;
-using Newtonsoft.Json;
-
     public class DBCardEventosColegioDTO
     {
        
