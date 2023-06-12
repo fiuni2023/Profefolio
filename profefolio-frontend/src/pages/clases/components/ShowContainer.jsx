@@ -9,7 +9,7 @@ const ShowContainer = ({ data = {} }) => {
     return <>
         <div className="principal-container">
             <SContainer>
-                <STitle>{data?.title}</STitle>
+                {data?.title && <STitle>{data?.title}</STitle>}
                 <SRow className="srow-showclase">
                     {map(data?.componentes, (e, i) => <Col
                         className="scol-showclase"

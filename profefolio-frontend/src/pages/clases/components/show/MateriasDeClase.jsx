@@ -180,6 +180,7 @@ useEffect(() => {
 
   useEffect(() => {
     guardarProfesorSeleccionadoParaBorrar(usuariosSeleccionados);
+
   }, [usuariosSeleccionados]);
 
 
@@ -261,7 +262,14 @@ useEffect(() => {
         setStatus(estado);
         setStatusProfesorMateria(idMateria, e.id, newType);
         setIdMateriaSeleccionado(idMateria);
-        setUsuariosSeleccionados([...usuariosSeleccionados, e.idProfesor]);
+        if (newType === "n") {
+          setUsuariosSeleccionados(usuariosSeleccionados.filter(id => id !== e.idProfesor));
+        
+        } else {
+          setUsuariosSeleccionados([...usuariosSeleccionados, e.idProfesor]);
+         
+        }
+       // setUsuariosSeleccionados([...usuariosSeleccionados, e.idProfesor]);
       }}
     />
   ))
@@ -427,7 +435,6 @@ useMemo(() => {
       body.materias.push(materia);
     });
   
-    console.log('body',body);
     ClassesService.createMateriaProfesor(body, getToken())
       .then(() => {
         
@@ -521,6 +528,7 @@ useMemo(() => {
           setMateriaProfesores(dataList ?? []);        
           setLoading(false);
         } catch (e) {
+          setLoading(false);
           setMateriaProfesores([]);
         }
       };
