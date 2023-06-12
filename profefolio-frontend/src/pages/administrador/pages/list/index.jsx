@@ -28,7 +28,7 @@ const ListAdministrador = () => {
     const [totalPage, setTotalPage] = useState(0)
     const [condFetch, setCondFetch] = useState(false)
     const [datosTabla, setDatosTabla] = useState({
-        tituloTabla: "adminsList", 
+        tituloTabla: "Lista_de_adminstradores", 
         titulos: [{titulo: "CI"}, {titulo: "Nombre"}, {titulo: "Fecha de nacimiento"}, {titulo: "Dirección"}, {titulo: "Teléfono"}]});
 
     const parseToDate = (d=new Date()) => {

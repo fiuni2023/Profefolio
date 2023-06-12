@@ -9,7 +9,7 @@ const Alumnos = () => {
     const { alumnos } = dataSet
 
     const [datosTabla, setDatosTabla] = useState({
-        tituloTabla: "adminsList",
+        tituloTabla: "Lista_de_alumnos",
         titulos: [{ titulo: "Orden" }, { titulo: "Apellidos" }, { titulo: "Nombre" }],
     });
 
@@ -26,7 +26,7 @@ const Alumnos = () => {
 
         })
         setDatosTabla({
-            tituloTabla: "adminsList",
+            tituloTabla: "Lista_de_alumnos",
             titulos: [{ titulo: "Orden" }, { titulo: "Apellidos" }, { titulo: "Nombre" }],
             filas: newList
         })

@@ -2,16 +2,18 @@ import React, { useEffect, useState } from "react";
 import ContainerColegios from "../../components/ContainerColegios";
 import Horarios from "../../components/Horarios";
 import Eventos from "../../components/Eventos";
+import EventosTabla from "../../components/EventosTabla";
 import { SRow } from "../../../../components/componentsStyles/StyledDashComponent";
 import { useModularContext } from "../../context";
 import ShowContainer from "../../../clases/components/ShowContainer";
 import BackButton from "../../components/BackButton";
 import Spinner from "../../../../components/componentsStyles/SyledSpinner";
 
+
 const ProfesorClase = () => {
     const {setPage, dataSet, stateController} = useModularContext()
 
-    const {clases, loading, currColegio} = dataSet
+    const {clases,eventosColegio, loading, currColegio} = dataSet
     const {setClaseId, setCurrClase} = stateController
 
     const handleClickCards = (id, nombre) => {
@@ -22,12 +24,13 @@ const ProfesorClase = () => {
 
     const [clasesMapped, setClasesMapped] = useState([])
 
+    
     useEffect(()=>{
         if(clases){
             setClasesMapped(clases.map(c=>{return {...c, duracionHrs: ""}}))
         }
     }, [clases])
-
+    
     const componentes = {
         title: `${currColegio} - Lista de Clases del colegio`,
         componentes: [
@@ -35,7 +38,7 @@ const ProfesorClase = () => {
                 <ContainerColegios onClick={handleClickCards} lista={clasesMapped}/>
             </SRow>,
             <Horarios/>,
-            <Eventos/>
+            <Eventos tablaEventos={<EventosTabla has_colegio={false} has_clase={true} lista={eventosColegio} />} />
         ]
     };
     return (
