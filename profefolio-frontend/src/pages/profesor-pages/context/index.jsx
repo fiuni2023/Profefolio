@@ -183,6 +183,7 @@ export const ModularProvider = ({ children }) => {
 
     const setPage = (page = "", isBackButton = false) =>{
         setLoading(true)
+        fetchData()
         //---las siguientes lineas deben ser borradas luego de implementar las paginas de anotacion, documento, asistencia y evaluaciones
         let aux = ["anotacion", "documento", "asistencia", "evaluaciones"]
         if (aux.includes(page)){setTimeout(function(){setLoading(false)}, 1000);}
@@ -213,7 +214,7 @@ export const ModularProvider = ({ children }) => {
 
     const fetchData = () => {
         setLoading(true)
-        setFetchData((before)=>{return !before})
+        setFetchData(before=>!before)
     }
 
     const handleSetLoading = (b1, b2, b3) => {

@@ -82,7 +82,8 @@ export const PageProvider = ({ children }) => {
     const [newEvalPoint, setNewEvalPoint] = useState(0)
     const [newEvalType, setNewEvalType] = useState("Examen")
     const [fetch_data, setFetchData] = useState([])
-    const [idCounter, setIdCounter] = useState(0)
+    const [modalDeleteFunction, setModalDeleteFunction] = useState(()=>{})
+    const [showDeleteModal, setShowDeleteModal] = useState(false)
 
     //----------------------------------------------------Effect Hooks----------------------------------------------------
 
@@ -177,8 +178,23 @@ export const PageProvider = ({ children }) => {
         }
         EvaluacionService.putCalification(materiaId, body, token)
         .then(r=>{
-            console.log(r)
             toast.success("Se cambio el puntaje con exito")
+            doFetch()
+        })
+    }
+
+    const handleDeleteCalification = (id, puntaje_total, valor, nombre) => {
+        let valorVerdadero = valor>puntaje_total? puntaje_total : valor
+        let body = {
+            "idEvaluacion": id,
+            "puntaje": valorVerdadero,
+            "modo": "d",
+            "nombreEvaluacion": nombre,
+            "puntajeTotal": puntaje_total
+        }
+        EvaluacionService.putCalification(materiaId, body, token)
+        .then(r=>{
+            toast.success("Se borro el Evento con exito")
             doFetch()
         })
     }
@@ -194,7 +210,6 @@ export const PageProvider = ({ children }) => {
         }
         EvaluacionService.putCalification(materiaId, body, token)
         .then(r=>{
-            console.log(r)
             toast.success("Se cambio el nombre con exito")
             doFetch()
         })
@@ -211,7 +226,6 @@ export const PageProvider = ({ children }) => {
         }
         EvaluacionService.putCalification(materiaId, body, token)
         .then(r=>{
-            console.log(r)
             toast.success("Se cambio el punto Total con exito")
             doFetch()
         })
@@ -308,7 +322,9 @@ export const PageProvider = ({ children }) => {
         etapaName,
         newEvalName,
         newEvalPoint,
-        newEvalType
+        newEvalType,
+        modalDeleteFunction,
+        showDeleteModal
     }
 
     const functions = {
@@ -319,6 +335,7 @@ export const PageProvider = ({ children }) => {
         handleEditCalification,
         handleEditCalificationNombre,
         handleEditCalificationPT,
+        handleDeleteCalification,
         doFetch
     }
 
@@ -327,7 +344,9 @@ export const PageProvider = ({ children }) => {
         setEtapaName,
         setNewEvalName,
         setNewEvalPoint,
-        setNewEvalType
+        setNewEvalType,
+        setModalDeleteFunction,
+        setShowDeleteModal
     }
 
     const values = {

@@ -24,7 +24,6 @@ const createNewEvent = async (body, token)=>{
     return result.status === 200? result : null
 }
 const putCalification = async (materiaId, body, token) => {
-    console.log(body)
     const result = await axios.put(`${APILINK}/api/Calificacion/${materiaId}`,
     body,
     {

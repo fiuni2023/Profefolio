@@ -2,9 +2,10 @@ import React from "react";
 import styled from "styled-components";
 import { usePageContext } from "../../context/PageContext";
 import { RxCross2, RxPlus } from 'react-icons/rx'
-import AddButton from '../AddButton'
+//import AddButton from '../AddButton'
 import InvisibleInput from "./components/Invisibleinput";
 import CreateEventModal from "./components/createEventmodal";
+import DeleteEventConfirmationModal from "./components/deleteEventConfirmationModal";
 
 const ETable = styled.table`
     border: 1px solid black;
@@ -49,8 +50,8 @@ const EvaluationTable = () => {
 
     const { dataSet, functions, stateHandlers } = usePageContext()
     const { evalAlumnos, etapas } = dataSet
-    const { handleAddEtapa, handleDeleteEtapa, handleEditCalification, handleEditCalificationNombre, handleEditCalificationPT } = functions
-    const { setShowModal, setEtapaName } = stateHandlers
+    const { handleDeleteCalification, handleEditCalification, handleEditCalificationNombre, handleEditCalificationPT } = functions
+    const { setShowModal, setEtapaName, setModalDeleteFunction, setShowDeleteModal } = stateHandlers
 
     const getCalif = (e) => {
         let valor = e.map((ev) => { return ev.porcentaje_logrado }).reduce((b, a) => { return b + a })
@@ -102,7 +103,16 @@ const EvaluationTable = () => {
                                 return <>
                                     {
                                         e.etapas.map((ev,x) => {
-                                            return <ETH key={`EEN${i}${ev.id}${x}`}><InvisibleInput value={ev.nombre} handleBlur={(text) => { handleEditCalificationNombre(ev.id, ev.puntaje_total, 0, text) }} /></ETH>
+                                            return <ETH key={`EEN${i}${ev.id}${x}`}>
+                                                <InvisibleInput width="80%" value={ev.nombre} handleBlur={(text) => { handleEditCalificationNombre(ev.id, ev.puntaje_total, 0, text) }} />
+                                                <ButtonDivStyle onClick={()=>{
+                                                    setModalDeleteFunction({func: ()=>{handleDeleteCalification(ev.id, ev.puntaje_total, 0, ev.nombre)}})
+                                                    setShowDeleteModal(true)
+                                                }}>
+                                                    <RxCross2 />
+                                                </ButtonDivStyle>
+                                            </ETH>
+                                                
                                         })
                                     }
                                     <ETH rowSpan={2} key={`ETP${i}`}>Total</ETH>
@@ -150,8 +160,8 @@ const EvaluationTable = () => {
                 </tbody>
             </ETable>
         </SideScrillingDiv>
-        <AddButton onClick={handleAddEtapa} />
         <CreateEventModal />
+        <DeleteEventConfirmationModal />
     </>
 }
 
