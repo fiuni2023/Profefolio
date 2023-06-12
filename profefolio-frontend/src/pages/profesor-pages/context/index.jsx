@@ -124,7 +124,6 @@ export const ModularProvider = ({ children }) => {
             body = {opcion: 'lista-alumnos', id: claseId, anho: 2023}
             ProfesorPagesService.Get(body, token)
             .then(function (d){
-                console.log("d.data alumnos:"); // Imprimir d.data en la consola
                 setAlumnos(d.data)
                 setLoading(false)
                 setLoadingClase(false)
@@ -183,6 +182,7 @@ export const ModularProvider = ({ children }) => {
 
     const setPage = (page = "", isBackButton = false) =>{
         setLoading(true)
+        fetchData()
         //---las siguientes lineas deben ser borradas luego de implementar las paginas de anotacion, documento, asistencia y evaluaciones
         let aux = ["anotacion", "documento", "asistencia", "evaluaciones"]
         if (aux.includes(page)){setTimeout(function(){setLoading(false)}, 1000);}
@@ -213,7 +213,7 @@ export const ModularProvider = ({ children }) => {
 
     const fetchData = () => {
         setLoading(true)
-        setFetchData((before)=>{return !before})
+        setFetchData(before=>!before)
     }
 
     const handleSetLoading = (b1, b2, b3) => {

@@ -62,6 +62,7 @@ namespace profefolio.Controllers
 
                 var p = new Evaluacion
                 {
+                    Nombre = dto.Nombre,
                     Tipo = dto.Tipo,
                     Etapa = dto.Etapa,
                     CreatedBy = user,
@@ -69,8 +70,7 @@ namespace profefolio.Controllers
                     MateriaListaId = mlMateriaLista.Id,
                     PuntajeTotal = dto.Puntaje,
                     Created = DateTime.Now,
-                    Fecha = dto.Fecha,
-                    Nombre = dto.Nombre
+                    Fecha = dto.Fecha
                 };
                 await _eventoService.Add(p, user);
 
