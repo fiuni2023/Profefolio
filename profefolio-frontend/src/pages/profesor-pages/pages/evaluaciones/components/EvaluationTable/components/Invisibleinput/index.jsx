@@ -7,7 +7,8 @@ const II = styled.input`
     outline: none;
     border: none;
     text-align:center;
-    background-color: #C6D8D3;
+    appearance: none;
+    background-color: ${(props)=>{return props.back === "gray"? `#C6D8D3` : `#FFFFFF` }};
     &:hover {
         filter: brightness(0.95);
     }
@@ -19,6 +20,9 @@ const InvisibleInput = ({
     value = "",
     height = "100%",
     width = "100%",
+    type= "text",
+    back = "gray",
+    max = 100,
 }) => {
     const [ temporal, setTemporal ] = useState("")
     const [inputValue, setInputValue] = useState("")
@@ -26,7 +30,7 @@ const InvisibleInput = ({
         setInputValue(value)
         setTemporal(value)
     }, [value])
-    return <II type="text" height={height} width={width} value={temporal} 
+    return <II type={type} height={height} width={width} value={temporal} back = {back} max={max}
         onChange={(e)=>{
             setTemporal(textFilter(e?.target?.value))
         }} 

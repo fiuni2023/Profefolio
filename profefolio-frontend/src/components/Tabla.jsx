@@ -37,7 +37,7 @@ function Tabla({datosTabla, selected}){
             if(current){
                 let j = 0; 
                 titulos.forEach(element => {
-                   newFila[element?.titulo] = current[j].dato;
+                   newFila[element?.titulo] = current[j]?.dato;
                    j++; 
                 });
                 newExp[i] = newFila;

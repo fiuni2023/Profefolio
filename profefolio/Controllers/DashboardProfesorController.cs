@@ -299,14 +299,11 @@ namespace profefolio.Controllers
         /// Respuesta:
         ///     
         ///     {
-		///			anotaciones: 25,
-		///			calificaciones: { 
-		///				calificaciones:	4,
-		///				sinCalificaciones: 3
-		///			},
-		///			asistencias: 8,
-		///			documentos: 4
-		///		}    
+        ///         "anotaciones": 1, {total de anotaciones}
+        ///         "calificaciones": 2, {total de eventos}
+        ///         "asistencias": 100, {es porcentaje}
+        ///         "documentos": 1  {total de documentos}
+        ///     }    
         ///     
         ///     
         ///     
@@ -445,36 +442,37 @@ namespace profefolio.Controllers
                         return Ok(resultsMaterias);
 
 
-                    case "cards-materia":
+                    case "cards-materia":  
+                        //idmaterialista
                         var materia = await _dashBoardService.FindDataForCardOfInfoMateria(dto.Id, userEmail);
-                        return Ok(_mapper.Map<DBCardsMateriaInfo>(materia));
+                        return Ok(materia);
 
                     case "eventos-colegios":
                         var _profIdEvento = await _profesorService.GetProfesorIdByEmail(userEmail);
-                       
+
                         var eventosPrf = await _dashBoardService.FindEventosOfClase(_profIdEvento);
 
                         return Ok(eventosPrf);
 
                     case "eventos-clases":
-                    //eventos-clases: pasar id del colegio.
-                    //este filtro evento tiene: tipo, fecha, materia,clase
-                
+                        //eventos-clases: pasar id del colegio.
+                        //este filtro evento tiene: tipo, fecha, materia,clase
+
                         var profIdEvento = await _profesorService.GetProfesorIdByEmail(userEmail);
-                       
+
                         var eventosClase = await _dashBoardService.FindEventosOfClase(profIdEvento, dto.Id);
 
                         return Ok(eventosClase);
-                        
+
                     case "eventos-materias":
-                    //eventos-materias: pasar id de la clase.
-                    //este filtro evento tiene: tipo, fecha, materia
+                        //eventos-materias: pasar id de la clase.
+                        //este filtro evento tiene: tipo, fecha, materia
                         var profIdEventoM = await _profesorService.GetProfesorIdByEmail(userEmail);
-                       
+
                         var eventosMaterias = await _dashBoardService.FindEventosMaterias(profIdEventoM, dto.Id);
 
                         return Ok(eventosMaterias);
-                   
+
                     case "lista-alumnos":
                         //id clase
                         //id prf
@@ -494,9 +492,9 @@ namespace profefolio.Controllers
                         }
                         resultsA = resultsA.OrderBy(r => r.Apellidos).ToList();
                         return Ok(resultsA);
-                    
-                    
-                    
+
+
+
                     case "promedio-puntajes":
                         /*
                             TODO
@@ -505,47 +503,54 @@ namespace profefolio.Controllers
                             TABLAS RELACIONADAS A CALIFICACIONES
                         */
                         var promedios = await _dashBoardService.GetPromediosPuntajesByIdMateriaLista(dto.Id, userEmail);
-                        
-                        var promedio1 = new DBPromedioPuntajesDTO(){
+
+                        var promedio1 = new DBPromedioPuntajesDTO()
+                        {
                             Evaluacion = "Prueba 1",
                             Puntaje = 45.5
                         };
-                        var promedio2 = new DBPromedioPuntajesDTO(){
+                        var promedio2 = new DBPromedioPuntajesDTO()
+                        {
                             Evaluacion = "Prueba 1",
                             Puntaje = 85.2
                         };
-                        var promedio3 = new DBPromedioPuntajesDTO(){
+                        var promedio3 = new DBPromedioPuntajesDTO()
+                        {
                             Evaluacion = "Prueba 1",
                             Puntaje = 68.0
                         };
-                        var promedio4 = new DBPromedioPuntajesDTO(){
+                        var promedio4 = new DBPromedioPuntajesDTO()
+                        {
                             Evaluacion = "Prueba 1",
                             Puntaje = 90.0
                         };
-                        var listPromedios = new List<DBPromedioPuntajesDTO>(){promedio1, promedio2, promedio3, promedio4};
-                        
+                        var listPromedios = new List<DBPromedioPuntajesDTO>() { promedio1, promedio2, promedio3, promedio4 };
+
                         return Ok(listPromedios);
 
 
 
                     case "promedio-asistencias":
                         var profeId = await _profesorService.GetProfesorIdByEmail(userEmail);
-            
-                        if(profeId == null){
+
+                        if (profeId == null)
+                        {
                             return Unauthorized();
                         }
 
                         var year = dto.Anho <= 0 ? DateTime.Now.Year : dto.Anho;
-                        
+
                         var resultList = new List<DBPromedioAsistenciasDTO>();
                         // se obtene la cantidad de meses a retornar, si es un anho distinto al actual, se muestran los 12, de lo contrario hasta el mes actual
-                        var maxMes = year != DateTime.Now.Year ? 12 : DateTime.Now.Month;  
-                        
-                        for(int mes = 1; mes <= maxMes; mes++){
+                        var maxMes = year != DateTime.Now.Year ? 12 : DateTime.Now.Month;
+
+                        for (int mes = 1; mes <= maxMes; mes++)
+                        {
 
                             var (presentes, ausentes, justificados) = await _dashBoardService.GetPromedioAsistenciasByMonth(year, mes, dto.Id, profeId);
-                            
-                            var promedioAsistencias = new DBPromedioAsistenciasDTO(){
+
+                            var promedioAsistencias = new DBPromedioAsistenciasDTO()
+                            {
                                 Mes = TimeComparator.MonthToSpanish(mes),
                                 Presentes = presentes,
                                 Ausentes = ausentes,
