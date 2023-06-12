@@ -1,45 +1,44 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { SBody, SCard, SHeader } from '../../../../components/componentsStyles/StyledDashComponent'
 import Tabla from '../../../../components/Tabla';
 import { useModularContext } from '../../context';
+import { useNavigate} from 'react-router-dom';
 
 const Alumnos = () => {
 
     const { dataSet } = useModularContext()
     const { alumnos } = dataSet
-
-    const [datosTabla, setDatosTabla] = useState({
-        tituloTabla: "Lista_de_alumnos",
-        titulos: [{ titulo: "Orden" }, { titulo: "Apellidos" }, { titulo: "Nombre" }],
-    });
-
-
-    useEffect(() => {
-        const newList = alumnos.map((a, i) => {
-            return {
-                datos: [
-                    { dato: `${i+1}` },
-                    { dato: `${a.apellidos}` },
-                    { dato: `${a.nombres}` }
-                ]
-            }
-
-        })
-        setDatosTabla({
-            tituloTabla: "Lista_de_alumnos",
-            titulos: [{ titulo: "Orden" }, { titulo: "Apellidos" }, { titulo: "Nombre" }],
-            filas: newList
-        })
-    }, [alumnos])
-
-    return <>
-        <SCard>
-            <SHeader>Alumnos</SHeader>
-            <SBody>
-                <Tabla datosTabla={datosTabla} />
-            </SBody>
-        </SCard>
-    </>
+    const navigate = useNavigate();
+   
+    const handleRowClick = (id) => {
+        console.log(alumnos);
+      };
+      return <>
+      <SCard>
+          <SHeader>Alumnos</SHeader>
+          <SBody>
+              <Tabla
+              
+              datosTabla={{
+                  tituloTabla: 'adminList',
+                  titulos: [{ titulo: "Orden" }, { titulo: "Apellidos" }, { titulo: "Nombre" }],
+                  clickable: { action: handleRowClick},
+  
+                  filas: alumnos.map((alumno) => ({
+                    fila: alumno,
+                    datos: [
+                      { dato: alumno.id },
+                      { dato: alumno.apellidos },
+                      { dato: alumno.nombres}
+  
+                    ],
+                  })),
+                }}
+             
+                />
+          </SBody>
+      </SCard>
+  </>
 }
 
 export default Alumnos
