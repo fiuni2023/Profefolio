@@ -62,6 +62,7 @@ namespace profefolio.Controllers
 
                 var p = new Evaluacion
                 {
+                    Nombre = dto.Nombre,
                     Tipo = dto.Tipo,
                     Etapa = dto.Etapa,
                     CreatedBy = user,

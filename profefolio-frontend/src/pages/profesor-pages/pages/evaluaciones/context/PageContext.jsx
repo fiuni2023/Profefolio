@@ -147,7 +147,10 @@ export const PageProvider = ({ children }) => {
             "puntaje": parseInt(newEvalPoint)
         }
         EvaluacionService.createNewEvent(body, token)
-            .then(r => console.log)
+            .then(r => {
+                toast.success("Se agrego la tarea con exito")
+                doFetch()
+            })
     }
 
     const handleEditEventName = (id, name) => {
@@ -163,30 +166,62 @@ export const PageProvider = ({ children }) => {
         setEtapas(newEtapas)
     }
 
-    const handleEditCalification = (id, puntaje_total, valor) => {
+    const handleEditCalification = (id, puntaje_total, valor, nombre) => {
         let valorVerdadero = valor>puntaje_total? puntaje_total : valor
         let body = {
             "idEvaluacion": id,
-            "puntaje": valorVerdadero
+            "puntaje": valorVerdadero,
+            "modo": "p",
+            "nombreEvaluacion": nombre,
+            "puntajeTotal": puntaje_total
         }
         EvaluacionService.putCalification(materiaId, body, token)
         .then(r=>{
+            console.log(r)
+            toast.success("Se cambio el puntaje con exito")
             doFetch()
         })
+    }
 
+    const handleEditCalificationNombre = (id, puntaje_total, valor, nombre) => {
+        let valorVerdadero = valor>puntaje_total? puntaje_total : valor
+        let body = {
+            "idEvaluacion": id,
+            "puntaje": valorVerdadero,
+            "modo": "nn",
+            "nombreEvaluacion": nombre,
+            "puntajeTotal": puntaje_total
+        }
+        EvaluacionService.putCalification(materiaId, body, token)
+        .then(r=>{
+            console.log(r)
+            toast.success("Se cambio el nombre con exito")
+            doFetch()
+        })
+    }
+
+    const handleEditCalificationPT = (id, puntaje_total, valor, nombre) => {
+        let valorVerdadero = valor>puntaje_total? puntaje_total : valor
+        let body = {
+            "idEvaluacion": id,
+            "puntaje": valorVerdadero,
+            "modo": "pt",
+            "nombreEvaluacion": nombre,
+            "puntajeTotal": puntaje_total
+        }
+        EvaluacionService.putCalification(materiaId, body, token)
+        .then(r=>{
+            console.log(r)
+            toast.success("Se cambio el punto Total con exito")
+            doFetch()
+        })
     }
 
     const doFetch = () => {
-        setFetchData([fetch_data])
+        setFetchData(before=>[before])
     }
 
     //----------------------------------------------------Return Values----------------------------------------------------
-
-    const getNextId = () => {
-        let newId = idCounter
-        setIdCounter(before => { return before + 1 })
-        return newId
-    }
 
 
 
@@ -203,9 +238,9 @@ export const PageProvider = ({ children }) => {
                     r.data.alumnos[0].etapas.map((e, i) => {
                         e.puntajes?.map((p) => {
                             if (i === 0) {
-                                etapasP = [...etapasP, { id: getNextId(), nombre: p.nombreEvaluacion, puntaje_total: p.puntajeTotal }]
+                                etapasP = [...etapasP, {id: p.idEvaluacion, puntaje: p.puntajeLogrado, puntaje_total: p.puntajeTotal, porcentaje_logrado: p.porcentajeLogrado, nombre: p.nombreEvaluacion}]
                             } else {
-                                etapasS = [...etapasS, { id: getNextId(), nombre: p.nombreEvaluacion, puntaje_total: p.puntajeTotal }]
+                                etapasS = [...etapasS, {id: p.idEvaluacion, puntaje: p.puntajeLogrado, puntaje_total: p.puntajeTotal, porcentaje_logrado: p.porcentajeLogrado, nombre: p.nombreEvaluacion}]
                             }
                             return p
                         })
@@ -230,9 +265,9 @@ export const PageProvider = ({ children }) => {
                         a.etapas?.map((e)=>{
                             e.puntajes.map((p)=>{
                                 if(e.etapa === "Primera"){
-                                    alumnoCalificacionP = [...alumnoCalificacionP, {id: p.idEvaluacion, puntaje: p.puntajeLogrado, puntaje_total: p.puntajeTotal, porcentaje_logrado: p.porcentajeLogrado}]
+                                    alumnoCalificacionP = [...alumnoCalificacionP, {id: p.idEvaluacion, puntaje: p.puntajeLogrado, puntaje_total: p.puntajeTotal, porcentaje_logrado: p.porcentajeLogrado, nombre: p.nombreEvaluacion}]
                                 }else{
-                                    alumnoCalificacionS = [...alumnoCalificacionS, {id: p.idEvaluacion, puntaje: p.puntajeLogrado, puntaje_total: p.puntajeTotal, porcentaje_logrado: p.porcentajeLogrado}]
+                                    alumnoCalificacionS = [...alumnoCalificacionS, {id: p.idEvaluacion, puntaje: p.puntajeLogrado, puntaje_total: p.puntajeTotal, porcentaje_logrado: p.porcentajeLogrado, nombre: p.nombreEvaluacion}]
                                 }
                                 return p
                             })
@@ -282,6 +317,8 @@ export const PageProvider = ({ children }) => {
         handleAddEvent,
         handleEditEventName,
         handleEditCalification,
+        handleEditCalificationNombre,
+        handleEditCalificationPT,
         doFetch
     }
 
