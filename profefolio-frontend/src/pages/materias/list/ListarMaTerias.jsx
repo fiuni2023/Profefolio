@@ -324,7 +324,7 @@ function ListarMaTerias() {
               {loadingMaterias ? <Spinner height={'calc(100vh - 80px)'} /> :
                 <Tabla
                   datosTabla={{
-                    tituloTabla: 'Lista de Materias',
+                    tituloTabla: 'Lista_de_Materias',
                     titulos: [
                       { titulo: 'Materias' },
                     ],
@@ -389,7 +389,7 @@ function ListarMaTerias() {
               {loadingCiclos ? <Spinner height={'calc(100vh - 80px)'} /> :
                 <Tabla
                   datosTabla={{
-                    tituloTabla: 'Lista de Ciclos',
+                    tituloTabla: 'Lista_de_ciclos',
                     titulos: [
                       { titulo: 'Ciclos' },
                     ],

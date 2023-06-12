@@ -22,7 +22,7 @@ const Alumnos = () => {
     const [selected_student, setSelectedStudent] = useState(null)
 
     const [datosTabla, setDatosTabla] = useState({
-        tituloTabla: "studentsList",
+        tituloTabla: "Lista_de_alumnos",
         titulos: [{ titulo: "CI" }, { titulo: "Nombre" }, { titulo: "Fecha de nacimiento" }, { titulo: "Dirección" }]
     });
 
