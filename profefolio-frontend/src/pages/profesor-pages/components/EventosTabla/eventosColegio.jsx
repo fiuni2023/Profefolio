@@ -18,9 +18,8 @@ const ETR = styled.tr`
 
 const ETD = styled.td``;
 
-const EventosColegio = () => {
-    const has_clase = true;
-    const has_colegio = false;
+const EventosColegio = ( {has_clase,has_colegio, lista}) => {
+    
     const colors = ["#C8BFD9", "#C1E1FA", "#FCC6AC", "#F6E7A7"];
 
     const getColor = (i = 0) => {
@@ -28,8 +27,9 @@ const EventosColegio = () => {
     };
 
     const { dataSet } = useModularContext();
-    const { eventosColegio } = dataSet;
-
+    const  eventosColegio  = lista;
+    console.log("lista clase:",lista);
+    console.log("eventos clase:",eventosColegio);
     const [datosTabla, setDatosTabla] = useState({
         tituloTabla: "adminsList",
         titulos: [
