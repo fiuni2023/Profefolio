@@ -57,9 +57,11 @@ const EventosTabla = () => {
     };
 
     useEffect(() => {
-        console.log(eventos); // Imprimir eventos en la consola
-        const newList = eventos.map((a) => {
+        const sortedEventos = [...eventos].sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+
+        const sortedFilas = sortedEventos.map((a) => {
             const fechaFormateada = new Date(a.fecha).toLocaleDateString("es-ES");
+
             return {
                 datos: [
                     { dato: `${a.tipo}` },
@@ -70,11 +72,13 @@ const EventosTabla = () => {
                 ],
             };
         });
+
         setDatosTabla((prevState) => ({
             ...prevState,
-            filas: newList,
+            filas: sortedFilas,
         }));
     }, [eventos]);
+
 
     return (
         <>
