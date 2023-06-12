@@ -12,5 +12,6 @@ namespace profefolio.Repository
         Task<Persona> GetProfesorOfMateria(int idMateriaLista, string profesorEmail);
         Task<MateriaLista> FindById(int id);
         Task<MateriaLista> Filter(int idClase, int idColegio, string idProfesor, int idMateria);
+        Task<List<MateriaLista>> FilterByIdClase(int idClase);
     }
 }
