@@ -29,9 +29,6 @@ const EventosTabla = ({ has_clase, has_colegio, lista }) => {
         return colors[i % 4];
     };
     const eventos = lista;
-
-    console.log("lista:", lista);
-    console.log("eventos:", eventos);
     const [datosTabla, setDatosTabla] = useState({
 
         filas: [], // Inicializar filas como un arreglo vacío
