@@ -47,6 +47,27 @@ namespace profefolio.Controllers
             }
         }
 
+        [HttpGet("{idMateriaLista:int}")]
+        [Authorize(Roles = "Profesor")]
+        public async Task<ActionResult<IEnumerable<AnotacionResultDTO>>> GetAll(int idMateriaLista)
+        {
+            try
+            {
+                var emailProfesor = User.FindFirstValue(ClaimTypes.Name);
+
+                var result = await _AnotacionService.GetAll(idMateriaLista, emailProfesor);
+                return Ok(_mapper.Map<List<AnotacionResultDTO>>(result));
+
+            }
+            catch (Exception e)
+            {
+
+                Console.WriteLine(e);
+                return BadRequest("Error durante la busqueda");
+
+            }
+        }
+
         [HttpPost]
         [Authorize(Roles = "Profesor")]
         public async Task<ActionResult<AnotacionResultDTO>> Post([FromBody] AnotacionCreateDTO dto)
@@ -63,6 +84,18 @@ namespace profefolio.Controllers
                 //var userId = User.Identity.GetUserId();
                 var name = User.FindFirstValue(ClaimTypes.Name);
 
+                if (dto.Titulo.Trim().Any() || dto.Contenido.Trim().Any())
+                {
+                    return BadRequest("Verifique que se haya completado los campos");
+                }
+
+                var verif = await _AnotacionService.VerificacionPreguardado(dto.MateriaListaId, name, dto.Titulo);
+
+                if (!verif)
+                {
+                    return BadRequest("El titulo es repetido");
+                }
+
                 Anotacion.CreatedBy = name;
                 Anotacion.Created = DateTime.Now;
                 Anotacion.Deleted = false;
@@ -71,6 +104,10 @@ namespace profefolio.Controllers
                 await _AnotacionService.Save();
 
                 return Ok(_mapper.Map<AnotacionResultDTO>(Anotacion));
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                return Unauthorized();
             }
             catch (Exception e)
             {
@@ -85,13 +122,19 @@ namespace profefolio.Controllers
         {
             try
             {
+                var name = User.FindFirstValue(ClaimTypes.Name);
+
+                if (!(await _AnotacionService.VerificarProfesor(id, name)))
+                {
+                    return NotFound();
+                }
+
                 var Anotacion = await _AnotacionService.FindById(id);
                 if (Anotacion == null)
                 {
                     return BadRequest("Anotacion no encontrado");
                 }
 
-                var name = User.FindFirstValue(ClaimTypes.Name);
                 Anotacion.ModifiedBy = name;
                 Anotacion.Modified = DateTime.Now;
                 Anotacion.Deleted = true;
