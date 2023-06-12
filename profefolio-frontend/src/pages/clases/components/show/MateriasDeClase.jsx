@@ -529,6 +529,7 @@ useMemo(() => {
           setMateriaProfesores(dataList ?? []);        
           setLoading(false);
         } catch (e) {
+          setLoading(false);
           setMateriaProfesores([]);
         }
       };

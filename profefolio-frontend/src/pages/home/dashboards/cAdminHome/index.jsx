@@ -127,6 +127,11 @@ const CAdminHome = () => {
             if (!loadingClases && !loadingMaterias && !loadingProfesores){
                 setLoading(false); 
             } 
+        }).catch((e)=>{
+            loadingAlumnos = false;
+            if (!loadingClases && !loadingMaterias && !loadingProfesores){
+                setLoading(false); 
+            } 
         })
         ProfesorService.getFirstPage(token)
         .then(r=>{
@@ -150,6 +155,11 @@ const CAdminHome = () => {
                     }
                 })
             }
+            loadingProfesores = false; 
+            if (!loadingAlumnos && !loadingClases && !loadingMaterias){
+                setLoading(false); 
+            }
+        }).catch((e) => {
             loadingProfesores = false; 
             if (!loadingAlumnos && !loadingClases && !loadingMaterias){
                 setLoading(false); 
@@ -195,6 +205,11 @@ const CAdminHome = () => {
                 })
                 
             }
+        }).catch((e) => {
+            loadingMaterias = false; 
+                    if (!loadingClases && !loadingAlumnos && !loadingProfesores){
+                        setLoading(false);
+                    }
         })
         ClaseService.getFirstPage(colegioId, token)
         .then(r=>{
@@ -222,6 +237,11 @@ const CAdminHome = () => {
             if (!loadingAlumnos && !loadingMaterias && !loadingProfesores){
                 setLoading(false);
             }
+        }).catch((e) => {
+            loadingClases = false; 
+            if (!loadingAlumnos && !loadingMaterias && !loadingProfesores){
+                setLoading(false);
+            } 
         })
         
     },[token, colegioId])
