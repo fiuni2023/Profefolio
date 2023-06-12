@@ -427,8 +427,11 @@ useMemo(() => {
       body.materias.push(materia);
     });
   
+    console.log('body',body);
     ClassesService.createMateriaProfesor(body, getToken())
       .then(() => {
+        
+      
         toast.success("Los datos fueron enviados correctamente.");
         window.location.reload();
       })
@@ -728,5 +731,13 @@ useMemo(() => {
 
     </>
 }
+
+
+
+
+
+
+
+
 
 export default MateriasDeClase
