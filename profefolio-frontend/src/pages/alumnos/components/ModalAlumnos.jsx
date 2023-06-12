@@ -133,12 +133,14 @@ function ModalAlumnos({
                 onSubmit: deleting ? { action: (e) => { noAction(e) } } : selected_data ? { action: (e) => { handleEditSubmit(e) } } : { action: (e) => { handleCreateSubmit(e) } },
                 inputs: [
                     {
+                        md: 6, lg: 6,
                         key: "nombreAlu", label: "Nombre del Alumno",
                         type: "text", placeholder: "Ingrese el nombre",
                         disabled: disabled, required: true,
                         invalidText: "Ingrese un nombre",
                     },
                     {
+                        md: 6, lg: 6,
                         key: "apellido", label: "Apellido del Alumno",
                         type: "text", placeholder: "Ingrese el apellido",
                         disabled: disabled, required: true,
@@ -183,12 +185,7 @@ function ModalAlumnos({
                         }
                     },
                     {
-                        key: "documento", label: "Documento",
-                        type: "text", placeholder: "Ingrese el número de documento",
-                        disabled: disabled, required: true,
-                        invalidText: "Ingrese un número",
-                    },
-                    {
+                        lg: 6, md: 6,
                         key: "tipoDocumento", label: "Tipo de Documento",
                         type: "select",
                         disabled: disabled, required: true,
@@ -209,8 +206,15 @@ function ModalAlumnos({
                                     text: "Pasaporte"
                                 }
                             ],
-
+                            
                         }
+                    },
+                    {
+                        lg: 6, md: 6,
+                        key: "documento", label: "Documento",
+                        type: "text", placeholder: "Ingrese el número de documento",
+                        disabled: disabled, required: true,
+                        invalidText: "Ingrese un número",
                     },
                 ],
                 buttons: selected_data ?
