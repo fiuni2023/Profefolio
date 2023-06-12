@@ -37,7 +37,7 @@ const ShowClase = () => {
 
     // contiene el titulo que tendra la pagina y la lista de componentes a mostrar
     const componentes = {
-        title: `Nombre de clase ${nombreClase}`,
+        title: `Editar datos de la clase: ${nombreClase}`,
         componentes: [
             <InfoClase/>,
             <AlumnosInscriptos colegio={getColegioId()}/>,

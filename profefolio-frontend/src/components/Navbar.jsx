@@ -46,7 +46,7 @@ const Navbar = ({
                         }}> 
                             <SMainName>
                                 <SUserName>{getUserName()}</SUserName>
-                                <SIcon><FaUserCircle width={"30px"}/></SIcon>
+                                <SIcon><FaUserCircle width={"25px"}/></SIcon>
                             </SMainName>
                         </SMainUser>
                     }
@@ -84,7 +84,7 @@ const Navbar = ({
                     height: 100%;
                 }
                 .user{
-                    width: 20%;
+                    width: 25%;
                     height: 100%;
                     display: flex;
                     justify-content: space-evenly;
