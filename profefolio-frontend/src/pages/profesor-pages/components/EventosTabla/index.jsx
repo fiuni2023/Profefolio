@@ -27,20 +27,12 @@ const EventosTabla = ({has_clase,has_colegio, lista}) => {
     const getColor = (i = 0) => {
         return colors[i % 4];
     };
-    const { dataSet } = useModularContext();
-    const { eventos} = dataSet;
+    const eventos = lista;
   
     console.log("lista:",lista);
     console.log("eventos:",eventos);
     const [datosTabla, setDatosTabla] = useState({
-        tituloTabla: "adminsList",
-        titulos: [
-            { titulo: "Tipo" },
-            { titulo: "Fecha" },
-            { titulo: "Materia" },
-            { titulo: "Clase" },
-            { titulo: "Colegio" },
-        ],
+        
         filas: [], // Inicializar filas como un arreglo vacío
     });
     const getRowColor = (tipo) => {
@@ -67,8 +59,9 @@ const EventosTabla = ({has_clase,has_colegio, lista}) => {
                     { dato: `${a.tipo}` },
                     { dato: fechaFormateada },
                     { dato: `${a.nombreMateria}` },
-                    { dato: `${a.nombreClase}` },
-                    { dato: `${a.nombreColegio}` },
+                    ...(has_clase ? [{ dato: `${a.nombreClase}` }] : []), // Agregar dato "Nombre de Clase" si has_clase es true
+                    ...(has_colegio ? [{ dato: `${a.nombreColegio}` }] : []), // Agregar dato "Nombre de Colegio" si has_colegio es true
+               
                 ],
             };
         });

@@ -14,7 +14,7 @@ const ProfesorPage = () => {
     const {setPage, dataSet, stateController} = useModularContext()
 
     const { setColegioId, setCurrColegio } = stateController 
-    const { colegios, loading } = dataSet
+    const { colegios,eventos, loading } = dataSet
 
     const handleClickCards = (id, nombre) => {
         setCurrColegio(nombre); 
@@ -29,7 +29,7 @@ const ProfesorPage = () => {
                 <ContainerColegios onClick={handleClickCards} lista={colegios}/>
             </SRow>,
             <Horarios/>,
-            <Eventos tablaEventos={<EventosTabla has_colegio={true} has_clase={true} />} />
+            <Eventos tablaEventos={<EventosTabla has_colegio={true} has_clase={true} lista={eventos} />} />
         ]
     };
     return <>
