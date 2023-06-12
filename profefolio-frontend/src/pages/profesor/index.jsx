@@ -29,8 +29,8 @@ function Profesores() {
   const [profesores, setProfesores] = useState([]);
 
   const [selected_data, setSelectedData] = useState(null);
-  const { getToken, cancan, verifyToken } = useGeneralContext();
-
+  const { getToken, cancan, verifyToken, getColegioId } = useGeneralContext();
+  const idColegio=getColegioId();
   const [fetch_data, setFetchData] = useState([])
 
   const [page, setPage] = useState(0);
@@ -52,22 +52,22 @@ function Profesores() {
     if (!cancan("Administrador de Colegio")) {
       nav("/")
     } else {
-      //axios.get(`https://miapi.com/products?page=${page}&size=${size}`, {
-
       setLoading(true);
-      axios.get(`${APILINK}/api/profesor/page/${currentPage}`, {
+      let data = JSON.stringify({
+        "pagina": currentPage, //numero de pagina
+        "colegioId": idColegio //id de colegio del administrador de colegio
+      });
+      axios.post(`${APILINK}/api/Profesor/ByColegio/page`, data, {
         headers: {
           Authorization: `Bearer ${getToken()}`,
+          "Content-Type": "application/json"
         }
       })
-
         .then(response => {
           setProfesores(response.data.dataList);
           setTotalPage(response.data.totalPage);//Total de Paginas
           setCurrentPage(response.data.currentPage);
           setNext(response.data.next);
-
-
 
         })
         .catch(error => {
@@ -77,6 +77,26 @@ function Profesores() {
         .finally(() => {
           setLoading(false);
         });
+
+
+      /*
+      axios.post(`${APILINK}/api/profesor/page/${currentPage}`, {
+          headers: {
+            Authorization: `Bearer ${getToken()}`,
+          }
+        })
+
+        .then(response => {
+          setProfesores(response.data.dataList);
+          setTotalPage(response.data.totalPage);//Total de Paginas
+          setCurrentPage(response.data.currentPage);
+          setNext(response.data.next);
+
+
+
+        }) 
+      */
+
     }
   }, [page, cancan, verifyToken, nav, getToken, fetch_data, currentPage]);
 
@@ -131,7 +151,7 @@ function Profesores() {
 
                   <Tabla
                     datosTabla={{
-                      tituloTabla: 'Lista de profesores',
+                      tituloTabla: 'Lista_de_profesores',
                       titulos: [
                         { titulo: 'CI' },
                         { titulo: 'Nombre' },
@@ -177,14 +197,13 @@ function Profesores() {
 
                 {/* <CreateModal title="My Modal" onHide={() => setShow(false)}  show={show}
              triggerState={(profesor)=>{doFetch(profesor)}}/> */}
+              </PanelContainerBG>
+            </>}
 
-                <ModalProfesor onHide={handleHide} selected_data={selected_data} show={show} />
-                <AddButton onClick={() => setShow(true)}>
+            <ModalProfesor onHide={handleHide} selected_data={selected_data} show={show} />
+            <AddButton onClick={() => setShow(true)}>
                   <AiOutlinePlus size={"35px"} />
                 </AddButton>
-              </PanelContainerBG>
-
-            </>}
 
       </div>
 

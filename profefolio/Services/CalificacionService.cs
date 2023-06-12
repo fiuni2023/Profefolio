@@ -103,8 +103,6 @@ public class CalificacionService : ICalificacion
                 }
 
                 var porcentajeTotal = (puntajeTotalLogrado / total) * 100;
-                Console.WriteLine("Puntajes");
-                Console.WriteLine($"Total: {total} | Puntaje: {puntajeTotalLogrado} | Porcentaje: {porcentajeTotal}");
 
                 var etapa = new EtapaDTO
                 {
@@ -121,7 +119,10 @@ public class CalificacionService : ICalificacion
                                     PuntajeLogrado = e.PuntajeLogrado,
                                     PorcentajeLogrado = e.PorcentajeLogrado,
                                     PuntajeTotal = e.Evaluacion.PuntajeTotal,
-                                    IdEvaluacion = e.Id
+                                    IdEvaluacion = e.Id,
+                                    NombreEvaluacion = e.Evaluacion.Nombre,
+                                    Tipo = e.Evaluacion.Tipo
+
                                 };
                             return null;
                         } ).ToList(),
@@ -197,13 +198,61 @@ public class CalificacionService : ICalificacion
             throw new FileNotFoundException();
         }
 
-        ev.PuntajeLogrado = dto.Puntaje;
-        if (ev.Evaluacion != null) ev.PorcentajeLogrado = (dto.Puntaje * 100) / ev.Evaluacion.PuntajeTotal;
-        await _db.SaveChangesAsync();
+        switch (dto.Modo)
+        {
+            case "p" :
+                ev.PuntajeLogrado = dto.Puntaje;
+                if(ev.Evaluacion != null && ev.Evaluacion.PuntajeTotal < ev.PuntajeLogrado)
+                {
+                    ev.Evaluacion.PuntajeTotal = ev.PuntajeLogrado;
+                }
+                if (ev.Evaluacion != null) ev.PorcentajeLogrado = (dto.Puntaje * 100) / ev.Evaluacion.PuntajeTotal;
+                await _db.SaveChangesAsync();
         
-        await this.Verify(idMateriaLista, user);
-        var result = await this.GetAll(idMateriaLista, user);
-        return result;
+                await this.Verify(idMateriaLista, user);
+                var result = await this.GetAll(idMateriaLista, user);
+                return result;
+            case "pt" :
+                if (ev.Evaluacion != null)
+                {
+                    ev.Evaluacion.PuntajeTotal = dto.PuntajeTotal;
+                    if (ev.Evaluacion.PuntajeTotal < ev.PuntajeLogrado)
+                        ev.PuntajeLogrado = ev.Evaluacion.PuntajeTotal;
+                    
+                    ev.PorcentajeLogrado = (ev.PuntajeLogrado * 100) / ev.Evaluacion.PuntajeTotal;
+                    await _db.SaveChangesAsync();
+                }
+
+                await this.Verify(idMateriaLista, user);
+                return await this.GetAll(idMateriaLista, user);
+            case "nn":
+                if (ev.Evaluacion != null)
+                {
+                    ev.Evaluacion.Nombre = dto.NombreEvaluacion;
+                    await _db.SaveChangesAsync();
+                }
+                await this.Verify(idMateriaLista, user);
+                return await this.GetAll(idMateriaLista, user);
+            case  "d" :
+                if (ev.Evaluacion != null) ev.Evaluacion.Deleted = true;
+
+                var qea = _db.EventoAlumnos
+                    .Where(d => !d.Deleted && d.EvaluacionId == ev.EvaluacionId);
+                foreach (var q in qea)
+                {
+                    q.Deleted = true;
+                    q.Modified = DateTime.Now;
+                    q.ModifiedBy = user;
+                }
+                await _db.SaveChangesAsync();
+                await this.Verify(idMateriaLista, user);
+                return await this.GetAll(idMateriaLista, user);
+                
+            default:
+                throw new BadHttpRequestException("Modo no valido");
+        }
+
+       
     }
 
     private async Task CargarEvaluaciones(ClasesAlumnosColegio cac, string user)

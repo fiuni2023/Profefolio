@@ -16,7 +16,7 @@ const ClasesTable = ({ condFetch, colegioId, getToken, doChangeClase, triggerUpd
     const [error, setError] = useState(false)
     const [classesTable, setClassesTable] = useState(
         {
-            tituloTabla: "ClassesList",
+            tituloTabla: "Lista_de_clases",
             titulos: [{ titulo: "Id" }, { titulo: "Nombre" }, { titulo: "Turno" }, { titulo: "Ciclo" }, { titulo: "Año" }]
         }
     );
@@ -52,11 +52,9 @@ const ClasesTable = ({ condFetch, colegioId, getToken, doChangeClase, triggerUpd
             handleError: (e) => {
                 //let newText = "error";
                 if (typeof (e.response.data) === "string" && `${e.response.data}`.includes("No existe la pagina:")) {
-                    //const text = e.response.data.trim().split(": ")
-
-                    /* const numPag = */ //parseInt(text[1]) + 1;
-
-                    //newText = `${text[0]} ${numPag}`;
+                    // const text = e.response.data.trim().split(": ")
+                    // const numPag = parseInt(text[1]) + 1;
+                    // newText = `${text[0]} ${numPag}`;
                     // if (numPag === 1) {
                     //     toast.error("No tiene Clases creadas todavia.")
                     // } else {

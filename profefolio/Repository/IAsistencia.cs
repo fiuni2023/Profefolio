@@ -13,7 +13,6 @@ namespace profefolio.Repository
         Task<Asistencia> Delete(Asistencia t);
         Task<bool> ExistAsistenciaInDate(int idMateriaLista, int idClaseColegioAlumno, DateTime fecha);
         Task<List<DateTime>> FilterFecha(int idMateriaLista, string user);
-
         bool HasAsistencia(int idMateriaLista, int idAcc);
     }
 }

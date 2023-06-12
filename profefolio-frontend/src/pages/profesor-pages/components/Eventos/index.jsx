@@ -2,7 +2,6 @@ import React from 'react'
 import { SBody, SCard, SHeader } from '../../../../components/componentsStyles/StyledDashComponent'
 import { Col, Row } from 'react-bootstrap'
 import styled from 'styled-components';
-import EventosTabla from '../EventosTabla';
 
 const EventTagDiv = styled.div`
     display: flex;
@@ -35,16 +34,11 @@ const GridDiv = styled.div`
 `;
 
 
-const Eventos = ({
-    lista_de_eventos = [],
-    key_colors = [],
-    has_colegio = false,
-    has_clase = false
-}) => {
+const Eventos  = ({ tablaEventos }) => {
     const tipos_eventos = [
         {
             id: 1,
-            texto: "Evento",
+            texto: "Eventos",
             color: "#C8BFD9"
         },
         {
@@ -68,8 +62,8 @@ const Eventos = ({
             <SHeader>Eventos</SHeader>
             <SBody>
                     <Row>
-                        <Col>
-                            <EventosTabla has_colegio={has_colegio} has_clase={has_clase} />
+                    <Col>
+                            {tablaEventos} {/* Renderiza el componente EventosTabla aquí */}
                         </Col>
                     </Row>
                     <Row>

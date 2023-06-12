@@ -1,4 +1,3 @@
-
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using profefolio.Models.DTOs.Evento;
@@ -26,61 +25,60 @@ namespace profefolio.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Profesor")]
-        public async Task<ActionResult> PostEvento([FromBody] EventoDTO evento)
+        public async Task<ActionResult> PostEvento([FromBody] EventoDTO dto)
         {
-
             if (!ModelState.IsValid)
             {
                 return BadRequest("Objeto No valido");
             }
 
-            var evalue = evento.Tipo != null && !(evento.Tipo.Equals("Examen")
-                                                  || evento.Tipo.Equals("Parcial")
-                                                  || evento.Tipo.Equals("Prueba sumatoria")
-                                                  || evento.Tipo.Equals("Evento"));
-
-            var evalueEtapa = evento.Etapa is not ("Primera" or "Segunda");
-
-            if (evalue || evalueEtapa)
-            {
-                return BadRequest("Tipo de evento invalido");
-            }
-
-            var user = User.FindFirstValue(ClaimTypes.Name);
-            
-            //verificar que el prf pertenezca al colegio al cual quiere agregar un evento
-            var exist = _colegioProfesorService.Count(evento.ColegioId, user);
-            var resultado = exist.Result;
-            if (resultado == 0)
-            {
-                return BadRequest("No puede agregar eventos en otros colegios.");
-            }
-
-
             try
             {
-                if (evento.ProfesorId != null)
-                {
-                    var ml = await _materiaListaService.Filter(evento.ClaseId, evento.ColegioId, evento.ProfesorId,
-                        evento.MateriaId);
-                    var p = new Evaluacion
-                    {
-                        Tipo = evento.Tipo,
-                        Etapa = evento.Etapa,
-                        CreatedBy = user,
-                        Deleted = false,
-                        MateriaListaId = ml.Id,
-                        PuntajeTotal = evento.Puntaje,
-                        Created = DateTime.Now,
-                        Fecha = evento.Fecha
-                    };
+                var mlMateriaLista = await _materiaListaService.FindById(dto.IdMateriaLista);
 
-                    await _eventoService.Add(p, user);
+                var evalue = dto.Tipo != null && !(dto.Tipo.Equals("Examen")
+                                                   || dto.Tipo.Equals("Parcial")
+                                                   || dto.Tipo.Equals("Prueba sumatoria")
+                                                   || dto.Tipo.Equals("Evento"));
+
+                var evalueEtapa = dto.Etapa is not ("Primera" or "Segunda");
+
+                if (evalue || evalueEtapa)
+                {
+
+                    return BadRequest("Tipo de evento invalido");
                 }
+
+                var user = User.FindFirstValue(ClaimTypes.Name);
+
+                //verificar que el prf pertenezca al colegio al cual quiere agregar un evento
+                var exist = _colegioProfesorService.Count(mlMateriaLista.Clase.ColegioId, user);
+                var resultado = exist.Result;
+                if (resultado == 0)
+                {
+                    return BadRequest("No puede agregar eventos en otros colegios.");
+                }
+
+
+                var p = new Evaluacion
+                {
+                    Tipo = dto.Tipo,
+                    Etapa = dto.Etapa,
+                    CreatedBy = user,
+                    Deleted = false,
+                    MateriaListaId = mlMateriaLista.Id,
+                    PuntajeTotal = dto.Puntaje,
+                    Created = DateTime.Now,
+                    Fecha = dto.Fecha,
+                    Nombre = dto.Nombre
+                };
+                await _eventoService.Add(p, user);
+
 
                 await _eventoService.Save();
 
                 return Ok("Guardado");
+                
             }
             catch (BadHttpRequestException e)
             {
@@ -101,9 +99,8 @@ namespace profefolio.Controllers
             {
                 Console.WriteLine(e);
                 return BadRequest("Error al realizar la consulta");
-
             }
-
+            
         }
     }
 }

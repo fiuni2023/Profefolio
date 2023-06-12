@@ -1,12 +1,13 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using profefolio.Models.DTOs.Calificacion;
 using profefolio.Repository;
 
 namespace profefolio.Controllers;
 
-[Route("api/{controller}")]
+[Route("api/[controller]")]
 [Authorize(Roles = "Profesor")]
 public class CalificacionController : ControllerBase
 {
@@ -45,6 +46,22 @@ public class CalificacionController : ControllerBase
     [Route("{idMateriaLista}")]
     public async Task<ActionResult<PlanillaDTO>> Put(int idMateriaLista, [FromBody] CalificacionPutDto dto)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest("Objeto no valido");
+        }
+
+        switch (dto.Modo)
+        {
+            case "nn" :
+                if (dto.NombreEvaluacion.IsNullOrEmpty())
+                {
+                    return BadRequest("Objeto no valido");
+                }
+
+                break;
+
+        }
         try
         {
             var user = User.FindFirstValue(ClaimTypes.Name);
@@ -60,6 +77,11 @@ public class CalificacionController : ControllerBase
         {
             Console.WriteLine(e);
             return NotFound();
+        }
+        catch (BadHttpRequestException e)
+        {
+            Console.WriteLine(e);
+            return BadRequest(e.Message);
         }
         catch (Exception e)
         {
