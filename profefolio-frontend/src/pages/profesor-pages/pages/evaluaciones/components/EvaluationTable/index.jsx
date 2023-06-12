@@ -4,6 +4,7 @@ import { usePageContext } from "../../context/PageContext";
 import { RxCross2, RxPlus } from 'react-icons/rx'
 import AddButton from '../AddButton'
 import InvisibleInput from "./components/Invisibleinput";
+import CreateEventModal from "./components/createEventmodal";
 
 const ETable = styled.table`
     border: 1px solid black;
@@ -14,6 +15,7 @@ const ETable = styled.table`
 const ETH = styled.th`
     border: 1px solid black;
     background-color: #C6D8D3;
+    min-width: 150px;
 `;
 
 const ETD = styled.td`
@@ -35,102 +37,121 @@ const ButtonDivStyle = styled.button`
   }
 `;
 
+const SideScrillingDiv = styled.div`
+    max-width: 1460px;
+    overflow: auto;
+    max-height: 80%;
+
+`;
+
 
 const EvaluationTable = () => {
 
-    const { dataSet, functions } = usePageContext()
+    const { dataSet, functions, stateHandlers } = usePageContext()
     const { evalAlumnos, etapas } = dataSet
-    const { handleAddEtapa, handleDeleteEtapa, handleAddEvent, handleEditEventName } = functions
+    const { handleAddEtapa, handleDeleteEtapa, handleEditEventName, handleEditCalification } = functions
+    const { setShowModal, setEtapaName } = stateHandlers
 
-    const getIndexTexto = (index) => {
-        if (index === 0) return "Primera"
-        if (index === 1) return "Segunda"
-        if (index === 2) return "Tercera"
-        return "No implementado"
+    const getCalif = (e) => {
+        let valor = e.map((ev)=>{return ev.porcentaje_logrado}).reduce((b, a) => { return b + a })
+        valor = valor / e.length
+        return valor.toFixed(2)
     }
 
-    const getCalif = (e, etapaIndex) => {
-        return 0
-    }
-
-    const getCalifFinal = (etapas)=>{
-        return 0
+    const getCalifFinal = (etapas) => {
+        let sumatoria = 0
+        let valor = 0
+        etapas.map(e => {
+            valor = e.map((ev)=>{return ev.porcentaje_logrado}).reduce((b, a) => { return b + a })
+            valor = valor / e.length
+            sumatoria += valor
+        });
+        sumatoria = sumatoria / etapas.length
+        return sumatoria.toFixed(2)
     }
 
     const getTotal = (e = []) => {
-        if(e.length === 0) return 0
-        return e?.reduce((b,a)=>{return b+a})
+        if (e.length === 0) return 0
+        return e?.map((ev)=>{return ev.puntaje}).reduce((b, a) => { return b + a })
+    }
+
+    const handleDelegateCreateModal = (name) => {
+        setEtapaName(name)
+        setShowModal(true)
     }
 
     return <>
-        <ETable>
-            <thead>
-                <tr>
-                    <ETH rowSpan={3}>Alumnos</ETH>
-                    {
-                        etapas.map((e, i) => {
-                            return  <ETH colSpan={e.length + 2} key={`Etapas${i}`}> {getIndexTexto(i)} Etapa 
-                                        <ButtonDivStyle onClick={()=>{handleAddEvent(i)}}><RxPlus/></ButtonDivStyle>
-                                        <ButtonDivStyle onClick={()=>{handleDeleteEtapa(i)}}><RxCross2/></ButtonDivStyle>
+        <SideScrillingDiv >
+            <ETable>
+                <thead>
+                    <tr>
+                        <ETH rowSpan={3}>Alumnos</ETH>
+                        {
+                            etapas.map((e, i) => {
+                                return <ETH colSpan={e.etapas.length + 2} key={`Etapas${i}`}> {e.etapa}
+                                    <ButtonDivStyle onClick={() => {handleDelegateCreateModal(e.etapa)}}><RxPlus /></ButtonDivStyle>
+                                    <ButtonDivStyle onClick={() => { handleDeleteEtapa(i) }}><RxCross2 /></ButtonDivStyle>
                                 </ETH>
-                        })
-                    }
-                    <ETH rowSpan={3}>Calificacion Final</ETH>
-                </tr>
-                <tr>
+                            })
+                        }
+                        <ETH rowSpan={3}>Porcentaje Final</ETH>
+                    </tr>
+                    <tr>
+                        {
+                            etapas.map((e, i) => {
+                                return <>
+                                    {
+                                        e.etapas.map((ev,x) => {
+                                            return <ETH key={`EEN${i}${ev.id}${x}`}><InvisibleInput value={ev.nombre} handleBlur={(text) => { /*handleEditEventName(ev.id, text)*/ }} /></ETH>
+                                        })
+                                    }
+                                    <ETH rowSpan={2} key={`ETP${i}`}>Total</ETH>
+                                    <ETH rowSpan={2} key={`EC${i}`}>Porcentaje</ETH>
+                                </>
+                            })
+                        }
+                    </tr>
+                    <tr>
+                        {
+                            etapas.map((e, i) => {
+                                return <>
+                                    {
+                                        e.etapas.map((ev,x) => {
+                                            return <ETH key={`EEP${i}${ev.id}${x}`}>{`P.T:  ${ev.puntaje_total}`}</ETH>
+                                        })
+                                    }
+                                </>
+                            })
+                        }
+                    </tr>
+                </thead>
+                <tbody>
                     {
-                        etapas.map((e, i) => {
-                            return <>
+                        evalAlumnos.map((a) => {
+                            return <tr key={`AR${a.id}`}>
+                                <ETD minWidth={`250px`} key={`AN${a.id}${a}`}>{`${a.nombreAlumno}`}</ETD>
                                 {
-                                    e.map((ev) => {
-                                        return <ETH key={`EEN${i}${ev.id}`}><InvisibleInput key={`EEN${i}${ev.id}Input`} value={ev.nombre} handleBlur={(text)=>{handleEditEventName(ev.id, text)}}/></ETH>
+                                    a.etapas.map((e, i) => {
+                                        return <>
+                                            {
+                                                e.map((p) => {
+                                                    return <ETD key={`LEP${p.id}`}><InvisibleInput type="number" value={p.puntaje} max={p.puntaje_total} back={"white"} handleBlur={(text) => { handleEditCalification(p.id, p.puntaje_total, parseInt(text)) }} /></ETD>
+                                                })
+                                            }
+                                            <ETD key={`AETP${i},${a.id}`}>{`${getTotal(e)}`}</ETD>
+                                            <ETD key={`AEC${i},${a.id}`}>{`${getCalif(e)}`}</ETD>
+                                        </>
                                     })
                                 }
-                                <ETH rowSpan={2} key={`ETP${i}`}>Total</ETH>
-                                <ETH rowSpan={2} key={`EC${i}`}>Calificacion</ETH>
-                            </>
+                                <ETD key={`ACF${a.id}`}>{`${getCalifFinal(a.etapas)}`}</ETD>
+                            </tr>
                         })
                     }
-                </tr>
-                <tr>
-                    {
-                        etapas.map((e, i) => {
-                            return <>
-                                {
-                                    e.map((ev) => {
-                                        return <ETH key={`EEP${i}${ev.id}`}>{`P.T:  ${ev.puntaje_total}`}</ETH>
-                                    })
-                                }
-                            </>
-                        })
-                    }
-                </tr>
-            </thead>
-            <tbody>
-                {
-                    evalAlumnos.map((a) => {
-                        return <tr key={`AR${a.id}`}>
-                            <ETD minWidth={`150px`} key={`AN${a.id}${a}`}>{`${a.nombreAlumno}`}</ETD>
-                            {
-                                a.etapas.map((e,i)=>{
-                                    return <>
-                                        {
-                                            e.map((p,pi)=>{
-                                                return <ETD key={`LEP${i},${pi}=${p}`}>{`${p}`}</ETD>
-                                            })
-                                        }
-                                        <ETD key={`AETP${i},${a.id}`}>{`${getTotal(e)}`}</ETD>
-                                        <ETD key={`AEC${i},${a.id}`}>{`${getCalif(e,i)}`}</ETD>
-                                    </>
-                                })
-                            }
-                            <ETD key={`ACF${a.id}`}>{`${getCalifFinal(a.etapas)}`}</ETD>
-                        </tr>
-                    })
-                }
-            </tbody>
-        </ETable>
+                </tbody>
+            </ETable>
+        </SideScrillingDiv>
         <AddButton onClick={handleAddEtapa} />
+        <CreateEventModal />
     </>
 }
 
