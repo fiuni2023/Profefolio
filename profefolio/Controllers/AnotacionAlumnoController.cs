@@ -103,7 +103,7 @@ namespace profefolio.Controllers
                 // valdiar que el alumno sea de la clase de la materia
                 var userEmail = User.FindFirstValue(ClaimTypes.Name);
 
-                if (await _anotAlumnoService.ValidarDatos(dto.MateriaListaId, userEmail, dto.AlumnoId))
+                if (await _anotAlumnoService.ValidarDatos(dto.ClaseId, userEmail, dto.AlumnoId))
                 {
                     var model = _mapper.Map<AnotacionAlumno>(dto);
                     model.Created = DateTime.Now;
