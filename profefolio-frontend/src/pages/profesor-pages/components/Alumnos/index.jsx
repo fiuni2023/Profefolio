@@ -5,20 +5,27 @@ import { useModularContext } from '../../context';
 
 const Alumnos = () => {
 
-    const { dataSet } = useModularContext()
+    const { dataSet, setPage, stateController } = useModularContext()
+    const{materiaId}=stateController;
+    const {setAlumnoId}=stateController;
     const { alumnos } = dataSet
-
+    
     const [datosTabla, setDatosTabla] = useState({
         tituloTabla: "Lista_de_alumnos",
         titulos: [{ titulo: "Orden" }, { titulo: "Apellidos" }, { titulo: "Nombre" }],
     });
+    const clickAlumno = (dato) => {
+        setAlumnoId(dato.id);
+        setPage("detalleAlumno");
 
+    }
 
     useEffect(() => {
         const newList = alumnos.map((a, i) => {
             return {
+                fila:a,
                 datos: [
-                    { dato: `${i+1}` },
+                    { dato: `${i + 1}` },
                     { dato: `${a.apellidos}` },
                     { dato: `${a.nombres}` }
                 ]
@@ -28,6 +35,7 @@ const Alumnos = () => {
         setDatosTabla({
             tituloTabla: "Lista_de_alumnos",
             titulos: [{ titulo: "Orden" }, { titulo: "Apellidos" }, { titulo: "Nombre" }],
+            clickable:{ action: clickAlumno},
             filas: newList
         })
     }, [alumnos])
