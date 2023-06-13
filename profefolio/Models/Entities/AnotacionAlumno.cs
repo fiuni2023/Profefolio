@@ -12,8 +12,8 @@ namespace profefolio.Models.Entities
         [Required(ErrorMessage = "Alumno necesario")]
         public int AlumnoId { get; set; }
 
-        [Required(ErrorMessage = "Materia necesaria")]
-        public int MateriaListaId {get; set;}
+        [Required(ErrorMessage = "Clase necesaria")]
+        public int ClaseId {get; set;}
         
         [Required(ErrorMessage = "Titulo necesario")]
         [MinLength(1, ErrorMessage = "El titulo es invalido")]
@@ -33,7 +33,7 @@ namespace profefolio.Models.Entities
         public ClasesAlumnosColegio Alumno { get; set; }
 
         [Required]
-        [ForeignKey("MateriaListaId")]
-        public MateriaLista MateriaLista { get; set; }
+        [ForeignKey("ClaseId")]
+        public Clase Clase { get; set; }
     }
 }
