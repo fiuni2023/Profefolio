@@ -194,15 +194,10 @@ export const ModularProvider = ({ children }) => {
                 setPuntajes(d.data)
             })
             
-            body = {alumnoId: alumnoId, materiaListaId: materiaId}
-           AlumnoServicePage.Get(body, token)
-            .then(function(d){
-                setInfoAlumno(d.data)
-               // handleSetLoading(isMaterias, isAsistencia, isPuntajes)
-            })} else {
+         } else {
             setLoadingOthers(false)
         }
-    },[fetch_data, token, materiaId])
+    },[fetch_data, token, materiaId, alumnoId, claseId])
 
     //----------------------------------------------------Functions----------------------------------------------------
 
