@@ -70,38 +70,38 @@ namespace profefolio.Services
                 .ToListAsync();
         }
 
-        public async Task<(string, string, string, string, List<string>, List<AnotacionAlumno>)> GetAllWithInfoByAlumnoIdAndMateriaListaId(int idAlumno, int idMateriaLista, string profesorEmail)
+        public async Task<(string, string, string, string, List<string>, List<AnotacionAlumno>)> GetAllWithInfoByAlumnoIdAndClaseId(int idAlumno, int idClase, string profesorEmail)
         {
-            var profesor = await _context.Users
+/*             var profesor = await _context.Users
                 .Include(a => a.ListaMaterias)
                 .FirstOrDefaultAsync(a => !a.Deleted && profesorEmail.Equals(a.Email));
             if(profesor == null){
                 throw new FileNotFoundException("Profesor invalido");
-            }
+            } */
 
-            var materialista = profesor.ListaMaterias.FirstOrDefault(a => !a.Deleted && a.Id == idMateriaLista);
+            /* var materialista = profesor.ListaMaterias.FirstOrDefault(a => !a.Deleted && a.MateriaLista.ClaseId == idClase);
             if(materialista == null){
                 throw new BadHttpRequestException("El Profesor no enseña en la materia");
-            }
+            } */
 
             var alumno = await _context.ClasesAlumnosColegios
                 .Include(a => a.ColegiosAlumnos)
                 .Include(a => a.ColegiosAlumnos.Persona)
-                .FirstOrDefaultAsync(a => !a.Deleted && a.Id == idAlumno && a.ClaseId == materialista.ClaseId);
+                .FirstOrDefaultAsync(a => !a.Deleted && a.Id == idAlumno && a.ClaseId == idClase);
 
             if(alumno == null){
                 throw new FileNotFoundException("Alumno no disponible");
             }
 
             var materias = await _context.MateriaListas
-                .Where(a => !a.Deleted && a.ClaseId == materialista.ClaseId)
+                .Where(a => !a.Deleted && a.ClaseId == idClase)
                 .Include(a => a.Materia)
                 .Select(a => a.Materia.Nombre_Materia)
                 .ToListAsync();
 
             var claseModelo = await _context.Clases
                         .Include(a => a.Ciclo)
-                        .FirstOrDefaultAsync(a => !a.Deleted && a.Id == materialista.ClaseId);
+                        .FirstOrDefaultAsync(a => !a.Deleted && a.Id == idClase);
             
             if(claseModelo == null){
                 throw new FileNotFoundException("Clase no disponible");
@@ -111,10 +111,12 @@ namespace profefolio.Services
             var ciclo = claseModelo.Ciclo.Nombre;
 
             var anotaciones =  await _context.AnotacionesAlumnos
+                .Include(a => a.MateriaLista)
+                .Include(a => a.MateriaLista.Profesor)
                 .Where(a => !a.Deleted
                         && a.AlumnoId == idAlumno
-                        && a.MateriaListaId == idMateriaLista
-                        && a.MateriaLista.ProfesorId == profesor.Id)
+                        && a.MateriaLista.ClaseId == idClase
+                        && profesorEmail.Equals(a.MateriaLista.Profesor.Email))
                 .ToListAsync();
 
             return (alumno.ColegiosAlumnos.Persona.Nombre, alumno.ColegiosAlumnos.Persona.Apellido, clase, ciclo, materias, anotaciones);
