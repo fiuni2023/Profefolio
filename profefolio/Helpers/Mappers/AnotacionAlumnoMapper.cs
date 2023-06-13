@@ -26,8 +26,8 @@ namespace profefolio.Helpers.Mappers
             CreateMap<AnotacionAlumnoCreateDTO, AnotacionAlumno>()
                 .ForMember(dest => dest.AlumnoId,
                     opt => opt.MapFrom(v => v.AlumnoId))
-                .ForMember(dest => dest.MateriaListaId,
-                    opt => opt.MapFrom(v => v.MateriaListaId))
+                .ForMember(dest => dest.ClaseId,
+                    opt => opt.MapFrom(v => v.ClaseId))
                 .ForMember(dest => dest.Fecha,
                     opt => opt.MapFrom(v => v.Fecha))
                 .ForMember(dest => dest.Titulo,

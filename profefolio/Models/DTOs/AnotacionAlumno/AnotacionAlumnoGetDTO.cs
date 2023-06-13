@@ -11,7 +11,7 @@ namespace profefolio.Models.DTOs.AnotacionAlumno
         [Required(ErrorMessage = "El alumno de la clase es requerido")]
         public int AlumnoId { get; set; }
         
-        [Required(ErrorMessage = "La materialista es requerida")]
-        public int MateriaListaId { get; set; }
+        [Required(ErrorMessage = "La clase es requerida")]
+        public int ClaseId { get; set; }
     }
 }

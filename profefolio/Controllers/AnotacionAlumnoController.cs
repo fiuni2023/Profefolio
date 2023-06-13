@@ -28,7 +28,7 @@ namespace profefolio.Controllers
             _anotAlumnoService = anotAlumnoService;
         }
 
-        [HttpPost("get/")]
+        /* [HttpPost("get/")]
         [Authorize(Roles = "Profesor")]
         public async Task<ActionResult<List<AnotacionAlumnoResultDTO>>> GetAll([FromBody] AnotacionAlumnoGetDTO dto)
         {
@@ -36,7 +36,7 @@ namespace profefolio.Controllers
             {
                 var userEmail = User.FindFirstValue(ClaimTypes.Name);
 
-                var result = await _anotAlumnoService.GetAllByAlumnoIdAndMateriaListaId(dto.AlumnoId, dto.MateriaListaId, userEmail);
+                var result = await _anotAlumnoService.GetAllByAlumnoIdAndClaseId(dto.AlumnoId, dto.ClaseId, userEmail);
 
                 return Ok(_mapper.Map<List<AnotacionAlumnoResultDTO>>(result));
             }
@@ -51,7 +51,7 @@ namespace profefolio.Controllers
                 return BadRequest("Error durante la obtencion de los datos");
 
             }
-        }
+        } */
 
         [HttpPost("getWithInfo/")]
         [Authorize(Roles = "Profesor")]
@@ -61,7 +61,7 @@ namespace profefolio.Controllers
             {
                 var userEmail = User.FindFirstValue(ClaimTypes.Name);
 
-                var (nombre, apellido, clase, ciclo, materias, anotaciones) = await _anotAlumnoService.GetAllWithInfoByAlumnoIdAndMateriaListaId(dto.AlumnoId, dto.MateriaListaId, userEmail);
+                var (nombre, apellido, clase, ciclo, materias, anotaciones) = await _anotAlumnoService.GetAllWithInfoByAlumnoIdAndClaseId(dto.AlumnoId, dto.ClaseId, userEmail);
 
                 var result = new AnotacionesWithInfoAlumnoResultDTO()
                 {
@@ -103,7 +103,7 @@ namespace profefolio.Controllers
                 // valdiar que el alumno sea de la clase de la materia
                 var userEmail = User.FindFirstValue(ClaimTypes.Name);
 
-                if (await _anotAlumnoService.ValidarDatos(dto.MateriaListaId, userEmail, dto.AlumnoId))
+                if (await _anotAlumnoService.ValidarDatos(dto.ClaseId, userEmail, dto.AlumnoId))
                 {
                     var model = _mapper.Map<AnotacionAlumno>(dto);
                     model.Created = DateTime.Now;
