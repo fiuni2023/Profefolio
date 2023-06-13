@@ -1,8 +1,12 @@
-.principal_container{
-    display: flex;
+.principal{
+    margin-top: 2%;
+    margin-left: 2%;
 }
-.information_div{
-    
-    font-size: x-large;
-    
+
+.card{
+   max-height: 500px;
+    display: flex;
+    row-gap: 1rem;
+    flex-wrap: wrap;
+    overflow-y: scroll;
 }
