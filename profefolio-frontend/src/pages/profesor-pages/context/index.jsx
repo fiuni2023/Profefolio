@@ -10,7 +10,8 @@ import Asistencia from "../pages/asistencia/Asistencia";
 import ProfesorPagesService from "../services/ProfesorPagesService";
 import { useGeneralContext } from "../../../context/GeneralContext";
 import Evaluaciones from "../pages/evaluaciones";
-
+import DetalleAlumno from "../components/Alumnos/DetalleAlumno"
+import AlumnoServicePage from "../services/AlumnoService";
 const ModularContext = createContext();
 
 export const useModularContext = () => {
@@ -27,7 +28,8 @@ export const ModularProvider = ({ children }) => {
         anotacion: <Anotacion />,
         documentos: <Documentos />,
         asistencia: <Asistencia />,
-        evaluaciones: <Evaluaciones />
+        evaluaciones: <Evaluaciones />,
+        detalleAlumno:<DetalleAlumno/>
     }
     
     const { getToken } = useGeneralContext()
@@ -55,11 +57,13 @@ export const ModularProvider = ({ children }) => {
     const [ currClase, setCurrClase ] = useState("")
     const [ currMateria, setCurrMateria ] = useState("")
     const [ loading, setLoading ] = useState(true)
-    
+    const [alumnoId, setAlumnoId]=useState(null);
+    const [infoAlumno, setInfoAlumno]=useState(null);
     //------flags for loading----
     const [ loadingColegio, setLoadingColegio] = useState(false)
     const [ loadingClase, setLoadingClase] = useState(false)
     const [ loadingOthers, setLoadingOthers ] = useState(false)
+    
     
     //----------------------------------------------------Effect Hooks----------------------------------------------------
 
@@ -91,7 +95,22 @@ export const ModularProvider = ({ children }) => {
     },[fetch_data, token, colegioId])
 
     useEffect(()=>{
-        if(colegioId){
+        if(alumnoId && materiaId){
+           /* setLoadingOthers(true)
+            let body = {alumnoId: alumnoId, materiaListaId: materiaId}
+           AlumnoServicePage.Get(body, token)
+            .then(function(d){
+                setInfoAlumno(d.data)
+                setLoading(false)
+                setLoadingOthers(false)
+            }) */
+        } else {
+            setLoadingOthers(false)
+        }
+    },[fetch_data, token, alumnoId])
+
+    useEffect(()=>{
+        if(materiaId){
             setLoadingColegio(true)
             let body = {opcion: 'eventos-clases', id: colegioId, anho: 2023}
             ProfesorPagesService.Get(body, token)
@@ -103,6 +122,7 @@ export const ModularProvider = ({ children }) => {
         } else {
             setLoadingColegio(false)
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     },[fetch_data, token, colegioId])
 
     useEffect(()=>{
@@ -173,10 +193,11 @@ export const ModularProvider = ({ children }) => {
                 handleSetLoading(isMaterias, isAsistencia, isPuntajes)
                 setPuntajes(d.data)
             })
-        } else {
+            
+         } else {
             setLoadingOthers(false)
         }
-    },[fetch_data, token, materiaId])
+    },[fetch_data, token, materiaId, alumnoId, claseId])
 
     //----------------------------------------------------Functions----------------------------------------------------
 
@@ -206,6 +227,7 @@ export const ModularProvider = ({ children }) => {
         if(page === "documento") return setCurrentPage(pages.documentos)
         if(page === "asistencia") return setCurrentPage(pages.asistencia)
         if(page === "evaluaciones") return setCurrentPage(pages.evaluaciones)
+        if(page === "detalleAlumno") return setCurrentPage(pages.detalleAlumno)
         setCurrentPage(pages.dashboard)
 
         
@@ -236,7 +258,9 @@ export const ModularProvider = ({ children }) => {
         setLoading, 
         setCurrColegio, 
         setCurrClase, 
-        setCurrMateria
+        setCurrMateria,
+        setAlumnoId,
+        setInfoAlumno
     }
 
     const dataSet = {
@@ -254,7 +278,9 @@ export const ModularProvider = ({ children }) => {
         loading,
         currColegio, 
         currClase,
-        currMateria
+        currMateria,
+        alumnoId,
+        infoAlumno
     }
 
 
