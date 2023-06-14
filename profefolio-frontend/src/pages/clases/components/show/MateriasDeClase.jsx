@@ -692,7 +692,7 @@ useMemo(() => {
                                        
                                         } else {
                                          
-                                          toast.error("Una materia guardad no se puede eliminar");
+                                          toast.error("Una materia guardada no se puede eliminar");
 
                                         }
                                       
