@@ -23,7 +23,7 @@ const AlumnosInscriptos = () => {
                 setNuevaListaAlumnos(r.data)
             },
             handleError: () => {
-                toast.error("No se pudieron obtener los alumnos de la clase. Intente recargar la página")
+                // if(!loading && !loadingSelect) toast.error("No se pudieron obtener los alumnos de la clase. Intente recargar la página")
             }
         }
     )
@@ -38,7 +38,7 @@ const AlumnosInscriptos = () => {
                 setAlumnosSelect(r.data)
             },
             handleError: () => {
-                toast.error("No se pudieron obtener los alumnos para seleccionar. Intente recargar la página")
+                // if(!loadingSelect && !loading) toast.error("No se pudieron obtener los alumnos para seleccionar. Intente recargar la página")
             }
         }
     )

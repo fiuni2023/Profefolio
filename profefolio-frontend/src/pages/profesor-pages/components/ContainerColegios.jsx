@@ -4,126 +4,109 @@ import Card from '../../../components/Card'
 import { SRow } from '../../../components/componentsStyles/StyledDashComponent'
 
 
-
-const ContainerColegios = () => {
-
+const ContainerColegios = ({
+    onClick=()=>{},
+    lista = []
+}) => {
     const getColor = (pos) => {
         const colores = ["yellow", "blue", "purple", "orange"]
         // se obtienen siempre colores de las posiciones dentro del rango del array
         return colores[Math.abs(colores.length - pos) % (colores.length - 1)]
     }
+    
+    const getMateriasSubtitle = (materias = []) =>{
+        let materiaLista = materias.length > 3? materias.slice(0,3) : materias
+        return materias.length > 3? 
+            `${map(materiaLista, (materia) => `${materia}`).join(", ")}, ...`
+            :
+            `${map(materiaLista, (materia) => `${materia}`).join(", ")}`
+    }   
 
-
-    const mapper = (colegio = {}, indice) => {
+    const mapper = (objeto = {}, indice) => {
         return {
             xs: 12, sm: 12, md: 6, lg: 3,
             background: getColor(indice),
             hover: true,
-            goto: `/colegio/${colegio?.id}`,
+            action: ()=>onClick(objeto?.id, objeto?.nombre),
             header: {
-                title: `${colegio?.nombre}`,
+                title: `${objeto?.nombre}`,
             },
             body: {
                 first: {
-                    title: `${colegio?.clases?.length} clases: `,
-                    subtitle: `${map(colegio?.clases, (clase) => `${clase.nombre}`).join(", ")}`
+                    title: objeto?.clases ? 
+                    `${objeto?.clases?.length} clases: ` 
+                    : 
+                    objeto?.materias? 
+                    `${objeto?.materias?.length} Materias: ` 
+                    :
+                    objeto?.anotaciones?
+                    `${objeto.anotaciones} Anotaciones`
+                    :
+                    objeto?.anotaciones === 0?
+                    `${objeto.anotaciones} Anotaciones`
+                    :
+                    "",
+
+                    subtitle: 
+                        objeto?.clases ? `${map(objeto?.clases, (clase) => `${clase}`).join(", ")}` 
+                        : 
+                        objeto?.materias? getMateriasSubtitle(objeto?.materias)
+                        :
+                        null
                 },
+                
+                //-----------------------ciclo--------------------------------
+                second: objeto?.alumnos ? {
+                    title: `${objeto.alumnos} Alumnos`
+                }
+                :
+                objeto?.calificaciones?
+                {
+                    title: `${objeto.calificaciones} Calificaciones`
+                }
+                :
+                objeto?.calificaciones === 0?
+                {
+                    title: `${objeto.calificaciones} Calificaciones`
+                }
+                :
+                objeto?.ciclo?
+                {
+                    title: `Ciclo: ${objeto.ciclo}`,
+                }
+                :
+                null,
+
+                //-----------------------eventos--------------------------------
+                third: objeto?.eventos ? {
+                    title: `${objeto.eventos} Eventos`
+                }
+                :
+                objeto?.eventos === 0? {
+                    title: `${objeto.eventos} Eventos`
+                }
+                :
+                null,
+                //-----------------------horas--------------------------------
                 schedule: {
-                    main: `${map(colegio?.horario, (h) => `${h.dia} ${new Date(h.hora).toLocaleTimeString("en-EN", {
-                        hour12: true,
-                        hour: "numeric",
-                        minute: "numeric",
-                    })}`).join(" - ")}`,
+                    main: objeto?.horario? 
+                        objeto.horario[0]? `${objeto.horario[0].dia} ${objeto.horario[0].inicio}` : `${objeto.horario.dia} ${objeto.horario.inicio}`
+                    :
+                    objeto?.horarios?
+                    objeto.horarios.map(h=>{return `${h.dia} ${h.inicio}`}).join(' - ')
+                    : 
+                    "No hay un horario todavia",
+                    secondary: objeto?.horario?.horas? objeto?.horario?.horas : null
                 }
             }
         }
     }
-    const peticionResult = [
-        {
-            id: 1, //id colegio
-            nombre: 'Colegio 1',
-            clases: [
-                {
-                    id: 1, //id clase
-                    nombre: "Primero A"
-                },
-                {
-                    id: 2,
-                    nombre: "Primero B"
-                }
-            ],
-            horario: [
-                {
-                    id: 1, // id horario
-                    dia: "Lunes",
-                    hora: new Date()
-                },
-                {
-                    id: 2,
-                    dia: "Martes",
-                    hora: new Date()
-                }
-            ]
-        },
-        {
-            id: 2, //id colegio
-            nombre: 'Colegio 2',
-            clases: [
-                {
-                    id: 3, //id clase
-                    nombre: "Segundo A"
-                },
-                {
-                    id: 4,
-                    nombre: "Primero E"
-                }
-            ],
-            horario: [
-                {
-                    id: 4, // id horario
-                    dia: "Martes",
-                    hora: new Date()
-                },
-                {
-                    id: 5,
-                    dia: "Miercoles",
-                    hora: new Date()
-                }
-            ]
-        },
-        {
-            id: 3, //id colegio
-            nombre: 'Colegio 3',
-            clases: [
-                {
-                    id: 3, //id clase
-                    nombre: "Segundo A"
-                },
-                {
-                    id: 4,
-                    nombre: "Primero E"
-                }
-            ],
-            horario: [
-                {
-                    id: 4, // id horario
-                    dia: "Martes",
-                    hora: new Date()
-                },
-                {
-                    id: 5,
-                    dia: "Miercoles",
-                    hora: new Date()
-                }
-            ]
-        }
-    ]
-
-    const colegios = map(peticionResult, (colegio, i) => mapper(colegio, i))
+    
+    const colegios = map(lista, (colegio, i) => mapper(colegio, i))
     return <>
         <SRow>
             {colegios.map((element, i) => {
-                if (element?.goto) return <Card key={i} cardInfo={element}></Card>
+                if (element?.goto || element?.action ) return <Card key={i} cardInfo={element}></Card>
                 else return 0
             })}
         </SRow>

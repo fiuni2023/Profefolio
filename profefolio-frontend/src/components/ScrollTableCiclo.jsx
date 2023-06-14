@@ -16,7 +16,7 @@ function ListItem({ index, name, lastName, document, type, onClick }) {
 const ScrollTableCiclo = ({ studentsList, isLoading = true}) => {
     useEffect(() => {
       
-    console.log(studentsList)
+    
     }, [studentsList])
     
     return (
@@ -28,7 +28,7 @@ const ScrollTableCiclo = ({ studentsList, isLoading = true}) => {
                     </SHeader>}
                 {studentsList?.list &&
                     <SBody background={studentsList?.background ?? "gray"}>
-                        {isLoading ? <p>Cargando lista</p>
+                        {isLoading ? <p></p>
                         : studentsList.list.length === 0 ? <p>No hay listas para mostrar</p>
                         : <List>
                             {studentsList?.list?.map((student, index) => (
@@ -36,7 +36,7 @@ const ScrollTableCiclo = ({ studentsList, isLoading = true}) => {
                                     index={index + 1}
                                     id={student.id}
                                     name={student.nombre}
-                                    onClick={() => console.log(`${student.id} 'seleccionado'`)} />
+                                     />
                             ))}
                         </List>}
                     </SBody>}

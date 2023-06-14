@@ -85,6 +85,7 @@ builder.Services.AddScoped<IProfesor, ProfesorService>();
 builder.Services.AddScoped<IColegio, ColegiosService>();
 builder.Services.AddScoped<IColegioProfesor, ColegioProfesorService>();
 builder.Services.AddScoped<IColegiosAlumnos, ColegiosAlumnosServices>();
+builder.Services.AddScoped<IDashboardProfesor, DashboardProfesorService>();
 builder.Services.AddScoped<IMateria, MateriaService>();
 builder.Services.AddScoped<ICiclo, CicloService>();
 builder.Services.AddScoped<IClase, ClaseService>();
@@ -96,7 +97,12 @@ builder.Services.AddScoped<IRol, RolService>();
 builder.Services.AddScoped<IAuth, AuthService>();
 builder.Services.AddScoped<IMateriaLista, MateriaListaService>();
 builder.Services.AddScoped<IAdmin, AdminReportService>();
-
+builder.Services.AddScoped<IEvento, EventoService>();
+builder.Services.AddScoped<IAsistencia, AsistenciaService>();
+builder.Services.AddScoped<IAnotacion, AnotacionesService>();
+builder.Services.AddScoped<IDocumento, DocumentoService>();
+builder.Services.AddScoped<IAnotacionAlumno, AnotacionAlumnoService>();
+builder.Services.AddScoped<ICalificacion, CalificacionService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

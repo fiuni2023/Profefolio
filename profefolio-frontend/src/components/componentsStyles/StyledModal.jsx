@@ -5,14 +5,14 @@ const H1 = styled.h1`
     font-family: 'Poppins';
     font-style: normal;
     font-weight: 600;
-    font-size: 1.8em;
+    font-size: 16px;
     color: #000000;
 `;
 
 const Text = styled.div`
     font-family: 'Poppins';
     font-style: normal;
-    font-size: 1.2em;
+    font-size: 10pt;
     color: #282828;
 `;  
 

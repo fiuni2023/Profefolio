@@ -16,9 +16,10 @@ function ModalColegio({
     const disabled = false
 
     const handleCreateSubmit = () => {
+
         const nombre = document.getElementById("nombreColegio").value
         const idAdmin = document.getElementById("administradorColegio").value
-
+        if (nombre === "" || idAdmin === "") return toast.error("Revise los datos, los campos deben ser completados")
         let data = JSON.stringify({
             "nombre": nombre,
             "personaId": idAdmin
@@ -88,6 +89,7 @@ function ModalColegio({
     }
 
     const handleDelete = () => {
+
         axios.delete(`${APILINK}/api/Colegios/${selected_data.id}`, {
             headers: {
                 Authorization: `Bearer ${getToken()}`,
@@ -103,21 +105,31 @@ function ModalColegio({
 
             })
             .catch(error => {
-                console.error(error);
+                toast.error(error);
             });
     }
-
     useEffect(() => {
         if (selected_data) {
             document.getElementById("nombreColegio").value = selected_data.nombre
             document.getElementById("administradorColegio").value = selected_data.idAdmin ?? ""
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selected_data])
 
     const [datosModal, setDatosModal] = useState(null);
     const [deleting, setDeleting] = useState(false)
 
     useEffect(() => {
+        let adminNew=administrators;
+        if(selected_data){
+            let admin={
+                id: selected_data.idAdmin,
+                nombre: selected_data.nombreAdministrador,
+                apellido: selected_data.apellido
+            }
+            adminNew=[...adminNew, admin];
+        }
+
         setDatosModal({
             header: selected_data ? deleting ? "ELIMINAR COLEGIO?" : "Editar Colegio" : "Agregar Colegio",
             form: {
@@ -132,14 +144,14 @@ function ModalColegio({
                     {
                         key: "administradorColegio", label: "Administrador",
                         type: "select",
-                        disabled: disabled, required: true,
+                        disabled: disabled, required: true, value: selected_data?.idAdmin,
                         invalidText: "Seleccione un Administrador",
                         select: {
                             default: "Seleccione un Administrador",
-                            options: administrators.map((a) => {
+                            options: adminNew.map((a) => {
                                 return {
                                     value: a.id,
-                                    text: a.nombre
+                                    text: a.nombre + " " + a.apellido
                                 }
                             }),
 

@@ -7,10 +7,10 @@ import styled from 'styled-components';
 const StyledTextButton = styled.button`
   font-weight: 600;
   width: 124px;
-  height: 40px;
+  height: 35px;
   border: none;
-  border-radius: 5px;
-  font-size: 20px;
+  border-radius: 7px;
+  font-size: 16px;
   margin:5px;
   cursor: ${props => props.enabled ? 'pointer' : 'not-allowed'};
   opacity: ${props => props.enabled ? 1 : 0.5};
@@ -22,6 +22,14 @@ const StyledTextButton = styled.button`
   ${props => {
     switch (props.buttonType) {
       case 'save':
+        return `
+          background-color: #8DACE1;
+          color: #fff
+          ;&:hover {
+            background-color: #5181D1;
+          }
+        `;
+      case 'save2':
         return `
           background-color: #8DACE1;
           color: #fff
@@ -80,6 +88,23 @@ const StyledTextButton = styled.button`
   
           &:hover {
             background-color: #EB231C;
+          }
+        `;
+      case 'yes':
+        return `
+          background-color: #59C8A4;
+          color: #fff;
+          &:hover {
+            background-color: #24B787;
+          }
+        `;
+      case 'no':
+        return `
+          background-color: #E57BA4;
+          color: #fff;
+
+          &:hover {
+            background-color: #D93D79;
           }
         `;
       default:

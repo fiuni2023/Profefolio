@@ -1,6 +1,7 @@
 using AutoMapper;
 using profefolio.Models.DTOs.Colegio;
 using profefolio.Models.Entities;
+using profefolio.Models.DTOs;
 
 namespace profefolio.Helpers.Mappers;
 
@@ -69,5 +70,23 @@ public class ColegioMapper : Profile
                 opt => opt.MapFrom(v => v.personas.Apellido))
             .ForMember(dest => dest.PersonaId,
                 opt => opt.MapFrom(v => v.PersonaId));
+
+         CreateMap<Persona, AdministradorDTO>()
+            .ForMember(dest => dest.Nombre,
+                        opt => opt.MapFrom(src => src.Nombre))
+            .ForMember(dest => dest.Apellido,
+                        opt => opt.MapFrom(src => src.Apellido))
+            .ForMember(dest => dest.Id,
+                        opt => opt.MapFrom(src => src.Id));
+
+        CreateMap<AdministradorDTO, Persona>()
+            .ForMember(dest => dest.Id,
+                opt => opt.Ignore())
+            .ForMember(dest => dest.Created,
+                opt => opt.MapFrom(src => DateTime.Now))
+            .ForMember(dest => dest.Modified,
+                opt => opt.Ignore())
+            .ForMember(dest => dest.ModifiedBy,
+                opt => opt.Ignore());
     }
 }

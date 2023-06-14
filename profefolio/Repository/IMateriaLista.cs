@@ -3,15 +3,15 @@ using profefolio.Models.Entities;
 
 namespace profefolio.Repository
 {
-    public interface IMateriaLista : IRepository<MateriaLista>
+    public interface IMateriaLista : IDisposable
     {
         Task<bool> IsUsedMateria(int idMateria);
-        Task<MateriaLista> Find(int idClase, string idProfesor, int idMateria, string userLogged);
         Task<ClaseDetallesDTO> FindByIdClase(int idClase, string user);
         Task<List<MateriaLista>> FindByIdClaseAndUser(int idClase, string userEmail, string role);
-        Task<bool> DeleteByIdClase(int idClase, string user);
-        Task<bool> SaveMateriaLista(ClaseMateriaCreateDTO dto, string user);
-        Task<bool> EditMateriaLista(ClaseMateriaEditDTO dto, string user);
-
+        Task<bool> Put(string idUser, MateriaListaPutDTO dto);
+        Task<Persona> GetProfesorOfMateria(int idMateriaLista, string profesorEmail);
+        Task<MateriaLista> FindById(int id);
+        Task<MateriaLista> Filter(int idClase, int idColegio, string idProfesor, int idMateria);
+        Task<List<MateriaLista>> FilterByIdClase(int idClase);
     }
 }

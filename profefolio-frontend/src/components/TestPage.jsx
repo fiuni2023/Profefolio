@@ -19,7 +19,7 @@ const Div = styled.div`
 
 const TestPage = () => {
   const miFuncion = () => {
-    console.log("Editando")
+    
   }
   return (
     <div>

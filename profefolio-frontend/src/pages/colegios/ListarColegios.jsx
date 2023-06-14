@@ -13,45 +13,45 @@ import Tabla from "../../components/Tabla";
 import ModalColegio from "./ModalColegios_";
 import { AddButton } from "../alumnos/styles/Styles";
 import { AiOutlinePlus } from "react-icons/ai";
+import Spinner from "../../components/componentsStyles/SyledSpinner";
+import Text from "../../components/componentsStyles/StyledText";
 
 function ListarColegios() {
 
   const { getToken, verifyToken, cancan } = useGeneralContext()
 
   const nav = useNavigate()
-
   const navigate = useNavigate()
 
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(0);
-  const [datoColegio, setDatoColegio] = useState('');
+  const [datoColegio, setDatoColegio] = useState(null);
   const [next, setNext] = useState(false);
   const [totalPage, setTotalPage] = useState(0);
-
   const [fetch_data, setFetchData] = useState([]);
-
   const [administrators, setAdministrators] = useState([])
-
   const [datosTabla, setDatosTabla] = useState({
-    tituloTabla: "studentsList",
+    tituloTabla: "Lista_de_colegios",
     titulos: [{ titulo: "Numero" }, { titulo: "Nombre" }, { titulo: "Administrador" }]
   });
   const [selectedId, setSelectedId] = useState(null)
-
-
-
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
 
-    verifyToken()
-    if (!cancan("Master")) {
-      nav("/")
-    } else {
-      axios.get(`${APILINK}/api/ColegiosFull/page/${currentPage}`, {
-        headers: {
-          Authorization: `Bearer ${getToken()}`,
-        }
-      })
+        verifyToken();
+        if (!cancan("Master")) {
+          nav("/");
+        } else {
+          const response = await axios.get(`${APILINK}/api/ColegiosFull/page/${currentPage}`, {
+            headers: {
+              Authorization: `Bearer ${getToken()}`,
+            }
+          })
 
-        .then(response => {
           setDatosTabla({
             ...datosTabla, clickable: { action: handleShow },
             filas: response.data.dataList.map((dato) => {
@@ -66,35 +66,37 @@ function ListarColegios() {
 
           })
 
-          setCurrentPage(response.data.currentPage);//Actualiza la pagina en donde estan los datos
+          setCurrentPage(response.data.currentPage);
           setNext(response.data.next);
-          setTotalPage(response.data.totalPage)
+          setTotalPage(response.data.totalPage);
 
-        })
-        .catch(error => {
-          toast.error(error);
-          console.error(error);
-        });
-
-
-      let config = {
-        method: 'get',
-        url: `${APILINK}/api/administrador`,
-        headers: {
-          'Authorization': `Bearer ${getToken()}`
         }
-      };
-      axios(config)
-        .then(function (response) {
-          setAdministrators(response.data);
 
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
+        const config = {
+          method: 'get',
+          url: `${APILINK}/api/colegios/administradores/noAsignados`,
+          headers: {
+            Authorization: `Bearer ${getToken()}`,
+          },
+        };
 
-    }
+        await axios(config)
+        .then((response)=>{
+          setAdministrators(response.data)
+          setLoading(false);
+        }
+        )
 
+       
+      } catch (error) {
+        setLoading(false);
+        setError(error);
+        toast.error(error);
+        
+      }
+    };
+
+    fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage, fetch_data]);
 
@@ -115,27 +117,27 @@ function ListarColegios() {
 
 
   return (
-    <>
-      <div>
-
-        <div className={styles.nombrePagina}>
-          <div className={styles.divNombrePagina}>
-            <button className={styles.buttonBack} onClick={() => { navigate('/') }}><BiArrowBack className={styles.arrowButton} /></button>
-            <span className={styles.tituloPagina}>Colegios</span>
-          </div>
+    <div>
+      <div className={styles.nombrePagina}>
+        <div className={styles.divNombrePagina}>
+          <button className={styles.buttonBack} onClick={() => { navigate('/') }}><BiArrowBack className={styles.arrowButton} /></button>
+          <span className={styles.tituloPagina}>Colegios</span>
         </div>
-        <div className={styles.tablePrincipal} >
-          <Tabla datosTabla={datosTabla} selected={selectedId ?? "-"} />
-          <Paginations totalPage={totalPage} currentPage={currentPage} setCurrentPage={setCurrentPage} next={next} ></Paginations>
-
-        </div>
-        <AddButton onClick={() => { setShow(true) }}>
-          <AiOutlinePlus size={"35px"} />
-        </AddButton>
-        {/* <ModalVerColegios datoColegio={datoColegio} onClose={()=>{setDatoColegio(null)}} show={show} setShow={setShow} disabled={disabled} setDisabled={setDisabled} triggerState={() => { setFetchData((before)=>[before]) }} page={currentPage}></ModalVerColegios>
-        <ModalAgregarColegios triggerState={() => { setFetchData((before)=>[before]) }}  ></ModalAgregarColegios> */}
-        <ModalColegio show={show} onHide={handleHide} administrators={administrators} selected_data={datoColegio} fetchFunc={doFetch} />
       </div>
-    </>)
+      {loading ? <Spinner height={'calc(100vh - 80px)'} />
+        : error ? <Text>Lamentamos esto, ha ocurrido un error al obtener los datos.</Text>
+          :
+          <>
+            <div className={styles.tablePrincipal} >
+              <Tabla datosTabla={datosTabla} selected={selectedId ?? "-"} />
+              <Paginations totalPage={totalPage} currentPage={currentPage} setCurrentPage={setCurrentPage} next={next} ></Paginations>
+            </div>
+            <AddButton onClick={() => { setShow(true) }}>
+              <AiOutlinePlus size={"35px"} />
+            </AddButton>
+            <ModalColegio show={show} onHide={handleHide} administrators={administrators} selected_data={datoColegio} fetchFunc={doFetch} />
+          </>}
+    </div>
+  )
 }
 export default ListarColegios

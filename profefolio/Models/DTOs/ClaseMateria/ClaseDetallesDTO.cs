@@ -7,7 +7,7 @@ namespace profefolio.Models.DTOs.ClaseMateria
         public int ClaseId { get; set; }
         public string NombreClase { get; set; }
         public List<MateriaProfesoresDTO>? MateriaProfesores { get; set; }
-      
+
 
     }
 }

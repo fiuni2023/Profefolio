@@ -112,8 +112,8 @@ function CreateModal({ onSubmit = () => { }, triggerState = () => { }, show = fa
 
 
 
-        <Modal.Header closeButton className={styles.contentModal}>
-          <Modal.Title className="">Agregar Profesor</Modal.Title>
+        <Modal.Header closeButton className={styles.contentModal} style={{paddingBottom: "5px"}}>
+          <Modal.Title className="" style={{fontSize: "1.5em"}}>Agregar Profesor</Modal.Title>
         </Modal.Header>
 
 

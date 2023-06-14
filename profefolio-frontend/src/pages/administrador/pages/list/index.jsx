@@ -14,6 +14,8 @@ import AdminService from "../../../../sevices/administrador";
 import { useAdminContext } from "../../context/AdminContext";
 import LAEditPanel from "../../components/EditPanel";
 import ModalAdmin from "../../components/AdminModal";
+import Spinner from "../../../../components/componentsStyles/SyledSpinner";
+import Text from "../../../../components/componentsStyles/StyledText";
 
 const ListAdministrador = () => {
     const {getToken, cancan, verifyToken} = useGeneralContext()
@@ -26,7 +28,7 @@ const ListAdministrador = () => {
     const [totalPage, setTotalPage] = useState(0)
     const [condFetch, setCondFetch] = useState(false)
     const [datosTabla, setDatosTabla] = useState({
-        tituloTabla: "adminsList", 
+        tituloTabla: "Lista_de_adminstradores", 
         titulos: [{titulo: "CI"}, {titulo: "Nombre"}, {titulo: "Fecha de nacimiento"}, {titulo: "Dirección"}, {titulo: "Teléfono"}]});
 
     const parseToDate = (d=new Date()) => {
@@ -49,7 +51,7 @@ const ListAdministrador = () => {
         setShowAdmin(true)
     }
     
-    const { doFetch } = useFetchEffect(
+    const { doFetch, loading, error } = useFetchEffect(
         ()=>{
             return AdminService.getList(currentPage, getToken())
         }, 
@@ -72,7 +74,7 @@ const ListAdministrador = () => {
                 })
             },
             handleError: ()=>{
-                toast.error("No se pudieron cargar los administradores, intente de nuevo")
+                if (!loading) toast.error("No se pudieron cargar los administradores, intente de nuevo")
             }
         }
     )
@@ -91,39 +93,20 @@ const ListAdministrador = () => {
                     <HiArrowLeft size={"20px"} onClick={()=>nav("/")}/>
                     <h5 className={styles.LANText}>Administradores</h5>
                 </div>
-                <div className={styles.TableContainer}>
-                    { showAdmin && 
-                        <LAEditPanel onUpdate={()=>{setCurrentPage(0);doFetch(true)}}/>
-                    }
-
-                    {/*
-                    Asi se hacia una tabla antes, con el codigo nuevo se reduce a una linea 
-                    <Table 
-                        headers={["CI", "Nombre", "Fecha de Nacimiento", "Direccion", "Telefono"]}
-                        datas={admins}
-                        parseToRow = {(d, index) =>{
-                            return(
-                                <tr key={index} className={`${d?.id === selectedAdmin?.id ? styles.SelectedTR : ""}`} onClick={()=>{doChangeAdmin(d)}}>
-                                    <td>{d?.documento}</td>
-                                    <td>{`${d?.nombre} ${d?.apellido}`}</td>
-                                    <td>{parseToDate(new Date(d?.nacimiento))}</td>
-                                    <td>{d?.direccion}</td>
-                                    <td>{d?.telefono}</td>
-                                </tr>
-                            )
-                        }}
-                        />
-                    */}
-                    
-                    <Tabla datosTabla = {datosTabla} selected = {selectedAdmin?.id}/>
-
-                    
-
-                    <Paginations totalPage={totalPage} currentPage={currentPage} setCurrentPage={setCurrentPage} next={next} />
-                    <div className={styles.LAAddButton} onClick={()=>{setShowCreateModal(!showCreateModal)}}>
-                        <AiOutlinePlus size={"35px"}/>
+                {loading ? <Spinner height={'calc(100vh - 80px)'} />
+                : error ? <Text>Lamentamos esto, ha ocurrido un error al obtener los datos.</Text>
+                    :
+                    <div className={styles.TableContainer}>
+                        { showAdmin && 
+                            <LAEditPanel onUpdate={()=>{setCurrentPage(0);doFetch(true)}}/>
+                        }
+                        <Tabla datosTabla = {datosTabla} selected = {selectedAdmin?.id}/>
+                        <Paginations totalPage={totalPage} currentPage={currentPage} setCurrentPage={setCurrentPage} next={next} />
+                        <div className={styles.LAAddButton} onClick={()=>{setShowCreateModal(!showCreateModal)}}>
+                            <AiOutlinePlus size={"35px"}/>
+                        </div>
                     </div>
-                </div>
+}
             </div>
         </>
     )

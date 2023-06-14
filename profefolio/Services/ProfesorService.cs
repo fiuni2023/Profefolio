@@ -147,18 +147,63 @@ namespace profefolio.Services
         public async Task<List<Persona>> FindAllProfesoresOfColegio(int idColegio)
         {
             return await _context.Users
-                        .Where(p => !p.Deleted 
+                        .Where(p => !p.Deleted
                             && p.ColegiosProfesor
                                 .Any(pr => !pr.Deleted && pr.ColegioId == idColegio))
                         .ToListAsync();
         }
-
+        public async Task<String?> GetProfesorIdByEmail(string userEmail)
+        {
+            var profesor = await _context.Users
+                .FirstOrDefaultAsync(p => p.Email == userEmail);
+            return profesor?.Id;
+        }
+        public async Task<int> GetColegioIdByProfesorId(string idProfesor)
+        {
+            var colegio = await _context.ColegiosProfesors
+                .FirstOrDefaultAsync(p => p.PersonaId == idProfesor);
+            return colegio.Id;
+        }
         public async Task<bool> IsProfesorInMateria(int idMateriaLista, string emailProfesor)
         {
             return await _context
                     .MateriaListas
                         .Include(a => a.Profesor)
                         .AnyAsync(a => !a.Deleted && a.Id == idMateriaLista && a.Profesor.Email.Equals(emailProfesor));
+        }
+        public async Task<Persona> GetProfesorByEmail(string userEmail)
+        {
+            var profesor = await _context.Users
+                .FirstOrDefaultAsync(p => p.Email == userEmail);
+            return profesor;
+        }
+
+        public async Task<(List<Persona>, int)> FindAllProfesoresOfColegioPage(int page, int cantPorPag, string adminEmail, int idColegio)
+        {
+            var colegio = await _context.Colegios
+                    .FirstOrDefaultAsync(a => !a.Deleted 
+                        && a.Id == idColegio 
+                        && adminEmail.Equals(a.personas.Email) 
+                        && !a.personas.Deleted);
+            
+            if(colegio == null){
+                throw new FieldAccessException();
+            }
+
+            var query = await _context.ColegiosProfesors
+                    .Include(a => a.Persona)
+                    .Include(a => a.Colegio)
+                    .Where(a => !a.Deleted
+                        && a.ColegioId == idColegio
+                        && a.Persona != null 
+                        && !a.Persona.Deleted)
+                    .Select(a => a.Persona)
+                    .ToListAsync();
+
+            var result = query.Skip(page * cantPorPag)
+                    .Take(cantPorPag).ToList();
+
+            return (result, query.Count);
         }
     }
 }

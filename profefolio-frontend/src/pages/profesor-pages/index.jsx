@@ -1,27 +1,15 @@
-import React from 'react'
-import ContainerColegios from './components/ContainerColegios.jsx'
-import { SRow } from '../../components/componentsStyles/StyledDashComponent.jsx'
-import ShowContainer from '../clases/components/ShowContainer.jsx'
-import Horarios from './components/Horarios/index.jsx'
-import Eventos from './components/Eventos/index.jsx'
-import { useGeneralContext } from '../../context/GeneralContext.jsx'
+import React from "react";
+import { ModularProvider } from "./context";
+import BasePage from "./pages/base";
 
-const ProfesorPage = () => {
-    const {getUserName} = useGeneralContext()
-
-    const componentes = {
-        title: `Bienvenido Prof. ${getUserName()}`,
-        componentes: [
-            <SRow>
-                <ContainerColegios/>
-            </SRow>,
-            <Horarios/>,
-            <Eventos/>
-        ]
-    };
-    return <>
-        <ShowContainer data={componentes}/>
-    </>
+const ProfPages = () => {
+    return(
+        <>
+            <ModularProvider>
+                <BasePage />
+            </ModularProvider>
+        </>
+    )
 }
 
-export default ProfesorPage
+export default ProfPages

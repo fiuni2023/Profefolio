@@ -89,8 +89,9 @@ namespace profefolio.Controllers
             try
             {
                 var alumnoColegios = await _cAlumnosService.FindAll(adminEmail, page, CantPorPage);
-
-                int cantPages = (int)Math.Ceiling((double)(await _cAlumnosService.Count(adminEmail)) / (double)CantPorPage);
+                
+                Console.WriteLine("Colegio ALumnos");
+                var cantPages = (int)Math.Ceiling((double)(await _cAlumnosService.Count(adminEmail)) / (double)CantPorPage);
 
                 var result = new DataListDTO<ColegioAlumnosDTO>();
 
@@ -249,7 +250,6 @@ namespace profefolio.Controllers
                 }
 
                 var colAlumno = _mapper.Map<ColegiosAlumnos>(dto);
-
                 colAlumno.CreatedBy = nameUser;
                 colAlumno.Created = DateTime.Now;
                 colAlumno.Deleted = false;
@@ -317,9 +317,43 @@ namespace profefolio.Controllers
             catch (Exception e)
             {
                 Console.WriteLine($"{e}");
-                return BadRequest("Error durante ele eliminado");
+                return BadRequest("Error durante el eliminado");
 
             }
+
+
+        }
+        [HttpGet]
+        [Route("not/assigned/year/{idClase}")]
+        public async Task<ActionResult<List<ColegioAlumnosDTO>>> NotAssigned(int idClase)
+        {
+            try
+            {
+                var adminEmail = User.FindFirstValue(ClaimTypes.Name);
+
+                var date = DateTime.Now;
+
+                var year = date.Year;
+
+                var query = await _cAlumnosService.GetNotAssignedByYear(year, adminEmail, idClase);
+
+                var queryMapper = _mapper.Map<List<ColegioAlumnosDTO>>(query.ToList())
+                    .OrderBy(p => p.Apellido)
+                    .ThenBy(p => p.Nombre)
+                    .ThenBy(p => p.Documento);
+
+                return Ok(queryMapper);
+
+            }
+            catch(BadHttpRequestException e)
+            {
+                return BadRequest(e.Message);
+            }
+            catch(FileNotFoundException)
+            {
+                return NotFound();
+            }
+
 
 
         }

@@ -10,6 +10,7 @@ import MateriasService from "../../Helpers/MateriasHelper.js"
 import { useGeneralContext } from '../../../../context/GeneralContext';
 import ClassesService from '../../Helpers/ClassesHelper';
 import { toast } from 'react-hot-toast';
+import Spinner from '../../../../components/componentsStyles/SyledSpinner';
 
 
 import { GrAddCircle } from 'react-icons/gr'
@@ -39,118 +40,159 @@ justify-content: space-around;
 
 
 
-const TagProfesor = memo(({ id, nombre,apellido, state = "new", onClick = () => { } }) => {
-    const uid = useId();
-    const unicId = uid.substring(1, uid.length - 1)
+const TagProfesor = memo(({ id, nombre = "", apellido = "", state = "n", onClick = () => { }, selected }) => {
+  const uid = useId();
+  const unicId = uid.substring(1, uid.length - 1);
 
-    const [type, setType] = useState("new");
-    const bgColor = (estado) => {
-        switch (`${estado.toLowerCase()}`) {
-            case "reload":
-                return "#F3E6AE";
-            case "new":
-                return "#D1F0E6";
-            default:
-                return "#C2C2C2";
-        }
+  const [type, setType] = useState(state);
+
+  const bgColor = (estado) => {
+    switch (`${estado.toLowerCase()}`) {
+      case "reload":
+        return "#F3E6AE";
+      case "d":
+        return "#D1F0E6";
+      case "n":
+        return "#C2C2C2";
+      default:
+        return "#C2C2C2";
     }
+  };
 
-    useEffect(() => {
-        setType(bgColor(state))
-    }, [state]);
+  useEffect(() => {
+    setType(state);
+  }, [state]);
 
-    return <>
-        <TagTeacher className={`tag-teacher-${unicId}`}>
-            <Item className='item-nombre-profe'>{nombre} {apellido}</Item>
-            <ListButton onClick={onClick}>{state !== 'reload' ? 'X' : <RxReload style={{ fontSize: '24px' }} size={24} />}</ListButton>
+  return (
+    <>
+      <TagTeacher className={`tag-teacher-${unicId}`}>
+        <Item className="item-nombre-profe">{nombre} {apellido}</Item>
+        <ListButton onClick={onClick}>{type !== 'reload' ? 'X' : <RxReload style={{ fontSize: '24px' }} size={24} />}</ListButton>
+      </TagTeacher>
+      <style jsx="true">{
+          `
+        .item-nombre-profe {
+          padding-left: 5px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          max-width: calc(15rem - 24px);
+          font-size: 10pt;
+          display: flex;
+          align-items: center;
+          white-space: nowrap;
+        }
 
-        </TagTeacher>
-        <style jsx="true">{
-            `
-            .item-nombre-profe{
-                padding-left: 5px;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-                max-width: calc(10rem - 24px);
-                font-size: 15px;
-                display: flex;
-                align-items: center;
-            }
-            .tag-teacher-${unicId}{
-                background-color: ${type};
-                padding: 0.2rem;
-                max-width: 10rem;
-                width: fit-content;+
-                height: 24px;
-                display: flex;
-                align-items: center;
-            }
-            .btn-cancelar{
-                background-color: red;
-                min-width: 1rem;
-            }
-        `
-        }</style>
+        .tag-teacher-${unicId} {
+          background-color: ${bgColor(type)};
+          padding: 0.2rem;
+          max-width: 10rem;
+          width: fit-content;
+          height: 24px;
+          display: flex;
+          align-items: center;
+          flex-wrap: nowrap;
+          white-space: nowrap;
+        }
+
+        .btn-cancelar {
+          background-color: red;
+          min-width: 1rem;
+        }
+      `}</style>
     </>
-})
+  );
+});
+
+
 
 
 
   
 
-const ListItem = memo(({ index, idMateria, nombre,apellido, profesores = [] ,profeProfesor = [], type ,onClick }) => {
+const ListItem = memo(({ index, idMateria,estado ,nombre,apellido, profesores = [] ,profeProfesor = [], type ,onClick,guardarProfesorSeleccionado,guardarProfesorSeleccionadoParaBorrar,guardarIdMateriaSeleccionado} ) => {
 
+
+  const [newTypeArray, setNewTypeArray] = useState(Array(profesores.length).fill(type));
+
+  // Actualizar el estado individual de un componente TagProfesor
+  const updateType = (index, newValue) => {
+    setNewTypeArray((prevArray) => {
+      const newArray = [...prevArray];
+      newArray[index] = newValue;
+      return newArray;
+    });
+  };
+
+
+  const [newType, setType] = useState(type);
+
+  useEffect(() => {
+    setType(type);
+  }, [type]);
+
+
+  const [idMateriaSeleccionado, setIdMateriaSeleccionado] = useState();
     const [profesoresSeleccionados, setProfesoresSeleccionados] = useState([]);
-
-    const [selectedData,setSelectedData ]= useState([]);
-
-   
 
     const { setStatusProfesorMateria } = useClaseContext();
 
     const [isSelectOpen, setIsSelectOpen] = useState(false);
+    
+    
+    const [status, setStatus] = useState("");
+  const [usuariosSeleccionados, setUsuariosSeleccionados] = useState([]);
 
- 
-
- 
-
-    /*const seleccionarProfesor = (e) => {
-        setIdProfesorSeleccionado(e.target.value);
-      };*/
-
-
+  const handleClick = () => {
+    setIdMateriaSeleccionado(idMateria); 
+    guardarIdMateriaSeleccionado(idMateriaSeleccionado);
+    setStatus(estado);
+  };
 
     const handleSelectOpenProfesores = () => {
         setIsSelectOpen(true);
 
       };
 
-
-     
-
 const seleccionarProfesor = (event) => {
   const idProfesorSeleccionado = event.target.value;
 
+  
   setProfesoresSeleccionados((prevSeleccionados) =>
     prevSeleccionados.includes(idProfesorSeleccionado)
       ? prevSeleccionados.filter((id) => id !== idProfesorSeleccionado)
       : [...prevSeleccionados, idProfesorSeleccionado]
   );
 
+  guardarProfesorSeleccionado(profesoresSeleccionados);
 };
 
+useEffect(() => {
+    guardarIdMateriaSeleccionado(idMateriaSeleccionado);
+  }, [idMateriaSeleccionado]);
 
+  const [selectedProfesorId, setSelectedProfesorId] = useState(null);
 
+  useEffect(() => {
+    guardarProfesorSeleccionado(profesoresSeleccionados);
+
+    
+  }, [profesoresSeleccionados]);
   
 
-     
-    
+  useEffect(() => {
+    guardarProfesorSeleccionadoParaBorrar(usuariosSeleccionados);
+
+  }, [usuariosSeleccionados]);
 
 
-    return <>
-        <ItemContainer type={type} className={`item-container-${index}`}>
-            <div>
+  const [typeP, setTypeP] = useState("n");
+
+  useEffect(() => {
+   
+  },[selectedProfesorId]);
+      return <>
+        <ItemContainer type={newType} className={`item-container-${index}`}>
+            <div  onClick={handleClick}>
             <Item>{index}- {nombre} </Item>
                 <div className={`profe-container-${index}`}>
                     <Item>Profesores:</Item>
@@ -164,48 +206,103 @@ const seleccionarProfesor = (event) => {
 
                     </ListButton>
 
-{isSelectOpen && (
-  <TagNombreSelect>
-    <TagSelect onChange={seleccionarProfesor}>
-      {profeProfesor.map((profesor) => (
-        <option key={profesor.id} value={profesor.id}>
-          {profesor.nombre}
-        </option>
-      ))}
-    </TagSelect>
-  </TagNombreSelect>
-)}
-
-{profeProfesor.map((profesor) => (
-      profesoresSeleccionados.includes(profesor.id) && (
-        <TagProfesor
-          key={profesor.id}
-          id={profesor.id}
-          nombre={`${profesor.nombre}${profesor.status}`}
-          apellido={`${profesor.apellido}${profesor.status}`}
-          state={profesor.status}
-          onClick={() => {
-            setProfesoresSeleccionados((prevSeleccionados) =>
-              prevSeleccionados.filter((id) => id !== profesor.id)
-            );
-          }}
-        />
-      )
-    ))}
+                    {isSelectOpen && (
+                        <TagNombreSelect>
+                          <TagSelect onChange={seleccionarProfesor}>
+                            <option value={0}>
+                              {`Elija un Profesor`}
+                            </option>
+                            {profeProfesor
+                              .filter((profesor) => !profesoresSeleccionados.includes(profesor.id))
+                              .map((profesor) => (
+                                <option key={profesor.id} value={profesor.id}>
+                                  {profesor.nombre}
+                                </option>
+                              ))}
+                          </TagSelect>
+                        </TagNombreSelect>
+                      )}
 
 
 
 
+
+                {profeProfesor.map((profesor) => {
+                  return (
+                    profesoresSeleccionados.includes(profesor.id) && (
+                        <TagProfesor
+                        key={profesor.id}
+                        id={profesor.id}
+                        nombre={`${profesor.nombre}`}
+                        apellido={`${profesor.apellido ?? ""}`}
+                        state='d'
+                        idMateriaProfesor={idMateria} 
+                        onClick={() => {
+                            setProfesoresSeleccionados((prevSeleccionados) =>
+                            prevSeleccionados.filter((id) => id !== profesor.id)
+                            );
+                        }}
+                        />
+                    )
+                    )})}
 
   {/* Este es un comentario en React*/}
-         {map(profesores, (e, i) => <TagProfesor key={i} id={e.id} nombre={`${e.nombre}`} apellido={`${e.apellido}`} state={e.status} onClick={() => {
-                        setStatusProfesorMateria(idMateria, e.id, e.status === "new" ? "reload" : "new");
-                    }
-                    } />)}
+  
+  {Array.isArray(profesores) ? (
+  profesores.map((e, i) => (
+    <TagProfesor
+      key={i}
+      id={e.idProfesor}
+      nombre={`${e.nombre}`}
+      apellido={`${e.apellido}`}
+      state={newTypeArray[i]} // Pasar el estado individual como prop state
+      idMateriaProfesor={idMateria}
+      onClick={() => {
+        const newType = newTypeArray[i] === "n" ? "reload" : "n";
+        updateType(i, newType); // Actualizar el estado individual
+        setStatus(estado);
+        setStatusProfesorMateria(idMateria, e.id, newType);
+        setIdMateriaSeleccionado(idMateria);
+        if (newType === "n") {
+          setUsuariosSeleccionados(usuariosSeleccionados.filter(id => id !== e.idProfesor));
+        
+        } else {
+          setUsuariosSeleccionados([...usuariosSeleccionados, e.idProfesor]);
+         
+        }
+       // setUsuariosSeleccionados([...usuariosSeleccionados, e.idProfesor]);
+      }}
+    />
+  ))
+) : (
+  <p></p>
+)}
+
+{/*
+  {profesores.map((e, i) => (
+        <TagProfesor
+          key={i}
+          id={e.idProfesor}
+          nombre={`${e.nombre}`}
+          apellido={`${e.apellido}`}
+          state={newTypeArray[i]} // Pasar el estado individual como prop state
+          idMateriaProfesor={idMateria}
+          onClick={() => {
+            const newType = newTypeArray[i] === "n" ? "reload" : "n";
+            updateType(i, newType); // Actualizar el estado individual
+            setStatus(estado);
+            setStatusProfesorMateria(idMateria, e.id, newType);
+            setIdMateriaSeleccionado(idMateria);
+            setUsuariosSeleccionados([...usuariosSeleccionados, e.idProfesor]);
+          }}
+        />
+      ))}
+    */}
+
+
 
                 </div>
             </div>
-
             <ListButton onClick={onClick}>{type !== 'reload' ? 'X' : <RxReload style={{ fontSize: '24px' }} size={24} />} </ListButton>
         </ItemContainer>
 
@@ -232,20 +329,40 @@ const seleccionarProfesor = (event) => {
 const MateriasDeClase = () => {
     const [optionSelected, setOptionSelected] = useState("");
     const [optionsMaterias, setOptionsMaterias] = useState([]);
-
+    const [loading, setLoading] = useState(true);
     const [profeProfesor, setProfeProfesor] = useState([]);
 
     const [idMateria , setIdMateria]= useState("");
+    const [idMateriaSeleccionada, setIdMateriaSeleccionada] = useState(null);
+
+    const [idMateriaProfesores , setIdMateriaProfesores]= useState("");
 
     const [materiaProfesor, setMateriaProfesor] = useState([]);
 
-    const [materiaSelected, setMateriaSelected] = useState("");
+
+    const [selectProfesores, setSelectProfesores]= useState([]);
 
     const { getListaMaterias, setStatusMateria, getClaseSelectedId, setProfesoresOptions } = useClaseContext();
     const { getToken } = useGeneralContext();
 
     const [materiaProfesores, setMateriaProfesores] = useState([]);
 
+    const [profesoresSeleccionados, setProfesoresSeleccionados] = useState([]);
+
+    const handleClickProfesor = (materia) => {
+        const nuevosProfesores = materia.profesores.map((profesor) => profesor.id);
+        setProfesoresSeleccionados([...profesoresSeleccionados, ...nuevosProfesores]);
+
+      };
+      
+
+
+      const [profesoresSeleccionadosPreviamente, setProfesoresSeleccionadosPreviamente] = useState([]);
+
+  
+      
+      
+     
 
     /**
      * 
@@ -275,26 +392,63 @@ useMemo(() => {
   
 
  
- const idProfesoresArray = profeProfesor.map(profesor => profesor.id);
 
 
- const handleCrearMateriaProfesor = async () => {
+  //handleActualizarMateriaProfesor
+  const handleCrearMateriaProfesor = async () => {
+    const idProfesoresArray = profesoresSeleccionados;
+    const idProfesoresArrayBorrado = profesoresSeleccionadosBorrado;  
 
-    const body = { "idProfesores": idProfesoresArray, "idMateria": idMateria , "idClase": getClaseSelectedId()}
+
+  
+
+    const body = {
+      "idClase": getClaseSelectedId(),
+      "materias": []
+    };
+  
+
+    idProfesoresArray.forEach((idProfesor) => {
+      const profesor = {
+        "idProfesor": idProfesor,
+        "estado": "N"
+      };
+  
+      const materia = {
+        "idMateria": idMateria ? idMateria : idMateriaSeleccionada,
+        "profesores": [profesor]
+      };
+  
+      body.materias.push(materia);
+    });
+  
+    idProfesoresArrayBorrado.forEach((idProfesor) => {
+      const profesor = {
+        "idProfesor": idProfesor,
+        "estado": "D"
+      };
+  
+      const materia = {
+        "idMateria": idMateriaSeleccionada,
+        "profesores": [profesor]
+      };
+  
+      body.materias.push(materia);
+    });
+  
     ClassesService.createMateriaProfesor(body, getToken())
-        .then(() => {
-            toast.success("Los datos fueron enviados correctamente.")
-            window.location.reload()
-        })
-        .catch(() => {
-            toast.error("No se pudieron guardar los cambios. Intente de nuevo o recargue la página.")
-        })
-
+      .then(() => {
+        
+      
+        toast.success("Los datos fueron enviados correctamente.");
+        window.location.reload();
+      })
+      .catch(() => {
+        toast.error("No se pudieron guardar los cambios. Intente de nuevo o recargue la página.");
+      });
   };
   
-  
-  
-  
+
 
 
    useMemo(() => {
@@ -304,7 +458,6 @@ useMemo(() => {
             response.then((r) => {
                 setProfesoresOptions(r.data ?? [])
             }).catch(e => {
-                console.log(e)
                 setProfesoresOptions([])
             })
         }
@@ -336,19 +489,17 @@ useMemo(() => {
             }
         }).catch((e) => {
             setOptionsMaterias([])
-            console.log(e)
         })
 
     }, [getClaseSelectedId, getToken])
 
 
-
-    const addMateriaToList = (nombre) => {
+    const addMateriaToList = (materia,idMateria) => {
         const newMateria = {
-            id: Date.now().toString(),
-            nombre,
+            idMateria,
+            materia,
            // status: "new",
-            profesores: []
+            profesores: {}
         };
         setMateriaProfesor((materiaProfesor) => [...materiaProfesor, newMateria]);
 
@@ -357,14 +508,10 @@ useMemo(() => {
     const handleSelectOptionMateria = (e) => {
       e.preventDefault();
       setOptionSelected(e.target.value);
-    
-      
-        setIdMateria(e.target.value);
-       console.log(`Asigna la materia con id: ${e.target.value} a la clase con id: ${getClaseSelectedId()} `)
-      
-       const index = optionsMaterias.findIndex(a => a.value === parseInt(e.target.value))
+      setIdMateria(e.target.value);      
 
-       addMateriaToList(optionsMaterias[index].label);
+      const index = optionsMaterias.findIndex(a => a.value === parseInt(e.target.value))
+      addMateriaToList(optionsMaterias[index].label,parseInt(e.target.value));
 
      
        
@@ -373,21 +520,16 @@ useMemo(() => {
        
        //cargar a la lista de materias principal
        setOptionSelected("")
-
-       //addMateriaToList(optionsMaterias[index].label);
-
-       
-
     }
 
     useEffect(() => {
       const listaMateriasProfesores = async () => {
         try {
           const dataList = await ClassesService.getMateriasProfesores(getClaseSelectedId(),getToken());
-          setMateriaProfesores(dataList ?? []);
-        
-
+          setMateriaProfesores(dataList ?? []);        
+          setLoading(false);
         } catch (e) {
+          setLoading(false);
           setMateriaProfesores([]);
         }
       };
@@ -395,16 +537,116 @@ useMemo(() => {
       listaMateriasProfesores();
     }, []);
 
+    //let listaFusionada;
+   
+    const [filtrarFusionada, setFiltrarMateria] = useState([]);
 
-let listaFusionada = [...materiaProfesor];
+   /* const eliminarMateria = (idMateria) => {
+      const updatedList = materiasList.list.filter(
+        (item) => item.idMateria !== idMateria
+      );
+      setFiltrarMateria(updatedList);
+    };*/
 
-if (Array.isArray(materiaProfesores.data)) {
-  listaFusionada = [...listaFusionada, ...materiaProfesores.data];
-}
+    const [listaFusionada, setListaFusionada] = useState([]);
 
     
+    const eliminarMateria = (idMateria) => {
+
+
+      setListaFusionada((before)=>{return before.filter(
+        (item) => item.idMateria !== idMateria
+      );})
+      
+      setMateriaProfesor([]);
+
+
+      const updatedOptions = optionsMaterias.map((option) => {
+        if (option.value === idMateria) {
+          return { ...option, status: 'not_used' };
+        }
+        return option;
+      });
+
+      setOptionsMaterias(updatedOptions);
+
+
+      const profesoresIds = profesoresSeleccionados.map((profesor) => profesor.id);
+    
+       // Establecer profesoresSeleccionados como un array vacío
+  setProfesoresSeleccionados([]);
+
+  // Llamar a guardarProfesorSeleccionado con profesoresSeleccionados vacío
+  guardarProfesorSeleccionado([]);
+
+
+    };
+
+
+    
+
+    useEffect(() => {
+      if (materiaProfesor) {
+        const nuevaListaFusionada = materiaProfesor.map(item => ({
+          ...item,
+          estado: "new"
+        }));
+        setListaFusionada(nuevaListaFusionada);
+      } else {
+        setListaFusionada([]);
+      }
+
+      if (
+        materiaProfesores &&
+        materiaProfesores.data &&
+        Array.isArray(materiaProfesores.data.materiaProfesores)
+      ) {
+        const nuevosElementos = materiaProfesores.data.materiaProfesores.map(item => ({
+          ...item,
+      estado: "n"
+    }));
+    setListaFusionada(prevLista => [...prevLista, ...nuevosElementos]);
+  }
+}, [materiaProfesor, materiaProfesores]);
+
+
+
+    const [profesoresSeleccionadosBorrado, setProfesoresSeleccionadosBorrado] = useState([]);
+
+    const guardarProfesorSeleccionado = (profesoresSeleccionados) => {
+        setProfesoresSeleccionados(profesoresSeleccionados);
+
+    };
+
+    const guardarProfesorSeleccionadoParaBorrar=(profesoresSeleccionadosBorrado) => {
+        setProfesoresSeleccionadosBorrado(profesoresSeleccionadosBorrado);
+
+    };
+
+    const guardarIdMateriaSeleccionado=(idMateriaSeleccionada)=> {
+        setIdMateriaSeleccionada(idMateriaSeleccionada);
+
+
+    }
+
+
+    const profesoresDisponibles = useMemo(() => {
+      if (!idMateriaSeleccionada) {
+        return []; // Retorna un array vacío si idMateriaSeleccionada no existe
+      }
+    
+      return profeProfesor.filter((profesor) => {
+        const materiaSeleccionada = listaFusionada.find((materia) => materia.idMateria === idMateriaSeleccionada);
+        return !materiaSeleccionada || !Array.isArray(materiaSeleccionada.profesores) || !materiaSeleccionada.profesores.some((p) => p.idProfesor === profesor.id);
+      });
+    }, [profeProfesor, listaFusionada, idMateriaSeleccionada]);
+    
+
+    
+
+  
     let materiasList = {
-        onSubmit: () => console.log("Guardado"),
+        onSubmit: () => handleClickProfesor(idMateria),
         enabled: true,
         header: {
             title: "Lista de Materias de la Clase",
@@ -412,7 +654,7 @@ if (Array.isArray(materiaProfesores.data)) {
         addTitle: "Agregar Materias",
         selectTitle: "Seleccionar Materia",
         options: optionsMaterias,
-        list:  listaFusionada ?? [],
+        list: listaFusionada || [],
     }
     return <>
 
@@ -425,28 +667,52 @@ if (Array.isArray(materiaProfesores.data)) {
 
                 {materiasList?.list &&
                     <SBody background={materiasList?.background ?? "gray"}>
+                      {loading ? <Spinner height={'60px'} /> : 
                         <List>
-                            {materiasList?.list?.map((materia, index) => (
+                           {Array.isArray(materiasList?.list) && materiasList.list.map((materia, index) => (
                                 <ListItem key={index}
-                                    idMateria={materia.id}
+                                    idMateria={materia.idMateria}
                                     index={index + 1}
-                                   // nombre={materia.nombre}
-                                    nombre={materia.nombre}
-
-                                  //  nombre={materiaSelected}
+                                    nombre={materia.materia}
                                     profesores={materia.profesores}
-                                    profeProfesor={profeProfesor}
-                                    type={materia.status}
+                                    profeProfesor={profesoresDisponibles}
+                                    type={materia.estado}
+                                    guardarProfesorSeleccionado={guardarProfesorSeleccionado}
+                                    guardarProfesorSeleccionadoParaBorrar={guardarProfesorSeleccionadoParaBorrar}
+                                    guardarIdMateriaSeleccionado={guardarIdMateriaSeleccionado}
+                                    onClick={(event) => {
+                                        
+                                        if (materia.estado === "new") {
 
-                                    onClick={() => { console.log(`${materia.nombre} 'seleccionado'`,"profesores", materia.profesores.map(profesor => profesor.id), "profeProfesor",profeProfesor);setIdMateria(materia.id) ;setStatusMateria(materia.id, (materia.status === "new" ? "reload" : "new")); }}
-                                   
+                                        //  const profesoresIds = materia.profesores.map((profesor) => profesor.id);
 
-                                    
-                                   
-                                  
-                                      />
+                                         // console.log('profesoresIds',profesoresIds);
+
+                                          eliminarMateria(materia.idMateria);
+                                       
+                                        } else {
+                                         
+                                          toast.error("Una materia guardad no se puede eliminar");
+
+                                        }
+                                      
+                                        setIdMateria(materia.id); // Guardar el ID de la materia
+                                        setIdMateriaProfesores(index);
+                                        setSelectProfesores(profeProfesor);
+
+                                       /* setIdMateriaProfesores((prevSeleccionados) =>
+                                        prevSeleccionados.filter((id) => id !== materia.idMateria)
+                                        );*/
+                                        setStatusMateria(
+                                          materia.id,
+                                          materia.status === "new" ? "reload" : "new"
+                                        );
+                                      }}
+                                    />
+
                             ))}
                         </List>
+                      }
                     </SBody>}
         
                 <SForm onSubmit={materiasList?.onSubmit ?? null} >
@@ -461,20 +727,20 @@ if (Array.isArray(materiaProfesores.data)) {
                         )) :
                         <option value="" disabled>No hay materias sin asignar</option>
                         }
+
                     </Select>
                     <div style={{ textAlign: 'right' }}>
-                      {/*   <TextButton buttonType={'save-changes'} enabled={materiasList?.enabled ?? false} onClick={(e) => { "enviando..." } handleCrearMateriaProfesor()} />
-                     */}
                                     <TextButton 
-                        buttonType={'save-changes'} 
-                        enabled={materiasList?.enabled ?? false} 
-                        onClick={(e) => { 
-                    e.preventDefault(); // prevent the default behavior of the onClick event
-                    handleCrearMateriaProfesor(); 
+                                buttonType={'save-changes'} 
+                                enabled={materiasList?.enabled ?? false} 
+                                onClick={(e) => { 
+                                e.preventDefault(); // prevent the default behavior of the onClick event
+                                 handleCrearMateriaProfesor(); 
                   ///  console.log("enviando..."); // or alert("enviando...") to display the message to the user
                 }} 
                 />
 
+                  
                   
                     </div>
                 </SForm>
@@ -483,5 +749,13 @@ if (Array.isArray(materiaProfesores.data)) {
 
     </>
 }
+
+
+
+
+
+
+
+
 
 export default MateriasDeClase

@@ -131,7 +131,7 @@ function Form({ form }) {
                                                 id={input?.key ?? ""}
                                                 required={input?.required ?? false}
                                                 key={input?.key ?? ""}
-                                            value={input?.value}
+                                                value={input?.value}
                                                 disabled={input?.disabled ?? false}
                                                 onChange={(e) => input?.onChange?.action(e) ?? null}>
                                                 {input?.select?.default && <SDOption key="default" value="">{input?.select?.default}</SDOption>}
@@ -190,7 +190,7 @@ function Form({ form }) {
                                             key={i}
                                             enabled={button?.enabled ?? true}
                                             buttonType={button.type}
-                                            onClick={!button.submit ? () => button.onclick.action() : null}
+                                            onClick={!button.submit ? (event) => button.onclick.action(event) : null}
                                         ></TextButton>
                                     }
                                 </div>

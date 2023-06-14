@@ -29,7 +29,7 @@ function ModalAgregarColegios(props) {
                 setAdministradores(response.data);
             })
             .catch(function (error) {
-                console.log(error);
+                toast.error(error);
             });
     }, [getToken])
     const handleAdmin = (idAdmin) => {
@@ -116,7 +116,7 @@ function ModalAgregarColegios(props) {
     
           })
           .catch(error => {
-            console.error(error);
+            toast.error(error);
           });
       }
     

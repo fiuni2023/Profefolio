@@ -69,12 +69,14 @@ function ModalAdmin({
                 onSubmit: { action: () => { } },
                 inputs: [
                     {
+                        md: 6, lg: 6,
                         key: "nombre", label: "Nombre del Administrador",
                         type: "text", placeholder: "Ingrese el nombre",
                         disabled: disabled, required: true,
                         invalidText: "Ingrese un nombre",
                     },
                     {
+                        md: 6, lg: 6,
                         key: "apellido", label: "Apellido del Administrador",
                         type: "text", placeholder: "Ingrese el apellido",
                         disabled: disabled, required: true,
@@ -93,29 +95,33 @@ function ModalAdmin({
                         invalidText: "Ingrese un correo electónico válido",
                     },
                     {
-                        key: "direccion", label: "Dirrección",
-                        type: "text", placeholder: "Ingrese la dirrección",
-                        disabled: disabled,
-                    },
-                    {
+                        md: 6, lg: 6,
                         key: "pass", label: "Contraseña",
                         type: "password", placeholder: "Ingrese su Contraseña",
                         disabled: disabled, required: true,
                         invalidText: "Ingrese una Contraseña válida",
                     },
                     {
+                        md: 6, lg: 6,
                         key: "passConf", label: "Confirme Contraseña",
                         type: "password", placeholder: "Confirme su Contraseña",
                         disabled: disabled, required: true,
                         invalidText: "Ingrese una Contraseña válida",
                     },
                     {
+                        key: "direccion", label: "Dirección",
+                        type: "text", placeholder: "Ingrese la dirección",
+                        disabled: disabled,
+                    },
+                    {
+                        md: 6, lg: 6,
                         key: "telefono", label: "Telefono",
                         type: "text", placeholder: "Ingrese su Telefono",
-                        disabled: disabled, 
+                        disabled: disabled, required: true,
                         invalidText: "Ingrese un telefono válido",
                     },
                     {
+                        md: 6, lg: 6,
                         key: "genero", label: "Genero",
                         type: "select",
                         disabled: disabled, required: true,
@@ -136,12 +142,7 @@ function ModalAdmin({
                         }
                     },
                     {
-                        key: "documento", label: "Documento",
-                        type: "text", placeholder: "Ingrese el número de documento",
-                        disabled: disabled, required: true,
-                        invalidText: "Ingrese un número",
-                    },
-                    {
+                        md: 6, lg: 6,
                         key: "tipoDocumento", label: "Tipo de Documento",
                         type: "select",
                         disabled: disabled, required: true,
@@ -162,8 +163,15 @@ function ModalAdmin({
                                     text: "Pasaporte"
                                 }
                             ],
-
+                            
                         }
+                    },
+                    {
+                        md: 6, lg: 6,
+                        key: "documento", label: "Documento",
+                        type: "text", placeholder: "Ingrese el número de documento",
+                        disabled: disabled, required: true,
+                        invalidText: "Ingrese un número",
                     },
                 ],
                 buttons: [

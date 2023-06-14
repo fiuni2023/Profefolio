@@ -1,7 +1,7 @@
 .tabContainer{
     display: flex;
     width: 85%;
-    height: 30px;
+    height: 25px;
     cursor: pointer;
     align-items: center;
     justify-content: flex-start;
@@ -42,6 +42,7 @@
     transition: 0.25s all;
     background-color: rgba(255, 255, 255, .5);
     z-index: 100;
+    top: 34px;
 }
 
 .ExitContainer {
@@ -66,7 +67,7 @@
 
 .background{
     position: fixed;
-    width: 20%;
+    width: 25%;
     background-color: #F0544F;
     transition: 0.25s all;
     right: 0;

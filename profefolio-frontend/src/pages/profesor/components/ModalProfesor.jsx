@@ -4,17 +4,21 @@ import Modal from '../../../components/Modal';
 import { toast } from 'react-hot-toast';
 import axios from 'axios';
 import APILINK from '../../../components/link';
-
+import ModalMensajeProfesor from './ModalMensajeProfesor';
+import ProfesorService from '../helpers/ProfeHelper';
 function ModalProfesor({
+    selected_data,
     show = false,
     onHide = () => { },
-    fetchFunc = () => { },
-    selected_data
+    fetchFunc = () => { }
 }) {
     const { getToken } = useGeneralContext()
+    const { createProfesor } = ProfesorService
     const disabled = false
+    const [openAviso, setOpenAviso] = useState(false)
+    const [existingpProfesor, setProfesor] = useState("")
 
-    const handleCreateSubmit = () => {
+    const handleCreateSubmit = async(e) => {
         const nombre = document.getElementById("nombre").value;
         const apellido = document.getElementById("apellido").value;
         const fecha = document.getElementById("fecha").value;
@@ -41,26 +45,42 @@ function ModalProfesor({
             "documentoTipo": tipoDocumento
         }
 
-        axios.post(`${APILINK}/api/profesor`, data, {
-            headers: {
-              Authorization: `Bearer ${getToken()}`,
+        try {
+            const result = await createProfesor(data, getToken());
+            if (result && result.status === 200) {
+                handleHide();
+                fetchFunc();
+                toast.success("Guardado correctamente");
+            } else if (result && result.status === 230) {
+                setProfesor(result.data);
+                setOpenAviso(true);
             }
-          })
-            .then(response => {
-              toast.success("Guardado exitoso");
-              handleHide()
-    
-            })
-            .catch(error => {
-              if (typeof (error.response.data) === "string" ? true : false) {
-                toast.error(error.response.data)
-              } else {
-                toast.error(error.response.data?.errors.Password ? error.response.data?.errors.Password[0] : error.response.data?.errors.Email[0])
-              }
-            });
-
-        
-
+        }catch (error) {
+                if (typeof (error.response.data) === "string" ? true : false) {
+                   
+                    if (error.response.data !== "El email al cual quiere registrarse ya existe") {
+                        //Solo debe quedar este toast, el resto esta solo para referencia
+                        toast.error(error.response.data)
+                    } else {
+                        setOpenAviso(true)
+                    }
+                } else {
+                    let errArr = error.response.data?.errors
+                    let single = ""
+                   
+                    if (errArr?.Apellido) single = errArr.Apellido[0]
+                    if (errArr?.Password) single = errArr.Password[0]
+                    if (errArr?.ConfirmPassword) single = errArr.ConfirmPassword[0]
+                    if (errArr?.Documento) single = errArr.Genero[0]
+                    if (errArr?.DocumentoTipo) single = errArr.DocumentoTipo[0]
+                    if (errArr?.Email) single = errArr.Email[0]
+                    if (errArr?.Genero) single = errArr.Genero[0]
+                    if (errArr?.Nombre) single = errArr.Nombre[0]
+                    if (errArr?.Telefono) single = errArr.Telefono[0]
+                    if (errArr["$.nacimiento"]) single = "La fecha de nacimiento es requerida"
+                    toast.error(single)
+                }
+            };
     }
 
     const handleEditSubmit = () => {
@@ -88,40 +108,40 @@ function ModalProfesor({
 
         axios.put(`${APILINK}/api/profesor/${selected_data.id}`, data, {
             headers: {
-              Authorization: `Bearer ${getToken()}`,
+                Authorization: `Bearer ${getToken()}`,
             }
-          })
+        })
             .then(response => {
-              toast.success("Guardado exitoso");
-              handleHide()
-    
+                toast.success("Guardado exitoso");
+                handleHide()
+
             })
             .catch(error => {
-              if (typeof (error.response.data) === "string" ? true : false) {
-                toast.error(error.response.data)
-              } else {
-                toast.error(error.response.data?.errors.Password ? error.response.data?.errors.Password[0] : error.response.data?.errors.Email[0])
-              }
+                if (typeof (error.response.data) === "string" ? true : false) {
+                    toast.error(error.response.data)
+                } else {
+                    toast.error(error.response.data?.errors.Password ? error.response.data?.errors.Password[0] : error.response.data?.errors.Email[0])
+                }
             });
     }
 
     const handleDelete = () => {
         axios.delete(`${APILINK}/api/profesor/${selected_data.id}`, {
             headers: {
-              Authorization: `Bearer ${getToken()}`,
+                Authorization: `Bearer ${getToken()}`,
             }
-          })
+        })
             .then(response => {
-              toast.success("Borrado exitoso");
-              handleHide()
-    
+                toast.success("Borrado exitoso");
+                handleHide()
+
             })
             .catch(error => {
-              if (typeof (error.response.data) === "string" ? true : false) {
-                toast.error(error.response.data)
-              } else {
-                toast.error(error.response.data?.errors.Password ? error.response.data?.errors.Password[0] : error.response.data?.errors.Email[0])
-              }
+                if (typeof (error.response.data) === "string" ? true : false) {
+                    toast.error(error.response.data)
+                } else {
+                    toast.error(error.response.data?.errors.Password ? error.response.data?.errors.Password[0] : error.response.data?.errors.Email[0])
+                }
             });
     }
 
@@ -134,7 +154,7 @@ function ModalProfesor({
             document.getElementById("direccion").value = selected_data.direccion;
             document.getElementById("genero").value = selected_data.genero === "Masculino" ? "M" : "F";
             document.getElementById("documento").value = selected_data.documento;
-            document.getElementById("tipoDocumento").value = selected_data.documentoTipo === "dni"? "DNI":selected_data.documentoTipo;
+            document.getElementById("tipoDocumento").value = selected_data.documentoTipo === "dni" ? "DNI" : selected_data.documentoTipo;
             document.getElementById("telefono").value = selected_data.telefono;
         }
     }, [selected_data])
@@ -145,22 +165,18 @@ function ModalProfesor({
     const getInputs = () => {
         if (selected_data) return [
             {
-                key: "nombre", label: "Nombre del Administrador",
+                md: 6, lg: 6,
+                key: "nombre", label: "Nombre del Profesor",
                 type: "text", placeholder: "Ingrese el nombre",
                 disabled: disabled, required: true,
                 invalidText: "Ingrese un nombre",
             },
             {
-                key: "apellido", label: "Apellido del Administrador",
+                md: 6, lg: 6,
+                key: "apellido", label: "Apellido del Profesor",
                 type: "text", placeholder: "Ingrese el apellido",
                 disabled: disabled, required: true,
                 invalidText: "Ingrese un apellido",
-            },
-            {
-                key: "fecha", label: "Fecha de nacimiento",
-                type: "date", placeholder: "Seleccione la fecha",
-                disabled: disabled,
-                required: true,
             },
             {
                 key: "email", label: "Correo Electónico",
@@ -169,8 +185,14 @@ function ModalProfesor({
                 invalidText: "Ingrese un correo electónico válido",
             },
             {
-                key: "direccion", label: "Dirrección",
-                type: "text", placeholder: "Ingrese la dirrección",
+                key: "fecha", label: "Fecha de nacimiento",
+                type: "date", placeholder: "Seleccione la fecha",
+                disabled: disabled,
+                required: true,
+            },
+            {
+                key: "direccion", label: "Dirección",
+                type: "text", placeholder: "Ingrese la dirección",
                 disabled: disabled,
             },
             {
@@ -200,12 +222,7 @@ function ModalProfesor({
                 }
             },
             {
-                key: "documento", label: "Documento",
-                type: "text", placeholder: "Ingrese el número de documento",
-                disabled: disabled, required: true,
-                invalidText: "Ingrese un número",
-            },
-            {
+                md: 6, lg: 6,
                 key: "tipoDocumento", label: "Tipo de Documento",
                 type: "select",
                 disabled: disabled, required: true,
@@ -226,28 +243,31 @@ function ModalProfesor({
                             text: "Pasaporte"
                         }
                     ],
-
+                    
                 }
+            },
+            {
+                md: 6, lg: 6,
+                key: "documento", label: "Documento",
+                type: "text", placeholder: "Ingrese el número de documento",
+                disabled: disabled, required: true,
+                invalidText: "Ingrese un número",
             },
         ]
         return [
             {
-                key: "nombre", label: "Nombre del Administrador",
+                md: 6, lg: 6,
+                key: "nombre", label: "Nombre del Profesor",
                 type: "text", placeholder: "Ingrese el nombre",
                 disabled: disabled, required: true,
                 invalidText: "Ingrese un nombre",
             },
             {
-                key: "apellido", label: "Apellido del Administrador",
+                md: 6, lg: 6,
+                key: "apellido", label: "Apellido del Profesor",
                 type: "text", placeholder: "Ingrese el apellido",
                 disabled: disabled, required: true,
                 invalidText: "Ingrese un apellido",
-            },
-            {
-                key: "fecha", label: "Fecha de nacimiento",
-                type: "date", placeholder: "Seleccione la fecha",
-                disabled: disabled,
-                required: true,
             },
             {
                 key: "email", label: "Correo Electónico",
@@ -256,29 +276,39 @@ function ModalProfesor({
                 invalidText: "Ingrese un correo electónico válido",
             },
             {
-                key: "direccion", label: "Dirrección",
-                type: "text", placeholder: "Ingrese la dirrección",
-                disabled: disabled,
-            },
-            {
+                md: 6, lg: 6,
                 key: "pass", label: "Contraseña",
                 type: "password", placeholder: "Ingrese su Contraseña",
                 disabled: disabled, required: true,
                 invalidText: "Ingrese una Contraseña válida",
             },
             {
+                md: 6, lg: 6,
                 key: "passConf", label: "Confirme Contraseña",
                 type: "password", placeholder: "Confirme su Contraseña",
                 disabled: disabled, required: true,
                 invalidText: "Ingrese una Contraseña válida",
             },
             {
+                key: "fecha", label: "Fecha de nacimiento",
+                type: "date", placeholder: "Seleccione la fecha",
+                disabled: disabled,
+                required: true,
+            },
+            {
+                key: "direccion", label: "Dirección",
+                type: "text", placeholder: "Ingrese la dirección",
+                disabled: disabled,
+            },
+            {
+                
                 key: "telefono", label: "Telefono",
                 type: "text", placeholder: "Ingrese su Telefono",
-                disabled: disabled,
+                disabled: disabled, required: true,
                 invalidText: "Ingrese un telefono válido",
             },
             {
+                
                 key: "genero", label: "Genero",
                 type: "select",
                 disabled: disabled, required: true,
@@ -299,12 +329,7 @@ function ModalProfesor({
                 }
             },
             {
-                key: "documento", label: "Documento",
-                type: "text", placeholder: "Ingrese el número de documento",
-                disabled: disabled, required: true,
-                invalidText: "Ingrese un número",
-            },
-            {
+                md: 6, lg: 6,
                 key: "tipoDocumento", label: "Tipo de Documento",
                 type: "select",
                 disabled: disabled, required: true,
@@ -325,8 +350,15 @@ function ModalProfesor({
                             text: "Pasaporte"
                         }
                     ],
-
+                    
                 }
+            },
+            {
+                md: 6, lg: 6,
+                key: "documento", label: "Numero de documento",
+                type: "text", placeholder: "Ingrese el número de documento",
+                disabled: disabled, required: true,
+                invalidText: "Ingrese un número",
             },
         ]
     }
@@ -397,9 +429,27 @@ function ModalProfesor({
         onHide()
     }
 
+    const addNewExistingSuccess = () => {
+        handleHide()
+        fetchFunc()
+    }
+
+    const handleCancelAviso = () => {
+        setOpenAviso(false)
+    }
+
+
+
     return (
         <>
             <Modal show={show} onHide={handleHide} datosModal={datosModal} />
+            <ModalMensajeProfesor
+                isOpen={openAviso}
+                onAdd={onHide}
+                profesor={existingpProfesor}
+                onCancel={handleCancelAviso}
+                onSuccess={addNewExistingSuccess}
+            />
         </>
     )
 }

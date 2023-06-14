@@ -2,6 +2,7 @@ import React from 'react';
 import { ScrollTable, SBody, SHeader, SForm, Container, Select, Item, List, ItemContainer, ListButton } from "./componentsStyles/StyledScrolleableList";
 import TextButton from './TextButton';
 import { RxReload } from 'react-icons/rx';
+import Spinner from './componentsStyles/SyledSpinner';
 
 function ListItem({ index, name, lastName, document, type, onClick }) {
     return (
@@ -21,10 +22,10 @@ const Scrolleable = ({ studentsList, isLoading = true, handleSelectOption = () =
                 {studentsList?.header &&
                     <SHeader>
                         {studentsList?.header?.title}
-                    </SHeader>}
-                {!isLoading && studentsList?.list &&
+                    </SHeader>} 
+                { studentsList?.list &&
                     <SBody background={studentsList?.background ?? "gray"}>
-                        {isLoading ? <p>Cargando lista de alumnos</p>
+                        {isLoading ? <Spinner height={'60px'} />
                             : studentsList.list.length === 0 ? <p>No hay alumnos para mostrar</p>
                                 : <List>
                                     {studentsList?.list?.map((student, index) => (

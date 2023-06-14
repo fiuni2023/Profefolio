@@ -8,11 +8,11 @@ import { toast } from 'react-hot-toast';
 import { map } from "lodash"
 import { useClaseContext } from '../../context/ClaseContext';
 import ClassesService from '../../Helpers/ClassesHelper';
-
-
+import Spinner from '../../../../components/componentsStyles/SyledSpinner';
 
 const InfoClase = ({ idClase }) => {
     const { colegio, setColegio, getUserMail, getToken } = useGeneralContext();
+    const [loading, setLoading] = useState(true);
 
     const [disabledInputs, setDisabledInputs] = useState(false);
 
@@ -36,8 +36,10 @@ const InfoClase = ({ idClase }) => {
                 setTurno(result.data.turno)
                 setCiclo(result.data.idCiclo)
                 setAnho(result.data.anho)
+                setLoading(false);
             }).catch(() => {
                 toast.error(`Error al obtener sus datos, recarge la pagina`);
+                setLoading(false);
             })
     }, [getToken, getClaseSelectedId])
 
@@ -85,7 +87,7 @@ const InfoClase = ({ idClase }) => {
         e.preventDefault()
 
         const obj = {
-            "colegioId": colegio.id,
+            "colegioId": colegio.id ?? colegio,
             "cicloId": parseInt(ciclo),
             "nombre": nombre,
             "turno": turno,
@@ -103,11 +105,11 @@ const InfoClase = ({ idClase }) => {
             if (result.status >= 200 && result.status < 300) {
                 toast.success("Cambios guardados");
             } else {
-                console.log(result?.error)
+              
                 toast.error(result.error);
             }
         } catch (e) {
-            console.log(e)
+            toast.error(e);
         }
         setDisabledInputs(false)
     }
@@ -214,8 +216,10 @@ const InfoClase = ({ idClase }) => {
 
     return <>
         <ContainerBlock>
-            <STitle>Editar Datos del Grado</STitle>
-            <Form form={form} />
+            <STitle>Editar Datos de la Clase</STitle>
+            {loading ? <Spinner height={'60px'} /> : 
+                <Form form={form} />
+            }
         </ContainerBlock>
     </>
 }

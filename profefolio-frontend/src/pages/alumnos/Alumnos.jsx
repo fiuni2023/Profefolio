@@ -4,12 +4,12 @@ import { AiOutlinePlus } from 'react-icons/ai'
 import { AddButton, MainContainer, TableContainer } from './styles/Styles'
 import StudentHelper from './helpers/StudentHelper'
 import Tabla from '../../components/Tabla';
-import { toast } from "react-hot-toast";
 import { useNavigate } from 'react-router-dom';
 import { useFetchEffect } from '../../components/utils/useFetchEffect';
 import StyleComponentBreadcrumb from '../../components/StyleComponentBreadcrumb';
 import ModalAlumnos from './components/ModalAlumnos'
 import Paginations from '../../components/Paginations'
+import Spinner from '../../components/componentsStyles/SyledSpinner'
 
 const Alumnos = () => {
     const { getToken, cancan, verifyToken } = useGeneralContext()
@@ -19,9 +19,8 @@ const Alumnos = () => {
     const [total_pages, setTotalPages] = useState(0)
     const [selected_student, setSelectedStudent] = useState(null)
 
-
     const [datosTabla, setDatosTabla] = useState({
-        tituloTabla: "studentsList",
+        tituloTabla: "Lista_de_alumnos",
         titulos: [{ titulo: "CI" }, { titulo: "Nombre" }, { titulo: "Fecha de nacimiento" }, { titulo: "Dirección" }]
     });
 
@@ -45,7 +44,8 @@ const Alumnos = () => {
         setShow(true)
     }
 
-    const { doFetch } = useFetchEffect(
+    // eslint-disable-next-line no-unused-vars
+    const { doFetch, loading, error} = useFetchEffect(
         () => {
             return StudentHelper.getStudentsPage(currentPage, getToken())
         },
@@ -63,15 +63,15 @@ const Alumnos = () => {
                             datos: [
                                 { dato: dato?.documento ? dato.documento : "" },
                                 { dato: dato?.nombre && dato.apellido ? dato.nombre + " " + dato.apellido : "" },
-                                { dato: dato?.fechaNacimiento ? parseToDate(new Date(dato.fechaNacimiento)) : "" },
+                                { dato: dato?.nacimiento ? parseToDate(new Date(dato.nacimiento)) : "" },
                                 { dato: dato?.direccion ? dato.direccion : "" }]
                         }
                     })
 
                 })
             },
-            handleError: () => {
-                toast.error("No se pudieron obtener los datos. Intente recargar la página")
+            handleError: (e) => {
+                
             }
         }
     )
@@ -81,21 +81,26 @@ const Alumnos = () => {
         setSelectedStudent(null)
         setShow(false)
     }
-
     return (
-        <>
-            <MainContainer>
-                <StyleComponentBreadcrumb nombre="Alumnos" />
-                <TableContainer>
-                    <Tabla datosTabla={datosTabla} />
-                    <Paginations currentPage={currentPage} totalPage={total_pages} setCurrentPage={setCurrentPage} next={next}/>
-                    <AddButton onClick={()=>{setShow(true)}}>
-                        <AiOutlinePlus size={"35px"} />
-                    </AddButton>
-                </TableContainer >
-                <ModalAlumnos show={show} fetchFunc={doFetch} onHide={handleHideModal} selected_data={selected_student} />
-            </MainContainer >
-        </>
+        <MainContainer>
+            <StyleComponentBreadcrumb nombre="Alumnos" />
+            {loading ? <Spinner height={'calc(100vh - 80px)'} />
+                    : <>
+                        <TableContainer>
+                            <Tabla datosTabla={datosTabla} />
+                            <Paginations currentPage={currentPage} totalPage={total_pages} setCurrentPage={setCurrentPage} next={next} />
+
+                        </TableContainer >
+                        
+                    </>
+            }
+            <AddButton onClick={() => { setShow(true) }}>
+                <AiOutlinePlus size={"35px"} />
+            </AddButton>
+            <ModalAlumnos show={show} fetchFunc={doFetch} onHide={handleHideModal} selected_data={selected_student} handleExistingStudent={setSelectedStudent} setShow={setShow} />
+        </MainContainer >
+
+
     )
 }
 

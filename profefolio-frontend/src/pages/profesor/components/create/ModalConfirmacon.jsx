@@ -8,7 +8,7 @@ function ModalConfirmacion(props) {
 
     <Modal show={show} onHide={onHide} centered>
       <Modal.Header closeButton className={styles.footerModal}>
-        <Modal.Title>Confirmar Eliminación</Modal.Title>
+        <Modal.Title style={{fontSize: "16px"}}>Confirmar Eliminación</Modal.Title>
       </Modal.Header>
       <Modal.Body className={styles.footerModal}>{message}</Modal.Body>
       <Modal.Footer className={styles.footerModal}>

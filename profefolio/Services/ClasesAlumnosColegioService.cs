@@ -1,11 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using profefolio.Models;
 using profefolio.Models.Entities;
 using profefolio.Repository;
 using Microsoft.EntityFrameworkCore;
+using profefolio.Models.DTOs.ClasesAlumnosColegio;
 
 namespace profefolio.Services
 {
@@ -19,8 +16,8 @@ namespace profefolio.Services
 
         public async Task<ClasesAlumnosColegio> Add(ClasesAlumnosColegio t)
         {
-            _context.Entry(t).State = EntityState.Added;
-            return await Task.FromResult(t);
+            var res = await _context.ClasesAlumnosColegios.AddAsync(t);
+            return res.Entity;
         }
 
         public int Count()
@@ -87,6 +84,72 @@ namespace profefolio.Services
         public IEnumerable<ClasesAlumnosColegio> GetAll(int page, int cantPorPag)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<bool> IsAlumnoOfClaseAndMateria(int idAlumno, int idMateria)
+        {
+            return await _context.ClasesAlumnosColegios
+                .Include(a => a.Clase)
+                .Include(a => a.Clase.MateriaListas)
+                .AnyAsync(a => !a.Deleted 
+                    && a.Id == idAlumno
+                    && a.Clase != null 
+                    && !a.Clase.Deleted 
+                    && a.Clase.MateriaListas != null
+                    && a.Clase.MateriaListas.Any(b => !b.Deleted && b.Id == idMateria));
+        }
+
+        public async Task AssingFull(int claseId, int caId, string username)
+        {
+            var cac = new ClasesAlumnosColegio
+            {
+                ColegiosAlumnosId = caId,
+                ClaseId = claseId,
+                CreatedBy = username,
+                Created = DateTime.Now,
+                Asistencias = new List<Asistencia>()
+            };
+            
+            var materiaListas = await _context.MateriaListas
+                .Where(d => !d.Deleted && d.ClaseId == cac.ClaseId)
+                .ToListAsync();
+
+            foreach (var ml in materiaListas)
+            {
+                var fechas = await FilterFecha(ml.Id, username);
+
+                foreach (var fecha in fechas)
+                {
+                    var asist = new Asistencia()
+                    {
+                        MateriaListaId = ml.MateriaId,
+                        Estado = 'A',
+                        Created = DateTime.Now,
+                        CreatedBy = username,
+                        Fecha = fecha,
+                        Alumno = cac
+                    };
+
+                    cac.Asistencias.Add(asist);
+                }
+
+               
+            }
+            await _context.ClasesAlumnosColegios.AddAsync(cac);
+            await _context.SaveChangesAsync();
+        }
+        private async Task<List<DateTime>> FilterFecha(int idMateriaLista, string user)
+        {
+            var query = await _context.Asistencias
+                .Where(a => !a.Deleted)
+                .Where(a => a.MateriaListaId == idMateriaLista)
+                .Select(a => a.Fecha)
+                .ToListAsync();
+
+            var fechas = query.Distinct().ToList();
+
+            
+            return fechas;
         }
 
         public Task Save()
