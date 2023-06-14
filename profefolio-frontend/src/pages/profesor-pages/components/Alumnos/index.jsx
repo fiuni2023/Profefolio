@@ -6,7 +6,6 @@ import { useModularContext } from '../../context';
 const Alumnos = () => {
 
     const { dataSet, setPage, stateController } = useModularContext()
-    const{materiaId}=stateController;
     const {setAlumnoId}=stateController;
     const { alumnos } = dataSet
     
@@ -38,6 +37,7 @@ const Alumnos = () => {
             clickable:{ action: clickAlumno},
             filas: newList
         })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [alumnos])
 
     return <>

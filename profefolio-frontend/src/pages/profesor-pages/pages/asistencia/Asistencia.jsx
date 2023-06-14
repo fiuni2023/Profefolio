@@ -89,7 +89,7 @@ const Asistencia = React.memo(() => {
                 "idMateriaLista": materiaId,
                 "mes": mesValue
             }
-            console.log(body)
+            
             return axios.post(`${APILINK}/api/Asistencia`, body, {
                 headers: {
                     Authorization: 'Bearer ' + getToken(),
@@ -118,7 +118,7 @@ const Asistencia = React.memo(() => {
                         { titulo: "%" }
                     ],
                     filas: dataAsistencia.map((dato) => {
-                        console.log(dato)
+                        
                         setPorcentajes((before)=>{return [...before, dato.porcentajePresentes]})
                         return {
                             fila: dato,

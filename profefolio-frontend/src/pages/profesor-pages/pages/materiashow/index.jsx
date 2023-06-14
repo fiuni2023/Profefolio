@@ -17,6 +17,7 @@ const ProfesorMateriaShow = () => {
     const { getToken, cancan, verifyToken } = useGeneralContext();
     const { materiaId } = stateController
     const { materiaShow, materiaName, loading, currColegio, currClase } = dataSet
+    // eslint-disable-next-line no-unused-vars
     const [datosDashboard, setDatosDashboard] = useState([]);
     const nav = useNavigate()
 
@@ -39,7 +40,7 @@ const ProfesorMateriaShow = () => {
             })
                 .then(response => {
                     setDatosDashboard(response.data)
-                    console.log(datosDashboard)
+                    
 
                 })
                 .catch(error => {
