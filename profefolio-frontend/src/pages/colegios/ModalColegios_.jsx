@@ -105,7 +105,7 @@ function ModalColegio({
 
             })
             .catch(error => {
-                console.error(error);
+                toast.error(error);
             });
     }
     useEffect(() => {

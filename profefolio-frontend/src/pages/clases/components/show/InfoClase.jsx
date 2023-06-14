@@ -105,11 +105,11 @@ const InfoClase = ({ idClase }) => {
             if (result.status >= 200 && result.status < 300) {
                 toast.success("Cambios guardados");
             } else {
-                console.log(result?.error)
+              
                 toast.error(result.error);
             }
         } catch (e) {
-            console.log(e)
+            toast.error(e);
         }
         setDisabledInputs(false)
     }

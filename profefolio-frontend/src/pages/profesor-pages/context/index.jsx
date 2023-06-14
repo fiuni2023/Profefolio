@@ -11,7 +11,6 @@ import ProfesorPagesService from "../services/ProfesorPagesService";
 import { useGeneralContext } from "../../../context/GeneralContext";
 import Evaluaciones from "../pages/evaluaciones";
 import DetalleAlumno from "../components/Alumnos/DetalleAlumno"
-import AlumnoServicePage from "../services/AlumnoService";
 const ModularContext = createContext();
 
 export const useModularContext = () => {
@@ -107,6 +106,7 @@ export const ModularProvider = ({ children }) => {
         } else {
             setLoadingOthers(false)
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     },[fetch_data, token, alumnoId])
 
     useEffect(()=>{

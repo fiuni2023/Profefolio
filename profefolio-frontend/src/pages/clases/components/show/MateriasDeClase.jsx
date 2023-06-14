@@ -156,7 +156,7 @@ const ListItem = memo(({ index, idMateria,estado ,nombre,apellido, profesores = 
 const seleccionarProfesor = (event) => {
   const idProfesorSeleccionado = event.target.value;
 
-  console.log('idMateria',idMateria);
+  
   setProfesoresSeleccionados((prevSeleccionados) =>
     prevSeleccionados.includes(idProfesorSeleccionado)
       ? prevSeleccionados.filter((id) => id !== idProfesorSeleccionado)
@@ -175,7 +175,7 @@ useEffect(() => {
   useEffect(() => {
     guardarProfesorSeleccionado(profesoresSeleccionados);
 
-    console.log('profesoresSeleccionados',profesoresSeleccionados)
+    
   }, [profesoresSeleccionados]);
   
 
@@ -583,7 +583,7 @@ useMemo(() => {
     };
 
 
-    console.log('profesoresSeleccionados',profesoresSeleccionados);
+    
 
     useEffect(() => {
       if (materiaProfesor) {
@@ -681,10 +681,7 @@ useMemo(() => {
                                     guardarProfesorSeleccionadoParaBorrar={guardarProfesorSeleccionadoParaBorrar}
                                     guardarIdMateriaSeleccionado={guardarIdMateriaSeleccionado}
                                     onClick={(event) => {
-                                        console.log(
-                                         // `${materia.idMateria} materia seleccionado`,
-                                          
-                                        );
+                                        
                                         if (materia.estado === "new") {
 
                                         //  const profesoresIds = materia.profesores.map((profesor) => profesor.id);

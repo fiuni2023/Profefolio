@@ -30,7 +30,7 @@ const ClasesTable = ({ condFetch, colegioId, getToken, doChangeClase, triggerUpd
             condition: condFetch,
             handleSuccess: (r) => {
                 setNextPage(r.data.next)
-                console.log(r)
+                
                 setTotalPage(r.data.totalPage)
                 setClassesTable({
                     ...classesTable, clickable: { action: doChangeClase },

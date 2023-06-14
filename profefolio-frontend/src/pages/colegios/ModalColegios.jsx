@@ -32,7 +32,7 @@ function ModalColegios({tituloModal, isOpen, disabled, onSubmit = () => { }, tri
                 setAdministradores(response.data);
             })
             .catch(function (error) {
-                console.log(error);
+                toast.error(error);
             });
              // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [getToken])

@@ -50,21 +50,6 @@ font-size: 16px;
 &:hover{
     filter: brightness(0.8);
 }
-`
-
-const DeselectDiv = styled.div`
-width: 40px;
-height: 40px;
-text-align: center;
-padding-top: 10px;
-border-radius: 50%;
-background-color: white;
-&:hover{
-    filter:brightness(0.85);
-}
-&:active{
-    filter:brightness(0.75);
-}
 `;
 
 
@@ -77,7 +62,7 @@ const DetalleAlumno = () => {
     const [titulo, setTitulo] = useState("")
     const [contenido, setContenido] = useState("");
     const getInfo = () => {
-        console.log(claseId);
+        
         axios.post(`${APILINK}/api/AnotacionAlumno/getWithInfo`, {
             alumnoId: alumnoId,
             claseId: claseId
@@ -89,7 +74,7 @@ const DetalleAlumno = () => {
         })
             .then(response => {
                 setDatosAlumno(response.data);
-                console.log(response.data)
+                
 
             })
             .catch(error => {
@@ -122,7 +107,7 @@ const DetalleAlumno = () => {
             }
         })
             .then(response => {
-                console.log(response.data)
+                
                 setTitulo("");
                 setContenido("");
                 getInfo();
@@ -173,7 +158,7 @@ const DetalleAlumno = () => {
                     <div className={styles.card} >
 
                         {datosAlumno?.anotaciones?.map(anotacion => {
-                            console.log(anotacion)
+                            
                             return <CardAnotaciones observacion={{ titulo: anotacion.titulo, contenido: anotacion.descripcion }} ></CardAnotaciones>
 
                         })}

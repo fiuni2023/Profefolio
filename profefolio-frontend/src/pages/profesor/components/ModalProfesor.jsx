@@ -57,7 +57,7 @@ function ModalProfesor({
             }
         }catch (error) {
                 if (typeof (error.response.data) === "string" ? true : false) {
-                    console.log("Hay que borrar el if que hay debajo de este mensaje en ModalProfesor -> HandlecreateSubmit")
+                   
                     if (error.response.data !== "El email al cual quiere registrarse ya existe") {
                         //Solo debe quedar este toast, el resto esta solo para referencia
                         toast.error(error.response.data)
@@ -67,7 +67,7 @@ function ModalProfesor({
                 } else {
                     let errArr = error.response.data?.errors
                     let single = ""
-                    console.log(errArr)
+                   
                     if (errArr?.Apellido) single = errArr.Apellido[0]
                     if (errArr?.Password) single = errArr.Password[0]
                     if (errArr?.ConfirmPassword) single = errArr.ConfirmPassword[0]
