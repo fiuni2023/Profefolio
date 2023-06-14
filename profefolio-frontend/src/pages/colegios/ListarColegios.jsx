@@ -92,7 +92,7 @@ function ListarColegios() {
         setLoading(false);
         setError(error);
         toast.error(error);
-        console.error(error);
+        
       }
     };
 

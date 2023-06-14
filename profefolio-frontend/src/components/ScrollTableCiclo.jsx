@@ -16,7 +16,7 @@ function ListItem({ index, name, lastName, document, type, onClick }) {
 const ScrollTableCiclo = ({ studentsList, isLoading = true}) => {
     useEffect(() => {
       
-    console.log(studentsList)
+    
     }, [studentsList])
     
     return (
@@ -36,7 +36,7 @@ const ScrollTableCiclo = ({ studentsList, isLoading = true}) => {
                                     index={index + 1}
                                     id={student.id}
                                     name={student.nombre}
-                                    onClick={() => console.log(`${student.id} 'seleccionado'`)} />
+                                     />
                             ))}
                         </List>}
                     </SBody>}

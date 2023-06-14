@@ -2,7 +2,7 @@ import CreateModalDeleteMateria from "../delete/CreateModalDeleteMateria.jsx";
 
 function PruebaMaterias() {
   const handleDelete = () => {
-    console.log("handleDelete...");
+  
     // código para eliminar el elemento aquí
   };
 
