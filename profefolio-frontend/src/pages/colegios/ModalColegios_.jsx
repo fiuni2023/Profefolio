@@ -15,6 +15,8 @@ function ModalColegio({
     const { getToken } = useGeneralContext()
     const disabled = false
 
+    const [tempProf, setTempProf] = useState("")
+
     const handleCreateSubmit = () => {
 
         const nombre = document.getElementById("nombreColegio").value
@@ -53,13 +55,12 @@ function ModalColegio({
 
     const handleEditSubmit = () => {
         const nombre = document.getElementById("nombreColegio").value
-        const idAdmin = document.getElementById("administradorColegio").value
 
-        if (nombre === "" || idAdmin === "") return toast.error("revisa los datos, los campos deben ser completados")
+        if (nombre === "" || tempProf === "" ) return toast.error("revisa los datos, los campos deben ser completados")
         let data = JSON.stringify({
             "id": selected_data.id,
             "nombre": nombre,
-            "personaId": idAdmin
+            "personaId": tempProf
         });
         let config = {
             method: 'put',
@@ -111,7 +112,7 @@ function ModalColegio({
     useEffect(() => {
         if (selected_data) {
             document.getElementById("nombreColegio").value = selected_data.nombre
-            document.getElementById("administradorColegio").value = selected_data.idAdmin ?? ""
+            setTempProf(selected_data.idAdmin)
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selected_data])
@@ -127,7 +128,12 @@ function ModalColegio({
                 nombre: selected_data.nombreAdministrador,
                 apellido: selected_data.apellido
             }
-            adminNew=[...adminNew, admin];
+            let defaultValue={
+                id: "",
+                nombre: "Selecciona un",
+                apellido: "administrador"
+            }
+            adminNew=[ defaultValue, ...adminNew, admin];
         }
 
         setDatosModal({
@@ -144,10 +150,10 @@ function ModalColegio({
                     {
                         key: "administradorColegio", label: "Administrador",
                         type: "select",
-                        disabled: disabled, required: true, value: selected_data?.idAdmin,
+                        disabled: disabled, required: true, value: tempProf,
                         invalidText: "Seleccione un Administrador",
+                        onChange: {action: (e)=>{setTempProf(e.target.value)}},
                         select: {
-                            default: "Seleccione un Administrador",
                             options: adminNew.map((a) => {
                                 return {
                                     value: a.id,
@@ -169,7 +175,10 @@ function ModalColegio({
                             {
                                 style: "text",
                                 type: "save",
-                                onclick: { action: () => { handleEditSubmit() } }
+                                onclick: { action: (e) => { 
+                                    e.preventDefault()
+                                    handleEditSubmit() 
+                                } }
                             },
                         ]
                         :
@@ -196,7 +205,7 @@ function ModalColegio({
             }
         })
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [disabled, selected_data, administrators, deleting]);
+    }, [disabled, selected_data, administrators, deleting,tempProf]);
 
     const handleHide = () => {
         document.getElementById("nombreColegio").value = ""

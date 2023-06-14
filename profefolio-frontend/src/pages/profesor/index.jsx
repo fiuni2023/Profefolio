@@ -200,7 +200,7 @@ function Profesores() {
               </PanelContainerBG>
             </>}
 
-            <ModalProfesor onHide={handleHide} selected_data={selected_data} show={show} />
+            <ModalProfesor onHide={handleHide} selected_data={selected_data} show={show} fetchFunc={()=>{doFetch()}}/>
             <AddButton onClick={() => setShow(true)}>
                   <AiOutlinePlus size={"35px"} />
                 </AddButton>
