@@ -84,7 +84,7 @@ namespace profefolio.Controllers
                 //var userId = User.Identity.GetUserId();
                 var name = User.FindFirstValue(ClaimTypes.Name);
 
-                if (dto.Titulo.Trim().Any() || dto.Contenido.Trim().Any())
+                if (!dto.Titulo.Trim().Any() || !dto.Contenido.Trim().Any())
                 {
                     return BadRequest("Verifique que se haya completado los campos");
                 }

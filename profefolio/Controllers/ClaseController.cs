@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using profefolio.Helpers;
 using profefolio.Models.DTOs;
+using profefolio.Models.DTOs.Anotacion;
 using profefolio.Models.DTOs.Clase;
 using profefolio.Models.Entities;
 using profefolio.Repository;
@@ -254,5 +255,23 @@ namespace profefolio.Controllers
             }
         }
 
+
+        [HttpGet("grafico/admin")]
+        [Authorize(Roles = "Administrador de Colegio")]
+        public async Task<ActionResult> GetCantidadlumnosEnClases(){
+            try{
+                var adminEmail = User.FindFirstValue(ClaimTypes.Name);
+                var (clases, cantidades) = await _claseService.GetCantidadAlumnos(adminEmail);
+
+                var result = new AnotacionesGraficoDTO(){
+                    Clases = clases,
+                    Cantidades = cantidades
+                };
+                return Ok(result);
+            }catch(Exception e){
+                Console.WriteLine($"{e}");
+                return BadRequest("Error durante la busqueda");
+            }
+        }
     }
 }
