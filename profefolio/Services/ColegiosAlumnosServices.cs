@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using profefolio.Models;
 using profefolio.Models.Entities;
 using profefolio.Repository;
@@ -202,50 +203,55 @@ namespace profefolio.Services
 
         public async Task<IEnumerable<ColegiosAlumnos>> GetNotAssignedByYear(int year, string user, int idClase)
         {
-
+            //Resultado
+            var list = new List<ColegiosAlumnos>();
             
-            var query = await this.FindAllNoAssignedToClaseByEmailAdminAndIdClase(user, idClase);
-
-            var yearClase = await _context.Clases
-                .Where(c => !c.Deleted)
-                .Where(c => c.Id == idClase)
-                .Select(c => c.Anho)
+            //Persona Logeada
+            var us = await _context.Users
+                .Where(u => !u.Deleted && u.Email.Equals(user))
                 .FirstOrDefaultAsync();
 
-            if(yearClase != year)
+            if (us == null)
             {
-                throw new BadHttpRequestException("No existe esa clase en el presente año lectivo");
+                throw new UnauthorizedAccessException();
+            }
+            //Mi Colegio
+            var colegio = await _context.Colegios
+                .Include(c => c.ColegiosAlumnos)
+                .ThenInclude(p => p.Persona)
+                .Where(c => c.PersonaId != null && !c.Deleted && c.PersonaId.Equals(us.Id))
+                .FirstOrDefaultAsync();
+
+            if (colegio == null)
+            {
+                throw new UnauthorizedAccessException();
             }
 
-            var listResult = new List<ColegiosAlumnos>();
-
-            foreach (var item in query)
+            //Relacion entre Alumnos y Colegio
+            var colegioAlumnosQuery = colegio.ColegiosAlumnos
+                .Where(x => !x.Deleted);
+            
+            foreach (var colegioAlumno in colegioAlumnosQuery)
             {
-                var colegiosAlumnos = item;
 
-                var colegioClaseAlumno = item.ClasesAlumnosColegios;
-                colegiosAlumnos.ClasesAlumnosColegios = new List<ClasesAlumnosColegio>();
+                //Relacion de ColegioALumno a Clase
+                var claseAlumnoColegioQuery = await _context.ClasesAlumnosColegios
+                    .Include(cl => cl.Clase)
+                    .Where(cac => cac.Clase != null && !cac.Deleted && cac.ColegiosAlumnosId == colegioAlumno.Id && cac.Clase.Anho == year)
+                    .ToListAsync();
 
-
-                if (colegioClaseAlumno == null)
+                if (!claseAlumnoColegioQuery.Any())
                 {
-                    throw new BadHttpRequestException("Error al buscar los resultados");
+                    list.Add(colegioAlumno);
+                    
                 }
-
-                foreach (var cca in colegioClaseAlumno)
-                {
-                    var cl = await _context.Clases.FindAsync(cca.ClaseId);
-
-                    if (cl != null && cl.Anho == year)
-                    {
-                        colegiosAlumnos.ClasesAlumnosColegios.Add(cca);
-                    }
-                }
-
-                listResult.Add(colegiosAlumnos);
+                
             }
 
-            return listResult as IEnumerable<ColegiosAlumnos>;
+
+            return list;
+
+
 
         }
 
