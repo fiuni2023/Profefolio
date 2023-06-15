@@ -101,6 +101,7 @@ namespace profefolio.Services
             {
                 var materiaLista = item.MateriaListas
                     .Where(d => !d.Deleted)
+                    .Where(d => d.ClaseId == idClase)
                     .ToList();
 
                 if (!item.MateriaListas.All(x => x.Deleted))
