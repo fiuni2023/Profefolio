@@ -380,7 +380,10 @@ function ModalProfesor({
                             {
                                 style: "text",
                                 type: "save",
-                                onclick: { action: () => { handleEditSubmit() } }
+                                onclick: { action: (e) => { 
+                                    e.preventDefault()
+                                    handleEditSubmit() 
+                                } }
                             },
                         ]
                         :
@@ -401,7 +404,10 @@ function ModalProfesor({
                         {
                             style: "text",
                             type: "accept",
-                            onclick: { action: () => { handleCreateSubmit() } }
+                            onclick: { action: (e) => { 
+                                e.preventDefault()
+                                handleCreateSubmit()
+                            } }
                         },
                     ]
             }
