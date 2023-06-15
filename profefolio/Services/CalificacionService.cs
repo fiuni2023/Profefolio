@@ -1,8 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using profefolio.Models;
 using profefolio.Models.DTOs.Calificacion;
-using profefolio.Models.Entities;
 using profefolio.Repository;
 
 namespace profefolio.Services;
@@ -34,7 +32,7 @@ public class CalificacionService : ICalificacion
     }
 
 
-    //TO-DO Corregir
+    
     public async Task<PlanillaDTO> GetAll(int idMateriaLista, string user)
     {
 
@@ -67,14 +65,15 @@ public class CalificacionService : ICalificacion
         {
             var alumnoPuntaje = new AlumnoWithPuntajesDTO
             {
-                Nombre = al.ColegiosAlumnos.Persona?.Nombre,
+                Nombre = al.ColegiosAlumnos?.Persona?.Nombre,
                 AlumnoId = al.Id,
-                Apellido = al.ColegiosAlumnos.Persona?.Apellido,
-                Doc = al.ColegiosAlumnos.Persona?.Documento,
+                Apellido = al.ColegiosAlumnos?.Persona?.Apellido,
+                Doc = al.ColegiosAlumnos?.Persona?.Documento,
                 Etapas = new List<EtapaDTO>()
             };
 
             var evaluaciones = al.Evaluaciones
+                .Where(x => !x.Deleted && x.Evaluacion?.MateriaListaId == idMateriaLista)
                 .GroupBy(x => x.Evaluacion?.Etapa)
                 .Select(x => new
                 {
@@ -140,37 +139,7 @@ public class CalificacionService : ICalificacion
 
         return planilla;
     }
-
-    public async Task<bool> Verify(int idMateriaLista, string user)
-    {
-        var alumnosQuery = _db.ClasesAlumnosColegios
-            .Include(c => c.Evaluaciones)
-            .ThenInclude(x => x.Evaluacion)
-            .Where(c => !c.Deleted)
-            .ToList();
-
-
-
-        foreach (var alumno in alumnosQuery)
-        {
-            var evaluacionesAlumnos = _db.EventoAlumnos
-                .Include(x => x.Evaluacion)
-                .Where(x => x.Evaluacion != null
-                            && !x.Deleted 
-                            && x.ClasesAlumnosColegioId == alumno.Id 
-                            && x.Evaluacion.MateriaListaId == idMateriaLista)
-                .ToList();
-
-            if (evaluacionesAlumnos.IsNullOrEmpty())
-            {
-                await CargarEvaluaciones(alumno, user);
-            }
-            
-        }
-
-
-        return true;
-    }
+    
 
     public async Task<PlanillaDTO> Put(int idMateriaLista, CalificacionPutDto dto, string user)
     {
@@ -190,7 +159,7 @@ public class CalificacionService : ICalificacion
 
         var ev = await _db.EventoAlumnos
             .Include(e => e.Evaluacion)
-            .Where(ev => ev.Id == dto.IdEvaluacion)
+            .Where(ev => !ev.Deleted && ev.Id == dto.IdEvaluacion)
             .FirstOrDefaultAsync();
 
         if (ev == null)
@@ -208,8 +177,7 @@ public class CalificacionService : ICalificacion
                 }
                 if (ev.Evaluacion != null) ev.PorcentajeLogrado = (dto.Puntaje * 100) / ev.Evaluacion.PuntajeTotal;
                 await _db.SaveChangesAsync();
-        
-                await this.Verify(idMateriaLista, user);
+                
                 var result = await this.GetAll(idMateriaLista, user);
                 return result;
             case "pt" :
@@ -222,8 +190,6 @@ public class CalificacionService : ICalificacion
                     ev.PorcentajeLogrado = (ev.PuntajeLogrado * 100) / ev.Evaluacion.PuntajeTotal;
                     await _db.SaveChangesAsync();
                 }
-
-                await this.Verify(idMateriaLista, user);
                 return await this.GetAll(idMateriaLista, user);
             case "nn":
                 if (ev.Evaluacion != null)
@@ -231,7 +197,6 @@ public class CalificacionService : ICalificacion
                     ev.Evaluacion.Nombre = dto.NombreEvaluacion;
                     await _db.SaveChangesAsync();
                 }
-                await this.Verify(idMateriaLista, user);
                 return await this.GetAll(idMateriaLista, user);
             case  "d" :
                 if (ev.Evaluacion != null) ev.Evaluacion.Deleted = true;
@@ -245,7 +210,6 @@ public class CalificacionService : ICalificacion
                     q.ModifiedBy = user;
                 }
                 await _db.SaveChangesAsync();
-                await this.Verify(idMateriaLista, user);
                 return await this.GetAll(idMateriaLista, user);
                 
             default:
@@ -254,41 +218,7 @@ public class CalificacionService : ICalificacion
 
        
     }
-
-    private async Task CargarEvaluaciones(ClasesAlumnosColegio cac, string user)
-    {
-        var evaluacionesQ = _db.ClasesAlumnosColegios
-            .Include(c => c.Evaluaciones)
-            .Where(c => !c.Deleted && cac.Id != c.Id)
-            .Where(c => c.Evaluaciones.Any())
-            .Select(c => c.Evaluaciones)
-            .FirstOrDefault();
-
-
-
-        if (evaluacionesQ != null)
-        {
-            var evaluaciones = evaluacionesQ.Select(w => w.EvaluacionId)
-                .ToList();
-
-
-            foreach (var e in evaluaciones)
-            {
-                cac.Evaluaciones.Add(new EvaluacionAlumno()
-                {
-                    ClasesAlumnosColegioId = cac.Id,
-                    Created = DateTime.Now,
-                    CreatedBy = user,
-                    EvaluacionId = e,
-                    PuntajeLogrado = 0,
-                    PorcentajeLogrado = 0
-                });
-            }
-
-            await _db.SaveChangesAsync();
-        }
-
-    }
+    
 
    
 }
