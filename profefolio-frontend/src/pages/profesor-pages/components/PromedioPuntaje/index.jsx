@@ -11,11 +11,10 @@ const PromedioPuntaje = () => {
     const [labels, setLabels] = useState([])
     const [promedios, setPromedios] = useState([])
 
-
     useEffect(() => {
         if (puntajes.length > 0) {
-            setLabels(puntajes.map(p => { return p.evaluacion }))
-            setPromedios(puntajes.map(p=>{return p.puntaje}))
+            setLabels(puntajes.map(p => { return p.nombreEvaluacion }))
+            setPromedios(puntajes.map(p=>{return p.promedio}))
         }
     }, [puntajes])
 
@@ -37,7 +36,7 @@ const PromedioPuntaje = () => {
     return <>
         <SCard>
             <SHeader>Promedio de Puntaje</SHeader>
-            <SBody> 
+            <SBody>
                 <Line options={config} data={data}/>
             </SBody>
         </SCard>
