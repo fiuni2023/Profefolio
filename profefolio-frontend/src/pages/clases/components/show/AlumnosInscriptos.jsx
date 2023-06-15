@@ -88,7 +88,7 @@ const AlumnosInscriptos = () => {
         for (let index = 0; index < nuevaListaAlumnos.length; index++) {
             let alumno = nuevaListaAlumnos[index];
             if (alumno.status === 'N') {
-                list = [...list, { colegioAlumnoId: alumno.id, estado: "N" }]
+                list = [...list, { colegioAlumnoId: alumno.idColegioAlumno, estado: "N" }]
             }
             else if (alumno.status === 'D') {
                 list = [...list, { colegioAlumnoId: alumno.id, estado: "D" }]
