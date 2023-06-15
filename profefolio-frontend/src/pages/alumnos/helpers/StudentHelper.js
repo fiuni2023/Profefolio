@@ -22,7 +22,7 @@ const getAllClassStudents = async (idClase, token) => {
 }
 
 const getAllNotClassStudents = async (idClase, token) => {
-    const result = await axios.get(`${APILINK}/api/ColegiosAlumnos/NoAssignedAlumnos/${idClase}`,
+    const result = await axios.get(`${APILINK}/api/ColegiosAlumnos/Not/assigned/year/${idClase}`,
         {
             headers: {
                 Authorization: 'Bearer ' + token
