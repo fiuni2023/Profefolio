@@ -41,12 +41,12 @@ namespace profefolio.Services
             throw new NotImplementedException();
         }
 
-        public async Task<bool> Exist(int ClaseId, int ColegioAlumnoId)
+        public async Task<bool> Exist(int claseId, int colegioAlumnoId)
         {
             return await _context.ClasesAlumnosColegios
                 .AnyAsync(a => !a.Deleted
-                && a.ClaseId == ClaseId
-                && a.ColegiosAlumnosId == ColegioAlumnoId);
+                && a.ClaseId == claseId
+                && a.ColegiosAlumnosId == colegioAlumnoId);
         }
 
         public async Task<List<ClasesAlumnosColegio>?> FindAllByClaseIdAndAdminEmail(int ClaseId, string adminEmail = "")
@@ -107,7 +107,8 @@ namespace profefolio.Services
                 ClaseId = claseId,
                 CreatedBy = username,
                 Created = DateTime.Now,
-                Asistencias = new List<Asistencia>()
+                Asistencias = new List<Asistencia>(),
+                Evaluaciones = new List<EvaluacionAlumno>()
             };
             
             var materiaListas = await _context.MateriaListas
@@ -131,6 +132,25 @@ namespace profefolio.Services
                     };
 
                     cac.Asistencias.Add(asist);
+
+
+                    
+                }
+                var evaluaciones = await _context.Eventos
+                    .Where(e => !e.Deleted && e.MateriaListaId == ml.Id)
+                    .ToListAsync();
+                foreach (var evaluacion in  evaluaciones)
+                {
+                    cac.Evaluaciones.Add(
+                        new EvaluacionAlumno()
+                        {
+                            PuntajeLogrado = 0,
+                            PorcentajeLogrado = 0,
+                            EvaluacionId = evaluacion.Id,
+                            Created = DateTime.Now,
+                            CreatedBy = username,
+                            ClasesAlumnosColegio = cac
+                        });
                 }
 
                
