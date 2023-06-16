@@ -88,7 +88,7 @@ namespace profefolio.Services
             var alumno = await _context.ClasesAlumnosColegios
                 .Include(a => a.ColegiosAlumnos)
                 .Include(a => a.ColegiosAlumnos.Persona)
-                .FirstOrDefaultAsync(a => !a.Deleted && a.Id == idAlumno && a.ClaseId == idClase);
+                .FirstOrDefaultAsync(a => !a.Deleted && a.ColegiosAlumnosId == idAlumno && a.ClaseId == idClase);
 
             if (alumno == null)
             {
@@ -114,12 +114,15 @@ namespace profefolio.Services
             var ciclo = claseModelo.Ciclo.Nombre;
 
             var anotaciones = await _context.AnotacionesAlumnos
+                .Include(a => a.Alumno)
                 .Where(a => !a.Deleted
-                        && a.AlumnoId == idAlumno
+                        && a.Alumno.ColegiosAlumnosId == idAlumno
                         && a.ClaseId == idClase)
                 .ToListAsync();
 
-            return (alumno.ColegiosAlumnos.Persona.Nombre, alumno.ColegiosAlumnos.Persona.Apellido, clase, ciclo, materias, anotaciones);
+            var nombre = alumno.ColegiosAlumnos.Persona.Nombre;
+            var apellido = alumno.ColegiosAlumnos.Persona.Apellido;
+            return (nombre, apellido, clase, ciclo, materias, anotaciones);
         }
 
         public async Task Save()
@@ -139,7 +142,7 @@ namespace profefolio.Services
                 return false;
             } */
 
-            // calse donde enseña el profesor
+            // clase donde enseña el profesor
             var clase = await _context.Clases.Where(a => !a.Deleted
                         && a.Id == idClase
                         && a.MateriaListas.Any(m => !m.Deleted && emailProfesor.Equals(m.Profesor.Email)))
@@ -151,10 +154,15 @@ namespace profefolio.Services
 
             var alumno = await _context.ClasesAlumnosColegios
                 .FirstOrDefaultAsync(a => !a.Deleted
-                    && a.Id == idAlumno
+                    && a.ColegiosAlumnosId == idAlumno
                     && a.ClaseId == clase.Id);
 
             return alumno != null;
         }
+        public async Task<ClasesAlumnosColegio> GetAlumnoByClaseAndIdColegioAlumno(int idClase, int idColegioAlumno)
+        {
+            return await _context.ClasesAlumnosColegios.FirstOrDefaultAsync(a => !a.Deleted && a.ClaseId == idClase && a.ColegiosAlumnosId == idColegioAlumno);
+        }
     }
+
 }
