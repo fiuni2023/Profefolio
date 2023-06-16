@@ -50,6 +50,7 @@ export const ModularProvider = ({ children }) => {
     const [ materiaShow, setMateriaShow ] = useState({})
     const [ materiaName, setMateriaName ] = useState("")
     const [ asistencias, setAsistencias ] = useState([])
+    // eslint-disable-next-line no-unused-vars
     const [ puntajes, setPuntajes ] = useState([])
     const [ alumnos, setAlumnos ] = useState([])
     const [ currColegio, setCurrColegio ] = useState("")
@@ -186,12 +187,12 @@ export const ModularProvider = ({ children }) => {
                 isAsistencia = true
                 handleSetLoading(isMaterias, isAsistencia, isPuntajes)
             })
-            ProfesorPagesService.GetPromedioPuntajes(materiaId, token)
+            /* ProfesorPagesService.GetPromedioPuntajes(materiaId, token)
             .then(function(d){
                 isPuntajes = true
                 handleSetLoading(isMaterias, isAsistencia, isPuntajes)
                 setPuntajes(d.data)
-            })
+            }) */
             
          } else {
             setLoadingOthers(false)
