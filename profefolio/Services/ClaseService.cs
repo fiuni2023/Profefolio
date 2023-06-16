@@ -113,6 +113,21 @@ namespace profefolio.Services
             .ToListAsync();
         }
 
+        public async Task<(List<string>, List<int>)> GetCantidadAlumnos(string adminEmail)
+        {
+            var result = _context.Clases
+                .Include(a => a.Colegio)
+                .Include(a => a.Colegio.personas)
+                .Where(a => !a.Deleted 
+                    && a.Anho == DateTime.Now.Year
+                    && adminEmail.Equals(a.Colegio.personas.Email));
+            var clases = await result.Select(a => a.Nombre).ToListAsync();
+            var cantidades = await result.Select(a => a.ClasesAlumnosColegios.Count).ToListAsync();
+
+            
+            return (clases == null ? new List<string>() : clases, 
+                    cantidades == null ? new List<int>() : cantidades);
+        }
 
         public Task Save()
         {
