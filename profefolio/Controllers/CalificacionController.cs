@@ -25,7 +25,6 @@ public class CalificacionController : ControllerBase
         try
         {
             var user = User.FindFirstValue(ClaimTypes.Name);
-            await _calificacionService.Verify(idMateriaLista, user);
 
             var result = await _calificacionService.GetAll(idMateriaLista, user);
             return Ok(result);
