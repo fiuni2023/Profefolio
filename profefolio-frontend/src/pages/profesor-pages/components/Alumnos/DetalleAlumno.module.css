@@ -4,9 +4,15 @@
 }
 
 .card{
-   max-height: 500px;
+    min-height: fit-content;
+    max-height: 500px;
     display: flex;
     row-gap: 1rem;
     flex-wrap: wrap;
-    overflow-y: scroll;
+    overflow-y: auto;
+    max-width: 100%;
+}
+
+.card > * :hover{
+    cursor: pointer;
 }

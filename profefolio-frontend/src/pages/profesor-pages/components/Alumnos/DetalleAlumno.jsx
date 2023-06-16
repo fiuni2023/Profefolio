@@ -159,7 +159,7 @@ const DetalleAlumno = () => {
 
                         {datosAlumno?.anotaciones?.map(anotacion => {
                             
-                            return <CardAnotaciones observacion={{ titulo: anotacion.titulo, contenido: anotacion.descripcion }} ></CardAnotaciones>
+                            return <CardAnotaciones observacion={{ titulo: anotacion.titulo, contenido: anotacion.descripcion }} hover={false} ></CardAnotaciones>
 
                         })}
                     </div>
