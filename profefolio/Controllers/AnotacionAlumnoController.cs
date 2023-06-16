@@ -76,8 +76,8 @@ namespace profefolio.Controllers
             }
             catch (FileNotFoundException e)
             {
-                Console.WriteLine($"{e}");
-                return Unauthorized();
+                Console.WriteLine($"\n\n\n\n{e}\n\n\n\n");
+                return Unauthorized(e.Message);
             }
             catch (BadHttpRequestException e)
             {
@@ -99,13 +99,18 @@ namespace profefolio.Controllers
         {
             try
             {
-                // validar que el profesor sea profesor de la materia lista
-                // valdiar que el alumno sea de la clase de la materia
+                // validar que el profesor sea profesor de la materia clase
+                // valdiar que el alumno sea del colegio de la clase 
                 var userEmail = User.FindFirstValue(ClaimTypes.Name);
 
                 if (await _anotAlumnoService.ValidarDatos(dto.ClaseId, userEmail, dto.AlumnoId))
                 {
+                    var alumno = await _anotAlumnoService.GetAlumnoByClaseAndIdColegioAlumno(dto.ClaseId, dto.AlumnoId);
+                    if(alumno == null){
+                        return NotFound("Alumno no encontrado la Clase");
+                    }
                     var model = _mapper.Map<AnotacionAlumno>(dto);
+                    model.AlumnoId = alumno.Id;
                     model.Created = DateTime.Now;
                     model.CreatedBy = userEmail;
                     model.Deleted = false;

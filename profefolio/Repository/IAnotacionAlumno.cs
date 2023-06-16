@@ -11,5 +11,6 @@ namespace profefolio.Repository
         //Task<List<AnotacionAlumno>> GetAllByAlumnoIdAndMateriaListaId(int idAlumno, int idMateriaLista, string profesorEmail);
         Task<(string, string, string, string, List<string>, List<AnotacionAlumno>)> GetAllWithInfoByAlumnoIdAndClaseId(int idAlumno, int idMateriaLista, string profesorEmail);
         Task<bool> ValidarDatos(int idMateriaLista, string emailProfesor, int idAlumno);
+        Task<ClasesAlumnosColegio> GetAlumnoByClaseAndIdColegioAlumno(int idClase, int idColegioAlumno);
     }
 }
