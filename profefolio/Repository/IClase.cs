@@ -12,5 +12,6 @@ namespace profefolio.Repository
         Task<IEnumerable<Clase>> GetByIdColegio(int idColegio);
         Task<IEnumerable<Clase>> GetAllByIdColegio(int page, int cantPorPag, int idColegio);
         Task<Clase> FindByIdAndUser(int idClase, string user);
+        Task<(List<string>, List<int>)> GetCantidadAlumnos(string adminEmail);
     }
 }
