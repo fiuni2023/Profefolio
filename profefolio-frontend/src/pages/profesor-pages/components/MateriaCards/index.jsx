@@ -60,10 +60,10 @@ const MateriaCards = ({
         },
         body: {
             first: {
-                title: `${materia?.asistencias} Asistencias`
+                title: `${materia?.asistencias}% Promedio de Asistencias`
             },
             second: {
-                title: `${materia?.classes_yet} clases impartidas`
+                title: `${materia?.classes_yet} clases del mes`
             }
         }
     }

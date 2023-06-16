@@ -186,8 +186,7 @@ export const ModularProvider = ({ children }) => {
                 isAsistencia = true
                 handleSetLoading(isMaterias, isAsistencia, isPuntajes)
             })
-            body = {opcion: 'promedio-puntajes', id: materiaId, anho: 2023}
-            ProfesorPagesService.Get(body, token)
+            ProfesorPagesService.GetPromedioPuntajes(materiaId, token)
             .then(function(d){
                 isPuntajes = true
                 handleSetLoading(isMaterias, isAsistencia, isPuntajes)
